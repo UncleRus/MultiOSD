@@ -29,4 +29,6 @@
 
 #define EEPROM_ADC_BATTERY_CURRENT_DIVIDER ((float *) 0x17)
 
+#define EEPROM_BATTERY_LOW_VOLTAGE ((float *) 0x1b)
+
 #endif /* LIB_EEPROM_H_ */

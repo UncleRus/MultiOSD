@@ -1,3 +1,17 @@
+/*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #ifndef LIB_UAVTALK_VERSIONS_H_
 #define LIB_UAVTALK_VERSIONS_H_
 
@@ -11,6 +25,8 @@
 #	define UAVTALK_GPSPOSITION_OBJID			0xE2A323B6
 #	define UAVTALK_GPSTIME_OBJID				0xD4478084
 #	define UAVTALK_GPSVELOCITY_OBJID			0x8245DC80
+#	define UAVTALK_FLIGHTBATTERYSTATE_OBJID		0xD2083596
+#	define UAVTALK_BAROALTITUDE_OBJID			0x99622E6A
 #	define _UT_OFFS_FTS_STATUS					20
 #	define _UT_OFFS_MCC_CHANNELS				20
 
@@ -24,6 +40,8 @@
 #	define UAVTALK_GPSPOSITION_OBJID			0xE2A323B6
 #	define UAVTALK_GPSTIME_OBJID				0xD4478084
 #	define UAVTALK_GPSVELOCITY_OBJID			0x8245DC80
+#	define UAVTALK_FLIGHTBATTERYSTATE_OBJID		0xD2083596
+#	define UAVTALK_BAROALTITUDE_OBJID			0x99622E6A
 #	define _UT_OFFS_FTS_STATUS					20
 #	define _UT_OFFS_MCC_CHANNELS				20
 
@@ -37,6 +55,8 @@
 #	define UAVTALK_GPSPOSITIONSENSOR_OBJID 		0x1A5748CE	// new name since VERSION_RELEASE_14_01_1
 #	define UAVTALK_GPSTIME_OBJID				0xD4478084
 #	define UAVTALK_GPSVELOCITYSENSOR_OBJID		0x0BC57454	// new name since VERSION_RELEASE_14_01_1
+#	define UAVTALK_FLIGHTBATTERYSTATE_OBJID		0xD2083596
+#	define UAVTALK_BAROSENSOR_OBJID				0x48120EA6
 #	define _UT_OFFS_FTS_STATUS					36
 #	define _UT_OFFS_MCC_CHANNELS				20
 
@@ -50,6 +70,8 @@
 #	define UAVTALK_GPSPOSITIONSENSOR_OBJID		0x7D26A6E6
 #	define UAVTALK_GPSTIME_OBJID				0xD4478084
 #	define UAVTALK_GPSVELOCITYSENSOR_OBJID		0x0BC57454
+#	define UAVTALK_FLIGHTBATTERYSTATE_OBJID		0x26962352
+#	define UAVTALK_BAROSENSOR_OBJID				0x48120EA6
 #	define _UT_OFFS_FTS_STATUS					36
 #	define _UT_OFFS_MCC_CHANNELS				20
 
@@ -63,6 +85,8 @@
 #	define UAVTALK_GPSPOSITIONSENSOR_OBJID		0x7D26A6E6
 #	define UAVTALK_GPSTIME_OBJID				0xD4478084
 #	define UAVTALK_GPSVELOCITYSENSOR_OBJID		0x0BC57454
+#	define UAVTALK_FLIGHTBATTERYSTATE_OBJID		0x26962352
+#	define UAVTALK_BAROSENSOR_OBJID				0x48120EA6
 #	define _UT_OFFS_FTS_STATUS					36
 #	define _UT_OFFS_MCC_CHANNELS				24
 
@@ -80,6 +104,8 @@
 #ifndef UAVTALK_GPSVELOCITYSENSOR_OBJID
 #	define UAVTALK_GPSVELOCITYSENSOR_OBJID UAVTALK_GPSVELOCITY_OBJID
 #endif
-
+#ifndef UAVTALK_BAROSENSOR_OBJID
+#	define UAVTALK_BAROSENSOR_OBJID UAVTALK_BAROALTITUDE_OBJID
+#endif
 
 #endif /* LIB_UAVTALK_VERSIONS_H_ */

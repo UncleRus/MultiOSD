@@ -1,6 +1,21 @@
+/*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include "uavtalk.h"
 #include <avr/pgmspace.h>
 #include <string.h>
+#include "../../eeprom.h"
 #include "../../uart/uart.h"
 #include "../../timer/timer.h"
 #include "../telemetry.h"
@@ -46,7 +61,14 @@ static const uint8_t _crc_table [256] PROGMEM =
 
 #define _UT_GCSTELEMETRYSTATS_LENGTH 37
 #define	_UT_GCSTELEMETRYSTATS_STATUS 36
-#define	_UT_CHANNELS 9
+//#define	_UT_CHANNELS 9
+
+static float _battery_low_voltage = 0.0;
+
+void init ()
+{
+	_battery_low_voltage = eeprom_read_float (EEPROM_BATTERY_LOW_VOLTAGE);
+}
 
 void send (const header_t &head, uint8_t *data, uint8_t size)
 {
@@ -215,7 +237,7 @@ bool update ()
 #if UAVTALK_VERSION_RELEASE >= 141001
 				telemetry::input::thrust 	= buffer.get<float> (20) * 100;
 #endif
-				memcpy (telemetry::input::channels, buffer.data + _UT_OFFS_MCC_CHANNELS, INPUT_CHANNELS * 2);
+				memcpy (telemetry::input::channels, buffer.data + _UT_OFFS_MCC_CHANNELS, INPUT_CHANNELS * sizeof (int16_t));
 				break;
 			case UAVTALK_GPSPOSITIONSENSOR_OBJID:
 				telemetry::gps::latitude 	= buffer.get<int32_t> (0) / 10000000.0;
@@ -227,10 +249,22 @@ bool update ()
 				telemetry::gps::sattelites 	= buffer.data [37];
 				break;
 			case UAVTALK_GPSVELOCITYSENSOR_OBJID:
-				telemetry::velocity::climb = -buffer.get<float> (8);
+				telemetry::gps::climb = -buffer.get<float> (8);
 				// TODO: north/east
 				break;
-			// TODO: revo, more obj_id
+#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_ADC_BATTERY)
+			case UAVTALK_FLIGHTBATTERYSTATE_OBJID:
+				telemetry::battery::voltage = buffer.get<float> (0);
+				telemetry::battery::current = buffer.get<float> (4);
+				telemetry::battery::consumed = (uint16_t) buffer.get<float> (20);
+				break;
+#endif
+#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_I2C_BARO)
+			case UAVTALK_BAROSENSOR_OBJID:
+				telemetry::barometer::altitude = buffer.get<float> (0);
+				break;
+#endif
+			// TODO: more obj_id
 			default:
 				updated = false;
 		}

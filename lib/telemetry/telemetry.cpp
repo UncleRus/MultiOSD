@@ -1,3 +1,17 @@
+/*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include "telemetry.h"
 #include "adc_battery/adc_battery.h"
 #include "../../config.h"
@@ -49,11 +63,18 @@ namespace gps
 	float heading = 0.0;
 	int8_t sattelites = 0;
 	uint8_t state = GPS_STATE_NO_FIX;
+	float climb = 0.0;
 }
 
-namespace velocity
+namespace barometer
+{
+	float altitude = 0.0;
+}
+
+namespace stable
 {
 	float climb = 0.0;
+	float altitude = 0.0;
 }
 
 namespace battery
@@ -63,9 +84,18 @@ namespace battery
 	uint16_t consumed = 0;
 }
 
+namespace messages
+{
+	bool battery_low = false;
+	bool rssi_low = false;
+}
+
 
 void init ()
 {
+#ifdef TELEMETRY_MODULES_UAVTALK
+	uavtalk::init ();
+#endif
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 	adc_battery::init ();
 #endif
@@ -80,6 +110,7 @@ bool update ()
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 	res |= adc_battery::update ();
 #endif
+	// TODO: calc stable alt/climb values based on gps/baro
 	return res;
 }
 
