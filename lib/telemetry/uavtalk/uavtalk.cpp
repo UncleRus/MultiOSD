@@ -259,7 +259,7 @@ bool update ()
 				telemetry::battery::consumed = (uint16_t) buffer.get<float> (20);
 				break;
 #endif
-#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_I2C_BARO)
+#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_BMP085)
 			case UAVTALK_BAROSENSOR_OBJID:
 				telemetry::barometer::altitude = buffer.get<float> (0);
 				break;

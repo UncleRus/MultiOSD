@@ -53,7 +53,7 @@ struct header_t
 	uint16_t inst_id;
 
 	header_t () :
-		sync (UAVTALK_SYNC), msg_type (0), length (), obj_id (0), inst_id (0)
+		sync (UAVTALK_SYNC), msg_type (0), length (UAVTALK_HEADER_LEN), obj_id (0), inst_id (0)
 	{}
 };
 

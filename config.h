@@ -54,6 +54,12 @@
 #define ADC_BATTERY_CURRENT_DIVIDER 18.0			// max 90A
 
 /*
+ * TWI (I2C) config
+ */
+#define MTWI_TIMEOUT 50			// ms
+#define MTWI_RX_BUFFER_SIZE 16
+
+/*
  * SPI config
  */
 #define SPI_PORT PORTB

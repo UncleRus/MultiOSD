@@ -22,6 +22,7 @@
 #include "lib/spi/spi.h"
 #include "lib/max7456/max7456.h"
 #include "lib/adc/adc.h"
+#include "lib/mtwi/mtwi.h"
 
 #include "lib/telemetry/telemetry.h"
 
@@ -49,13 +50,15 @@ int main ()
 
 	while (true)
 	{
-		if (telemetry::update ())
-		{
-			max7456::open (0, 1);
-			fprintf_P (&max7456::stream, PSTR ("UPDATED at %u"), timer::ticks ());
-			max7456::close ();
-		}
-		_delay_ms (10);
+		mtwi::exec_p (PSTR (""));
+		_delay_ms (500);
+//		if (telemetry::update ())
+//		{
+//			max7456::open (0, 1);
+//			fprintf_P (&max7456::stream, PSTR ("UPDATED at %u"), timer::ticks ());
+//			max7456::close ();
+//		}
+//		_delay_ms (10);
 	}
 
 	return 0;
