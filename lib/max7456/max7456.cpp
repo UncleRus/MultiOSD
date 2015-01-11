@@ -18,7 +18,7 @@
 #include <avr/pgmspace.h>
 #include "../common.h"
 #include "../spi/spi.h"
-#include "../eeprom.h"
+#include "../settings/settings.h"
 #include "../../config.h"
 
 
@@ -58,8 +58,8 @@ namespace max7456
 #define _enable_osd() { write_register (MAX7456_REG_VM0, _mask | 0x0c); }
 #define _disable_osd() { write_register (MAX7456_REG_VM0, 0); }
 
-volatile static uint8_t _mask = 0;
-volatile static bool _opened = false;
+static uint8_t _mask = 0;
+static bool _opened = false;
 
 inline uint8_t read_register (uint8_t reg)
 {
@@ -112,7 +112,6 @@ inline void _detect_mode ()
 	}
 
 	// garbage in EEPROM, set default mode
-	eeprom_write_byte (EEPROM_OSD_VIDEO_MODE, MAX7456_MODE_DEFAULT);
 	_set_mode (MAX7456_MODE_DEFAULT);
 }
 
@@ -217,9 +216,9 @@ void put (uint8_t col, uint8_t row, uint8_t chr, uint8_t attr)
 	_chip_unselect ();
 }
 
-volatile static uint8_t _start_col = 0;
-volatile static uint8_t _start_row = 0;
-volatile static uint8_t _cur_attr = 0;
+static uint8_t _start_col = 0;
+static uint8_t _start_row = 0;
+static uint8_t _cur_attr = 0;
 
 void open (uint8_t col, uint8_t row, uint8_t attr)
 {

@@ -23,10 +23,7 @@ namespace spi
 void init ()
 {
 	// initialize the SPI pins
-	sbi (SPI_DDR, SPI_SS_BIT);
-	sbi (SPI_DDR, SPI_MOSI_BIT);
-	cbi (SPI_DDR, SPI_MISO_BIT);
-	sbi (SPI_DDR, SPI_SCK_BIT);
+	SPI_DDR = (SPI_DDR & ~_BV (SPI_MISO_BIT)) | _BV (SPI_SS_BIT) | _BV (SPI_MOSI_BIT) | _BV (SPI_SCK_BIT);
 
 	// SPI master
 	SPCR = SPI_CPOL | SPI_CPHA | SPI_CLOCK | _BV (SPE) | _BV (MSTR);

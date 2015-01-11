@@ -45,12 +45,12 @@ namespace attitude
 
 namespace input
 {
-	float throttle = 0.0;
-	float roll = 0.0;
-	float pitch = 0.0;
-	float yaw = 0.0;
-	float collective = 0.0;
-	float thrust = 0.0;
+	int16_t throttle = 0;
+	int16_t roll = 0;
+	int16_t pitch = 0;
+	int16_t yaw = 0;
+	int16_t collective = 0;
+	int16_t thrust = 0;
 	int16_t channels [INPUT_CHANNELS];
 }
 
@@ -75,6 +75,8 @@ namespace stable
 {
 	float climb = 0.0;
 	float altitude = 0.0;
+	float ground_speed = 0.0;		// m/s
+	float air_speed = 0.0;			// m/s
 }
 
 namespace battery
@@ -93,6 +95,7 @@ namespace messages
 
 void init ()
 {
+	// FIXME: Use eeprom instead of macros
 #ifdef TELEMETRY_MODULES_UAVTALK
 	uavtalk::init ();
 #endif
@@ -110,7 +113,10 @@ bool update ()
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 	res |= adc_battery::update ();
 #endif
-	// TODO: calc stable alt/climb values based on gps/baro
+#ifdef TELEMETRY_MODULES_BARO
+	// TODO: calc stable alt/climb/speed values based on gps/baro/sensors
+	if ()
+#endif
 	return res;
 }
 

@@ -15,7 +15,7 @@
 #include "uavtalk.h"
 #include <avr/pgmspace.h>
 #include <string.h>
-#include "../../eeprom.h"
+#include "../../settings/settings.h"
 #include "../../uart/uart.h"
 #include "../../timer/timer.h"
 #include "../telemetry.h"
@@ -43,6 +43,8 @@ static const uint8_t _crc_table [256] PROGMEM =
 	0xde, 0xd9, 0xd0, 0xd7, 0xc2, 0xc5, 0xcc, 0xcb, 0xe6, 0xe1, 0xe8, 0xef, 0xfa, 0xfd, 0xf4, 0xf3
 };
 
+//#define _get_crc(x) (pgm_read_byte (&_crc_table [x]))
+//#define _get_crc(x) (_crc_table [x])
 
 #define _UTPS_WAIT		0
 #define _UTPS_SYNC		1
@@ -65,6 +67,11 @@ static const uint8_t _crc_table [256] PROGMEM =
 
 static float _battery_low_voltage = 0.0;
 
+static uint8_t __attribute__ ((noinline)) _get_crc (uint8_t b)
+{
+	return pgm_read_byte (&_crc_table [b]);
+}
+
 void init ()
 {
 	_battery_low_voltage = eeprom_read_float (EEPROM_BATTERY_LOW_VOLTAGE);
@@ -76,13 +83,13 @@ void send (const header_t &head, uint8_t *data, uint8_t size)
 	uint8_t *offset = (uint8_t *) &head;
 	for (uint8_t i = 0; i < sizeof (header_t); i ++, offset ++)
 	{
-		crc = _crc_table [crc ^ *offset];
+		crc = _get_crc (crc ^ *offset);
 		uart0::send (*offset);
 	}
 	for (uint8_t i = 0; i < size; i ++)
 	{
 		uint8_t value = data ? *(data + i) : 0;
-		crc = _crc_table [crc ^ value];
+		crc = _get_crc (crc ^ value);
 		uart0::send (value);
 	}
 	uart0::send (crc);
@@ -97,11 +104,11 @@ void send_gcs_telemetry_stats ()
 	send (h, NULL, _UT_GCSTELEMETRYSTATS_LENGTH);
 }
 
-volatile static uint8_t _state = _UTPS_WAIT;
-volatile static uint8_t _crc = 0;
-volatile static uint8_t _step = 0;
+static uint8_t _state = _UTPS_WAIT;
+static uint8_t _crc = 0;
+static uint8_t _step = 0;
 
-#define _update_crc(b) { _crc = _crc_table [_crc ^ b]; }
+#define _update_crc(b) { _crc = _get_crc (_crc ^ b); }
 #define _receive_byte(v, b) { v |=  b << (_step << 3); _step ++; }
 
 message_t buffer;
@@ -117,7 +124,7 @@ bool receive ()
 	{
 		case _UTPS_WAIT:
 			if (b != UAVTALK_SYNC) return false;
-			_crc = _crc_table [b];
+			_crc = _get_crc (b);
 			buffer.head.sync = b;
 			buffer.head.length = 0;
 			buffer.head.obj_id = 0;
@@ -196,8 +203,8 @@ bool receive ()
 }
 
 
-volatile static uint32_t _last_telemetry_request = 0;
-volatile static uint32_t _last_flight_time = 0;
+static uint32_t _last_telemetry_request = 0;
+static uint32_t _last_flight_time = 0;
 
 bool update ()
 {
@@ -229,13 +236,13 @@ bool update ()
 				telemetry::status::flight_mode = buffer.data [1];
 				break;
 			case UAVTALK_MANUALCONTROLCOMMAND_OBJID:
-				telemetry::input::throttle 	= buffer.get<float> (0) * 100;
-				telemetry::input::roll 		= buffer.get<float> (4) * 100;
-				telemetry::input::pitch 	= buffer.get<float> (8) * 100;
-				telemetry::input::yaw 		= buffer.get<float> (12) * 100;
-				telemetry::input::collective = buffer.get<float> (16) * 100;
+				telemetry::input::throttle 	= (int16_t) (buffer.get<float> (0) * 100);
+				telemetry::input::roll 		= (int16_t) (buffer.get<float> (4) * 100);
+				telemetry::input::pitch 	= (int16_t) (buffer.get<float> (8) * 100);
+				telemetry::input::yaw 		= (int16_t) (buffer.get<float> (12) * 100);
+				telemetry::input::collective = (int16_t) (buffer.get<float> (16) * 100);
 #if UAVTALK_VERSION_RELEASE >= 141001
-				telemetry::input::thrust 	= buffer.get<float> (20) * 100;
+				telemetry::input::thrust 	= (int16_t) (buffer.get<float> (20) * 100);
 #endif
 				memcpy (telemetry::input::channels, buffer.data + _UT_OFFS_MCC_CHANNELS, INPUT_CHANNELS * sizeof (int16_t));
 				break;
@@ -257,6 +264,7 @@ bool update ()
 				telemetry::battery::voltage = buffer.get<float> (0);
 				telemetry::battery::current = buffer.get<float> (4);
 				telemetry::battery::consumed = (uint16_t) buffer.get<float> (20);
+				telemetry::messages::battery_low = telemetry::battery::voltage < _battery_low_voltage;
 				break;
 #endif
 #if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_BMP085)

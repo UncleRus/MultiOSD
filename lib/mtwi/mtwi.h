@@ -32,7 +32,7 @@ namespace utils
 	uint8_t hex2nibble (char hex);
 }
 
-extern uint8_t error;
+extern volatile uint8_t error;
 const uint8_t *exec (const char *cmd);
 const uint8_t *exec_p (const char *progmem_cmd);
 bool exists (uint8_t addr);

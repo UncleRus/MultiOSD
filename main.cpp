@@ -52,13 +52,13 @@ int main ()
 	{
 		mtwi::exec_p (PSTR (""));
 		_delay_ms (500);
-//		if (telemetry::update ())
-//		{
-//			max7456::open (0, 1);
-//			fprintf_P (&max7456::stream, PSTR ("UPDATED at %u"), timer::ticks ());
-//			max7456::close ();
-//		}
-//		_delay_ms (10);
+		if (telemetry::update ())
+		{
+			max7456::open (0, 1);
+			fprintf_P (&max7456::stream, PSTR ("UPDATED at %u"), timer::ticks ());
+			max7456::close ();
+		}
+		_delay_ms (10);
 	}
 
 	return 0;

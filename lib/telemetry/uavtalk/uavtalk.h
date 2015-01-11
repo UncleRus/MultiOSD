@@ -64,7 +64,7 @@ struct message_t
 	uint8_t crc;
 
 	template <class T>
-	inline T get (uint8_t offset)
+	T __attribute__ ((noinline)) get (uint8_t offset)
 	{
 		T *res = reinterpret_cast<T *> (data + offset);
 		return *res;

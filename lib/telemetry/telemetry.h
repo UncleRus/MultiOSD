@@ -67,12 +67,12 @@ namespace attitude
 
 namespace input
 {
-	extern float throttle;			// percents
-	extern float roll;				// percents
-	extern float pitch;				// percents
-	extern float yaw;				// percents
-	extern float collective;		// percents
-	extern float thrust;			// percents
+	extern int16_t throttle;		// percents
+	extern int16_t roll;			// percents
+	extern int16_t pitch;			// percents
+	extern int16_t yaw;				// percents
+	extern int16_t collective;		// percents
+	extern int16_t thrust;			// percents
 	extern int16_t channels [INPUT_CHANNELS]; // raw values
 }
 
@@ -97,6 +97,8 @@ namespace stable
 {
 	extern float climb;				// m/s
 	extern float altitude;			// meters
+	extern float ground_speed;		// m/s
+	extern float air_speed;			// m/s
 }
 
 namespace battery

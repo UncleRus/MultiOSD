@@ -35,7 +35,7 @@ namespace mtwi
 
 static uint8_t _rx_position = 0;
 static uint8_t _rx_buffer [MTWI_RX_BUFFER_SIZE];
-volatile static uint8_t error = 0;
+volatile uint8_t error = 0;
 
 uint8_t utils::hex2nibble (char hex)
 {
