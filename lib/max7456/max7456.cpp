@@ -45,10 +45,17 @@ namespace max7456
 #define MAX7456_REG_CMDI  0x0b
 
 #define MAX7456_MASK_PAL 0x40 //PAL mask 01000000
-#define MAX7456_CENTER_PAL 0x8
-
 #define MAX7456_MASK_NTCS 0x00 //NTSC mask 00000000 ("|" will do nothing)
-#define MAX7456_CENTER_NTSC 0x6
+
+#define MAX7456_PAL_COLUMNS		30
+#define MAX7456_PAL_ROWS		16
+#define MAX7456_PAL_HCENTER		MAX7456_PAL_COLUMNS / 2
+#define MAX7456_PAL_VCENTER		MAX7456_PAL_ROWS / 2
+
+#define MAX7456_NTSC_COLUMNS	30
+#define MAX7456_NTSC_ROWS		13
+#define MAX7456_NTSC_HCENTER	MAX7456_NTSC_COLUMNS / 2
+#define MAX7456_NTSC_VCENTER	MAX7456_NTSC_ROWS / 2
 
 #define _chip_select() { cbi (MAX7456_SELECT_PORT, MAX7456_SELECT_BIT); }
 #define _chip_unselect() { sbi (MAX7456_SELECT_PORT, MAX7456_SELECT_BIT); }
@@ -59,6 +66,8 @@ namespace max7456
 #define _disable_osd() { write_register (MAX7456_REG_VM0, 0); }
 
 static uint8_t _mask = 0;
+static uint8_t _mode = 0;
+static uint8_t _right, _bottom, _hcenter, _vcenter;
 static bool _opened = false;
 
 inline uint8_t read_register (uint8_t reg)
@@ -73,9 +82,48 @@ inline void write_register (uint8_t reg, uint8_t val)
 	spi::transfer (val);
 }
 
+inline uint8_t mode ()
+{
+	return _mode;
+}
+
+inline uint8_t right ()
+{
+	return _right;
+}
+
+inline uint8_t bottom ()
+{
+	return _bottom;
+}
+
+inline uint8_t hcenter ()
+{
+	return _hcenter;
+}
+
+inline uint8_t vcenter ()
+{
+	return _vcenter;
+}
+
 inline void _set_mode (uint8_t mode)
 {
-	_mask = mode == MAX7456_MODE_NTSC ? MAX7456_MASK_NTCS : MAX7456_MASK_PAL;
+	_mode = mode;
+	if (mode == MAX7456_MODE_NTSC)
+	{
+		_mask = MAX7456_MASK_NTCS;
+		_right = MAX7456_NTSC_COLUMNS - 1;
+		_bottom = MAX7456_NTSC_ROWS - 1;
+		_hcenter = MAX7456_NTSC_HCENTER;
+		_vcenter = MAX7456_NTSC_VCENTER;
+		return;
+	}
+	_mask = MAX7456_MASK_PAL;
+	_right = MAX7456_PAL_COLUMNS - 1;
+	_bottom = MAX7456_PAL_ROWS - 1;
+	_hcenter = MAX7456_PAL_HCENTER;
+	_vcenter = MAX7456_PAL_VCENTER;
 }
 
 inline void _detect_mode ()
@@ -235,6 +283,11 @@ void open (uint8_t col, uint8_t row, uint8_t attr)
 	// 16 bits operating mode, char attributes, autoincrement
 	write_register (MAX7456_REG_DMM, ((attr & 0x07) << 3) | 0x01);
 	_set_offset (col, row);
+}
+
+void open_center (uint8_t width, uint8_t height, uint8_t attr)
+{
+	open (_hcenter - width / 2, _vcenter - width / 2);
 }
 
 void close ()
