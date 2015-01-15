@@ -197,8 +197,9 @@ void clear ()
 void upload_char (uint8_t char_index, uint8_t data [])
 {
 	_chip_select ();
-
 	_disable_osd ();
+
+	_delay_us (10);
 
 	// Write CMAH[7:0] = xxH to select the character (0–255) to be written
 	write_register (MAX7456_REG_CMAH, char_index);
@@ -217,12 +218,10 @@ void upload_char (uint8_t char_index, uint8_t data [])
 	The character memory is busy for approximately 12ms during this operation.
 	STAT[5] can be read to verify that the NVM writing process is complete.
 	*/
-	_delay_ms (15);
 	while (read_register (MAX7456_REG_STAT) & 0x20)
 		;
 
 	_enable_osd ();
-
 	_chip_unselect ();
 }
 
