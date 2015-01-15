@@ -34,8 +34,7 @@ uint8_t transfer (uint8_t value)
 	SPDR = value;
 	//if (delay > 0) delay_ms (delay);
 
-	while (!bis (SPSR, SPIF))
-	  ;
+	loop_until_bit_is_set (SPSR, SPIF);
 
 	return SPDR;
 }

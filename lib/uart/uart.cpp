@@ -49,15 +49,10 @@ ISR (UART0_RECEIVE_INTERRUPT)
 	usr = UART0_STATUS;
 	data = UART0_DATA;
 
-	/* */
-#if defined(AT90_UART)
+#if defined (AT90_UART) || defined (ATMEGA_UART) || defined (ATMEGA_USART)
 	error = (usr & (_BV (FE) | _BV (DOR)));
-#elif defined(ATMEGA_USART)
-	error = (usr & (_BV (FE) | _BV (DOR)));
-#elif defined(ATMEGA_USART0)
+#elif defined (ATMEGA_USART0)
 	error = (usr & (_BV (FE0) | _BV (DOR0)));
-#elif defined (ATMEGA_UART)
-	error = (usr & (_BV (FE) | _BV (DOR)));
 #endif
 
 	/* calculate buffer index */
@@ -82,7 +77,6 @@ ISR (UART0_TRANSMIT_INTERRUPT)
 
 	if (_tx_head == _tx_tail)
 	{
-		//PORTB = 0xff;
 		/* tx buffer empty, disable UDRE interrupt */
 		UART0_CONTROL &= ~_BV (UART0_UDRIE);
 		return;
@@ -93,6 +87,12 @@ ISR (UART0_TRANSMIT_INTERRUPT)
 	/* get one byte from buffer and write it to UART */
 	UART0_DATA = _tx_buffer [_tail]; /* start transmission */
 }
+
+#ifdef UART_STDIO
+int _fputc (char c, FILE *s);
+int _fgetc (FILE *s);
+FILE stream;
+#endif
 
 void init (uint16_t baud_rate)
 {
@@ -161,14 +161,16 @@ void init (uint16_t baud_rate)
 	/* Enable UART receiver and transmitter and receive complete interrupt */
 	UART0_CONTROL = _BV (RXCIE) | _BV (RXEN) | _BV (TXEN);
 #endif
+
+#ifdef UART_STDIO
+	fdev_setup_stream (&stream, _fputc, _fgetc, _FDEV_SETUP_RW);
+#endif
 }
 
 uint16_t receive ()
 {
 	uint8_t _tail;
 	uint8_t data;
-
-	//if (!(SREG & _BV (SREG_I))) sei ();
 
 	if (_rx_head == _rx_tail)
 		return UART_NO_DATA; /* no data available */
@@ -191,7 +193,8 @@ void send (uint8_t data)
 
 	_head = (_tx_head + 1) & UART_TX_BUFFER_MASK;
 
-	//if (!(SREG & _BV (SREG_I))) sei ();
+	// may hang without it
+	if (!(SREG & _BV (SREG_I))) sei ();
 
 	while (_head == _tx_tail)
 		;/* wait for free space in buffer */
@@ -217,14 +220,27 @@ void send_string_p (const char *progmem_s)
 		send (c);
 }
 
+#ifdef UART_STDIO
+int _fputc (char c, FILE *s)
+{
+	send (c);
+	return 0;
+}
+
+int _fgetc (FILE *s)
+{
+	return receive () & 0xff;
+}
+#endif
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#if defined (ATMEGA_USART1)
 namespace uart1
 {
 
-#if defined (ATMEGA_USART1)
 static volatile uint8_t _tx_buffer [UART_TX_BUFFER_SIZE];
 static volatile uint8_t _rx_buffer [UART_RX_BUFFER_SIZE];
 static volatile uint8_t _tx_head;
@@ -283,6 +299,12 @@ ISR (UART1_TRANSMIT_INTERRUPT)
 	UART1_DATA = _tx_buffer [_tail]; /* start transmission */
 }
 
+#ifdef UART_STDIO
+int _fputc (char c, FILE *s);
+int _fgetc (FILE *s);
+FILE stream;
+#endif
+
 void init (uint16_t baud_rate)
 {
 	_tx_head = 0;
@@ -304,9 +326,12 @@ void init (uint16_t baud_rate)
 
 	/* Set frame format: asynchronous, 8data, no parity, 1stop bit */
 #ifdef URSEL1
-	UCSR1C = (1<<URSEL1)|(3<<UCSZ10);
+	UCSR1C = _BV (URSEL1) | (3 << UCSZ10);
 #else
 	UCSR1C = (3 << UCSZ10);
+#endif
+#ifdef UART_STDIO
+	fdev_setup_stream (&stream, _fputc, _fgetc, _FDEV_SETUP_RW);
 #endif
 }
 
@@ -337,6 +362,9 @@ void send (uint8_t data)
 
 	_head = (_tx_head + 1) & UART_TX_BUFFER_MASK;
 
+	// may hang without it
+	if (!(SREG & _BV (SREG_I))) sei ();
+
 	while (_head == _tx_tail)
 		;/* wait for free space in buffer */
 
@@ -361,6 +389,19 @@ void send_string_p (const char *progmem_s)
 		send (c);
 }
 
+#ifdef UART_STDIO
+int _fputc (char c, FILE *s)
+{
+	send (c);
+	return 0;
+}
+
+int _fgetc (FILE *s)
+{
+	return receive () & 0xff;
+}
 #endif
 
+
 }
+#endif

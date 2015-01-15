@@ -118,6 +118,12 @@ namespace messages
 void init ();
 // update from non-uavtalk telemetry modules
 bool update ();
+
+namespace settings
+{
+	void reset ();
+}
+
 }
 
 #endif /* LIB_TELEMETRY_TELEMETRY_H_ */

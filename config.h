@@ -30,10 +30,12 @@
 #define UAVTALK_VERSION_RELEASE 141001
 #define UAVTALK_BOARD CC3D
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500	// ms
+#define UAVTALK_DEFAULT_BATTERY_LOW_VOLTAGE 9.9			// 3.3V/cell on 3S, REVO only
 
 /*
  * UART config
  */
+#define UART_STDIO	// fprintf
 #define UART_SPEED 19200
 #define UART_RX_BUFFER_SIZE 64
 #define UART_TX_BUFFER_SIZE 64
@@ -42,18 +44,20 @@
  * ADC config
  */
 #define ADC_REF	ADC_REF_AVCC	// AVCC as voltage reference
+#define ADC_REF_VOLTAGE 5.0		// 5V
 
 /*
  * ADC battery
  */
-#define ADC_BATTERY_UPDATE_INTERVAL 100				// ms
+#define ADC_BATTERY_UPDATE_INTERVAL 200				// ms
 
 #define ADC_BATTERY_VOLTAGE_PIN 6					// ADC6 19 pin
 #define ADC_BATTERY_CURRENT_PIN 7					// ADC7 22 pin
 
-#define ADC_BATTERY_REF_VOLTAGE 5.0					// AVCC = 5V, see ADC_REF
-#define ADC_BATTERY_VOLTAGE_DIVIDER 4.0				// max 20V (5S)
-#define ADC_BATTERY_CURRENT_DIVIDER 18.0			// max 90A
+#define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 1		// ADC current sensor enabled
+#define ADC_BATTERY_DEFAULT_VOLTAGE_DIVIDER 4.0		// max 20V (5S)
+#define ADC_BATTERY_DEFAULT_CURRENT_DIVIDER 18.0	// max 90A
+#define ADC_BATTERY_DEFAULT_LOW_VOLTAGE 9.9			// 3.3V/cell on 3S
 
 /*
  * TWI (I2C) config
@@ -77,7 +81,8 @@
 /*
  * MAX7456 config
  */
-#define MAX7456_MODE_DEFAULT MAX7456_MODE_PAL 	// default video mode, if jumper closed
+#define MAX7456_DEFAULT_MODE MAX7456_MODE_PAL 	// default video mode, if jumper closed
+#define MAX7456_DEFAULT_BRIGHTNESS 0x00			// 120% white, 0% black
 #define MAX7456_EOL_CHAR '|' 					// Special next row char
 
 // ~CS (Chip Select) pin

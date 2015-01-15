@@ -65,7 +65,11 @@ static const uint8_t _crc_table [256] PROGMEM =
 #define	_UT_GCSTELEMETRYSTATS_STATUS 36
 //#define	_UT_CHANNELS 9
 
-static float _battery_low_voltage = 0.0;
+#define UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE _eeprom_float (UAVTALK_EEPROM_OFFSET)
+
+#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_ADC_BATTERY)
+static float _battery_low_voltage;
+#endif
 
 static uint8_t __attribute__ ((noinline)) _get_crc (uint8_t b)
 {
@@ -74,7 +78,9 @@ static uint8_t __attribute__ ((noinline)) _get_crc (uint8_t b)
 
 void init ()
 {
-	_battery_low_voltage = eeprom_read_float (EEPROM_BATTERY_LOW_VOLTAGE);
+#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_ADC_BATTERY)
+	_battery_low_voltage = eeprom_read_float (UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE);
+#endif
 }
 
 void send (const header_t &head, uint8_t *data, uint8_t size)
@@ -292,6 +298,19 @@ bool update ()
 	}
 
 	return updated;
+}
+
+
+namespace settings
+{
+
+void reset ()
+{
+#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_ADC_BATTERY)
+	eeprom_write_float (UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE, UAVTALK_DEFAULT_BATTERY_LOW_VOLTAGE);
+#endif
+}
+
 }
 
 }

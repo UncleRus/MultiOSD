@@ -1,6 +1,7 @@
 #ifndef LIB_OSD_OSD_H_
 #define LIB_OSD_OSD_H_
 
+#include <stdint.h>
 
 namespace osd
 {

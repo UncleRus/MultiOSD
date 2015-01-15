@@ -16,10 +16,16 @@
 #include <avr/io.h>
 #include <avr/eeprom.h>
 #include "../../adc/adc.h"
-#include "../../../config.h"
-#include "../../settings/settings.h"
 #include "../../timer/timer.h"
 #include "../../telemetry/telemetry.h"
+#include "../../settings/settings.h"
+#include "../../../config.h"
+
+// eeprom addresses
+#define ADC_BATTERY_EEPROM_CURRENT_SENSOR	_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET)
+#define ADC_BATTERY_EEPROM_VOLTAGE_DIVIDER	_eeprom_float (ADC_BATTERY_EEPROM_OFFSET + 1)
+#define ADC_BATTERY_EEPROM_CURRENT_DIVIDER	_eeprom_float (ADC_BATTERY_EEPROM_OFFSET + 5)
+#define ADC_BATTERY_EEPROM_LOW_VOLTAGE		_eeprom_float (ADC_BATTERY_EEPROM_OFFSET + 9)
 
 namespace adc_battery
 {
@@ -32,29 +38,44 @@ static float _battery_low_voltage = 0.0;
 
 void init ()
 {
-	_current_sensor = eeprom_read_byte (EEPROM_ADC_BATTERY_CURRENT_SENSOR);
-	_voltage_divider = eeprom_read_float (EEPROM_ADC_BATTERY_VOLTAGE_DIVIDER);
+	_current_sensor = eeprom_read_byte (ADC_BATTERY_EEPROM_CURRENT_SENSOR);
+	_voltage_divider = eeprom_read_float (ADC_BATTERY_EEPROM_VOLTAGE_DIVIDER);
 	if (_current_sensor)
-		_current_divider = eeprom_read_float (EEPROM_ADC_BATTERY_VOLTAGE_DIVIDER);
-	_battery_low_voltage = eeprom_read_float (EEPROM_BATTERY_LOW_VOLTAGE);
+		_current_divider = eeprom_read_float (ADC_BATTERY_EEPROM_CURRENT_DIVIDER);
+	_battery_low_voltage = eeprom_read_float (ADC_BATTERY_EEPROM_LOW_VOLTAGE);
 }
 
 bool update ()
 {
 	uint32_t ticks = timer::ticks ();
 	uint16_t interval = (uint16_t) (ticks - _last_update_time);
-	if (interval < ADC_BATTERY_UPDATE_INTERVAL)
-		return false;
+
+	if (interval < ADC_BATTERY_UPDATE_INTERVAL) return false;
+
 	_last_update_time = ticks;
 
-	telemetry::battery::voltage = ADC_VALUE (adc::read (ADC_BATTERY_VOLTAGE_PIN), ADC_BATTERY_VOLTAGE_DIVIDER);
+	telemetry::battery::voltage = ADC_VALUE (adc::read (ADC_BATTERY_VOLTAGE_PIN), _voltage_divider);
 	telemetry::messages::battery_low = telemetry::battery::voltage <= _battery_low_voltage;
 	if (_current_sensor)
 	{
-		telemetry::battery::current = ADC_VALUE (adc::read (ADC_BATTERY_CURRENT_PIN), ADC_BATTERY_CURRENT_DIVIDER);
+		telemetry::battery::current = ADC_VALUE (adc::read (ADC_BATTERY_CURRENT_PIN), _current_divider);
 		telemetry::battery::consumed += telemetry::battery::current * interval / 3600.0;
 	}
 	return true;
+}
+
+
+namespace settings
+{
+
+void reset ()
+{
+	eeprom_write_byte (ADC_BATTERY_EEPROM_CURRENT_SENSOR, ADC_BATTERY_DEFAULT_CURRENT_SENSOR);
+	eeprom_write_float (ADC_BATTERY_EEPROM_VOLTAGE_DIVIDER, ADC_BATTERY_DEFAULT_VOLTAGE_DIVIDER);
+	eeprom_write_float (ADC_BATTERY_EEPROM_CURRENT_DIVIDER, ADC_BATTERY_DEFAULT_CURRENT_DIVIDER);
+	eeprom_write_float (ADC_BATTERY_EEPROM_LOW_VOLTAGE, ADC_BATTERY_DEFAULT_LOW_VOLTAGE);
+}
+
 }
 
 }

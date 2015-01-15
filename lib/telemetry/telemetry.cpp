@@ -95,7 +95,6 @@ namespace messages
 
 void init ()
 {
-	// FIXME: Use eeprom instead of macros
 #ifdef TELEMETRY_MODULES_UAVTALK
 	uavtalk::init ();
 #endif
@@ -118,6 +117,22 @@ bool update ()
 	if ()
 #endif
 	return res;
+}
+
+
+namespace settings
+{
+
+void reset ()
+{
+#ifdef TELEMETRY_MODULES_UAVTALK
+	uavtalk::settings::reset ();
+#endif
+#ifdef TELEMETRY_MODULES_ADC_BATTERY
+	adc_battery::settings::reset ();
+#endif
+}
+
 }
 
 }

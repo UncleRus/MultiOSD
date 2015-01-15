@@ -23,6 +23,8 @@
 
 #include "../../../config.h"
 
+#define UAVTALK_EEPROM_OFFSET 0x20
+
 #ifndef UAVTALK_VERSION
 #	define UAVTALK_VERSION 0x20
 #endif
@@ -78,6 +80,11 @@ bool receive ();
 void send (const header_t &head, uint8_t *data = NULL, uint8_t size = 0);
 void send_gcs_telemetry_stats ();
 bool update ();
+
+namespace settings
+{
+	void reset ();
+}
 
 }
 

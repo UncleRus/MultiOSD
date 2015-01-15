@@ -1,6 +1,7 @@
 /*************************************************************************
 Title: Interrupt UART library with receive/transmit circular buffers
-Author: Peter Fleury <pfleury@gmx.ch> http://jump.to/fleury, adapted by UncleRus
+Author: Peter Fleury <pfleury@gmx.ch> http://jump.to/fleury,
+        UncleRus <unclerus@gmail.com>
 File: $Id: uart.c,v 1.6.2.1 2007/07/01 11:14:38 peter Exp $
 
 DESCRIPTION:
@@ -8,12 +9,9 @@ DESCRIPTION:
 	receiving a byte. The interrupt handling routines use circular buffers
 	for buffering received and transmitted data.
 
-	The UART_RX_BUFFER_SIZE and UART_TX_BUFFER_SIZE variables define
-	the buffer size in bytes. Note that these variables must be a
+	The UART_RX_BUFFER_SIZE and UART_TX_BUFFER_SIZE macros define
+	the buffer size in bytes. Note that these values must be a
 	power of 2.
-
-USAGE:
-	Refer to the header file uart.h for a description of the routines.
 
 NOTES:
 	Based on original library by Peter Fluery, Tim Sharpe, Nicholas Zambetti.
@@ -37,6 +35,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <avr/io.h>
 #include "../../config.h"
+
+#ifdef UART_STDIO
+#	include <stdio.h>
+#endif
 
 #ifndef UART_RX_BUFFER_SIZE
 #	define UART_RX_BUFFER_SIZE 64
@@ -67,25 +69,30 @@ namespace uart0
 void init (uint16_t baud_rate);
 uint16_t receive ();
 void send (uint8_t data);
-void send_int (int data, int radix = 10);
 void send_string (const char *s);
 void send_string_p (const char *progmem_s);
-#define send_string_P(__s) send_string_p (PSTR (__s))
 
-}
-
-namespace uart1
-{
-
-#ifdef ATMEGA_USART1
-void init (unsigned int baud_rate);
-uint16_t receive ();
-void send (unsigned char data);
-void send_int (int data, int radix = 10);
-void send_string (const char *s);
-void send_string_p (const char *s);
-#define send_string_P(__s) send_string_p (PSTR (__s))
+#ifdef UART_STDIO
+extern FILE stream;
 #endif
 
 }
+
+#ifdef ATMEGA_USART1
+namespace uart1
+{
+
+void init (unsigned int baud_rate);
+uint16_t receive ();
+void send (unsigned char data);
+void send_string (const char *s);
+void send_string_p (const char *s);
+
+#ifdef UART_STDIO
+extern FILE stream;
+#endif
+
+}
+#endif
+
 #endif /* UART_H_ */

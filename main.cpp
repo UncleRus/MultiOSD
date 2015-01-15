@@ -23,12 +23,13 @@
 #include "lib/max7456/max7456.h"
 #include "lib/adc/adc.h"
 #include "lib/mtwi/mtwi.h"
-
+#include "lib/settings/settings.h"
+#include "lib/osd/osd.h"
 #include "lib/telemetry/telemetry.h"
-
 
 inline void init ()
 {
+	settings::init ();
 	uart0::init (UART_BAUD_SELECT (19200));
 	timer::init ();
 	spi::init ();
@@ -42,23 +43,20 @@ int main ()
 {
 	init ();
 
-	max7456::open (0, 0, MAX7456_ATTR_BLINK);
-	fprintf_P (&max7456::stream, PSTR ("Hello world %.2f, %u"), 3.141592, timer::ticks ());
-	max7456::close ();
-
-	uart0::send_string_p (PSTR ("Hello!\r\n"));
+	osd::init ();
 
 	while (true)
 	{
-		mtwi::exec_p (PSTR (""));
+		//mtwi::exec_p (PSTR (""));
+		//_delay_ms (500);
+		//if (telemetry::update ())
+		//{
+//			max7456::open (0, 1);
+//			fprintf_P (&max7456::stream, PSTR ("UPDATED at %u"), timer::ticks ());
+//			max7456::close ();
+			fprintf_P (&uart0::stream, PSTR ("time %u\r\n"), timer::ticks ());
+		//}
 		_delay_ms (500);
-		if (telemetry::update ())
-		{
-			max7456::open (0, 1);
-			fprintf_P (&max7456::stream, PSTR ("UPDATED at %u"), timer::ticks ());
-			max7456::close ();
-		}
-		_delay_ms (10);
 	}
 
 	return 0;
