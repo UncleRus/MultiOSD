@@ -16,9 +16,9 @@ void reset ()
 	max7456::settings::reset ();
 	telemetry::settings::reset ();
 
-	//eeprom_write_word (NULL, EEPROM_HEADER);
+	eeprom_write_word (NULL, EEPROM_HEADER);
 	// FIXME: remove after debugging
-	eeprom_write_word (NULL, 0);
+	//eeprom_write_word (NULL, 0);
 }
 
 }

@@ -48,17 +48,17 @@ void init ()
 bool update ()
 {
 	uint32_t ticks = timer::ticks ();
-	uint16_t interval = (uint16_t) (ticks - _last_update_time);
+	uint32_t interval = ticks - _last_update_time;
 
 	if (interval < ADC_BATTERY_UPDATE_INTERVAL) return false;
 
 	_last_update_time = ticks;
 
-	telemetry::battery::voltage = ADC_VALUE (adc::read (ADC_BATTERY_VOLTAGE_PIN), _voltage_divider);
+	telemetry::battery::voltage = ADC_VALUE (adc::read (ADC_BATTERY_VOLTAGE_CHANNEL), _voltage_divider);
 	telemetry::messages::battery_low = telemetry::battery::voltage <= _battery_low_voltage;
 	if (_current_sensor)
 	{
-		telemetry::battery::current = ADC_VALUE (adc::read (ADC_BATTERY_CURRENT_PIN), _current_divider);
+		telemetry::battery::current = ADC_VALUE (adc::read (ADC_BATTERY_CURRENT_CHANNEL), _current_divider);
 		telemetry::battery::consumed += telemetry::battery::current * interval / 3600.0;
 	}
 	return true;

@@ -76,6 +76,11 @@ static bool _opened = false;
 #define _enable_osd() { write_register (MAX7456_REG_VM0, _mask | 0x0c); }
 #define _disable_osd() { write_register (MAX7456_REG_VM0, 0); }
 
+void wait_vsync ()
+{
+	loop_until_bit_is_clear (MAX7456_VSYNC_PIN, MAX7456_VSYNC_BIT);
+}
+
 uint8_t read_register (uint8_t reg)
 {
 	spi::transfer (reg | 0x80);

@@ -27,36 +27,60 @@
 #include "lib/osd/osd.h"
 #include "lib/telemetry/telemetry.h"
 
+#include "lib/telemetry/uavtalk/uavtalk.h"
+
 inline void init ()
 {
 	settings::init ();
-	uart0::init (UART_BAUD_SELECT (19200));
 	timer::init ();
+	uart0::init (UART_BAUD_SELECT (UART_BAUD_RATE));
 	spi::init ();
 	max7456::init ();
 	adc::init ();
-
 	telemetry::init ();
+	osd::init ();
 }
 
 int main ()
 {
 	init ();
 
-	osd::init ();
+	max7456::clear ();
 
+	uint32_t _last_display = 0;
 	while (true)
 	{
-		//mtwi::exec_p (PSTR (""));
-		//_delay_ms (500);
-		//if (telemetry::update ())
-		//{
-//			max7456::open (0, 1);
-//			fprintf_P (&max7456::stream, PSTR ("UPDATED at %u"), timer::ticks ());
-//			max7456::close ();
-			fprintf_P (&uart0::stream, PSTR ("time %u\r\n"), timer::ticks ());
-		//}
-		_delay_ms (500);
+		uint32_t ticks = timer::ticks ();
+		bool updated = telemetry::update ();
+		if (updated && (_last_display + 100 <= ticks))
+		{
+			max7456::wait_vsync ();
+
+			_last_display = ticks;
+
+			max7456::open (1, 1);
+			fprintf_P (&max7456::stream, PSTR ("Updated at %04x%04x"), (uint16_t) (ticks >> 16), (uint16_t) ticks);
+			max7456::open (1, 7);
+			fprintf_P (&max7456::stream, PSTR ("\x87:%03d \xb2:%03d \xb1:%03d Y:%03d"),
+				telemetry::input::throttle,
+				telemetry::input::roll,
+				telemetry::input::pitch,
+				telemetry::input::yaw
+			);
+			max7456::open (1, 8);
+			fprintf_P (&max7456::stream, PSTR ("r:%3.2f p:%3.2f y:%3.2f A:%c "),
+				telemetry::attitude::roll,
+				telemetry::attitude::pitch,
+				telemetry::attitude::yaw,
+				telemetry::status::armed ? 'A' : 'D'
+			);
+			max7456::open (1, 9);
+			fprintf_P (&max7456::stream, PSTR ("V:%03.2f A:%03.2f C:%u"),
+				telemetry::battery::voltage,
+				telemetry::battery::current,
+				telemetry::battery::consumed
+			);
+		}
 	}
 
 	return 0;

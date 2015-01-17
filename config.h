@@ -35,8 +35,8 @@
 /*
  * UART config
  */
-#define UART_STDIO	// fprintf
-#define UART_SPEED 19200
+#define UART_STDIO					// fprintf
+#define UART_BAUD_RATE 19200
 #define UART_RX_BUFFER_SIZE 64
 #define UART_TX_BUFFER_SIZE 64
 
@@ -51,8 +51,8 @@
  */
 #define ADC_BATTERY_UPDATE_INTERVAL 200				// ms
 
-#define ADC_BATTERY_VOLTAGE_PIN 6					// ADC6 19 pin
-#define ADC_BATTERY_CURRENT_PIN 7					// ADC7 22 pin
+#define ADC_BATTERY_VOLTAGE_CHANNEL 6				// ADC6 19 pin
+#define ADC_BATTERY_CURRENT_CHANNEL 7				// ADC7 22 pin
 
 #define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 1		// ADC current sensor enabled
 #define ADC_BATTERY_DEFAULT_VOLTAGE_DIVIDER 4.0		// max 20V (5S)
@@ -83,7 +83,7 @@
  */
 #define MAX7456_DEFAULT_MODE MAX7456_MODE_PAL 	// default video mode, if jumper closed
 #define MAX7456_DEFAULT_BRIGHTNESS 0x00			// 120% white, 0% black
-#define MAX7456_EOL_CHAR '|' 					// Special next row char
+#define MAX7456_EOL_CHAR '\n' 					// Special next row char
 
 // ~CS (Chip Select) pin
 #define MAX7456_SELECT_PORT PORTD
@@ -92,6 +92,7 @@
 
 // VSYNC port
 #define MAX7456_VSYNC_PORT PORTD
+#define MAX7456_VSYNC_PIN PIND
 #define MAX7456_VSYNC_DDR DDRD
 #define MAX7456_VSYNC_BIT PD2
 

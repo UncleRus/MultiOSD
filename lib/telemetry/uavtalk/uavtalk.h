@@ -76,7 +76,6 @@ struct message_t
 extern message_t buffer;
 
 void init ();
-bool receive ();
 void send (const header_t &head, uint8_t *data = NULL, uint8_t size = 0);
 void send_gcs_telemetry_stats ();
 bool update ();

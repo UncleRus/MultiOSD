@@ -30,6 +30,8 @@
 namespace max7456
 {
 
+void wait_vsync ();
+
 void init ();
 void clear ();
 void upload_char (uint8_t char_index, uint8_t data []);

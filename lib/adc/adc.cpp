@@ -33,8 +33,8 @@ uint16_t read (uint8_t channel)
 {
 	ADMUX = _ADC_REF | (channel & 0x0f);
 	ADCSRA |= _BV (ADSC);
-	loop_until_bit_is_set (ADCSRA, ADSC);
-	return ADC;
+	loop_until_bit_is_clear (ADCSRA, ADSC);
+	return ADCW;
 }
 
 }

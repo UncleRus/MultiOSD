@@ -24,6 +24,8 @@
 #	include "uavtalk/uavtalk.h"
 #endif
 
+#include <util/delay.h>
+
 namespace telemetry
 {
 

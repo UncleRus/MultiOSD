@@ -20,6 +20,8 @@
 #include "../../timer/timer.h"
 #include "../telemetry.h"
 
+#include "../../max7456/max7456.h"
+
 namespace uavtalk
 {
 
@@ -42,9 +44,6 @@ static const uint8_t _crc_table [256] PROGMEM =
 	0xae, 0xa9, 0xa0, 0xa7, 0xb2, 0xb5, 0xbc, 0xbb, 0x96, 0x91, 0x98, 0x9f, 0x8a, 0x8d, 0x84, 0x83,
 	0xde, 0xd9, 0xd0, 0xd7, 0xc2, 0xc5, 0xcc, 0xcb, 0xe6, 0xe1, 0xe8, 0xef, 0xfa, 0xfd, 0xf4, 0xf3
 };
-
-//#define _get_crc(x) (pgm_read_byte (&_crc_table [x]))
-//#define _get_crc(x) (_crc_table [x])
 
 #define _UTPS_WAIT		0
 #define _UTPS_SYNC		1
@@ -115,17 +114,12 @@ static uint8_t _crc = 0;
 static uint8_t _step = 0;
 
 #define _update_crc(b) { _crc = _get_crc (_crc ^ b); }
-#define _receive_byte(v, b) { v |=  b << (_step << 3); _step ++; }
+#define _receive_byte(v, b) { v |= ((uint32_t) b) << (_step << 3); _step ++; }
 
 message_t buffer;
 
-bool receive ()
+bool _parse (uint8_t b)
 {
-	uint16_t raw = uart0::receive ();
-	if (raw & 0xff00) return false;
-
-	uint8_t b = (uint8_t) raw;
-
 	switch (_state)
 	{
 		case _UTPS_WAIT:
@@ -184,7 +178,7 @@ bool receive ()
 			_update_crc (b);
 			buffer.data [_step] = b;
 			_step ++;
-			if (_step == buffer.head.length - UAVTALK_HEADER_LEN) _state = _UTPS_DATA;
+			if (_step >= buffer.head.length - UAVTALK_HEADER_LEN) _state = _UTPS_DATA;
 			break;
 		case _UTPS_DATA:
 			buffer.crc = b;
@@ -202,25 +196,42 @@ bool receive ()
 			head.msg_type = _UT_TYPE_ACK;
 			send (head);
 		}
+		max7456::open (15, 14);
+		fprintf_P (&max7456::stream, res ? PSTR ("OK") : PSTR ("FAIL"));
 		return res;
 	}
 
 	return false;
 }
 
+bool _receive ()
+{
+	uint16_t err = 0;
+	do
+	{
+		uint16_t raw = uart0::receive ();
+		err = raw & 0xff00;
+		//max7456::open (20, 14);
+		//fprintf_P (&max7456::stream, PSTR ("%04x"), err);
+
+		if (!err && _parse (raw)) return true;
+	}
+	while (!err);
+	return false;
+}
+
 
 static uint32_t _last_telemetry_request = 0;
-static uint32_t _last_flight_time = 0;
 
 bool update ()
 {
 	bool updated = false;
 	uint32_t ticks = timer::ticks ();
 
-	if (uavtalk::receive ())
+	if (uavtalk::_receive ())
 	{
-		updated = true;
 		// got message
+		updated = true;
 		switch (buffer.head.obj_id)
 		{
 			// connection
@@ -238,7 +249,7 @@ bool update ()
 				telemetry::attitude::yaw 	= buffer.get<float> (24);
 				break;
 			case UAVTALK_FLIGHTSTATUS_OBJID:
-				telemetry::status::armed = (bool) buffer.data [0];
+				telemetry::status::armed = buffer.data [0] > 1;
 				telemetry::status::flight_mode = buffer.data [1];
 				break;
 			case UAVTALK_MANUALCONTROLCOMMAND_OBJID:
@@ -273,7 +284,7 @@ bool update ()
 				telemetry::messages::battery_low = telemetry::battery::voltage < _battery_low_voltage;
 				break;
 #endif
-#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_BMP085)
+#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_I2C_BARO)
 			case UAVTALK_BAROSENSOR_OBJID:
 				telemetry::barometer::altitude = buffer.get<float> (0);
 				break;
@@ -282,13 +293,6 @@ bool update ()
 			default:
 				updated = false;
 		}
-	}
-
-	if (telemetry::status::armed && ticks >= _last_flight_time + 1000)
-	{
-		_last_flight_time = ticks;
-		telemetry::status::flight_time = ticks / 1000;
-		updated = true;
 	}
 
 	if (ticks >= _last_telemetry_request + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL)
