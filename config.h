@@ -36,9 +36,9 @@
  * UART config
  */
 #define UART_STDIO					// fprintf
-#define UART_BAUD_RATE 19200
-#define UART_RX_BUFFER_SIZE 64
-#define UART_TX_BUFFER_SIZE 64
+#define UART_BAUD_RATE 57600
+#define UART_RX_BUFFER_SIZE 128
+#define UART_TX_BUFFER_SIZE 128
 
 /*
  * ADC config
