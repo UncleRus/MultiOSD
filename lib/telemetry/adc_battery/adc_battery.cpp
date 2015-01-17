@@ -21,6 +21,10 @@
 #include "../../settings/settings.h"
 #include "../../../config.h"
 
+#include "../../max7456/max7456.h"
+#include <stdio.h>
+#include <avr/pgmspace.h>
+
 // eeprom addresses
 #define ADC_BATTERY_EEPROM_CURRENT_SENSOR	_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET)
 #define ADC_BATTERY_EEPROM_VOLTAGE_DIVIDER	_eeprom_float (ADC_BATTERY_EEPROM_OFFSET + 1)
@@ -59,7 +63,8 @@ bool update ()
 	if (_current_sensor)
 	{
 		telemetry::battery::current = ADC_VALUE (adc::read (ADC_BATTERY_CURRENT_CHANNEL), _current_divider);
-		telemetry::battery::consumed += telemetry::battery::current * interval / 3600.0;
+		// FIXME: incorrect consumed energy calc
+		telemetry::battery::consumed += (telemetry::battery::current * ((float) interval / 3600.0));
 	}
 	return true;
 }

@@ -77,7 +77,7 @@ extern message_t buffer;
 
 void init ();
 void send (const header_t &head, uint8_t *data = NULL, uint8_t size = 0);
-void send_gcs_telemetry_stats ();
+void send_gcs_telemetry_stats (uint8_t status);
 bool update ();
 
 namespace settings

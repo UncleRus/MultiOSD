@@ -62,7 +62,11 @@ static const uint8_t _crc_table [256] PROGMEM =
 
 #define _UT_GCSTELEMETRYSTATS_LENGTH 37
 #define	_UT_GCSTELEMETRYSTATS_STATUS 36
-//#define	_UT_CHANNELS 9
+
+#define _UT_TELEMETRY_STATE_DISCONNECTED  0
+#define _UT_TELEMETRY_STATE_HANDSHAKE_REQ 1
+#define _UT_TELEMETRY_STATE_HANDSHAKE_ACK 2
+#define _UT_TELEMETRY_STATE_CONNECTED     3
 
 #define UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE _eeprom_float (UAVTALK_EEPROM_OFFSET)
 
@@ -100,13 +104,15 @@ void send (const header_t &head, uint8_t *data, uint8_t size)
 	uart0::send (crc);
 }
 
-void send_gcs_telemetry_stats ()
+void send_gcs_telemetry_stats (uint8_t status)
 {
 	header_t h;
+	uint8_t data [_UT_GCSTELEMETRYSTATS_LENGTH];
+	data [_UT_OFFS_FTS_STATUS] = status;
 	h.msg_type = _UT_TYPE_OBJ_ACK;
 	h.length = UAVTALK_HEADER_LEN + _UT_GCSTELEMETRYSTATS_LENGTH;
 	h.obj_id = UAVTALK_GCSTELEMETRYSTATS_OBJID;
-	send (h, NULL, _UT_GCSTELEMETRYSTATS_LENGTH);
+	send (h, data, _UT_GCSTELEMETRYSTATS_LENGTH);
 }
 
 static uint8_t _state = _UTPS_WAIT;
@@ -211,17 +217,28 @@ bool _receive ()
 	{
 		uint16_t raw = uart0::receive ();
 		err = raw & 0xff00;
-		//max7456::open (20, 14);
-		//fprintf_P (&max7456::stream, PSTR ("%04x"), err);
-
 		if (!err && _parse (raw)) return true;
 	}
 	while (!err);
 	return false;
 }
 
-
 static uint32_t _last_telemetry_request = 0;
+
+inline uint8_t _respond_fts (uint8_t state)
+{
+	if (state == _UT_TELEMETRY_STATE_DISCONNECTED)
+	{
+		send_gcs_telemetry_stats (_UT_TELEMETRY_STATE_HANDSHAKE_REQ);
+		return CONNECTION_STATE_ESTABLISHING;
+	}
+
+	if (state == _UT_TELEMETRY_STATE_HANDSHAKE_ACK)
+		send_gcs_telemetry_stats (_UT_TELEMETRY_STATE_CONNECTED);
+
+	// TODO: connection timeout
+	return CONNECTION_STATE_CONNECTED;
+}
 
 bool update ()
 {
@@ -236,12 +253,7 @@ bool update ()
 		{
 			// connection
 			case UAVTALK_FLIGHTTELEMETRYSTATS_OBJID:
-				if (buffer.data [_UT_OFFS_FTS_STATUS] != 3)
-				{
-					telemetry::status::connection = CONNECTION_STATE_ESTABLISHING;
-					send_gcs_telemetry_stats ();
-				}
-				else telemetry::status::connection = CONNECTION_STATE_CONNECTED;
+				telemetry::status::connection = _respond_fts (buffer.data [_UT_OFFS_FTS_STATUS]);
 				break;
 			case UAVTALK_ATTITUDESTATE_OBJID:
 				telemetry::attitude::roll 	= buffer.get<float> (16);
@@ -295,9 +307,10 @@ bool update ()
 		}
 	}
 
-	if (ticks >= _last_telemetry_request + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL)
+	if (telemetry::status::connection == CONNECTION_STATE_CONNECTED &&
+		ticks >= _last_telemetry_request + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL)
 	{
-		uavtalk::send_gcs_telemetry_stats ();
+		uavtalk::send_gcs_telemetry_stats (_UT_TELEMETRY_STATE_CONNECTED);
 		_last_telemetry_request = ticks;
 	}
 

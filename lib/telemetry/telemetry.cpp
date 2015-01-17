@@ -16,15 +16,15 @@
 #include "adc_battery/adc_battery.h"
 #include "../../config.h"
 
-#ifdef TELEMETRY_MODULES_ADC_BATTERY
-#	include "adc_battery/adc_battery.h"
-#endif
-
 #ifdef TELEMETRY_MODULES_UAVTALK
 #	include "uavtalk/uavtalk.h"
 #endif
-
-#include <util/delay.h>
+#ifdef TELEMETRY_MODULES_ADC_BATTERY
+#	include "adc_battery/adc_battery.h"
+#endif
+#ifdef TELEMETRY_MODULES_I2C_BARO
+#	include "i2c_baro/i2c_baro.h"
+#endif
 
 namespace telemetry
 {
@@ -103,6 +103,9 @@ void init ()
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 	adc_battery::init ();
 #endif
+#ifdef TELEMETRY_MODULES_I2C_BARO
+	i2c_baro::reset ();
+#endif
 }
 
 bool update ()
@@ -114,9 +117,8 @@ bool update ()
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 	res |= adc_battery::update ();
 #endif
-#ifdef TELEMETRY_MODULES_BARO
-	// TODO: calc stable alt/climb/speed values based on gps/baro/sensors
-	if ()
+#ifdef TELEMETRY_MODULES_I2C_BARO
+	res |= i2c_baro::update ();
 #endif
 	return res;
 }

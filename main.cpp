@@ -52,7 +52,7 @@ int main ()
 	{
 		uint32_t ticks = timer::ticks ();
 		bool updated = telemetry::update ();
-		if (updated && (_last_display + 100 <= ticks))
+		if (updated && (_last_display + 50 <= ticks))
 		{
 			max7456::wait_vsync ();
 
@@ -60,6 +60,13 @@ int main ()
 
 			max7456::open (1, 1);
 			fprintf_P (&max7456::stream, PSTR ("Updated at %04x%04x"), (uint16_t) (ticks >> 16), (uint16_t) ticks);
+
+			max7456::open (1, 3);
+			fprintf_P (&max7456::stream,
+				PSTR ("CS:%d A:%c"),
+				telemetry::status::connection,
+				telemetry::status::armed ? 'A' : 'D'
+			);
 			max7456::open (1, 7);
 			fprintf_P (&max7456::stream, PSTR ("\x87:%03d \xb2:%03d \xb1:%03d Y:%03d"),
 				telemetry::input::throttle,
@@ -68,11 +75,10 @@ int main ()
 				telemetry::input::yaw
 			);
 			max7456::open (1, 8);
-			fprintf_P (&max7456::stream, PSTR ("r:%3.2f p:%3.2f y:%3.2f A:%c "),
+			fprintf_P (&max7456::stream, PSTR ("r:%3.2f p:%3.2f y:%3.2f  "),
 				telemetry::attitude::roll,
 				telemetry::attitude::pitch,
-				telemetry::attitude::yaw,
-				telemetry::status::armed ? 'A' : 'D'
+				telemetry::attitude::yaw
 			);
 			max7456::open (1, 9);
 			fprintf_P (&max7456::stream, PSTR ("V:%03.2f A:%03.2f C:%u"),

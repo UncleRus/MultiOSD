@@ -24,7 +24,7 @@ namespace adc
 void init ()
 {
 	ADMUX = _ADC_REF;
-	ADCSRA |= _BV (ADEN);
+	ADCSRA |= _BV (ADEN) | _BV (ADPS0) | _BV (ADPS1) | _BV (ADPS2);
 }
 
 // TODO: Interrupt-based conversions
@@ -33,8 +33,9 @@ uint16_t read (uint8_t channel)
 {
 	ADMUX = _ADC_REF | (channel & 0x0f);
 	ADCSRA |= _BV (ADSC);
-	loop_until_bit_is_clear (ADCSRA, ADSC);
-	return ADCW;
+	loop_until_bit_is_set (ADCSRA, ADSC);
+	ADCSRA |= _BV (ADIF);
+	return ADC;
 }
 
 }
