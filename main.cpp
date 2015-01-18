@@ -45,7 +45,9 @@ int main ()
 {
 	init ();
 
-	max7456::clear ();
+//	max7456::open (0, 0);
+//	fprintf_P (&max7456::stream, PSTR ("TEST"));
+//	max7456::clear ();
 
 	uint32_t _last_display = 0;
 	while (true)
@@ -55,6 +57,8 @@ int main ()
 		if (updated && (_last_display + 50 <= ticks))
 		{
 			max7456::wait_vsync ();
+
+			max7456::clear ();
 
 			_last_display = ticks;
 

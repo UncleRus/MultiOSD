@@ -193,6 +193,7 @@ void init ()
 
 void clear ()
 {
+	if (_opened) close ();
 	_chip_select ();
 	write_register (MAX7456_REG_DMM, 0x04);
 	_chip_unselect ();
@@ -291,6 +292,7 @@ void close ()
 	// terminate autoincrement mode
 	write_register (MAX7456_REG_DMDI, 0xff);
 	_chip_unselect ();
+	_opened = false;
 }
 
 // 0xff terminates autoincrement mode
