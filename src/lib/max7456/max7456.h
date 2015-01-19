@@ -35,6 +35,7 @@ void wait_vsync ();
 void init ();
 void clear ();
 void upload_char (uint8_t char_index, uint8_t data []);
+void download_char (uint8_t char_index, uint8_t data []);
 void put (uint8_t col, uint8_t row, uint8_t chr, uint8_t attr = 0);
 void puts (uint8_t col, uint8_t row, const char *s, uint8_t attr = 0);
 void puts_p (uint8_t col, uint8_t row, const char *progmem_str, uint8_t attr = 0);
@@ -43,7 +44,7 @@ void open (uint8_t col, uint8_t row, uint8_t attr = 0);
 void open_center (uint8_t width, uint8_t height, uint8_t attr = 0);
 void open_hcenter (uint8_t width, uint8_t row, uint8_t attr = 0);
 void open_vcenter (uint8_t col, uint8_t height, uint8_t attr = 0);
-void close ();
+void __attribute__ ((noinline)) close ();
 
 extern FILE stream;
 extern uint8_t right, bottom, hcenter, vcenter;

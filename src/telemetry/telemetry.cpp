@@ -13,8 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "telemetry.h"
-#include "adc_battery/adc_battery.h"
-#include "../../config.h"
+#include "../config.h"
 
 #ifdef TELEMETRY_MODULES_UAVTALK
 #	include "uavtalk/uavtalk.h"

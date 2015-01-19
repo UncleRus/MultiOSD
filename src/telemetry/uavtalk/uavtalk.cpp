@@ -15,12 +15,13 @@
 #include "uavtalk.h"
 #include <avr/pgmspace.h>
 #include <string.h>
-#include "../../settings/settings.h"
-#include "../../uart/uart.h"
-#include "../../timer/timer.h"
+#include "../../settings.h"
+#include "../../lib/uart/uart.h"
+#include "../../lib/timer/timer.h"
 #include "../telemetry.h"
 
-#include "../../max7456/max7456.h"
+// FIXME: remove after debug
+#include "../../lib/max7456/max7456.h"
 
 namespace uavtalk
 {

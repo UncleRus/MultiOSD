@@ -12,8 +12,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIB_TELEMETRY_UAVTALK_UAVTALK_H_
-#define LIB_TELEMETRY_UAVTALK_UAVTALK_H_
+#ifndef TELEMETRY_UAVTALK_UAVTALK_H_
+#define TELEMETRY_UAVTALK_UAVTALK_H_
 
 #include <stdint.h>
 #include <stddef.h>
@@ -21,7 +21,7 @@
 #define CC3D 0
 #define REVO 1
 
-#include "../../../config.h"
+#include "../../config.h"
 
 #define UAVTALK_EEPROM_OFFSET 0x20
 
@@ -65,7 +65,7 @@ struct message_t
 	uint8_t data [255];
 	uint8_t crc;
 
-	template <class T>
+	template <typename T>
 	T __attribute__ ((noinline)) get (uint8_t offset)
 	{
 		T *res = reinterpret_cast<T *> (data + offset);
@@ -88,4 +88,4 @@ namespace settings
 }
 
 
-#endif /* LIB_TELEMETRY_UAVTALK_UAVTALK_H_ */
+#endif /* TELEMETRY_UAVTALK_UAVTALK_H_ */

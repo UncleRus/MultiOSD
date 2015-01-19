@@ -41,6 +41,22 @@
 #define UART_TX_BUFFER_SIZE 128
 
 /*
+ * Console config
+ */
+#define CONSOLE_UART uart0
+#define CONSOLE_MAX_CMD_LENGTH 31
+#define CONSOLE_EOL "\r\n"
+#define CONSOLE_PROMPT "osd# "
+
+/*
+ * Boot config
+ */
+#define BOOT_CONFIG_CODE "config"
+#define BOOT_CONFIG_WAIT_TIME 5000
+
+
+
+/*
  * ADC config
  */
 #define ADC_REF	ADC_REF_AVCC	// AVCC as voltage reference

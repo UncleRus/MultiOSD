@@ -15,15 +15,11 @@
 #include "adc_battery.h"
 #include <avr/io.h>
 #include <avr/eeprom.h>
-#include "../../adc/adc.h"
-#include "../../timer/timer.h"
-#include "../../telemetry/telemetry.h"
-#include "../../settings/settings.h"
-#include "../../../config.h"
-
-#include "../../max7456/max7456.h"
-#include <stdio.h>
-#include <avr/pgmspace.h>
+#include "../../lib/adc/adc.h"
+#include "../../lib/timer/timer.h"
+#include "../telemetry.h"
+#include "../../settings.h"
+#include "../../config.h"
 
 // eeprom addresses
 #define ADC_BATTERY_EEPROM_CURRENT_SENSOR	_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET)

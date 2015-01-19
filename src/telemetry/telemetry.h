@@ -12,8 +12,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIB_TELEMETRY_TELEMETRY_H_
-#define LIB_TELEMETRY_TELEMETRY_H_
+#ifndef TELEMETRY_TELEMETRY_H_
+#define TELEMETRY_TELEMETRY_H_
 
 #include <stdint.h>
 
@@ -126,4 +126,4 @@ namespace settings
 
 }
 
-#endif /* LIB_TELEMETRY_TELEMETRY_H_ */
+#endif /* TELEMETRY_TELEMETRY_H_ */

@@ -12,8 +12,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIB_UAVTALK_VERSIONS_H_
-#define LIB_UAVTALK_VERSIONS_H_
+#ifndef TELEMETRY_UAVTALK_VERSIONS_H_
+#define TELEMETRY_UAVTALK_VERSIONS_H_
 
 #if UAVTALK_VERSION_RELEASE == 130601
 #	define UAVTALK_FLIGHTSTATUS_OBJID			0x1B7AEB74
@@ -108,4 +108,4 @@
 #	define UAVTALK_BAROSENSOR_OBJID UAVTALK_BAROALTITUDE_OBJID
 #endif
 
-#endif /* LIB_UAVTALK_VERSIONS_H_ */
+#endif /* TELEMETRY_UAVTALK_VERSIONS_H_ */

@@ -194,7 +194,7 @@ void send (uint8_t data)
 	_head = (_tx_head + 1) & UART_TX_BUFFER_MASK;
 
 	// may hang without it
-	if (!(SREG & _BV (SREG_I))) sei ();
+	// if (!(SREG & _BV (SREG_I))) sei ();
 
 	while (_head == _tx_tail)
 		;/* wait for free space in buffer */
@@ -229,7 +229,12 @@ int _fputc (char c, FILE *s)
 
 int _fgetc (FILE *s)
 {
-	return receive () & 0xff;
+	uint16_t res;
+	while (true)
+	{
+		res = receive ();
+		if (!(res & 0xff00)) return res;
+	}
 }
 #endif
 
@@ -363,7 +368,7 @@ void send (uint8_t data)
 	_head = (_tx_head + 1) & UART_TX_BUFFER_MASK;
 
 	// may hang without it
-	if (!(SREG & _BV (SREG_I))) sei ();
+	//if (!(SREG & _BV (SREG_I))) sei ();
 
 	while (_head == _tx_tail)
 		;/* wait for free space in buffer */

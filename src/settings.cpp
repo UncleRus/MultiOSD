@@ -1,6 +1,6 @@
 #include "settings.h"
-#include "../max7456/max7456.h"
-#include "../telemetry/telemetry.h"
+#include "lib/max7456/max7456.h"
+#include "telemetry/telemetry.h"
 
 namespace settings
 {

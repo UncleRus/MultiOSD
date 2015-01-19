@@ -23,11 +23,13 @@
 #include "lib/max7456/max7456.h"
 #include "lib/adc/adc.h"
 #include "lib/mtwi/mtwi.h"
-#include "lib/settings/settings.h"
-#include "lib/osd/osd.h"
-#include "lib/telemetry/telemetry.h"
+#include "settings.h"
+#include "telemetry/telemetry.h"
+#include "lib/console/console.h"
+#include "commands.h"
+#include "boot.h"
 
-#include "lib/telemetry/uavtalk/uavtalk.h"
+#include "telemetry/uavtalk/uavtalk.h"
 
 inline void init ()
 {
@@ -37,17 +39,14 @@ inline void init ()
 	spi::init ();
 	max7456::init ();
 	adc::init ();
+	if (boot::show ()) console::run (console::process);
 	telemetry::init ();
-	osd::init ();
+	max7456::clear ();
 }
 
 int main ()
 {
 	init ();
-
-//	max7456::open (0, 0);
-//	fprintf_P (&max7456::stream, PSTR ("TEST"));
-//	max7456::clear ();
 
 	uint32_t _last_display = 0;
 	while (true)

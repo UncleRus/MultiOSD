@@ -1,5 +1,5 @@
-#ifndef LIB_SETTINGS_SETTINGS_H_
-#define LIB_SETTINGS_SETTINGS_H_
+#ifndef SETTINGS_H_
+#define SETTINGS_H_
 
 /*
  * EEPROM addresses for settings
@@ -21,4 +21,4 @@ void reset ();
 
 }
 
-#endif /* LIB_SETTINGS_SETTINGS_H_ */
+#endif /* SETTINGS_H_ */

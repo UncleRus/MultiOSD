@@ -12,22 +12,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIB_TELEMETRY_ADC_BATTERY_ADC_BATTERY_H_
-#define LIB_TELEMETRY_ADC_BATTERY_ADC_BATTERY_H_
+#ifndef BOOT_H_
+#define BOOT_H_
 
-#define ADC_BATTERY_EEPROM_OFFSET 0x12
 
-namespace adc_battery
+namespace boot
 {
 
-void init ();
-bool update ();
-
-namespace settings
-{
-	void reset ();
-}
+bool show ();
 
 }
 
-#endif /* LIB_TELEMETRY_ADC_BATTERY_ADC_BATTERY_H_ */
+
+#endif /* BOOT_H_ */

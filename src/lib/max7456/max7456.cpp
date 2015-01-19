@@ -19,11 +19,13 @@
 #include <avr/eeprom.h>
 #include "../common.h"
 #include "../spi/spi.h"
-#include "../settings/settings.h"
+#include "../../settings.h"
 #include "../../config.h"
 
 // MAX7456 reg read addresses
-#define MAX7456_REG_STAT  0x20 //0xa0 Status
+#define MAX7456_REG_STAT  0x20 // 0xa0 Status
+#define MAX7456_REG_DMDO  0x30 // 0xb0 Display Memory Data Out
+#define MAX7456_REG_CMDO  0x40 // 0xc0 Character Memory Data Out
 
 // MAX7456 reg write addresses
 #define MAX7456_REG_VM0   0x00
@@ -231,6 +233,38 @@ void upload_char (uint8_t char_index, uint8_t data [])
 	_chip_unselect ();
 }
 
+void download_char (uint8_t char_index, uint8_t data [])
+{
+	_chip_select ();
+	_disable_osd ();
+
+	_delay_us (10);
+
+	// Write CMAH[7:0] = xxH to select the character (0–255) to be read
+	write_register (MAX7456_REG_CMAH, char_index);
+
+	// Write CMM[7:0] = 0101xxxx to read the character data from the NVM to the shadow RAM
+	write_register (MAX7456_REG_CMM, 0x50);
+	/*
+	 * The character memory is busy for approximately 12ms during this operation.
+	 * The Character Memory Mode register is cleared and STAT[5] is reset to 0 after
+	 * the write operation has been completed.
+	 */
+	while (read_register (MAX7456_REG_STAT) & 0x20)
+		;
+
+	for (uint8_t i = 0; i < 54; i ++)
+	{
+		// Write CMAL[7:0] = xxH to select the 4-pixel byte (0–53) in the character to be written
+		write_register (MAX7456_REG_CMAL, i);
+		// Write CMDI[7:0] = xxH to set the pixel values of the selected part of the character
+		data [i] = read_register (MAX7456_REG_CMDO);
+	}
+
+	_enable_osd ();
+	_chip_unselect ();
+}
+
 inline void _set_offset (uint8_t col, uint8_t row)
 {
 	uint16_t offset = (row * 30 + col) & 0x1ff;
@@ -285,7 +319,7 @@ void open_vcenter (uint8_t col, uint8_t height, uint8_t attr)
 	open (col, vcenter - height / 2, attr);
 }
 
-void close ()
+void __attribute__ ((noinline)) close ()
 {
 	if (!_opened) return;
 
