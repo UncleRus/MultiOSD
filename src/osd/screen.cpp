@@ -12,15 +12,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef COMMANDS_H_
-#define COMMANDS_H_
 
-namespace console
+#include "screen.h"
+#include <avr/eeprom.h>
+#include "../config.h"
+
+namespace osd
 {
 
-void init ();
-void process (const char *cmd);
+namespace settiings
+{
+
+void reset ()
+{
 
 }
 
-#endif /* COMMANDS_H_ */
+}  // namespace settiings
+
+}  // namespace osd
+

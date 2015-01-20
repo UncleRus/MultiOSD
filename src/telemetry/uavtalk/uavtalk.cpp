@@ -20,8 +20,9 @@
 #include "../../lib/timer/timer.h"
 #include "../telemetry.h"
 
-// FIXME: remove after debug
+#ifdef DEBUG
 #include "../../lib/max7456/max7456.h"
+#endif
 
 namespace uavtalk
 {
@@ -203,8 +204,10 @@ bool _parse (uint8_t b)
 			head.msg_type = _UT_TYPE_ACK;
 			send (head);
 		}
+#ifdef DEBUG
 		max7456::open (15, 14);
 		fprintf_P (&max7456::stream, res ? PSTR ("OK") : PSTR ("FAIL"));
+#endif
 		return res;
 	}
 
@@ -224,7 +227,8 @@ bool _receive ()
 	return false;
 }
 
-static uint32_t _last_telemetry_request = 0;
+static uint32_t _telemetry_request_timeout = 0;
+static uint32_t _connection_timeout = 0;
 
 inline uint8_t _respond_fts (uint8_t state)
 {
@@ -237,7 +241,6 @@ inline uint8_t _respond_fts (uint8_t state)
 	if (state == _UT_TELEMETRY_STATE_HANDSHAKE_ACK)
 		send_gcs_telemetry_stats (_UT_TELEMETRY_STATE_CONNECTED);
 
-	// TODO: connection timeout
 	return CONNECTION_STATE_CONNECTED;
 }
 
@@ -255,6 +258,10 @@ bool update ()
 			// connection
 			case UAVTALK_FLIGHTTELEMETRYSTATS_OBJID:
 				telemetry::status::connection = _respond_fts (buffer.data [_UT_OFFS_FTS_STATUS]);
+				_connection_timeout = ticks + UAVTALK_CONNECTION_TIMEOUT;
+				break;
+			case UAVTALK_SYSTEMSTATS_OBJID:
+				telemetry::status::flight_time = buffer.get<uint32_t> (0) / 1000;
 				break;
 			case UAVTALK_ATTITUDESTATE_OBJID:
 				telemetry::attitude::roll 	= buffer.get<float> (16);
@@ -284,9 +291,15 @@ bool update ()
 				telemetry::gps::speed 		= buffer.get<float> (20);
 				telemetry::gps::state 		= buffer.data [36];
 				telemetry::gps::sattelites 	= buffer.data [37];
+#if (UAVTALK_BOARD == CC3D) && !defined (TELEMETRY_MODULES_I2C_BARO)
+				telemetry::stable::altitude = telemetry::gps::altitude;
+#endif
 				break;
 			case UAVTALK_GPSVELOCITYSENSOR_OBJID:
 				telemetry::gps::climb = -buffer.get<float> (8);
+#if (UAVTALK_BOARD == CC3D) && !defined (TELEMETRY_MODULES_I2C_BARO)
+				telemetry::stable::climb = telemetry::gps::climb;
+#endif
 				// TODO: north/east
 				break;
 #if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_ADC_BATTERY)
@@ -300,6 +313,7 @@ bool update ()
 #if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_I2C_BARO)
 			case UAVTALK_BAROSENSOR_OBJID:
 				telemetry::barometer::altitude = buffer.get<float> (0);
+				telemetry::stable::update_alt_climb (telemetry::barometer::altitude);
 				break;
 #endif
 			// TODO: more obj_id
@@ -308,11 +322,16 @@ bool update ()
 		}
 	}
 
-	if (telemetry::status::connection == CONNECTION_STATE_CONNECTED &&
-		ticks >= _last_telemetry_request + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL)
+	if (ticks >= _connection_timeout && telemetry::status::connection != CONNECTION_STATE_DISCONNECTED)
+	{
+		telemetry::status::connection = CONNECTION_STATE_DISCONNECTED;
+		updated = true;
+	}
+
+	if (ticks >= _telemetry_request_timeout && telemetry::status::connection == CONNECTION_STATE_CONNECTED)
 	{
 		uavtalk::send_gcs_telemetry_stats (_UT_TELEMETRY_STATE_CONNECTED);
-		_last_telemetry_request = ticks;
+		_telemetry_request_timeout = ticks + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL;
 	}
 
 	return updated;

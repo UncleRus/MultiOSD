@@ -21,9 +21,9 @@ void _get_cmd (char *buf, uint8_t len, uint16_t timeout)
 	{
 		uint16_t data = timer::ticks () < stop ? uart0::receive () : 0;
 		if (data & 0xff00) continue;
-		if (data == '\n' || i == len - 1) data = 0;
+		if (data == 0x0d || i == len - 1) data = 0;
 		buf [i ++] = data;
-		if (!data) return;
+		if (!data) break;
 	}
 }
 
@@ -56,6 +56,8 @@ bool show ()
 
 	char data [_BOOT_CMD_BUF_SIZE];
 	_get_cmd (data, _BOOT_CMD_BUF_SIZE, BOOT_CONFIG_WAIT_TIME);
+//	uart0::send_string (data);
+//	uart0::send_string_p (PSTR ("\r\n"));
 	return !strncmp_P (data, PSTR (BOOT_CONFIG_CODE), _BOOT_CMD_BUF_SIZE);
 }
 

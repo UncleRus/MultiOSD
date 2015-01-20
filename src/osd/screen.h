@@ -12,15 +12,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef COMMANDS_H_
-#define COMMANDS_H_
+#ifndef OSD_SCREEN_H_
+#define OSD_SCREEN_H_
 
-namespace console
+
+namespace osd
 {
 
-void init ();
-void process (const char *cmd);
+namespace settings
+{
+	void reset ();
+}
 
 }
 
-#endif /* COMMANDS_H_ */
+
+#endif /* OSD_SCREEN_H_ */

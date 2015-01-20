@@ -99,6 +99,8 @@ namespace stable
 	extern float altitude;			// meters
 	extern float ground_speed;		// m/s
 	extern float air_speed;			// m/s
+
+	void update_alt_climb (float altitude);
 }
 
 namespace battery

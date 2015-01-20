@@ -30,6 +30,7 @@
 #include "boot.h"
 
 #include "telemetry/uavtalk/uavtalk.h"
+#include "osd/panel.h"
 
 inline void init ()
 {
@@ -40,6 +41,7 @@ inline void init ()
 	max7456::init ();
 	adc::init ();
 	if (boot::show ()) console::run (console::process);
+	uart0::send_string_p (PSTR ("BOOT\n"));
 	telemetry::init ();
 	max7456::clear ();
 }
@@ -61,34 +63,20 @@ int main ()
 
 			_last_display = ticks;
 
-			max7456::open (1, 1);
-			fprintf_P (&max7456::stream, PSTR ("Updated at %04x%04x"), (uint16_t) (ticks >> 16), (uint16_t) ticks);
+			osd::draw_panel (6, 1, 1);
+			osd::draw_panel (7, 8, 1);
+			osd::draw_panel (1, 16, 1);
+			osd::draw_panel (0, 24, 1);
 
-			max7456::open (1, 3);
-			fprintf_P (&max7456::stream,
-				PSTR ("CS:%d A:%c"),
-				telemetry::status::connection,
-				telemetry::status::armed ? 'A' : 'D'
-			);
-			max7456::open (1, 7);
-			fprintf_P (&max7456::stream, PSTR ("\x87:%03d \xb2:%03d \xb1:%03d Y:%03d"),
-				telemetry::input::throttle,
-				telemetry::input::roll,
-				telemetry::input::pitch,
-				telemetry::input::yaw
-			);
-			max7456::open (1, 8);
-			fprintf_P (&max7456::stream, PSTR ("r:%3.2f p:%3.2f y:%3.2f  "),
-				telemetry::attitude::roll,
-				telemetry::attitude::pitch,
-				telemetry::attitude::yaw
-			);
-			max7456::open (1, 9);
-			fprintf_P (&max7456::stream, PSTR ("V:%03.2f A:%03.2f C:%u"),
-				telemetry::battery::voltage,
-				telemetry::battery::current,
-				telemetry::battery::consumed
-			);
+			osd::draw_panel (2, 0, 2);
+			osd::draw_panel (3, 8, 2);
+			osd::draw_panel (4, 11, 2);
+
+			osd::draw_panel (5, 1, 5);
+
+			osd::draw_panel (8, 1, 6);
+			osd::draw_panel (9, 8, 6);
+			osd::draw_panel (10, 19, 6);
 		}
 	}
 

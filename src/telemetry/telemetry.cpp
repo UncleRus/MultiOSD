@@ -24,6 +24,7 @@
 #ifdef TELEMETRY_MODULES_I2C_BARO
 #	include "i2c_baro/i2c_baro.h"
 #endif
+#include "../lib/timer/timer.h"
 
 namespace telemetry
 {
@@ -78,6 +79,17 @@ namespace stable
 	float altitude = 0.0;
 	float ground_speed = 0.0;		// m/s
 	float air_speed = 0.0;			// m/s
+
+	static uint32_t _alt_update_time = 0;
+
+void update_alt_climb (float _alt)
+{
+	uint32_t ticks = timer::ticks ();
+	climb = (_alt - altitude) / (ticks - _alt_update_time) * 1000;
+	altitude = _alt;
+	_alt_update_time = ticks;
+}
+
 }
 
 namespace battery
