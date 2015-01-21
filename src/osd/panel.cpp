@@ -17,6 +17,7 @@
 #include <avr/pgmspace.h>
 #include "../lib/max7456/max7456.h"
 #include "../telemetry/telemetry.h"
+#include <math.h>
 
 namespace osd
 {
@@ -243,6 +244,60 @@ namespace gps_lon
 
 }  // namespace gps_lon
 
+namespace horizon
+{
+
+#define PANEL_HORIZON_WIDTH 14
+#define PANEL_HORIZON_HEIGHT 5
+
+#define PANEL_HORIZON_LEFT_BORDER 0xb8
+#define PANEL_HORIZON_LEFT_CENTER 0xc8
+#define PANEL_HORIZON_RIGHT_BORDER 0xb9
+#define PANEL_HORIZON_RIGHT_CENTER 0xc9
+#define PANEL_HORIZON_LINE 0x16
+
+#define _PAN_HORZ_CHAR_LINES 18
+#define _PAN_HORZ_VRES 9
+#define _PAN_HORZ_INT_WIDTH (PANEL_HORIZON_WIDTH - 2)
+#define _PAN_HORZ_LINES (PANEL_HORIZON_HEIGHT * _PAN_HORZ_VRES)
+#define _PAN_HORZ_TOTAL_LINES (PANEL_HORIZON_HEIGHT * _PAN_HORZ_CHAR_LINES)
+
+#define _RADIAN 0.017453293
+
+	const char __name [] PROGMEM = "Horizon";
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		uint8_t r = x + PANEL_HORIZON_WIDTH - 1;
+		uint8_t c = y + PANEL_HORIZON_HEIGHT / 2;
+		for (uint8_t i = y; i < y + PANEL_HORIZON_HEIGHT; i ++)
+		{
+			max7456::put (x, i, i == c ? PANEL_HORIZON_LEFT_CENTER : PANEL_HORIZON_LEFT_BORDER);
+			max7456::put (r, i, i == c ? PANEL_HORIZON_RIGHT_CENTER : PANEL_HORIZON_RIGHT_BORDER);
+		}
+
+		// code below was taken from minoposd
+		int16_t pitch_line = round (tan (-_RADIAN * telemetry::attitude::pitch) * _PAN_HORZ_LINES);
+		float roll = tan (_RADIAN * telemetry::attitude::roll);
+		for (uint8_t col = 1; col <= _PAN_HORZ_INT_WIDTH; col ++)
+		{
+			// center X point at middle of each column
+			int16_t middle = col * _PAN_HORZ_INT_WIDTH - (_PAN_HORZ_INT_WIDTH * _PAN_HORZ_INT_WIDTH / 2) - _PAN_HORZ_INT_WIDTH / 2;
+			// calculating hit point on Y plus offset to eliminate negative values
+			int8_t hit = roll * middle + pitch_line + _PAN_HORZ_LINES + 4;
+			if (hit > 0 && hit < _PAN_HORZ_TOTAL_LINES)
+			{
+				int8_t row = PANEL_HORIZON_HEIGHT - ((hit - 1) / _PAN_HORZ_CHAR_LINES);
+				int8_t subval = hit - (_PAN_HORZ_TOTAL_LINES - row * _PAN_HORZ_CHAR_LINES + 1);
+				subval = round (subval * _PAN_HORZ_VRES / _PAN_HORZ_CHAR_LINES);
+				if (subval == 0) subval = 1;
+				max7456::put (x + col, y + row - 1, PANEL_HORIZON_LINE - 1 + subval);
+			}
+		}
+	}
+
+}  // namespace horizon
+
 }  // namespace panel
 
 const panel_draw_t panels [] PROGMEM = {
@@ -256,7 +311,8 @@ const panel_draw_t panels [] PROGMEM = {
 	osd::panel::pitch::draw,
 	osd::panel::gps_state::draw,
 	osd::panel::gps_lat::draw,
-	osd::panel::gps_lon::draw
+	osd::panel::gps_lon::draw,
+	osd::panel::horizon::draw
 };
 
 const char * const panel_names [] PROGMEM = {
@@ -268,8 +324,10 @@ const char * const panel_names [] PROGMEM = {
 	osd::panel::flight_time::__name,
 	osd::panel::roll::__name,
 	osd::panel::pitch::__name,
+	osd::panel::gps_state::__name,
 	osd::panel::gps_lat::__name,
-	osd::panel::gps_lon::__name
+	osd::panel::gps_lon::__name,
+	osd::panel::horizon::__name
 };
 
 void draw_panel (uint8_t panel, uint8_t x, uint8_t y)

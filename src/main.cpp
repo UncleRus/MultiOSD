@@ -58,7 +58,6 @@ int main ()
 		if (updated && (_last_display + 50 <= ticks))
 		{
 			max7456::wait_vsync ();
-
 			max7456::clear ();
 
 			_last_display = ticks;
@@ -77,6 +76,10 @@ int main ()
 			osd::draw_panel (8, 1, 6);
 			osd::draw_panel (9, 8, 6);
 			osd::draw_panel (10, 19, 6);
+
+			//max7456::wait_vsync ();
+			osd::draw_panel (11, 8, 7);
+
 		}
 	}
 
