@@ -55,7 +55,7 @@ int main ()
 	{
 		uint32_t ticks = timer::ticks ();
 		bool updated = telemetry::update ();
-		if (updated && (_last_display + 50 <= ticks))
+		if (updated && (_last_display + 34 <= ticks))
 		{
 			max7456::wait_vsync ();
 			max7456::clear ();

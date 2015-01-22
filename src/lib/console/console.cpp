@@ -64,7 +64,6 @@ bool _process_byte ()
 	switch (byte)
 	{
 		case KEY_ENTER:
-			PORTB = 0x00;
 			if (_command_len)
 			{
 				_command [_command_len] = 0;
