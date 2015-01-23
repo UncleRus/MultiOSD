@@ -25,8 +25,6 @@
 #define MAX7456_ATTR_BLINK 	2
 #define MAX7456_ATTR_LBC 	4
 
-#define MAX7456_EEPROM_OFFSET 0x10
-
 namespace max7456
 {
 
@@ -47,7 +45,7 @@ void open_vcenter (uint8_t col, uint8_t height, uint8_t attr = 0);
 void __attribute__ ((noinline)) close ();
 
 extern FILE stream;
-extern uint8_t right, bottom, hcenter, vcenter;
+extern uint8_t mode, right, bottom, hcenter, vcenter;
 
 namespace settings
 {

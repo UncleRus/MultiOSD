@@ -14,21 +14,69 @@
  */
 
 #include "screen.h"
-#include <avr/eeprom.h>
+#include "../settings.h"
 #include "../config.h"
+#include "../lib/max7456/max7456.h"
+#include "panel.h"
 
 namespace osd
 {
 
-namespace settiings
+namespace screen
+{
+
+struct _panel_pos_t
+{
+	uint8_t panel;
+	uint8_t x, y;
+};
+
+static _panel_pos_t _panels [OSD_SCREEN_PANELS];
+static uint8_t _count = 0;
+static uint8_t _screen = 0;
+
+void load (uint8_t num)
+{
+	if (num >= OSD_SCREENS) num = OSD_DEFAULT_SCREEN;
+
+	_screen = num;
+
+	uint8_t *offset = (uint8_t *) (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (_panel_pos_t) * OSD_SCREEN_PANELS);
+
+	uint8_t i = 0;
+	for (; i < OSD_SCREEN_PANELS; i ++)
+	{
+		_panels [i].panel = eeprom_read_byte (offset);
+		if (_panels [i].panel >= OSD_PANELS_COUNT)
+			break;
+		_panels [i].x = eeprom_read_byte (offset + 1);
+		_panels [i].y = eeprom_read_byte (offset + 2);
+		offset += sizeof (_panel_pos_t);
+	}
+	_count = i;
+
+	max7456::clear ();
+}
+
+void draw ()
+{
+	max7456::wait_vsync ();
+	max7456::clear ();
+	for (uint8_t i = 0; i < _count; i ++)
+		osd::panel::draw (_panels [i].panel, _panels [i].x, _panels [i].y);
+}
+
+namespace settings
 {
 
 void reset ()
 {
-
+	// TODO: default screens config
 }
 
-}  // namespace settiings
+}  // namespace settings
+
+}  // namespace screen
 
 }  // namespace osd
 

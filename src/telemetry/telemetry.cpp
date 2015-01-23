@@ -53,7 +53,8 @@ namespace input
 	int16_t yaw = 0;
 	int16_t collective = 0;
 	int16_t thrust = 0;
-	int16_t channels [INPUT_CHANNELS];
+	uint8_t flight_mode_switch = 0;
+	uint16_t channels [INPUT_CHANNELS];
 }
 
 namespace gps

@@ -31,42 +31,42 @@ namespace draw
 	 * 3 7
 	 * 456
 	 */
-	const uint8_t _rect_norm [] PROGMEM = {0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7};
-	const uint8_t _rect_inv [] PROGMEM = {0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xdd, 0xde, 0xdf};
+	const uint8_t _rect_thin [] PROGMEM = {0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7};
+	const uint8_t _rect_fill [] PROGMEM = {0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xdd, 0xde, 0xdf};
 
 #define _get_rect_char(x) (pgm_read_byte (&_rect [x]))
 
-	void rect (uint8_t l, uint8_t t, uint8_t w, uint8_t h, bool inv)
+	void rect (uint8_t l, uint8_t t, uint8_t w, uint8_t h, bool filled, uint8_t attr)
 	{
 		uint8_t r = l + w - 1;
 		uint8_t b = t + h - 1;
 
-		const uint8_t *_rect = inv ? _rect_inv : _rect_norm;
+		const uint8_t *_rect = filled ? _rect_fill : _rect_thin;
 
-		max7456::put (l, t, _get_rect_char (0));
-		max7456::put (r, t, _get_rect_char (2));
-		max7456::put (l, b, _get_rect_char (4));
-		max7456::put (r, b, _get_rect_char (6));
+		max7456::put (l, t, _get_rect_char (0), attr);
+		max7456::put (r, t, _get_rect_char (2), attr);
+		max7456::put (l, b, _get_rect_char (4), attr);
+		max7456::put (r, b, _get_rect_char (6), attr);
 
 		if (w > 2)
 			for (uint8_t i = 1; i < w - 1; i ++)
 			{
-				max7456::put (l + i, t, _get_rect_char (1));
-				max7456::put (l + i, b, _get_rect_char (5));
+				max7456::put (l + i, t, _get_rect_char (1), attr);
+				max7456::put (l + i, b, _get_rect_char (5), attr);
 			}
 
 		if (h > 2)
 			for (uint8_t i = 1; i < h - 1; i ++)
 			{
-				max7456::put (l, t + i, _get_rect_char (3));
-				max7456::put (r, t + i, _get_rect_char (7));
+				max7456::put (l, t + i, _get_rect_char (3), attr);
+				max7456::put (r, t + i, _get_rect_char (7), attr);
 			}
 	}
 
 }  // namespace draw
 
 
-namespace panel
+namespace __panels
 {
 
 
@@ -78,7 +78,7 @@ namespace alt
 	void draw (uint8_t x, uint8_t y)
 	{
 		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\x85%.1f\x8d"), telemetry::stable::altitude);
+		fprintf_P (&max7456::stream, PSTR ("\x85%d\x8d"), (int16_t) telemetry::stable::altitude);
 	}
 
 }  // namespace alt
@@ -155,9 +155,12 @@ namespace connection_state
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		bool connected = telemetry::status::connection == CONNECTION_STATE_CONNECTED;
-		osd::draw::rect (x, y, 3, 3, connected);
-		max7456::put (x + 1, y + 1, connected ? 0xe1 : 'C');
+		uint8_t attr = telemetry::status::connection != CONNECTION_STATE_CONNECTED
+			? MAX7456_ATTR_INVERT
+			: 0;
+
+		osd::draw::rect (x, y, 3, 3, true, attr);
+		max7456::put (x + 1, y + 1, 0xe1, attr);
 	}
 
 }  // namespace connection_state
@@ -201,19 +204,26 @@ namespace pitch
 
 }  // namespace pitch
 
-
 namespace gps_state
 {
 
 	const char __name [] PROGMEM = "GPS";
 
-	const uint8_t _states [] PROGMEM = {0x09, 0x09, 0x01, 0x02};
+#define _PAN_GPS_2D 0x01
+#define _PAN_GPS_3D 0x02
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\x10\x11%c%d"),
-			pgm_read_byte (&_states [telemetry::gps::state]), telemetry::gps::sattelites);
+		bool err = telemetry::gps::state == GPS_STATE_NO_FIX;
+		max7456::puts_p (x, y, PSTR ("\x10\x11"), err ? MAX7456_ATTR_BLINK : 0);
+		max7456::put (x + 2, y, telemetry::gps::state <  GPS_STATE_3D ? _PAN_GPS_2D : _PAN_GPS_3D,
+			telemetry::gps::state < GPS_STATE_2D ? MAX7456_ATTR_BLINK : 0);
+		if (err) max7456::puts_p (x + 3, y, PSTR ("ERR"), MAX7456_ATTR_BLINK);
+		else
+		{
+			max7456::open (x + 3, y);
+			fprintf_P (&max7456::stream, PSTR ("%d"), telemetry::gps::sattelites);
+		}
 	}
 
 }  // namespace gps_state
@@ -255,6 +265,7 @@ namespace horizon
 #define PANEL_HORIZON_RIGHT_BORDER 0xb9
 #define PANEL_HORIZON_RIGHT_CENTER 0xc9
 #define PANEL_HORIZON_LINE 0x16
+#define PANEL_HORIZON_TOP 0x0e
 
 #define _PAN_HORZ_CHAR_LINES 18
 #define _PAN_HORZ_VRES 9
@@ -277,63 +288,86 @@ namespace horizon
 		}
 
 		// code below was taken from minoposd
-		int16_t pitch_line = round (tan (-_RADIAN * telemetry::attitude::pitch) * _PAN_HORZ_LINES);
+		//int16_t pitch_line = round (tan (-_RADIAN * telemetry::attitude::pitch) * _PAN_HORZ_LINES);
+		int16_t pitch_line = tan (-_RADIAN * telemetry::attitude::pitch) * _PAN_HORZ_LINES;
+		//int32_t roll = tan (_RADIAN * telemetry::attitude::roll) * 1000000;
 		float roll = tan (_RADIAN * telemetry::attitude::roll);
 		for (uint8_t col = 1; col <= _PAN_HORZ_INT_WIDTH; col ++)
 		{
 			// center X point at middle of each column
 			int16_t middle = col * _PAN_HORZ_INT_WIDTH - (_PAN_HORZ_INT_WIDTH * _PAN_HORZ_INT_WIDTH / 2) - _PAN_HORZ_INT_WIDTH / 2;
 			// calculating hit point on Y plus offset to eliminate negative values
-			int8_t hit = roll * middle + pitch_line + _PAN_HORZ_LINES + 4;
+			//int8_t hit = roll * middle / 1000000 + pitch_line + _PAN_HORZ_LINES + 2;
+			int8_t hit = roll * middle + pitch_line + _PAN_HORZ_LINES;
 			if (hit > 0 && hit < _PAN_HORZ_TOTAL_LINES)
 			{
 				int8_t row = PANEL_HORIZON_HEIGHT - ((hit - 1) / _PAN_HORZ_CHAR_LINES);
-				int8_t subval = hit - (_PAN_HORZ_TOTAL_LINES - row * _PAN_HORZ_CHAR_LINES + 1);
-				subval = round (subval * _PAN_HORZ_VRES / _PAN_HORZ_CHAR_LINES);
-				if (subval == 0) subval = 1;
-				max7456::put (x + col, y + row - 1, PANEL_HORIZON_LINE - 1 + subval);
+				int8_t subval = (hit - (_PAN_HORZ_TOTAL_LINES - row * _PAN_HORZ_CHAR_LINES + 1)) * _PAN_HORZ_VRES / _PAN_HORZ_CHAR_LINES ;
+				//if (subval == 0) subval = 1;
+				if (subval == 8) max7456::put (x + col, y + row - 2, PANEL_HORIZON_TOP);
+				max7456::put (x + col, y + row - 1, PANEL_HORIZON_LINE + subval);
 			}
 		}
 	}
 
 }  // namespace horizon
 
-}  // namespace panel
+namespace throttle
+{
+
+	const char __name [] PROGMEM = "Throttle";
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		max7456::open (x, y);
+		fprintf_P (&max7456::stream, PSTR ("\x87%d%%"), telemetry::input::throttle);
+	}
+
+}  // namespace throttle
+
+}  // namespace __panels
+
+namespace panel
+{
 
 const panel_draw_t panels [] PROGMEM = {
-	osd::panel::alt::draw,
-	osd::panel::climb::draw,
-	osd::panel::flight_mode::draw,
-	osd::panel::arming_state::draw,
-	osd::panel::connection_state::draw,
-	osd::panel::flight_time::draw,
-	osd::panel::roll::draw,
-	osd::panel::pitch::draw,
-	osd::panel::gps_state::draw,
-	osd::panel::gps_lat::draw,
-	osd::panel::gps_lon::draw,
-	osd::panel::horizon::draw
+	osd::__panels::alt::draw,
+	osd::__panels::climb::draw,
+	osd::__panels::flight_mode::draw,
+	osd::__panels::arming_state::draw,
+	osd::__panels::connection_state::draw,
+	osd::__panels::flight_time::draw,
+	osd::__panels::roll::draw,
+	osd::__panels::pitch::draw,
+	osd::__panels::gps_state::draw,
+	osd::__panels::gps_lat::draw,
+	osd::__panels::gps_lon::draw,
+	osd::__panels::horizon::draw,
+	osd::__panels::throttle::draw
 };
 
 const char * const panel_names [] PROGMEM = {
-	osd::panel::alt::__name,
-	osd::panel::climb::__name,
-	osd::panel::flight_mode::__name,
-	osd::panel::arming_state::__name,
-	osd::panel::connection_state::__name,
-	osd::panel::flight_time::__name,
-	osd::panel::roll::__name,
-	osd::panel::pitch::__name,
-	osd::panel::gps_state::__name,
-	osd::panel::gps_lat::__name,
-	osd::panel::gps_lon::__name,
-	osd::panel::horizon::__name
+	osd::__panels::alt::__name,
+	osd::__panels::climb::__name,
+	osd::__panels::flight_mode::__name,
+	osd::__panels::arming_state::__name,
+	osd::__panels::connection_state::__name,
+	osd::__panels::flight_time::__name,
+	osd::__panels::roll::__name,
+	osd::__panels::pitch::__name,
+	osd::__panels::gps_state::__name,
+	osd::__panels::gps_lat::__name,
+	osd::__panels::gps_lon::__name,
+	osd::__panels::horizon::__name,
+	osd::__panels::throttle::__name
 };
 
-void draw_panel (uint8_t panel, uint8_t x, uint8_t y)
+void draw (uint8_t panel, uint8_t x, uint8_t y)
 {
 	panel_draw_t func = (panel_draw_t) pgm_read_word (&panels [panel]);
 	func (x, y);
 }
 
-}  // namespace panel
+}  // namespace panels
+
+}  // namespace osd

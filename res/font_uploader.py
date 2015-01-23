@@ -6,7 +6,7 @@ import sys
 import time
 
 
-port = serial.Serial ('/dev/ttyS2', 57600)
+port = serial.Serial ('/dev/ttyUSB0', 57600)
 
 print 'Press reset'
 

@@ -15,14 +15,25 @@
 #ifndef OSD_SCREEN_H_
 #define OSD_SCREEN_H_
 
+#include <stdint.h>
 
 namespace osd
 {
 
-namespace settings
+namespace screen
 {
-	void reset ();
-}
+
+	void load (uint8_t num);
+	void draw ();
+
+	namespace settings
+	{
+
+		void reset ();
+
+	}  // namespace settings
+
+}  // namespace screen
 
 }
 

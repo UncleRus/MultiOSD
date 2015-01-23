@@ -16,6 +16,7 @@
 #include <util/delay.h>
 #include <avr/pgmspace.h>
 #include "config.h"
+#include "settings.h"
 
 #include "lib/timer/timer.h"
 #include "lib/uart/uart.h"
@@ -23,14 +24,11 @@
 #include "lib/max7456/max7456.h"
 #include "lib/adc/adc.h"
 #include "lib/mtwi/mtwi.h"
-#include "settings.h"
 #include "telemetry/telemetry.h"
 #include "lib/console/console.h"
 #include "commands.h"
 #include "boot.h"
-
-#include "telemetry/uavtalk/uavtalk.h"
-#include "osd/panel.h"
+#include "osd/osd.h"
 
 inline void init ()
 {
@@ -40,48 +38,22 @@ inline void init ()
 	spi::init ();
 	max7456::init ();
 	adc::init ();
-	if (boot::show ()) console::run (console::process);
+	if (boot::show ())
+	{
+		max7456::clear ();
+		max7456::puts_p (max7456::hcenter - 4, max7456::vcenter, PSTR ("\xfc CONFIG"));
+		console::run (console::process);
+	}
 	uart0::send_string_p (PSTR ("BOOT\n"));
 	telemetry::init ();
-	max7456::clear ();
+	osd::init ();
 }
 
 int main ()
 {
 	init ();
 
-	uint32_t _last_display = 0;
-	while (true)
-	{
-		uint32_t ticks = timer::ticks ();
-		bool updated = telemetry::update ();
-		if (updated && (_last_display + 34 <= ticks))
-		{
-			max7456::wait_vsync ();
-			max7456::clear ();
-
-			_last_display = ticks;
-
-			osd::draw_panel (6, 1, 1);
-			osd::draw_panel (7, 8, 1);
-			osd::draw_panel (1, 16, 1);
-			osd::draw_panel (0, 24, 1);
-
-			osd::draw_panel (2, 0, 2);
-			osd::draw_panel (3, 8, 2);
-			osd::draw_panel (4, 11, 2);
-
-			osd::draw_panel (5, 1, 5);
-
-			osd::draw_panel (8, 1, 6);
-			osd::draw_panel (9, 8, 6);
-			osd::draw_panel (10, 19, 6);
-
-			//max7456::wait_vsync ();
-			osd::draw_panel (11, 8, 7);
-
-		}
-	}
+	osd::main ();
 
 	return 0;
 }

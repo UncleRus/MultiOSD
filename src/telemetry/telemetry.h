@@ -73,7 +73,8 @@ namespace input
 	extern int16_t yaw;				// percents
 	extern int16_t collective;		// percents
 	extern int16_t thrust;			// percents
-	extern int16_t channels [INPUT_CHANNELS]; // raw values
+	extern uint8_t flight_mode_switch;	// switch position
+	extern uint16_t channels [INPUT_CHANNELS]; // raw values
 }
 
 namespace gps

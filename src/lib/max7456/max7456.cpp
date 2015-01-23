@@ -64,10 +64,9 @@
 namespace max7456
 {
 
-uint8_t right, bottom, hcenter, vcenter;
+uint8_t mode, right, bottom, hcenter, vcenter;
 
 static uint8_t _mask = 0;
-static uint8_t _mode = 0;
 static bool _opened = false;
 
 #define _chip_select() { cbi (MAX7456_SELECT_PORT, MAX7456_SELECT_BIT); }
@@ -95,10 +94,10 @@ void write_register (uint8_t reg, uint8_t val)
 	spi::transfer (val);
 }
 
-inline void _set_mode (uint8_t mode)
+inline void _set_mode (uint8_t value)
 {
-	_mode = mode;
-	if (mode == MAX7456_MODE_NTSC)
+	mode = value;
+	if (value == MAX7456_MODE_NTSC)
 	{
 		_mask = MAX7456_MASK_NTCS;
 		right = MAX7456_NTSC_COLUMNS - 1;
@@ -180,6 +179,8 @@ void init ()
 	bits [3:0] that must not be changed.
 	*/
 	write_register (MAX7456_REG_OSDBL, read_register (MAX7456_REG_OSDBL) & 0xef);
+
+	write_register (MAX7456_REG_VM1, 0x7f);
 
 	_enable_osd ();
 

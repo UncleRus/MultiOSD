@@ -1,5 +1,6 @@
 #include "commands.h"
 #include <avr/pgmspace.h>
+#include "config.h"
 #include "lib/console/console.h"
 #include "lib/uart/uart.h"
 #include "lib/max7456/max7456.h"
@@ -24,14 +25,14 @@ void _draw ()
 void _print_byte (uint8_t b)
 {
 	for (uint8_t i = 0; i < 8; i ++)
-		uart0::send ((b >> i) & 1 ? '1' : '0');
+		CONSOLE_UART::send ((b >> i) & 1 ? '1' : '0');
 	eol ();
 }
 
 void _download ()
 {
 	_draw ();
-	uart0::send_string_p (PSTR ("MAX7456\r\n"));
+	CONSOLE_UART::send_string_p (PSTR ("MAX7456\r\n"));
 	for (uint16_t c = 0; c < 0x100; c ++)
 	{
 		uint8_t data [54];
@@ -47,7 +48,7 @@ uint8_t _read ()
 {
 	while (true)
 	{
-		uint16_t c = uart0::receive ();
+		uint16_t c = CONSOLE_UART::receive ();
 		if (!(c & 0xff00)) return c;
 	}
 }
@@ -66,7 +67,7 @@ uint8_t _read_byte ()
 void _upload ()
 {
 	_draw ();
-	uart0::send_string_p (PSTR ("Send MCM-file\r\n"));
+	CONSOLE_UART::send_string_p (PSTR ("Send MCM-file\r\n"));
 	for (uint8_t i = 0; i < 9; i ++)
 		_read ();
 	for (uint16_t c = 0; c < 0x100; c ++)
@@ -78,7 +79,7 @@ void _upload ()
 			_read_byte ();
 		max7456::upload_char (c, data);
 	}
-	uart0::send_string_p (PSTR ("Done\r\n"));
+	CONSOLE_UART::send_string_p (PSTR ("Done\r\n"));
 }
 
 void exec (const char *cmd)
@@ -96,7 +97,7 @@ void exec (const char *cmd)
 				_download ();
 		}		return;
 	}
-	uart0::send_string_p (PSTR ("Args: u - upload, d - download"));
+	CONSOLE_UART::send_string_p (PSTR ("Args: u - upload, d - download"));
 }
 
 }
@@ -112,7 +113,7 @@ void process (const char *cmd)
 	if (_cmd_is_P (font::__cmd)) font::exec (cmd);
 	else if (_cmd_is_P (PSTR ("exit"))) stop ();
 
-	else uart0::send_string_p (PSTR ("Invalid command"));
+	else CONSOLE_UART::send_string_p (PSTR ("Invalid command"));
 }
 
 }

@@ -12,29 +12,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SETTINGS_H_
-#define SETTINGS_H_
+#ifndef OSD_OSD_H_
+#define OSD_OSD_H_
 
-#include <avr/eeprom.h>
+#include "panel.h"
+#include "screen.h"
 
-#define EEPROM_HEADER 0x5552
+#define OSD_SWITCH_OFF         0x00
+#define OSD_SWITCH_FLIGHT_MODE 0x01
+#define OSD_SWITCH_RAW_CHANNEL 0x80
 
-#define MAX7456_EEPROM_OFFSET        0x10
-#define ADC_BATTERY_EEPROM_OFFSET    0x12
-#define UAVTALK_EEPROM_OFFSET        0x20
-#define OSD_EEPROM_OFFSET            0x70
-#define OSD_SCREENS_EEPROM_OFFSET    (OSD_EEPROM_OFFSET + 0x10)
+namespace osd
+{
 
-#define _eeprom_byte(x) ((uint8_t *) (x))
-#define _eeprom_word(x) ((uint32_t *) (x))
-#define _eeprom_float(x) ((float *) (x))
+void main ();
+void init ();
 
 namespace settings
 {
 
-void init ();
-void reset ();
+	void reset ();
+
+}  // namespace settings
 
 }
 
-#endif /* SETTINGS_H_ */
+
+#endif /* OSD_OSD_H_ */

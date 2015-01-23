@@ -95,15 +95,15 @@ void send (const header_t &head, uint8_t *data, uint8_t size)
 	for (uint8_t i = 0; i < sizeof (header_t); i ++, offset ++)
 	{
 		crc = _get_crc (crc ^ *offset);
-		uart0::send (*offset);
+		UAVTALK_UART::send (*offset);
 	}
 	for (uint8_t i = 0; i < size; i ++)
 	{
 		uint8_t value = data ? *(data + i) : 0;
 		crc = _get_crc (crc ^ value);
-		uart0::send (value);
+		UAVTALK_UART::send (value);
 	}
-	uart0::send (crc);
+	UAVTALK_UART::send (crc);
 }
 
 void send_gcs_telemetry_stats (uint8_t status)
@@ -219,7 +219,7 @@ bool _receive ()
 	uint16_t err = 0;
 	do
 	{
-		uint16_t raw = uart0::receive ();
+		uint16_t raw = UAVTALK_UART::receive ();
 		err = raw & 0xff00;
 		if (!err && _parse (raw)) return true;
 	}
@@ -278,10 +278,16 @@ bool update ()
 				telemetry::input::pitch 	= (int16_t) (buffer.get<float> (8) * 100);
 				telemetry::input::yaw 		= (int16_t) (buffer.get<float> (12) * 100);
 				telemetry::input::collective = (int16_t) (buffer.get<float> (16) * 100);
+#ifdef _UT_OFFS_MCC_FMS
+				telemetry::input::flight_mode_switch = buffer.data [_UT_OFFS_MCC_FMS];
+#endif
 #if UAVTALK_VERSION_RELEASE >= 141001
 				telemetry::input::thrust 	= (int16_t) (buffer.get<float> (20) * 100);
 #endif
-				memcpy (telemetry::input::channels, buffer.data + _UT_OFFS_MCC_CHANNELS, INPUT_CHANNELS * sizeof (int16_t));
+#if !defined (TELEMETRY_MODULES_RSSI)
+				telemetry::messages::rssi_low = !((bool) buffer.data [_UT_OFFS_MCC_FMS]);
+#endif
+				memcpy (telemetry::input::channels, buffer.data + _UT_OFFS_MCC_CHANNELS, INPUT_CHANNELS * sizeof (uint16_t));
 				break;
 			case UAVTALK_GPSPOSITIONSENSOR_OBJID:
 				telemetry::gps::latitude 	= buffer.get<int32_t> (0) / 10000000.0;

@@ -23,8 +23,6 @@
 
 #include "../../config.h"
 
-#define UAVTALK_EEPROM_OFFSET 0x20
-
 #ifndef UAVTALK_VERSION
 #	define UAVTALK_VERSION 0x20
 #endif

@@ -15,6 +15,7 @@
 #include "settings.h"
 #include "lib/max7456/max7456.h"
 #include "telemetry/telemetry.h"
+#include "osd/osd.h"
 
 namespace settings
 {
@@ -29,10 +30,9 @@ void reset ()
 {
 	max7456::settings::reset ();
 	telemetry::settings::reset ();
+	osd::settings::reset ();
 
 	eeprom_write_word (NULL, EEPROM_HEADER);
-	// FIXME: remove after debugging
-	//eeprom_write_word (NULL, 0);
 }
 
 }

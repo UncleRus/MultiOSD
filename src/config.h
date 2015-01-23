@@ -26,6 +26,7 @@
 /*
  * UAVTalk config
  */
+#define UAVTALK_UART uart0
 #define UAVTALK_VERSION 0x20
 #define UAVTALK_VERSION_RELEASE 141001
 #define UAVTALK_BOARD CC3D
@@ -34,11 +35,34 @@
 #define UAVTALK_DEFAULT_BATTERY_LOW_VOLTAGE 9.9			// 3.3V/cell on 3S, REVO only
 
 /*
+ * OSD config
+ */
+#define OSD_SCREENS 3				// each screen will consume (OSD_SCREEN_PANELS * 3) bytes in EEPROM
+#define OSD_DEFAULT_SCREEN 0
+#define OSD_SCREEN_PANELS 24		// (OSD_SCREEN_PANELS * 3) bytes in SRAM
+#define OSD_DRAW_INTERVAL_PAL  40	// 1000ms / 25fps
+#define OSD_DRAW_INTERVAL_NTSC 33	// 1000ms / 29.97fps
+// when to switch between screens
+#define OSD_EEPROM_SCREENS_SWITCH_DEFAULT OSD_SWITCH_FLIGHT_MODE // flight mode switch
+// or
+/*
+#define OSD_EEPROM_SCREENS_SWITCH_DEFAULT OSD_SWITCH_RAW_CHANNEL // raw channel value
+#define OSD_SCREENS_SWITCH_RAW_CHANNEL INPUT_CHANNEL6 // it's ACCESSORY1 on my Tx
+*/
+// or
+/*
+#define OSD_EEPROM_SCREENS_SWITCH_DEFAULT OSD_SWITCH_OFF // single screen mode
+*/
+#define OSD_RAW_CHANNEL_MIN 1000	// ms
+#define OSD_RAW_CHANNEL_MAX 2000	// ms
+
+
+/*
  * UART config
  */
-#define UART_STDIO					// fprintf
+#define UART_STDIO					// we need fprintf
 #define UART_BAUD_RATE 57600
-#define UART_RX_BUFFER_SIZE 128
+#define UART_RX_BUFFER_SIZE 128		// I like big buffers
 #define UART_TX_BUFFER_SIZE 128
 
 /*
@@ -54,8 +78,6 @@
  */
 #define BOOT_CONFIG_CODE "config"
 #define BOOT_CONFIG_WAIT_TIME 5000
-
-
 
 /*
  * ADC config
