@@ -1,13 +1,16 @@
 #include "commands.h"
 #include <avr/pgmspace.h>
+#include <util/delay.h>
 #include "config.h"
 #include "lib/console/console.h"
 #include "lib/uart/uart.h"
 #include "lib/max7456/max7456.h"
+#include "settings.h"
 
 namespace console
 {
 
+const char _str_done [] PROGMEM = "Done.\r\n";
 
 namespace font
 {
@@ -79,10 +82,10 @@ void _upload ()
 			_read_byte ();
 		max7456::upload_char (c, data);
 	}
-	CONSOLE_UART::send_string_p (PSTR ("Done\r\n"));
+	CONSOLE_UART::send_string_p (_str_done);
 }
 
-void exec (const char *cmd)
+void exec ()
 {
 	const char *arg = str_argument (1);
 	if (arg)
@@ -100,7 +103,34 @@ void exec (const char *cmd)
 	CONSOLE_UART::send_string_p (PSTR ("Args: u - upload, d - download"));
 }
 
+} // namespace font
+
+namespace reset
+{
+
+const char __cmd [] PROGMEM = "reset";
+
+const char _please_reboot [] PROGMEM = "PLEASE REBOOT";
+
+void exec ()
+{
+	CONSOLE_UART::send_string_p (PSTR ("Reset to defaults... "));
+	settings::reset ();
+	CONSOLE_UART::send_string_p (_str_done);
+
+	max7456::clear ();
+	max7456::puts_p (max7456::hcenter - 6, max7456::vcenter, _please_reboot, MAX7456_ATTR_BLINK);
+
+	while (true)
+	{
+		CONSOLE_UART::send_string_p (_please_reboot);
+		console::eol ();
+		_delay_ms (1000);
+	}
 }
+
+
+}  // namespace reset
 
 #define _cmd_is_P(x) (!strncasecmp_P (command, x, size))
 
@@ -110,7 +140,8 @@ void process (const char *cmd)
 	uint8_t size = 0;
 	while (command [size] && command [size] != ' ') size ++;
 
-	if (_cmd_is_P (font::__cmd)) font::exec (cmd);
+	if      (_cmd_is_P (font::__cmd))   font::exec ();
+	else if (_cmd_is_P (reset::__cmd))  reset::exec ();
 	else if (_cmd_is_P (PSTR ("exit"))) stop ();
 
 	else CONSOLE_UART::send_string_p (PSTR ("Invalid command"));
