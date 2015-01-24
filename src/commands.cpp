@@ -141,7 +141,7 @@ void _dump ()
 	for (uint8_t row = 0; row < EEPROM_SIZE / 16; row ++)
 	{
 		for (uint8_t byte = 0; byte < 16; byte ++)
-			fprintf_P (&CONSOLE_UART::stream, PSTR ("\%02x "), eeprom_read_byte ((uint8_t *) ((row << 4) + byte)));
+			fprintf_P (&CONSOLE_UART::stream, PSTR ("%02x "), eeprom_read_byte ((uint8_t *) ((row << 4) + byte)));
 		console::eol ();
 	}
 }
