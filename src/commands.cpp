@@ -141,7 +141,7 @@ void _dump ()
 	for (uint8_t row = 0; row < EEPROM_SIZE / 16; row ++)
 	{
 		for (uint8_t byte = 0; byte < 16; byte ++)
-			fprintf_P (&CONSOLE_UART::stream, PSTR ("%02x "), eeprom_read_byte ((uint8_t *) ((row << 4) + byte)));
+			fprintf_P (&CONSOLE_UART::stream, PSTR ("%02x "), eeprom_read_byte ((uint8_t *) ((row << 4) | byte)));
 		console::eol ();
 	}
 }
@@ -179,7 +179,7 @@ void exec ()
 				return;
 		}
 	}
-	CONSOLE_UART::send_string_p (PSTR ("Args: d - dump, r - read all, w - write all, g <addr> - get byte, s <addr> <val> - set byte"));
+	CONSOLE_UART::send_string_p (PSTR ("Args: d - dump, r - read, w - write"));
 }
 
 }  // namespace eeprom

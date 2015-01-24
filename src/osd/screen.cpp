@@ -39,7 +39,7 @@ void load (uint8_t num)
 {
 	if (num >= OSD_SCREENS) num = 0;
 
-	uint8_t *offset = (uint8_t *) (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (_panel_pos_t) * OSD_SCREEN_PANELS);
+	uint8_t *offset = _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (_panel_pos_t) * OSD_SCREEN_PANELS);
 
 	uint8_t i = 0;
 	for (; i < OSD_SCREEN_PANELS; i ++)
@@ -86,12 +86,18 @@ const _panel_pos_t _default_screen_0 [] PROGMEM = {
 	{OSD_PANEL_ROLL, 1, 10},
 	{OSD_PANEL_CLIMB, 23, 10},
 
+	{OSD_PANEL_FLIGHT_TIME, 1, 13},
+
+	{OSD_PANEL_BATTERY_VOLTAGE, 22, 12},
+	{OSD_PANEL_BATTERY_CURRENT, 22, 13},
+	{OSD_PANEL_BATTERY_CONSUMED, 22, 14},
+
 	{0xff, 0xff, 0xff}
 };
 
 void _reset_screen (uint8_t num, const _panel_pos_t screen [], uint8_t len)
 {
-	uint8_t *offset = (uint8_t *) (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (_panel_pos_t) * OSD_SCREEN_PANELS);
+	uint8_t *offset = _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (_panel_pos_t) * OSD_SCREEN_PANELS);
 	for (uint8_t i = 0; i < len; i ++)
 	{
 		eeprom_update_byte (offset, pgm_read_byte (&(_default_screen_0 [i].panel)));

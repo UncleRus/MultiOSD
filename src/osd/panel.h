@@ -31,8 +31,12 @@
 #define OSD_PANEL_GPS_LON             10
 #define OSD_PANEL_HORIZON             11
 #define OSD_PANEL_THROTTLE            12
+#define OSD_PANEL_GROUND_SPEED        13
+#define OSD_PANEL_BATTERY_VOLTAGE     14
+#define OSD_PANEL_BATTERY_CURRENT     15
+#define OSD_PANEL_BATTERY_CONSUMED    16
 
-#define OSD_PANELS_COUNT (OSD_PANEL_THROTTLE + 1)
+#define OSD_PANELS_COUNT (OSD_PANEL_BATTERY_CONSUMED + 1)
 
 namespace osd
 {

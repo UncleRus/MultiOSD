@@ -26,6 +26,7 @@ namespace osd
 
 static uint8_t _switch = 0;
 static uint8_t _screen = 0;
+static bool _visible;
 
 #if OSD_SCREENS > 1
 
@@ -69,6 +70,7 @@ void main ()
 	uint8_t draw_interval = max7456::mode == MAX7456_MODE_PAL ? OSD_DRAW_INTERVAL_PAL : OSD_DRAW_INTERVAL_NTSC;
 	uint32_t draw_time = 0;
 
+	_visible = true;
 	screen::load (_screen);
 
 	while (true)
@@ -82,7 +84,7 @@ void main ()
 			updated = true;
 		}
 #endif
-		if (updated && ticks >= draw_time)
+		if (_visible && updated && ticks >= draw_time)
 		{
 			draw_time = ticks + draw_interval;
 			screen::draw ();

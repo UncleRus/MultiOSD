@@ -325,6 +325,63 @@ namespace throttle
 
 }  // namespace throttle
 
+namespace ground_speed
+{
+
+	const char __name [] PROGMEM = "GroundSpeed";
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		max7456::open (x, y);
+		fprintf_P (&max7456::stream, PSTR ("\x12%d%\x8d"), telemetry::stable::ground_speed);
+	}
+
+}  // namespace ground_speed
+
+namespace battery_voltage
+{
+
+	const char __name [] PROGMEM = "BatVoltage";
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		// TODO : change battery icon depending on voltage
+		max7456::put (x, y,
+			telemetry::messages::battery_low ? 0xf4 : 0xf7,
+			telemetry::messages::battery_low ? MAX7456_ATTR_BLINK : 0
+		);
+		max7456::open (x + 1, y);
+		fprintf_P (&max7456::stream, PSTR ("%.2f\x8e"), telemetry::battery::voltage);
+	}
+
+}  // namespace battery_voltage
+
+namespace battery_current
+{
+
+	const char __name [] PROGMEM = "BatCurrent";
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		max7456::open (x, y);
+		fprintf_P (&max7456::stream, PSTR ("\xfa%.2f\x8f"), telemetry::battery::current);
+	}
+
+}  // namespace battery_current
+
+namespace battery_consumed
+{
+
+	const char __name [] PROGMEM = "BatConsumed";
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		max7456::open (x, y);
+		fprintf_P (&max7456::stream, PSTR ("\xfb%u\x82"), telemetry::battery::consumed);
+	}
+
+}  // namespace battery_consumed
+
 }  // namespace __panels
 
 namespace panel
@@ -343,7 +400,11 @@ const panel_draw_t panels [] PROGMEM = {
 	osd::__panels::gps_lat::draw,
 	osd::__panels::gps_lon::draw,
 	osd::__panels::horizon::draw,
-	osd::__panels::throttle::draw
+	osd::__panels::throttle::draw,
+	osd::__panels::ground_speed::draw,
+	osd::__panels::battery_voltage::draw,
+	osd::__panels::battery_current::draw,
+	osd::__panels::battery_consumed::draw,
 };
 
 const char * const panel_names [] PROGMEM = {
@@ -359,13 +420,16 @@ const char * const panel_names [] PROGMEM = {
 	osd::__panels::gps_lat::__name,
 	osd::__panels::gps_lon::__name,
 	osd::__panels::horizon::__name,
-	osd::__panels::throttle::__name
+	osd::__panels::throttle::__name,
+	osd::__panels::ground_speed::__name,
+	osd::__panels::battery_voltage::__name,
+	osd::__panels::battery_current::__name,
+	osd::__panels::battery_consumed::__name,
 };
 
 void draw (uint8_t panel, uint8_t x, uint8_t y)
 {
-	panel_draw_t func = (panel_draw_t) pgm_read_word (&panels [panel]);
-	func (x, y);
+	((panel_draw_t) pgm_read_word (&panels [panel])) (x, y);
 }
 
 }  // namespace panels
