@@ -12,6 +12,15 @@ namespace console
 
 const char _str_done [] PROGMEM = "Done.\r\n";
 
+uint8_t _read ()
+{
+	while (true)
+	{
+		uint16_t c = CONSOLE_UART::receive ();
+		if (!(c & 0xff00)) return c;
+	}
+}
+
 namespace font
 {
 
@@ -47,23 +56,14 @@ void _download ()
 	}
 }
 
-uint8_t _read ()
-{
-	while (true)
-	{
-		uint16_t c = CONSOLE_UART::receive ();
-		if (!(c & 0xff00)) return c;
-	}
-}
-
 uint8_t _read_byte ()
 {
 	uint8_t res = 0;
 	for (uint8_t i = 0; i < 8; i ++)
-		res = (res << 1) | ((_read () - '0') & 1);
+		res = (res << 1) | ((console::_read () - '0') & 1);
 	// \r\n
-	_read ();
-	_read ();
+	console::_read ();
+	console::_read ();
 	return res;
 }
 
@@ -129,8 +129,60 @@ void exec ()
 	}
 }
 
-
 }  // namespace reset
+
+namespace eeprom
+{
+
+const char __cmd [] PROGMEM = "eeprom";
+
+void _dump ()
+{
+	for (uint8_t row = 0; row < EEPROM_SIZE / 16; row ++)
+	{
+		for (uint8_t byte = 0; byte < 16; byte ++)
+			fprintf_P (&CONSOLE_UART::stream, PSTR ("\%02x "), eeprom_read_byte ((uint8_t *) ((row << 4) + byte)));
+		console::eol ();
+	}
+}
+
+void _read ()
+{
+	for (uint16_t addr = 0; addr < EEPROM_SIZE; addr ++)
+		CONSOLE_UART::send (eeprom_read_byte ((uint8_t *) addr));
+}
+
+void _write ()
+{
+	for (uint16_t addr = 0; addr < EEPROM_SIZE; addr ++)
+		eeprom_update_byte ((uint8_t *) addr, console::_read ());
+}
+
+void exec ()
+{
+	const char *arg = str_argument (1);
+	if (arg)
+	{
+		switch (*arg)
+		{
+			case 'd':
+			case 'D':
+				_dump ();
+				return;
+			case 'r':
+			case 'R':
+				_read ();
+				return;
+			case 'w':
+			case 'W':
+				_write ();
+				return;
+		}
+	}
+	CONSOLE_UART::send_string_p (PSTR ("Args: d - dump, r - read all, w - write all, g <addr> - get byte, s <addr> <val> - set byte"));
+}
+
+}  // namespace eeprom
 
 #define _cmd_is_P(x) (!strncasecmp_P (command, x, size))
 
@@ -142,6 +194,7 @@ void process (const char *cmd)
 
 	if      (_cmd_is_P (font::__cmd))   font::exec ();
 	else if (_cmd_is_P (reset::__cmd))  reset::exec ();
+	else if (_cmd_is_P (eeprom::__cmd)) eeprom::exec ();
 	else if (_cmd_is_P (PSTR ("exit"))) stop ();
 
 	else CONSOLE_UART::send_string_p (PSTR ("Invalid command"));

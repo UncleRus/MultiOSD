@@ -38,7 +38,6 @@
  * OSD config
  */
 #define OSD_SCREENS 3				// each screen will consume (OSD_SCREEN_PANELS * 3) bytes in EEPROM
-#define OSD_DEFAULT_SCREEN 0
 #define OSD_SCREEN_PANELS 24		// (OSD_SCREEN_PANELS * 3) bytes in SRAM
 #define OSD_DRAW_INTERVAL_PAL  40	// 1000ms / 25fps
 #define OSD_DRAW_INTERVAL_NTSC 33	// 1000ms / 29.97fps
@@ -69,7 +68,7 @@
  * Console config
  */
 #define CONSOLE_UART uart0
-#define CONSOLE_MAX_CMD_LENGTH 31
+#define CONSOLE_MAX_CMD_LENGTH 23
 #define CONSOLE_EOL "\r\n"
 #define CONSOLE_PROMPT "osd# "
 

@@ -17,6 +17,7 @@
 
 #include <avr/eeprom.h>
 
+#define EEPROM_SIZE 0x400
 #define EEPROM_HEADER 0x5552
 
 #define MAX7456_EEPROM_OFFSET        0x10

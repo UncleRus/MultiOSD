@@ -28,18 +28,16 @@ namespace screen
 struct _panel_pos_t
 {
 	uint8_t panel;
-	uint8_t x, y;
+	uint8_t x;
+	uint8_t y;
 };
 
 static _panel_pos_t _panels [OSD_SCREEN_PANELS];
 static uint8_t _count = 0;
-static uint8_t _screen = 0;
 
 void load (uint8_t num)
 {
-	if (num >= OSD_SCREENS) num = OSD_DEFAULT_SCREEN;
-
-	_screen = num;
+	if (num >= OSD_SCREENS) num = 0;
 
 	uint8_t *offset = (uint8_t *) (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (_panel_pos_t) * OSD_SCREEN_PANELS);
 
@@ -69,9 +67,43 @@ void draw ()
 namespace settings
 {
 
+const _panel_pos_t _default_screen_0 [] PROGMEM = {
+	{OSD_PANEL_GPS_STATE, 1, 1},
+	{OSD_PANEL_GPS_LAT, 8, 1},
+	{OSD_PANEL_GPS_LON, 19, 1},
+
+	{OSD_PANEL_CONNECTION_STATE, 0, 2},
+	{OSD_PANEL_ARMING_STATE, 3, 2},
+	{OSD_PANEL_FLIGHT_MODE, 24, 2},
+
+	{OSD_PANEL_PITCH, 1, 6},
+	{OSD_PANEL_HORIZON, 8, 6},
+	{OSD_PANEL_THROTTLE, 23, 6},
+
+	// {OSD_PANEL_GROUND_SPEED, 1, 8},
+	{OSD_PANEL_ALT, 23, 8},
+
+	{OSD_PANEL_ROLL, 1, 10},
+	{OSD_PANEL_CLIMB, 23, 10},
+
+	{0xff, 0xff, 0xff}
+};
+
+void _reset_screen (uint8_t num, const _panel_pos_t screen [], uint8_t len)
+{
+	uint8_t *offset = (uint8_t *) (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (_panel_pos_t) * OSD_SCREEN_PANELS);
+	for (uint8_t i = 0; i < len; i ++)
+	{
+		eeprom_update_byte (offset, pgm_read_byte (&(_default_screen_0 [i].panel)));
+		eeprom_update_byte (offset + 1, pgm_read_byte (&(_default_screen_0 [i].x)));
+		eeprom_update_byte (offset + 2, pgm_read_byte (&(_default_screen_0 [i].y)));
+		offset += sizeof (_panel_pos_t);
+	}
+}
+
 void reset ()
 {
-	// TODO: default screens config
+	_reset_screen (0, _default_screen_0, sizeof (_default_screen_0) / sizeof (_panel_pos_t));
 }
 
 }  // namespace settings

@@ -25,7 +25,7 @@ namespace osd
 #define OSD_EEPROM_SCREENS_SWITCH _eeprom_byte (OSD_EEPROM_OFFSET)
 
 static uint8_t _switch = 0;
-static uint8_t _screen = OSD_DEFAULT_SCREEN;
+static uint8_t _screen = 0;
 
 #if OSD_SCREENS > 1
 
@@ -69,6 +69,8 @@ void main ()
 	uint8_t draw_interval = max7456::mode == MAX7456_MODE_PAL ? OSD_DRAW_INTERVAL_PAL : OSD_DRAW_INTERVAL_NTSC;
 	uint32_t draw_time = 0;
 
+	screen::load (_screen);
+
 	while (true)
 	{
 		uint32_t ticks = timer::ticks ();
@@ -83,7 +85,6 @@ void main ()
 		if (updated && ticks >= draw_time)
 		{
 			draw_time = ticks + draw_interval;
-
 			screen::draw ();
 		}
 	}

@@ -44,7 +44,7 @@ inline void init ()
 		max7456::puts_p (max7456::hcenter - 4, max7456::vcenter, PSTR ("\xfc CONFIG"));
 		console::run (console::process);
 	}
-	uart0::send_string_p (PSTR ("BOOT\n"));
+	uart0::send_string_p (PSTR ("BOOT\r\n"));
 	telemetry::init ();
 	osd::init ();
 }
