@@ -22,10 +22,16 @@
 namespace osd
 {
 
-#define OSD_EEPROM_SCREENS_SWITCH _eeprom_byte (OSD_EEPROM_OFFSET)
+#define OSD_EEPROM_SWITCH             _eeprom_byte (OSD_EEPROM_OFFSET)
+#define OSD_EEPROM_SWITCH_RAW_CHANNEL _eeprom_byte (OSD_EEPROM_OFFSET + 1)
 
-static uint8_t _switch = 0;
-static uint8_t _screen = 0;
+#ifndef OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT
+#	define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6
+#endif
+
+static uint8_t _switch;
+static uint8_t _channel;
+static uint8_t _screen;
 static bool _visible;
 
 #if OSD_SCREENS > 1
@@ -42,24 +48,17 @@ uint8_t _get_screen (uint16_t raw)
 
 bool _check_input ()
 {
-	if (!_switch) return false;
+	if (_switch == OSD_SWITCH_OFF || !telemetry::input::connected) return false;
 
-	uint8_t new_screen = 0;
+	uint8_t old_screen = _screen;
 
-	if (_switch & OSD_SWITCH_RAW_CHANNEL)
-	{
-		uint8_t channel = _switch & ~OSD_SWITCH_RAW_CHANNEL;
-		if (channel > INPUT_CHANNELS) return false;
-		new_screen = _get_screen (telemetry::input::channels [channel]);
-	}
-	else
-	{
-		new_screen = telemetry::input::flight_mode_switch;
-	}
+	_screen = _switch == OSD_SWITCH_FLIGHT_MODE
+		? telemetry::input::flight_mode_switch
+		: _get_screen (telemetry::input::channels [_channel]);
 
-	if (_screen >= OSD_SCREENS) _screen = 0;
+	if (_screen >= OSD_SCREENS) _screen = OSD_SCREENS - 1;
 
-	return _screen != new_screen;
+	return _screen != old_screen;
 }
 #endif
 
@@ -94,7 +93,8 @@ void main ()
 
 void init ()
 {
-	_switch = eeprom_read_byte (OSD_EEPROM_SCREENS_SWITCH);
+	_switch = eeprom_read_byte (OSD_EEPROM_SWITCH);
+	_channel = eeprom_read_byte (OSD_EEPROM_SWITCH_RAW_CHANNEL);
 }
 
 namespace settings
@@ -102,7 +102,8 @@ namespace settings
 
 	void reset ()
 	{
-		eeprom_write_byte (OSD_EEPROM_SCREENS_SWITCH, OSD_EEPROM_SCREENS_SWITCH_DEFAULT);
+		eeprom_update_byte (OSD_EEPROM_SWITCH_RAW_CHANNEL, OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT);
+		eeprom_update_byte (OSD_EEPROM_SWITCH, OSD_EEPROM_SWITCH_DEFAULT);
 		screen::settings::reset ();
 	}
 

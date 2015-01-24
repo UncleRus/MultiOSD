@@ -377,7 +377,7 @@ namespace battery_consumed
 	void draw (uint8_t x, uint8_t y)
 	{
 		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\xfb%u\x82"), telemetry::battery::consumed);
+		fprintf_P (&max7456::stream, PSTR ("\xfb%u\x82"), (uint16_t) telemetry::battery::consumed);
 	}
 
 }  // namespace battery_consumed

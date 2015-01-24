@@ -35,18 +35,19 @@ namespace status
 	uint16_t flight_time = 0;
 	uint8_t flight_mode = FLIGHT_MODE_MANUAL;
 	bool armed = false;
-	uint8_t rssi = 100;
-}
+	uint8_t rssi = 0;
+}  // namespace status
 
 namespace attitude
 {
 	float roll = 0;
 	float pitch = 0;
 	float yaw = 0;
-}
+}  // namespace attitude
 
 namespace input
 {
+	bool connected = false;
 	int16_t throttle = 0;
 	int16_t roll = 0;
 	int16_t pitch = 0;
@@ -55,7 +56,7 @@ namespace input
 	int16_t thrust = 0;
 	uint8_t flight_mode_switch = 0;
 	uint16_t channels [INPUT_CHANNELS];
-}
+}  // namespace input
 
 namespace gps
 {
@@ -67,12 +68,12 @@ namespace gps
 	int8_t sattelites = 0;
 	uint8_t state = GPS_STATE_NO_FIX;
 	float climb = 0.0;
-}
+}  // namespace gps
 
 namespace barometer
 {
 	float altitude = 0.0;
-}
+}  // namespace barometer
 
 namespace stable
 {
@@ -83,28 +84,28 @@ namespace stable
 
 	static uint32_t _alt_update_time = 0;
 
-void update_alt_climb (float _alt)
-{
-	uint32_t ticks = timer::ticks ();
-	climb = (_alt - altitude) / (ticks - _alt_update_time) * 1000;
-	altitude = _alt;
-	_alt_update_time = ticks;
-}
+	void update_alt_climb (float _alt)
+	{
+		uint32_t ticks = timer::ticks ();
+		climb = (_alt - altitude) / (ticks - _alt_update_time) * 1000;
+		altitude = _alt;
+		_alt_update_time = ticks;
+	}
 
-}
+}  // namespace stable
 
 namespace battery
 {
 	float voltage = 0.0;
 	float current = 0.0;
-	uint16_t consumed = 0;
-}
+	float consumed = 0;
+}  // namespace battery
 
 namespace messages
 {
 	bool battery_low = false;
 	bool rssi_low = false;
-}
+}  // namespace messages
 
 
 void init ()

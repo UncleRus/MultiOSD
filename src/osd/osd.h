@@ -18,9 +18,9 @@
 #include "panel.h"
 #include "screen.h"
 
-#define OSD_SWITCH_OFF         0x00
-#define OSD_SWITCH_FLIGHT_MODE 0x01
-#define OSD_SWITCH_RAW_CHANNEL 0x80
+#define OSD_SWITCH_OFF         0
+#define OSD_SWITCH_FLIGHT_MODE 1
+#define OSD_SWITCH_RAW_CHANNEL 2
 
 namespace osd
 {

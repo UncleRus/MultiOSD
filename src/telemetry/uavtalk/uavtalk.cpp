@@ -278,6 +278,7 @@ bool update ()
 				telemetry::input::pitch 	= (int16_t) (buffer.get<float> (8) * 100);
 				telemetry::input::yaw 		= (int16_t) (buffer.get<float> (12) * 100);
 				telemetry::input::collective = (int16_t) (buffer.get<float> (16) * 100);
+				telemetry::input::connected = (bool) buffer.data [_UT_OFFS_MCC_CONN];
 #ifdef _UT_OFFS_MCC_FMS
 				telemetry::input::flight_mode_switch = buffer.data [_UT_OFFS_MCC_FMS];
 #endif
@@ -285,7 +286,7 @@ bool update ()
 				telemetry::input::thrust 	= (int16_t) (buffer.get<float> (20) * 100);
 #endif
 #if !defined (TELEMETRY_MODULES_RSSI)
-				telemetry::messages::rssi_low = !((bool) buffer.data [_UT_OFFS_MCC_FMS]);
+				telemetry::messages::rssi_low = !telemetry::input::connected;
 #endif
 				memcpy (telemetry::input::channels, buffer.data + _UT_OFFS_MCC_CHANNELS, INPUT_CHANNELS * sizeof (uint16_t));
 				break;

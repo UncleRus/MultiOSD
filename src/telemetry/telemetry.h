@@ -67,6 +67,7 @@ namespace attitude
 
 namespace input
 {
+	extern bool connected;			// input values are valid
 	extern int16_t throttle;		// percents
 	extern int16_t roll;			// percents
 	extern int16_t pitch;			// percents
@@ -108,7 +109,7 @@ namespace battery
 {
 	extern float voltage;			// volts
 	extern float current;			// amperes
-	extern uint16_t consumed;		// mAh
+	extern float consumed;			// mAh
 }
 
 namespace messages

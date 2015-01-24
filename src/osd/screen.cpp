@@ -58,6 +58,8 @@ void load (uint8_t num)
 
 void draw ()
 {
+	// TODO: divide all panel to "fast" and "slow"
+	// redraw slow panels with fps / 2
 	max7456::wait_vsync ();
 	max7456::clear ();
 	for (uint8_t i = 0; i < _count; i ++)
@@ -95,14 +97,54 @@ const _panel_pos_t _default_screen_0 [] PROGMEM = {
 	{0xff, 0xff, 0xff}
 };
 
+#if OSD_SCREENS > 1
+const _panel_pos_t _default_screen_1 [] PROGMEM = {
+	{OSD_PANEL_CONNECTION_STATE, 0, 0},
+	{OSD_PANEL_ARMING_STATE, 3, 0},
+	{OSD_PANEL_FLIGHT_MODE, 24, 0},
+
+	{OSD_PANEL_PITCH, 1, 6},
+	{OSD_PANEL_ALT, 1, 8},
+	{OSD_PANEL_ROLL, 1, 10},
+	{OSD_PANEL_HORIZON, 8, 6},
+
+	{OSD_PANEL_FLIGHT_TIME, 1, 13},
+
+	{OSD_PANEL_BATTERY_VOLTAGE, 22, 13},
+	{OSD_PANEL_BATTERY_CURRENT, 22, 14},
+
+	{0xff, 0xff, 0xff}
+};
+#endif
+
+#if OSD_SCREENS > 2
+const _panel_pos_t _default_screen_2 [] PROGMEM = {
+	{OSD_PANEL_CONNECTION_STATE, 0, 0},
+	{OSD_PANEL_ARMING_STATE, 3, 0},
+	{OSD_PANEL_FLIGHT_MODE, 24, 0},
+
+	{OSD_PANEL_PITCH, 1, 6},
+	{OSD_PANEL_ALT, 1, 8},
+	{OSD_PANEL_ROLL, 1, 10},
+
+	{OSD_PANEL_FLIGHT_TIME, 1, 13},
+
+	{OSD_PANEL_BATTERY_VOLTAGE, 22, 13},
+	{OSD_PANEL_BATTERY_CURRENT, 22, 14},
+
+	{0xff, 0xff, 0xff}
+};
+#endif
+
+
 void _reset_screen (uint8_t num, const _panel_pos_t screen [], uint8_t len)
 {
 	uint8_t *offset = _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (_panel_pos_t) * OSD_SCREEN_PANELS);
 	for (uint8_t i = 0; i < len; i ++)
 	{
-		eeprom_update_byte (offset, pgm_read_byte (&(_default_screen_0 [i].panel)));
-		eeprom_update_byte (offset + 1, pgm_read_byte (&(_default_screen_0 [i].x)));
-		eeprom_update_byte (offset + 2, pgm_read_byte (&(_default_screen_0 [i].y)));
+		eeprom_update_byte (offset, pgm_read_byte (&(screen [i].panel)));
+		eeprom_update_byte (offset + 1, pgm_read_byte (&(screen [i].x)));
+		eeprom_update_byte (offset + 2, pgm_read_byte (&(screen [i].y)));
 		offset += sizeof (_panel_pos_t);
 	}
 }
@@ -110,6 +152,12 @@ void _reset_screen (uint8_t num, const _panel_pos_t screen [], uint8_t len)
 void reset ()
 {
 	_reset_screen (0, _default_screen_0, sizeof (_default_screen_0) / sizeof (_panel_pos_t));
+#if OSD_SCREENS > 1
+	_reset_screen (1, _default_screen_1, sizeof (_default_screen_1) / sizeof (_panel_pos_t));
+#endif
+#if OSD_SCREENS > 2
+	_reset_screen (2, _default_screen_2, sizeof (_default_screen_2) / sizeof (_panel_pos_t));
+#endif
 }
 
 }  // namespace settings

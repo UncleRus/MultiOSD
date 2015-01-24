@@ -42,15 +42,15 @@
 #define OSD_DRAW_INTERVAL_PAL  40	// 1000ms / 25fps
 #define OSD_DRAW_INTERVAL_NTSC 33	// 1000ms / 29.97fps
 // when to switch between screens
-#define OSD_EEPROM_SCREENS_SWITCH_DEFAULT OSD_SWITCH_FLIGHT_MODE // flight mode switch
+//#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_FLIGHT_MODE // flight mode switch
+// or
+///*
+#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_RAW_CHANNEL // raw channel value
+#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6 // it's ACCESSORY1 on my Tx
+//*/
 // or
 /*
-#define OSD_EEPROM_SCREENS_SWITCH_DEFAULT OSD_SWITCH_RAW_CHANNEL // raw channel value
-#define OSD_SCREENS_SWITCH_RAW_CHANNEL INPUT_CHANNEL6 // it's ACCESSORY1 on my Tx
-*/
-// or
-/*
-#define OSD_EEPROM_SCREENS_SWITCH_DEFAULT OSD_SWITCH_OFF // single screen mode
+#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_OFF // single screen mode
 */
 #define OSD_RAW_CHANNEL_MIN 1000	// ms
 #define OSD_RAW_CHANNEL_MAX 2000	// ms

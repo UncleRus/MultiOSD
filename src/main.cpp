@@ -34,17 +34,18 @@ inline void init ()
 {
 	settings::init ();
 	timer::init ();
-	uart0::init (UART_BAUD_SELECT (UART_BAUD_RATE));
+	CONSOLE_UART::init (UART_BAUD_SELECT (UART_BAUD_RATE));
 	spi::init ();
 	max7456::init ();
-	adc::init ();
 	if (boot::show ())
 	{
 		max7456::clear ();
 		max7456::puts_p (max7456::hcenter - 4, max7456::vcenter, PSTR ("\xfc CONFIG"));
+		fprintf_P (&CONSOLE_UART::stream, PSTR ("MIN_RAW_OSD v.%04u\r\n"));
 		console::run (console::process);
 	}
-	uart0::send_string_p (PSTR ("BOOT\r\n"));
+	CONSOLE_UART::send_string_p (PSTR ("BOOT\r\n"));
+	adc::init ();
 	telemetry::init ();
 	osd::init ();
 }

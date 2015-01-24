@@ -30,7 +30,7 @@
 namespace adc_battery
 {
 
-static uint8_t _last_update_time = 0;
+static uint32_t _last_update_time = 0;
 static bool _current_sensor = false;
 static float _voltage_divider = 0.0;
 static float _current_divider = 0.0;
@@ -48,7 +48,7 @@ void init ()
 bool update ()
 {
 	uint32_t ticks = timer::ticks ();
-	uint32_t interval = ticks - _last_update_time;
+	uint16_t interval = ticks - _last_update_time;
 
 	if (interval < ADC_BATTERY_UPDATE_INTERVAL) return false;
 
@@ -59,8 +59,7 @@ bool update ()
 	if (_current_sensor)
 	{
 		telemetry::battery::current = ADC_VALUE (adc::read (ADC_BATTERY_CURRENT_CHANNEL), _current_divider);
-		// FIXME: incorrect consumed energy calc
-		telemetry::battery::consumed += (telemetry::battery::current * ((float) interval / 3600.0));
+		telemetry::battery::consumed += telemetry::battery::current * (float) interval / 3600.0;
 	}
 	return true;
 }
