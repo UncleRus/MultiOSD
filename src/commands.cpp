@@ -6,8 +6,8 @@
 #include "lib/uart/uart.h"
 #include "lib/max7456/max7456.h"
 #include "settings.h"
-
 #include <stdlib.h>
+#include "osd/panel.h"
 
 namespace console
 {
@@ -273,6 +273,23 @@ void exec ()
 
 }  // namespace eeprom
 
+namespace panels
+{
+
+const char __cmd [] PROGMEM = "panels";
+
+void exec ()
+{
+	for (uint8_t i = 0; i < OSD_PANELS_COUNT; i ++)
+	{
+		fprintf_P (&CONSOLE_UART::stream, PSTR ("%3u: "), i);
+		CONSOLE_UART::send_string_p ((const char *) pgm_read_ptr (&osd::panel::panel_names [i]));
+		console::eol ();
+	}
+}
+
+}  // namespace panels
+
 #define _cmd_is_P(x) (!strncasecmp_P (command, x, size))
 
 void process (const char *cmd)
@@ -284,6 +301,7 @@ void process (const char *cmd)
 	if      (_cmd_is_P (font::__cmd))   font::exec ();
 	else if (_cmd_is_P (reset::__cmd))  reset::exec ();
 	else if (_cmd_is_P (eeprom::__cmd)) eeprom::exec ();
+	else if (_cmd_is_P (panels::__cmd)) panels::exec ();
 	else if (_cmd_is_P (PSTR ("exit"))) stop ();
 
 	else CONSOLE_UART::send_string_p (PSTR ("Invalid command"));
