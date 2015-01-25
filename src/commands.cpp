@@ -7,6 +7,8 @@
 #include "lib/max7456/max7456.h"
 #include "settings.h"
 
+#include <stdlib.h>
+
 namespace console
 {
 
@@ -87,7 +89,7 @@ void _upload ()
 
 void exec ()
 {
-	const char *arg = str_argument (1);
+	const char *arg = console::argument (1);
 	if (arg)
 	{
 		switch (*arg) {
@@ -158,9 +160,88 @@ void _write ()
 		eeprom_update_byte ((uint8_t *) addr, console::_read ());
 }
 
+void _set ()
+{
+	const char *saddr = console::argument (3);
+	const char *value = console::argument (4);
+	if (saddr && value)
+	{
+		uint16_t addr = atoi (saddr);
+		if (addr >= EEPROM_SIZE)
+		{
+			fprintf_P (&CONSOLE_UART::stream, PSTR ("Max addr %u"), EEPROM_SIZE);
+			return;
+		}
+		switch (*argument (2))
+		{
+			case 'b':
+			case 'B':
+				eeprom_update_byte ((uint8_t *) addr, atoi (value));
+				return;
+			case 'i':
+			case 'I':
+				eeprom_update_word ((uint16_t *) addr, atoi (value));
+				return;
+			case 'w':
+			case 'W':
+				eeprom_update_word ((uint16_t *) addr, atol (value));
+				return;
+			case 'l':
+			case 'L':
+				eeprom_update_dword ((uint32_t *) addr, atol (value));
+				return;
+			case 'f':
+			case 'F':
+				eeprom_update_float ((float *) addr, atof (value));
+				return;
+		}
+	}
+	CONSOLE_UART::send_string_p (PSTR ("Args: <b|i|w|l|f> <addr> <value>"));
+}
+
+void _get ()
+{
+	const char *saddr = console::argument (3);
+	if (saddr)
+	{
+		uint16_t addr = atoi (saddr);
+		if (addr >= EEPROM_SIZE)
+		{
+			fprintf_P (&CONSOLE_UART::stream, PSTR ("Max addr %u"), EEPROM_SIZE);
+			return;
+		}
+		switch (*argument (2))
+		{
+			case 'b':
+			case 'B':
+				fprintf_P (&CONSOLE_UART::stream, PSTR ("%u"), eeprom_read_byte ((uint8_t *) addr));
+				return;
+			case 'i':
+			case 'I':
+				fprintf_P (&CONSOLE_UART::stream, PSTR ("%i"), eeprom_read_word ((uint16_t *) addr));
+				return;
+			case 'w':
+			case 'W':
+				fprintf_P (&CONSOLE_UART::stream, PSTR ("%u"), eeprom_read_word ((uint16_t *) addr));
+				return;
+			case 'l':
+			case 'L':
+				char buf [13];
+				ltoa (eeprom_read_dword ((uint32_t *) addr), buf, 10);
+				CONSOLE_UART::send_string (buf);
+				return;
+			case 'f':
+			case 'F':
+				fprintf_P (&CONSOLE_UART::stream, PSTR ("%f"), eeprom_read_float ((float *) addr));
+				return;
+		}
+	}
+	CONSOLE_UART::send_string_p (PSTR ("Args: <b|i|w|l|f> <addr>"));
+}
+
 void exec ()
 {
-	const char *arg = str_argument (1);
+	const char *arg = console::argument (1);
 	if (arg)
 	{
 		switch (*arg)
@@ -177,6 +258,14 @@ void exec ()
 			case 'W':
 				_write ();
 				return;
+			case 's':
+			case 'S':
+				_set ();
+				return;
+			case 'g':
+			case 'G':
+				_get ();
+				return;
 		}
 	}
 	CONSOLE_UART::send_string_p (PSTR ("Args: d - dump, r - read, w - write"));
@@ -188,7 +277,7 @@ void exec ()
 
 void process (const char *cmd)
 {
-	const char *command = console::str_argument (0);
+	const char *command = console::argument (0);
 	uint8_t size = 0;
 	while (command [size] && command [size] != ' ') size ++;
 

@@ -68,7 +68,7 @@
  * Console config
  */
 #define CONSOLE_UART uart0
-#define CONSOLE_MAX_CMD_LENGTH 23
+#define CONSOLE_MAX_CMD_LENGTH 32
 #define CONSOLE_EOL "\r\n"
 #define CONSOLE_PROMPT "osd# "
 

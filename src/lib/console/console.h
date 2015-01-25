@@ -27,8 +27,7 @@ extern callback_t handler;
 
 void eol ();
 void show_prompt ();
-const char *str_argument (uint8_t position, const char *def = NULL);
-int32_t int_argument (uint8_t position);
+const char *argument (uint8_t position, const char *def = NULL);
 
 extern bool running;
 

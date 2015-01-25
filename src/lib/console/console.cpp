@@ -39,7 +39,7 @@ void show_prompt ()
 	_command_len = 0;
 }
 
-const char *str_argument (uint8_t position, const char *def)
+const char *argument (uint8_t position, const char *def)
 {
 	uint8_t offs = 0;
 	while (_command [offs] && _command [offs] == ' ') offs ++;
@@ -51,15 +51,10 @@ const char *str_argument (uint8_t position, const char *def)
 	return _command [offs] ? &_command [offs] : def;
 }
 
-int32_t int_argument (uint8_t position)
-{
-	return atol (str_argument (position));
-}
-
-bool _process_byte ()
+void _process_byte ()
 {
 	uint16_t data = CONSOLE_UART::receive ();
-	if (data & 0xff00) return false;
+	if (data & 0xff00) return;
 	uint8_t byte = data & 0xff;
 	switch (byte)
 	{
@@ -71,23 +66,23 @@ bool _process_byte ()
 				if (handler) handler (_command);
 			}
 			show_prompt ();
-			return true;
+			return;
 		case KEY_DEL:
 		case KEY_BS:
-			if (!_command_len) return true;
+			if (!_command_len) return;
 			_command_len --;
 			CONSOLE_UART::send_string_p (PSTR ("\x08 \x08"));
-			return true;
+			return;
 		default:
 			if (byte < 0x20 || _command_len == CONSOLE_MAX_CMD_LENGTH - 1)
 			{
 				CONSOLE_UART::send (0x07);
-				return true;
+				return;
 			}
 			_command [_command_len ++] = byte;
 			CONSOLE_UART::send (byte);
 	}
-	return true;
+	return;
 }
 
 bool running;
