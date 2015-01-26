@@ -58,8 +58,7 @@ void load (uint8_t num)
 
 void draw ()
 {
-	// TODO: divide all panel to "fast" and "slow"
-	// redraw slow panels with fps / 2
+	// TODO: rewrite completely, VSYNC!!!!!
 	max7456::wait_vsync ();
 	max7456::clear ();
 	for (uint8_t i = 0; i < _count; i ++)

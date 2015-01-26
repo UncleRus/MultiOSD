@@ -366,6 +366,17 @@ void puts_p (uint8_t col, uint8_t row, const char *progmem_str, uint8_t attr)
 	close ();
 }
 
+void clear (uint8_t x, uint8_t y, uint8_t w, uint8_t h)
+{
+	for (uint8_t r = 0; r < h; r ++)
+	{
+		open (x, y + r);
+		for (uint8_t i = 0; i < w; i ++)
+			write_register (MAX7456_REG_DMDI, 0x00);
+		close ();
+	}
+}
+
 namespace settings
 {
 

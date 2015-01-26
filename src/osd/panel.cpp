@@ -128,7 +128,7 @@ namespace flight_mode
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		const char *name = (const char *) pgm_read_word (&_fm [telemetry::status::flight_mode]);
+		const char *name = (const char *) pgm_read_ptr (&_fm [telemetry::status::flight_mode]);
 		osd::draw::rect (x, y, strlen_P (name) + 2, 3);
 		max7456::puts_p (x + 1, y + 1, name);
 	}

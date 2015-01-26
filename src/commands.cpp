@@ -112,23 +112,11 @@ namespace reset
 
 const char __cmd [] PROGMEM = "reset";
 
-const char _please_reboot [] PROGMEM = "PLEASE REBOOT";
-
 void exec ()
 {
 	CONSOLE_UART::send_string_p (PSTR ("Reset to defaults... "));
 	settings::reset ();
 	CONSOLE_UART::send_string_p (_str_done);
-
-	max7456::clear ();
-	max7456::puts_p (max7456::hcenter - 6, max7456::vcenter, _please_reboot, MAX7456_ATTR_BLINK);
-
-	while (true)
-	{
-		CONSOLE_UART::send_string_p (_please_reboot);
-		console::eol ();
-		_delay_ms (1000);
-	}
 }
 
 }  // namespace reset
