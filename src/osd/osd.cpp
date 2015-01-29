@@ -64,17 +64,15 @@ bool _check_input ()
 
 void main ()
 {
-	max7456::clear ();
-
-	uint8_t draw_interval = max7456::mode == MAX7456_MODE_PAL ? OSD_DRAW_INTERVAL_PAL : OSD_DRAW_INTERVAL_NTSC;
-	uint32_t draw_time = 0;
+//	uint8_t draw_interval = max7456::mode == MAX7456_MODE_PAL ? OSD_DRAW_INTERVAL_PAL : OSD_DRAW_INTERVAL_NTSC;
+//	uint32_t draw_time = 0;
 
 	_visible = true;
 	screen::load (_screen);
 
 	while (true)
 	{
-		uint32_t ticks = timer::ticks ();
+		//uint32_t ticks = timer::ticks ();
 		bool updated = telemetry::update ();
 #if OSD_SCREENS > 1
 		if (_check_input ())
@@ -83,10 +81,15 @@ void main ()
 			updated = true;
 		}
 #endif
-		if (_visible && updated && ticks >= draw_time)
+		if (updated)
 		{
-			draw_time = ticks + draw_interval;
-			screen::draw ();
+			screen::update ();
+			if (_visible)// && ticks >= draw_time)
+			{
+
+				//draw_time = ticks + draw_interval;
+				screen::draw ();
+			}
 		}
 	}
 }

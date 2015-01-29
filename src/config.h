@@ -134,7 +134,7 @@
 #define MAX7456_VSYNC_DDR DDRD
 #define MAX7456_VSYNC_BIT PD2
 
-// Video mode pin. High = PAL, low = autodetect
+// Video mode pin. High = default, low = autodetect
 #define MAX7456_MODE_JUMPER_PORT PORTD
 #define MAX7456_MODE_JUMPER_DDR DDRD
 #define MAX7456_MODE_JUMPER_BIT PD3

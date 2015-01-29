@@ -271,7 +271,7 @@ void exec ()
 	for (uint8_t i = 0; i < OSD_PANELS_COUNT; i ++)
 	{
 		fprintf_P (&CONSOLE_UART::stream, PSTR ("%3u: "), i);
-		CONSOLE_UART::send_string_p ((const char *) pgm_read_ptr (&osd::panel::panel_names [i]));
+		CONSOLE_UART::send_string_p (osd::panel::name_p (i));
 		console::eol ();
 	}
 }

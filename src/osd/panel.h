@@ -43,12 +43,33 @@ namespace osd
 
 namespace panel
 {
-	typedef void (* panel_draw_t) (uint8_t x, uint8_t y);
 
-	extern const panel_draw_t panels [] PROGMEM;
-	extern const char * const panel_names [] PROGMEM;
+	struct panel_t
+	{
+		typedef void (* _update_t) ();
+		typedef void (* _draw_t) (uint8_t x, uint8_t y);
 
-	void draw (uint8_t panel, uint8_t x, uint8_t y);
+		const char *name_p; // progmem!
+		_update_t update;
+		_draw_t draw;
+	};
+
+	extern const panel_t panels [] PROGMEM;
+
+	inline const char *name_p (uint8_t panel)
+	{
+		return (const char *) pgm_read_ptr (&panels [panel].name_p);
+	}
+
+	inline void update (uint8_t panel)
+	{
+		((panel_t::_update_t) pgm_read_ptr (&panels [panel].update)) ();
+	}
+
+	inline void draw (uint8_t panel, uint8_t x, uint8_t y)
+	{
+		((panel_t::_draw_t) pgm_read_ptr (&panels [panel].draw)) (x, y);
+	}
 
 }  // namespace panels
 

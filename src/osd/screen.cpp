@@ -58,11 +58,16 @@ void load (uint8_t num)
 
 void draw ()
 {
-	// TODO: rewrite completely, VSYNC!!!!!
 	max7456::wait_vsync ();
 	max7456::clear ();
 	for (uint8_t i = 0; i < _count; i ++)
 		osd::panel::draw (_panels [i].panel, _panels [i].x, _panels [i].y);
+}
+
+void update ()
+{
+	for (uint8_t i = 0; i < _count; i ++)
+		osd::panel::update (i);
 }
 
 namespace settings

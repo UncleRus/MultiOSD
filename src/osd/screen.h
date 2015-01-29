@@ -24,6 +24,7 @@ namespace screen
 {
 
 	void load (uint8_t num);
+	void update ();
 	void draw ();
 
 	namespace settings

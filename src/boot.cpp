@@ -46,7 +46,7 @@ bool show ()
 	fprintf_P (&max7456::stream, PSTR ("\xfc""UAVtalk\n"));
 #endif
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
-	fprintf_P (&max7456::stream, PSTR ("\xf7""ADCbatt\n"));
+	fprintf_P (&max7456::stream, PSTR ("\xfa""ADCbatt\n"));
 #endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
 	fprintf_P (&max7456::stream, PSTR ("\x85""I2Cbaro\n"));

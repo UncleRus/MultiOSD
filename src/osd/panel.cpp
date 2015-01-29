@@ -75,10 +75,17 @@ namespace alt
 
 	const char __name [] PROGMEM = "StableAlt";
 
+	char _buffer [8];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("\x85%d\x8d"), (int16_t) telemetry::stable::altitude);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\x85%d\x8d"), (int16_t) telemetry::stable::altitude);
+		max7456::puts (x, y, _buffer);
 	}
 
 }  // namespace alt
@@ -88,11 +95,18 @@ namespace climb
 
 	const char __name [] PROGMEM = "Climb";
 
+	char _buffer [8];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("%c%.1f\x8c"),
+			telemetry::stable::climb < 0 ? 0x07 : 0x08, telemetry::stable::climb);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("%c%.1f\x8c"),
-			telemetry::stable::climb < 0 ? 0x07 : 0x08, telemetry::stable::climb);
+		max7456::puts (x, y, _buffer);
 	}
 
 }  // namespace climb_rate
@@ -126,6 +140,8 @@ namespace flight_mode
 		_fm_rtb, _fm_land, _fm_plan, _fm_poi, _fm_acruise
 	};
 
+	void update () {}
+
 	void draw (uint8_t x, uint8_t y)
 	{
 		const char *name = (const char *) pgm_read_ptr (&_fm [telemetry::status::flight_mode]);
@@ -140,6 +156,8 @@ namespace arming_state
 
 	const char __name [] PROGMEM = "ArmState";
 
+	void update () {}
+
 	void draw (uint8_t x, uint8_t y)
 	{
 		osd::draw::rect (x, y, 3, 3, telemetry::status::armed);
@@ -152,6 +170,8 @@ namespace connection_state
 {
 
 	const char __name [] PROGMEM = "ConState";
+
+	void update () {}
 
 	void draw (uint8_t x, uint8_t y)
 	{
@@ -170,10 +190,17 @@ namespace flight_time
 
 	const char __name [] PROGMEM = "FlightTime";
 
+	char _buffer [8];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("\xb3%02u:%02u"), telemetry::status::flight_time / 60, telemetry::status::flight_time % 60);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\xb3%02u:%02u"), telemetry::status::flight_time / 60, telemetry::status::flight_time % 60);
+		max7456::puts (x, y, _buffer);
 	}
 
 }  // namespace flight_time
@@ -183,10 +210,17 @@ namespace roll
 
 	const char __name [] PROGMEM = "Roll";
 
+	char _buffer [7];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("\xb2%d\xb0"), (int16_t) telemetry::attitude::roll);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\xb2%d\xb0"), (int16_t) telemetry::attitude::roll);
+		max7456::puts (x, y, _buffer);
 	}
 
 }  // namespace roll
@@ -196,10 +230,17 @@ namespace pitch
 
 	const char __name [] PROGMEM = "Pitch";
 
+	char _buffer [7];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("\xb1%d\xb0"), (int16_t) telemetry::attitude::pitch);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\xb1%d\xb0"), (int16_t) telemetry::attitude::pitch);
+		max7456::puts (x, y, _buffer);
 	}
 
 }  // namespace pitch
@@ -212,6 +253,14 @@ namespace gps_state
 #define _PAN_GPS_2D 0x01
 #define _PAN_GPS_3D 0x02
 
+	char _buffer [4];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("%d"), telemetry::gps::sattelites);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
 		bool err = telemetry::gps::state == GPS_STATE_NO_FIX;
@@ -219,11 +268,7 @@ namespace gps_state
 		max7456::put (x + 2, y, telemetry::gps::state <  GPS_STATE_3D ? _PAN_GPS_2D : _PAN_GPS_3D,
 			telemetry::gps::state < GPS_STATE_2D ? MAX7456_ATTR_BLINK : 0);
 		if (err) max7456::puts_p (x + 3, y, PSTR ("ERR"), MAX7456_ATTR_BLINK);
-		else
-		{
-			max7456::open (x + 3, y);
-			fprintf_P (&max7456::stream, PSTR ("%d"), telemetry::gps::sattelites);
-		}
+		else max7456::puts (x + 3, y, _buffer);
 	}
 
 }  // namespace gps_state
@@ -233,10 +278,17 @@ namespace gps_lat
 
 	const char __name [] PROGMEM = "Lat";
 
+	char _buffer [11];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("\x83%02.6f"), telemetry::gps::latitude);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\x83%02.6f"), telemetry::gps::latitude);
+		max7456::puts (x, y, _buffer);
 	}
 
 }  // namespace gps_lat
@@ -246,10 +298,17 @@ namespace gps_lon
 
 	const char __name [] PROGMEM = "Lon";
 
+	char _buffer [11];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("\x83%02.6f"), telemetry::gps::longitude);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\x84%02.6f"), telemetry::gps::latitude);
+		max7456::puts (x, y, _buffer);
 	}
 
 }  // namespace gps_lon
@@ -277,20 +336,12 @@ namespace horizon
 
 	const char __name [] PROGMEM = "Horizon";
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		uint8_t r = x + PANEL_HORIZON_WIDTH - 1;
-		uint8_t c = y + PANEL_HORIZON_HEIGHT / 2;
-		for (uint8_t i = y; i < y + PANEL_HORIZON_HEIGHT; i ++)
-		{
-			max7456::put (x, i, i == c ? PANEL_HORIZON_LEFT_CENTER : PANEL_HORIZON_LEFT_BORDER);
-			max7456::put (r, i, i == c ? PANEL_HORIZON_RIGHT_CENTER : PANEL_HORIZON_RIGHT_BORDER);
-		}
+	uint8_t _buffer [_PAN_HORZ_INT_WIDTH];
 
+	void update ()
+	{
 		// code below was taken from minoposd
-		//int16_t pitch_line = round (tan (-_RADIAN * telemetry::attitude::pitch) * _PAN_HORZ_LINES);
 		int16_t pitch_line = tan (-_RADIAN * telemetry::attitude::pitch) * _PAN_HORZ_LINES;
-		//int32_t roll = tan (_RADIAN * telemetry::attitude::roll) * 1000000;
 		float roll = tan (_RADIAN * telemetry::attitude::roll);
 		for (uint8_t col = 1; col <= _PAN_HORZ_INT_WIDTH; col ++)
 		{
@@ -303,10 +354,31 @@ namespace horizon
 			{
 				int8_t row = PANEL_HORIZON_HEIGHT - ((hit - 1) / _PAN_HORZ_CHAR_LINES);
 				int8_t subval = (hit - (_PAN_HORZ_TOTAL_LINES - row * _PAN_HORZ_CHAR_LINES + 1)) * _PAN_HORZ_VRES / _PAN_HORZ_CHAR_LINES ;
-				//if (subval == 0) subval = 1;
-				if (subval == 8) max7456::put (x + col, y + row - 2, PANEL_HORIZON_TOP);
-				max7456::put (x + col, y + row - 1, PANEL_HORIZON_LINE + subval);
+				_buffer [col - 1] = (row - 1) << 4 | subval;
 			}
+			else _buffer [col - 1] = 0xff;
+		}
+	}
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		uint8_t r = x + PANEL_HORIZON_WIDTH - 1;
+		uint8_t c = y + PANEL_HORIZON_HEIGHT / 2;
+		for (uint8_t i = y; i < y + PANEL_HORIZON_HEIGHT; i ++)
+		{
+			max7456::put (x, i, i == c ? PANEL_HORIZON_LEFT_CENTER : PANEL_HORIZON_LEFT_BORDER);
+			max7456::put (r, i, i == c ? PANEL_HORIZON_RIGHT_CENTER : PANEL_HORIZON_RIGHT_BORDER);
+		}
+
+		for (uint8_t i = 0; i < _PAN_HORZ_INT_WIDTH; i ++)
+		{
+			if (_buffer [i] == 0xff) continue;
+
+			uint8_t row = _buffer [i] >> 4;
+			uint8_t subval = _buffer [i] & 0x0f;
+
+			if (subval == _PAN_HORZ_VRES - 1) max7456::put (x + i + 1, y + row - 2, PANEL_HORIZON_TOP);
+			max7456::put (x + i + 1, y + row - 1, PANEL_HORIZON_LINE + subval);
 		}
 	}
 
@@ -317,10 +389,17 @@ namespace throttle
 
 	const char __name [] PROGMEM = "Throttle";
 
+	char _buffer [7];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("\x87%d%%"), telemetry::input::throttle);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\x87%d%%"), telemetry::input::throttle);
+		max7456::puts (x, y, _buffer);
 	}
 
 }  // namespace throttle
@@ -330,10 +409,17 @@ namespace ground_speed
 
 	const char __name [] PROGMEM = "GroundSpeed";
 
+	char _buffer [7];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("\x12%d%\x8d"), telemetry::stable::ground_speed);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\x12%d%\x8d"), telemetry::stable::ground_speed);
+		max7456::puts (x, y, _buffer);
 	}
 
 }  // namespace ground_speed
@@ -343,6 +429,14 @@ namespace battery_voltage
 
 	const char __name [] PROGMEM = "BatVoltage";
 
+	char _buffer [7];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("%.2f\x8e"), telemetry::battery::voltage);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
 		// TODO : change battery icon depending on voltage
@@ -350,8 +444,7 @@ namespace battery_voltage
 			telemetry::messages::battery_low ? 0xf4 : 0xf7,
 			telemetry::messages::battery_low ? MAX7456_ATTR_BLINK : 0
 		);
-		max7456::open (x + 1, y);
-		fprintf_P (&max7456::stream, PSTR ("%.2f\x8e"), telemetry::battery::voltage);
+		max7456::puts (x + 1, y, _buffer);
 	}
 
 }  // namespace battery_voltage
@@ -361,10 +454,17 @@ namespace battery_current
 
 	const char __name [] PROGMEM = "BatCurrent";
 
+	char _buffer [8];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("\xfa%.2f\x8f"), telemetry::battery::current);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\xfa%.2f\x8f"), telemetry::battery::current);
+		max7456::puts (x, y, _buffer);
 	}
 
 }  // namespace battery_current
@@ -374,10 +474,17 @@ namespace battery_consumed
 
 	const char __name [] PROGMEM = "BatConsumed";
 
+	char _buffer [8];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("\xfb%u\x82"), (uint16_t) telemetry::battery::consumed);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::open (x, y);
-		fprintf_P (&max7456::stream, PSTR ("\xfb%u\x82"), (uint16_t) telemetry::battery::consumed);
+		max7456::puts (x, y, _buffer);
 	}
 
 }  // namespace battery_consumed
@@ -387,50 +494,27 @@ namespace battery_consumed
 namespace panel
 {
 
-const panel_draw_t panels [] PROGMEM = {
-	osd::__panels::alt::draw,
-	osd::__panels::climb::draw,
-	osd::__panels::flight_mode::draw,
-	osd::__panels::arming_state::draw,
-	osd::__panels::connection_state::draw,
-	osd::__panels::flight_time::draw,
-	osd::__panels::roll::draw,
-	osd::__panels::pitch::draw,
-	osd::__panels::gps_state::draw,
-	osd::__panels::gps_lat::draw,
-	osd::__panels::gps_lon::draw,
-	osd::__panels::horizon::draw,
-	osd::__panels::throttle::draw,
-	osd::__panels::ground_speed::draw,
-	osd::__panels::battery_voltage::draw,
-	osd::__panels::battery_current::draw,
-	osd::__panels::battery_consumed::draw,
-};
+#define _declare_panel(NS) { osd::__panels:: NS ::__name, osd::__panels:: NS ::update, osd::__panels:: NS ::draw }
 
-const char * const panel_names [] PROGMEM = {
-	osd::__panels::alt::__name,
-	osd::__panels::climb::__name,
-	osd::__panels::flight_mode::__name,
-	osd::__panels::arming_state::__name,
-	osd::__panels::connection_state::__name,
-	osd::__panels::flight_time::__name,
-	osd::__panels::roll::__name,
-	osd::__panels::pitch::__name,
-	osd::__panels::gps_state::__name,
-	osd::__panels::gps_lat::__name,
-	osd::__panels::gps_lon::__name,
-	osd::__panels::horizon::__name,
-	osd::__panels::throttle::__name,
-	osd::__panels::ground_speed::__name,
-	osd::__panels::battery_voltage::__name,
-	osd::__panels::battery_current::__name,
-	osd::__panels::battery_consumed::__name,
+const panel_t panels [] PROGMEM = {
+	_declare_panel (alt),
+	_declare_panel (climb),
+	_declare_panel (flight_mode),
+	_declare_panel (arming_state),
+	_declare_panel (connection_state),
+	_declare_panel (flight_time),
+	_declare_panel (roll),
+	_declare_panel (pitch),
+	_declare_panel (gps_state),
+	_declare_panel (gps_lat),
+	_declare_panel (gps_lon),
+	_declare_panel (horizon),
+	_declare_panel (throttle),
+	_declare_panel (ground_speed),
+	_declare_panel (battery_voltage),
+	_declare_panel (battery_current),
+	_declare_panel (battery_consumed),
 };
-
-void draw (uint8_t panel, uint8_t x, uint8_t y)
-{
-	((panel_draw_t) pgm_read_word (&panels [panel])) (x, y);
-}
 
 }  // namespace panels
 
