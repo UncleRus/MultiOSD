@@ -24,6 +24,7 @@ namespace osd
 
 #define OSD_EEPROM_SWITCH             _eeprom_byte (OSD_EEPROM_OFFSET)
 #define OSD_EEPROM_SWITCH_RAW_CHANNEL _eeprom_byte (OSD_EEPROM_OFFSET + 1)
+#define OSD_EEPROM_SCREENS            _eeprom_byte (OSD_EEPROM_OFFSET + 2)
 
 #ifndef OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT
 #	define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6
@@ -32,18 +33,23 @@ namespace osd
 static uint8_t _switch;
 static uint8_t _channel;
 static uint8_t _screen;
+static uint8_t _screens_enabled;
+static uint8_t _raw_lvl_size;
 static bool _visible;
 
-#if OSD_SCREENS > 1
+#if (OSD_MAX_SCREENS <= 0) || (OSD_MAX_SCREENS > 8)
+#	error OSD_MAX_SCREENS must be > 0 and < 9
+#endif
+
+#if OSD_MAX_SCREENS > 1
 
 #define _OSD_RAW_LVL_RANGE (OSD_RAW_CHANNEL_MAX - OSD_RAW_CHANNEL_MIN)
-#define _OSD_RAW_LVL_SIZE (_OSD_RAW_LVL_RANGE / OSD_SCREENS)
 
 uint8_t _get_screen (uint16_t raw)
 {
 	if (raw < OSD_RAW_CHANNEL_MIN) raw = OSD_RAW_CHANNEL_MIN;
 	if (raw > OSD_RAW_CHANNEL_MAX) raw = OSD_RAW_CHANNEL_MAX;
-	return (raw - OSD_RAW_CHANNEL_MIN) / _OSD_RAW_LVL_SIZE;
+	return (raw - OSD_RAW_CHANNEL_MIN) / _raw_lvl_size;
 }
 
 bool _check_input ()
@@ -56,7 +62,7 @@ bool _check_input ()
 		? telemetry::input::flight_mode_switch
 		: _get_screen (telemetry::input::channels [_channel]);
 
-	if (_screen >= OSD_SCREENS) _screen = OSD_SCREENS - 1;
+	if (_screen >= _screens_enabled) _screen = _screens_enabled - 1;
 
 	return _screen != old_screen;
 }
@@ -64,18 +70,14 @@ bool _check_input ()
 
 void main ()
 {
-//	uint8_t draw_interval = max7456::mode == MAX7456_MODE_PAL ? OSD_DRAW_INTERVAL_PAL : OSD_DRAW_INTERVAL_NTSC;
-//	uint32_t draw_time = 0;
-
 	_visible = true;
 	screen::load (_screen);
 
 	while (true)
 	{
-		//uint32_t ticks = timer::ticks ();
 		bool updated = telemetry::update ();
-#if OSD_SCREENS > 1
-		if (_check_input ())
+#if OSD_MAX_SCREENS > 1
+		if (_screens_enabled > 1 && _check_input ())
 		{
 			screen::load (_screen);
 			updated = true;
@@ -84,12 +86,7 @@ void main ()
 		if (updated)
 		{
 			screen::update ();
-			if (_visible)// && ticks >= draw_time)
-			{
-
-				//draw_time = ticks + draw_interval;
-				screen::draw ();
-			}
+			if (_visible) screen::draw ();
 		}
 	}
 }
@@ -98,6 +95,9 @@ void init ()
 {
 	_switch = eeprom_read_byte (OSD_EEPROM_SWITCH);
 	_channel = eeprom_read_byte (OSD_EEPROM_SWITCH_RAW_CHANNEL);
+	_screens_enabled = eeprom_read_byte (OSD_EEPROM_SCREENS);
+	if (_screens_enabled )
+	_raw_lvl_size = _OSD_RAW_LVL_RANGE / _screens_enabled;
 }
 
 namespace settings
@@ -105,13 +105,12 @@ namespace settings
 
 	void reset ()
 	{
-		eeprom_update_byte (OSD_EEPROM_SWITCH_RAW_CHANNEL, OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT);
 		eeprom_update_byte (OSD_EEPROM_SWITCH, OSD_EEPROM_SWITCH_DEFAULT);
+		eeprom_update_byte (OSD_EEPROM_SWITCH_RAW_CHANNEL, OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT);
+		eeprom_update_byte (OSD_EEPROM_SCREENS, OSD_MAX_SCREENS);
 		screen::settings::reset ();
 	}
 
 }  // namespace settings
 
 }  // namespace osd
-
-

@@ -37,7 +37,7 @@ static uint8_t _count = 0;
 
 void load (uint8_t num)
 {
-	if (num >= OSD_SCREENS) num = 0;
+	if (num >= OSD_MAX_SCREENS) num = 0;
 
 	uint8_t *offset = _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (_panel_pos_t) * OSD_SCREEN_PANELS);
 
@@ -101,7 +101,7 @@ const _panel_pos_t _default_screen_0 [] PROGMEM = {
 	{0xff, 0xff, 0xff}
 };
 
-#if OSD_SCREENS > 1
+#if OSD_MAX_SCREENS > 1
 const _panel_pos_t _default_screen_1 [] PROGMEM = {
 	{OSD_PANEL_CONNECTION_STATE, 0, 0},
 	{OSD_PANEL_ARMING_STATE, 3, 0},
@@ -121,7 +121,7 @@ const _panel_pos_t _default_screen_1 [] PROGMEM = {
 };
 #endif
 
-#if OSD_SCREENS > 2
+#if OSD_MAX_SCREENS > 2
 const _panel_pos_t _default_screen_2 [] PROGMEM = {
 	{OSD_PANEL_CONNECTION_STATE, 0, 0},
 	{OSD_PANEL_ARMING_STATE, 3, 0},
@@ -156,10 +156,10 @@ void _reset_screen (uint8_t num, const _panel_pos_t screen [], uint8_t len)
 void reset ()
 {
 	_reset_screen (0, _default_screen_0, sizeof (_default_screen_0) / sizeof (_panel_pos_t));
-#if OSD_SCREENS > 1
+#if OSD_MAX_SCREENS > 1
 	_reset_screen (1, _default_screen_1, sizeof (_default_screen_1) / sizeof (_panel_pos_t));
 #endif
-#if OSD_SCREENS > 2
+#if OSD_MAX_SCREENS > 2
 	_reset_screen (2, _default_screen_2, sizeof (_default_screen_2) / sizeof (_panel_pos_t));
 #endif
 }

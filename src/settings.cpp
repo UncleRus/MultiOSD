@@ -16,13 +16,14 @@
 #include "lib/max7456/max7456.h"
 #include "telemetry/telemetry.h"
 #include "osd/osd.h"
+#include "config.h"
 
 namespace settings
 {
 
 void init ()
 {
-	if (eeprom_read_word (NULL) != EEPROM_HEADER)
+	if (eeprom_read_word (NULL) != EEPROM_HEADER || eeprom_read_word ((uint16_t *) 2) != VERSION)
 		reset ();
 }
 
@@ -33,6 +34,7 @@ void reset ()
 	osd::settings::reset ();
 
 	eeprom_write_word (NULL, EEPROM_HEADER);
+	eeprom_write_word ((uint16_t *) 2, VERSION);
 }
 
 }

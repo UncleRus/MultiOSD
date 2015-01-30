@@ -37,7 +37,7 @@
 /*
  * OSD config
  */
-#define OSD_SCREENS 3				// each screen will consume (OSD_SCREEN_PANELS * 3) bytes in EEPROM
+#define OSD_MAX_SCREENS 8			// each screen will consume (OSD_SCREEN_PANELS * 3) bytes in EEPROM
 #define OSD_SCREEN_PANELS 24		// (OSD_SCREEN_PANELS * 3) bytes in SRAM
 #define OSD_DRAW_INTERVAL_PAL  40	// 1000ms / 25fps
 #define OSD_DRAW_INTERVAL_NTSC 33	// 1000ms / 29.97fps

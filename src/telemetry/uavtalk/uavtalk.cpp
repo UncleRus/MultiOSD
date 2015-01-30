@@ -117,6 +117,15 @@ void send_gcs_telemetry_stats (uint8_t status)
 	send (h, data, _UT_GCSTELEMETRYSTATS_LENGTH);
 }
 
+void request_flight_status ()
+{
+	header_t h;
+	h.msg_type = _UT_TYPE_OBJ_REQ;
+	h.length = UAVTALK_HEADER_LEN;
+	h.obj_id = UAVTALK_FLIGHTSTATUS_OBJID;
+	send (h, NULL, 0);
+}
+
 static uint8_t _state = _UTPS_WAIT;
 static uint8_t _crc = 0;
 static uint8_t _step = 0;
@@ -240,6 +249,8 @@ inline uint8_t _respond_fts (uint8_t state)
 
 	if (state == _UT_TELEMETRY_STATE_HANDSHAKE_ACK)
 		send_gcs_telemetry_stats (_UT_TELEMETRY_STATE_CONNECTED);
+
+	request_flight_status ();
 
 	return CONNECTION_STATE_CONNECTED;
 }
