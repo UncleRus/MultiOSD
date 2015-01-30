@@ -14,6 +14,7 @@
  */
 #include "telemetry.h"
 #include "../config.h"
+#include <avr/pgmspace.h>
 
 #ifdef TELEMETRY_MODULES_UAVTALK
 #	include "uavtalk/uavtalk.h"
@@ -136,6 +137,18 @@ bool update ()
 	return res;
 }
 
+void fprintf_build (FILE *stream, char delimeter)
+{
+#ifdef TELEMETRY_MODULES_UAVTALK
+	fprintf_P (stream, PSTR ("UAVTalk%c"), delimeter);
+#endif
+#ifdef TELEMETRY_MODULES_ADC_BATTERY
+	fprintf_P (stream, PSTR ("ADCBatt%c"), delimeter);
+#endif
+#ifdef TELEMETRY_MODULES_I2C_BARO
+	fprintf_P (stream, PSTR ("I2CBaro%c"), delimeter);
+#endif
+}
 
 namespace settings
 {
@@ -148,8 +161,11 @@ void reset ()
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 	adc_battery::settings::reset ();
 #endif
+#ifdef TELEMETRY_MODULES_I2C_BARO
+	i2c_baro::settings::reset ();
+#endif
 }
 
-}
+}  // namespace settings
 
-}
+}  // namespace telemetry

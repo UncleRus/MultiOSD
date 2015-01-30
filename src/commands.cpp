@@ -1,13 +1,28 @@
+/*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include "commands.h"
 #include <avr/pgmspace.h>
 #include <util/delay.h>
+#include <stdlib.h>
 #include "config.h"
 #include "lib/console/console.h"
 #include "lib/uart/uart.h"
 #include "lib/max7456/max7456.h"
 #include "settings.h"
-#include <stdlib.h>
 #include "osd/panel.h"
+#include "telemetry/telemetry.h"
 
 namespace console
 {
@@ -261,22 +276,27 @@ void exec ()
 
 }  // namespace eeprom
 
-namespace panels
+namespace info
 {
 
-const char __cmd [] PROGMEM = "panels";
+const char __cmd [] PROGMEM = "info";
 
 void exec ()
 {
+	fprintf_P (&CONSOLE_UART::stream, PSTR ("VERSION: %04u\r\n"), VERSION);
+	CONSOLE_UART::send_string_p (PSTR ("MODULES: "));
+	telemetry::fprintf_build (&CONSOLE_UART::stream, ' ');
+	console::eol ();
+	CONSOLE_UART::send_string_p (PSTR ("PANELS:\r\n"));
 	for (uint8_t i = 0; i < OSD_PANELS_COUNT; i ++)
 	{
-		fprintf_P (&CONSOLE_UART::stream, PSTR ("%3u: "), i);
+		fprintf_P (&CONSOLE_UART::stream, PSTR ("%03u: "), i);
 		CONSOLE_UART::send_string_p (osd::panel::name_p (i));
 		console::eol ();
 	}
 }
 
-}  // namespace panels
+}  // namespace info
 
 #define _cmd_is_P(x) (!strncasecmp_P (command, x, size))
 
@@ -289,7 +309,7 @@ void process (const char *cmd)
 	if      (_cmd_is_P (font::__cmd))   font::exec ();
 	else if (_cmd_is_P (reset::__cmd))  reset::exec ();
 	else if (_cmd_is_P (eeprom::__cmd)) eeprom::exec ();
-	else if (_cmd_is_P (panels::__cmd)) panels::exec ();
+	else if (_cmd_is_P (info::__cmd))   info::exec ();
 	else if (_cmd_is_P (PSTR ("exit"))) stop ();
 
 	else CONSOLE_UART::send_string_p (PSTR ("Invalid command"));

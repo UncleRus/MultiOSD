@@ -16,6 +16,7 @@
 #define TELEMETRY_TELEMETRY_H_
 
 #include <stdint.h>
+#include <stdio.h>
 
 #define GPS_STATE_NO_FIX	0
 #define GPS_STATE_FIXING	1
@@ -118,16 +119,16 @@ namespace messages
 	extern bool rssi_low;
 }
 
-// init non-uavtalk telemetry modules
 void init ();
-// update from non-uavtalk telemetry modules
 bool update ();
+
+void fprintf_build (FILE *stream, char delimeter);
 
 namespace settings
 {
 	void reset ();
-}
+}  // namespace settings
 
-}
+}  // namespace telemetry
 
 #endif /* TELEMETRY_TELEMETRY_H_ */

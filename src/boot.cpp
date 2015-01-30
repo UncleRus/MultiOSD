@@ -4,6 +4,8 @@
 #include "lib/timer/timer.h"
 #include "lib/uart/uart.h"
 #include "lib/max7456/max7456.h"
+#include "osd/osd.h"
+#include "telemetry/telemetry.h"
 
 #define _BOOT_LOGO_WIDTH 5
 #define _BOOT_LOGO_HEIGHT 2
@@ -29,28 +31,20 @@ void _get_cmd (char *buf, uint8_t len, uint16_t timeout)
 
 bool show ()
 {
-	// boot sequence
 	max7456::clear ();
 
-	max7456::open_hcenter (18, 1);
-	fprintf_P (&max7456::stream, PSTR ("MIN_RAW_OSD v.%04u"), VERSION);
+	max7456::open (1, 1);
+	fprintf_P (&max7456::stream, PSTR ("MIN RAW OSD v.%04u"), VERSION);
+	for (uint8_t x = 1; x < max7456::right; x ++)
+		max7456::put (x, 2, 0x1a);
 
-	max7456::open_center (_BOOT_LOGO_WIDTH, _BOOT_LOGO_HEIGHT);
-	fprintf_P (&max7456::stream, PSTR ("\xBA\xBB\xBC\xBD\xBE\n\xCA\xCB\xCC\xCD\xCE"));
+	max7456::puts_p (2, 4, PSTR ("\xfc modules:"));
+	max7456::open (13, 4);
+	telemetry::fprintf_build (&max7456::stream, '\n');
 
-	max7456::open (1, max7456::bottom - 1);
-	fprintf_P (&max7456::stream, PSTR ("send \""BOOT_CONFIG_CODE"\" or wait %us"), BOOT_CONFIG_WAIT_TIME / 1000);
-
-	max7456::open (1, 3);
-#ifdef TELEMETRY_MODULES_UAVTALK
-	fprintf_P (&max7456::stream, PSTR ("\xfc""UAVtalk\n"));
-#endif
-#ifdef TELEMETRY_MODULES_ADC_BATTERY
-	fprintf_P (&max7456::stream, PSTR ("\xfa""ADCbatt\n"));
-#endif
-#ifdef TELEMETRY_MODULES_I2C_BARO
-	fprintf_P (&max7456::stream, PSTR ("\x85""I2Cbaro\n"));
-#endif
+	osd::draw::rect (3, max7456::bottom - 3, 24, 3);
+	max7456::open (4, max7456::bottom - 2);
+	fprintf_P (&max7456::stream, PSTR ("Send \""BOOT_CONFIG_CODE"\" or wait %us"), BOOT_CONFIG_WAIT_TIME / 1000);
 
 	CONSOLE_UART::send_string_p (PSTR ("READY\r\n"));
 
