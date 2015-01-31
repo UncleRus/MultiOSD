@@ -538,14 +538,18 @@ namespace home_direction
 
 	const char __name [] PROGMEM = "HomeDirection";
 
-	void update () {}
+	static uint8_t _arrow;
+
+	void update ()
+	{
+		_arrow = _PAN_HD_ARROWS + telemetry::home::direction * 2;
+	}
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		//if (telemetry::home::state != HOME_STATE_FIXED) return;
-		uint8_t arrow = _PAN_HD_ARROWS + telemetry::home::direction * 2;
-		max7456::put (x, y, arrow);
-		max7456::put (x + 1, y, arrow + 1);
+		if (telemetry::home::state != HOME_STATE_FIXED) return;
+		max7456::put (x, y, _arrow);
+		max7456::put (x + 1, y, _arrow + 1);
 	}
 
 }  // namespace home_direction
