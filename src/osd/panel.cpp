@@ -377,8 +377,8 @@ namespace horizon
 			uint8_t row = _buffer [i] >> 4;
 			uint8_t subval = _buffer [i] & 0x0f;
 
-			if (subval == _PAN_HORZ_VRES - 1) max7456::put (x + i + 1, y + row - 2, PANEL_HORIZON_TOP);
-			max7456::put (x + i + 1, y + row - 1, PANEL_HORIZON_LINE + subval);
+			if (subval == _PAN_HORZ_VRES - 1) max7456::put (x + i + 1, y + row - 1, PANEL_HORIZON_TOP);
+			max7456::put (x + i + 1, y + row, PANEL_HORIZON_LINE + subval);
 		}
 	}
 
@@ -413,7 +413,7 @@ namespace ground_speed
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\x12%d%\x8d"), telemetry::stable::ground_speed);
+		sprintf_P (_buffer, PSTR ("\x0a%d\x81"), (int16_t) (telemetry::stable::ground_speed * 3.6));
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
@@ -489,6 +489,67 @@ namespace battery_consumed
 
 }  // namespace battery_consumed
 
+namespace rssi_flag
+{
+
+	const char __name [] PROGMEM = "RSSIFlag";
+
+	void update () {}
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		if (telemetry::messages::rssi_low) max7456::put (x, y, 0xb4, MAX7456_ATTR_BLINK);
+	}
+
+}  // namespace rssi_flag
+
+namespace home_distance
+{
+
+	const char __name [] PROGMEM = "HomeDistance";
+
+	char _buffer [8];
+	uint8_t _attr, _i_attr;
+
+	void update ()
+	{
+		_attr = telemetry::home::state == HOME_STATE_NO_FIX ? MAX7456_ATTR_BLINK : 0;
+		_i_attr = telemetry::home::state != HOME_STATE_FIXED ? MAX7456_ATTR_BLINK : 0;
+		if (_i_attr)
+		{
+			sprintf_P (_buffer, PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("---\x8d"));
+			return;
+		}
+		sprintf_P (_buffer, PSTR ("%u\x8d"), telemetry::home::distance);
+	}
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		max7456::put (x, y, 0x12, _i_attr);
+		max7456::puts (x + 1, y, _buffer, _attr);
+	}
+
+}  // namespace home_distance
+
+namespace home_direction
+{
+
+#define _PAN_HD_ARROWS 0x90
+
+	const char __name [] PROGMEM = "HomeDirection";
+
+	void update () {}
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		//if (telemetry::home::state != HOME_STATE_FIXED) return;
+		uint8_t arrow = _PAN_HD_ARROWS + telemetry::home::direction * 2;
+		max7456::put (x, y, arrow);
+		max7456::put (x + 1, y, arrow + 1);
+	}
+
+}  // namespace home_direction
+
 }  // namespace __panels
 
 namespace panel
@@ -514,6 +575,9 @@ const panel_t panels [] PROGMEM = {
 	_declare_panel (battery_voltage),
 	_declare_panel (battery_current),
 	_declare_panel (battery_consumed),
+	_declare_panel (rssi_flag),
+	_declare_panel (home_distance),
+	_declare_panel (home_direction),
 };
 
 }  // namespace panels

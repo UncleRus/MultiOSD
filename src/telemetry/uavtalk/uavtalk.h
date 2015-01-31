@@ -18,8 +18,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define CC3D 0
-#define REVO 1
+// FIXME: real openpilot fw targets
+#define UAVTALK_BOARD_CC3D 0
+#define UAVTALK_BOARD_REVO 1
 
 #include "../../config.h"
 

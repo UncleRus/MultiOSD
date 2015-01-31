@@ -70,8 +70,10 @@ bool _check_input ()
 
 void main ()
 {
+	// TODO: hide and show
 	_visible = true;
-	screen::load (_screen);
+
+	screen::load (0);
 
 	while (true)
 	{
@@ -96,7 +98,7 @@ void init ()
 	_switch = eeprom_read_byte (OSD_EEPROM_SWITCH);
 	_channel = eeprom_read_byte (OSD_EEPROM_SWITCH_RAW_CHANNEL);
 	_screens_enabled = eeprom_read_byte (OSD_EEPROM_SCREENS);
-	if (_screens_enabled )
+	if (_screens_enabled > OSD_MAX_SCREENS) _screens_enabled = OSD_MAX_SCREENS;
 	_raw_lvl_size = _OSD_RAW_LVL_RANGE / _screens_enabled;
 }
 

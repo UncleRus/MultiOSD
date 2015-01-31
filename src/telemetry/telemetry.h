@@ -45,6 +45,30 @@
 #define CONNECTION_STATE_ESTABLISHING	1
 #define CONNECTION_STATE_CONNECTED		2
 
+#define HOME_STATE_NO_FIX	0
+#define HOME_STATE_FIXING	1
+#define HOME_STATE_FIXED	2
+
+/*
+ * Direction to home. 16 rumbs clockwise: 0 - forward, 4 - right, 8 - backward, 12 - left
+ */
+#define HOME_DIR_00R 0	// 12 hours
+#define HOME_DIR_01R 1
+#define HOME_DIR_02R 2
+#define HOME_DIR_03R 3
+#define HOME_DIR_04R 4	// 3 hours
+#define HOME_DIR_05R 5
+#define HOME_DIR_06R 6
+#define HOME_DIR_07R 7
+#define HOME_DIR_08R 8	// 6 hours
+#define HOME_DIR_09R 9
+#define HOME_DIR_10R 10
+#define HOME_DIR_11R 11
+#define HOME_DIR_12R 12	// 9 hours
+#define HOME_DIR_13R 13
+#define HOME_DIR_14R 14
+#define HOME_DIR_15R 15
+
 #define INPUT_CHANNELS 9
 
 namespace telemetry
@@ -85,7 +109,7 @@ namespace gps
 	extern float longitude;
 	extern float altitude;			// meters
 	extern float speed;				// m/s
-	extern float heading;
+	extern float heading;			// degrees
 	extern int8_t sattelites;
 	extern uint8_t state;			// GPS_STATE_xxx enum
 	extern float climb;				// m/s
@@ -117,6 +141,16 @@ namespace messages
 {
 	extern bool battery_low;
 	extern bool rssi_low;
+}
+
+namespace home
+{
+	extern uint8_t state;			// HOME_STATE_xxx enum
+	extern float distance;			// meters
+	extern uint8_t direction;		// HOME_DIR_xxx enum
+
+	void fix ();					// try to fix home
+	void update (); 				// read gps and recalc
 }
 
 void init ();

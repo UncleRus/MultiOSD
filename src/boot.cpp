@@ -42,8 +42,8 @@ bool show ()
 	max7456::open (13, 4);
 	telemetry::fprintf_build (&max7456::stream, '\n');
 
-	osd::draw::rect (3, max7456::bottom - 3, 24, 3);
-	max7456::open (4, max7456::bottom - 2);
+	osd::draw::rect (2, max7456::bottom - 3, 26, 3);
+	max7456::open (3, max7456::bottom - 2);
 	fprintf_P (&max7456::stream, PSTR ("Send \""BOOT_CONFIG_CODE"\" or wait %us"), BOOT_CONFIG_WAIT_TIME / 1000);
 
 	CONSOLE_UART::send_string_p (PSTR ("READY\r\n"));

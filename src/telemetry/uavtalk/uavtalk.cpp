@@ -70,11 +70,14 @@ static const uint8_t _crc_table [256] PROGMEM =
 #define _UT_TELEMETRY_STATE_HANDSHAKE_ACK 2
 #define _UT_TELEMETRY_STATE_CONNECTED     3
 
-#define UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE _eeprom_float (UAVTALK_EEPROM_OFFSET)
+#define UAVTALK_EEPROM_BOARD _eeprom_byte (UAVTALK_EEPROM_OFFSET)
+#define UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE _eeprom_float (UAVTALK_EEPROM_OFFSET + 1)
 
-#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_ADC_BATTERY)
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 static float _battery_low_voltage;
 #endif
+
+static uint8_t _board;
 
 static uint8_t __attribute__ ((noinline)) _get_crc (uint8_t b)
 {
@@ -83,7 +86,8 @@ static uint8_t __attribute__ ((noinline)) _get_crc (uint8_t b)
 
 void init ()
 {
-#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_ADC_BATTERY)
+	_board = eeprom_read_byte (UAVTALK_EEPROM_BOARD);
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 	_battery_low_voltage = eeprom_read_float (UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE);
 #endif
 }
@@ -309,34 +313,48 @@ bool update ()
 				telemetry::gps::speed 		= buffer.get<float> (20);
 				telemetry::gps::state 		= buffer.data [36];
 				telemetry::gps::sattelites 	= buffer.data [37];
-#if (UAVTALK_BOARD == CC3D) && !defined (TELEMETRY_MODULES_I2C_BARO)
-				telemetry::stable::altitude = telemetry::gps::altitude;
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
+				if (_board == UAVTALK_BOARD_CC3D)
+				{
+					telemetry::stable::altitude = telemetry::gps::altitude;
+					telemetry::home::update ();
+				}
 #endif
 				break;
 			case UAVTALK_GPSVELOCITYSENSOR_OBJID:
 				telemetry::gps::climb = -buffer.get<float> (8);
-#if (UAVTALK_BOARD == CC3D) && !defined (TELEMETRY_MODULES_I2C_BARO)
-				telemetry::stable::climb = telemetry::gps::climb;
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
+				if (_board == UAVTALK_BOARD_CC3D) telemetry::stable::climb = telemetry::gps::climb;
 #endif
 				// TODO: north/east
 				break;
-#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_ADC_BATTERY)
-			case UAVTALK_FLIGHTBATTERYSTATE_OBJID:
-				telemetry::battery::voltage = buffer.get<float> (0);
-				telemetry::battery::current = buffer.get<float> (4);
-				telemetry::battery::consumed = (uint16_t) buffer.get<float> (20);
-				telemetry::messages::battery_low = telemetry::battery::voltage < _battery_low_voltage;
-				break;
-#endif
-#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_I2C_BARO)
-			case UAVTALK_BAROSENSOR_OBJID:
-				telemetry::barometer::altitude = buffer.get<float> (0);
-				telemetry::stable::update_alt_climb (telemetry::barometer::altitude);
-				break;
-#endif
-			// TODO: more obj_id
 			default:
 				updated = false;
+		}
+		if (_board == UAVTALK_BOARD_REVO)
+		{
+			bool revo_updated = true;
+			switch (buffer.head.obj_id)
+			{
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
+				case UAVTALK_FLIGHTBATTERYSTATE_OBJID:
+					telemetry::battery::voltage = buffer.get<float> (0);
+					telemetry::battery::current = buffer.get<float> (4);
+					telemetry::battery::consumed = (uint16_t) buffer.get<float> (20);
+					telemetry::messages::battery_low = telemetry::battery::voltage < _battery_low_voltage;
+					break;
+#endif
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
+				case UAVTALK_BAROSENSOR_OBJID:
+					telemetry::barometer::altitude = buffer.get<float> (0);
+					telemetry::stable::update_alt_climb (telemetry::barometer::altitude);
+					break;
+				default:
+					revo_updated = false;
+					// TODO: REVO home position
+			}
+			updated |= revo_updated;
+#endif
 		}
 	}
 
@@ -361,7 +379,8 @@ namespace settings
 
 void reset ()
 {
-#if (UAVTALK_BOARD == REVO) && !defined (TELEMETRY_MODULES_ADC_BATTERY)
+	eeprom_write_byte (UAVTALK_EEPROM_BOARD, UAVTALK_BOARD);
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 	eeprom_write_float (UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE, UAVTALK_DEFAULT_BATTERY_LOW_VOLTAGE);
 #endif
 }

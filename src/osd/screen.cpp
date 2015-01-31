@@ -80,19 +80,23 @@ const _panel_pos_t _default_screen_0 [] PROGMEM = {
 
 	{OSD_PANEL_CONNECTION_STATE, 0, 2},
 	{OSD_PANEL_ARMING_STATE, 3, 2},
+	{OSD_PANEL_RSSI_FLAG, 23, 3},
 	{OSD_PANEL_FLIGHT_MODE, 24, 2},
 
 	{OSD_PANEL_PITCH, 1, 6},
 	{OSD_PANEL_HORIZON, 8, 6},
 	{OSD_PANEL_THROTTLE, 23, 6},
 
-	// {OSD_PANEL_GROUND_SPEED, 1, 8},
+	{OSD_PANEL_GROUND_SPEED, 1, 8},
 	{OSD_PANEL_ALT, 23, 8},
 
 	{OSD_PANEL_ROLL, 1, 10},
 	{OSD_PANEL_CLIMB, 23, 10},
 
 	{OSD_PANEL_FLIGHT_TIME, 1, 13},
+
+	{OSD_PANEL_HOME_DISTANCE, 1, 14},
+	{OSD_PANEL_HOME_DIRECTION, 14, 14},
 
 	{OSD_PANEL_BATTERY_VOLTAGE, 22, 12},
 	{OSD_PANEL_BATTERY_CURRENT, 22, 13},
@@ -105,6 +109,7 @@ const _panel_pos_t _default_screen_0 [] PROGMEM = {
 const _panel_pos_t _default_screen_1 [] PROGMEM = {
 	{OSD_PANEL_CONNECTION_STATE, 0, 0},
 	{OSD_PANEL_ARMING_STATE, 3, 0},
+	{OSD_PANEL_RSSI_FLAG, 23, 1},
 	{OSD_PANEL_FLIGHT_MODE, 24, 0},
 
 	{OSD_PANEL_PITCH, 1, 6},
@@ -113,6 +118,7 @@ const _panel_pos_t _default_screen_1 [] PROGMEM = {
 	{OSD_PANEL_HORIZON, 8, 6},
 
 	{OSD_PANEL_FLIGHT_TIME, 1, 13},
+	{OSD_PANEL_HOME_DISTANCE, 1, 14},
 
 	{OSD_PANEL_BATTERY_VOLTAGE, 22, 13},
 	{OSD_PANEL_BATTERY_CURRENT, 22, 14},
@@ -125,6 +131,7 @@ const _panel_pos_t _default_screen_1 [] PROGMEM = {
 const _panel_pos_t _default_screen_2 [] PROGMEM = {
 	{OSD_PANEL_CONNECTION_STATE, 0, 0},
 	{OSD_PANEL_ARMING_STATE, 3, 0},
+	{OSD_PANEL_RSSI_FLAG, 23, 1},
 	{OSD_PANEL_FLIGHT_MODE, 24, 0},
 
 	{OSD_PANEL_PITCH, 1, 6},
