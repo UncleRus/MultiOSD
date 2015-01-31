@@ -349,12 +349,12 @@ bool update ()
 					telemetry::barometer::altitude = buffer.get<float> (0);
 					telemetry::stable::update_alt_climb (telemetry::barometer::altitude);
 					break;
+#endif
 				default:
 					revo_updated = false;
 					// TODO: REVO home position
 			}
 			updated |= revo_updated;
-#endif
 		}
 	}
 

@@ -50,24 +50,24 @@
 #define HOME_STATE_FIXED	2
 
 /*
- * Direction to home. 16 rumbs clockwise: 0 - forward, 4 - right, 8 - backward, 12 - left
+ * Direction to home. 16 rhumbs clockwise: 0 - forward, 4 - right, 8 - backward, 12 - left
  */
-#define HOME_DIR_00R 0	// 12 hours
-#define HOME_DIR_01R 1
-#define HOME_DIR_02R 2
-#define HOME_DIR_03R 3
-#define HOME_DIR_04R 4	// 3 hours
-#define HOME_DIR_05R 5
-#define HOME_DIR_06R 6
-#define HOME_DIR_07R 7
-#define HOME_DIR_08R 8	// 6 hours
-#define HOME_DIR_09R 9
-#define HOME_DIR_10R 10
-#define HOME_DIR_11R 11
-#define HOME_DIR_12R 12	// 9 hours
-#define HOME_DIR_13R 13
-#define HOME_DIR_14R 14
-#define HOME_DIR_15R 15
+#define HOME_DIR_N   0	// 12 hours
+#define HOME_DIR_NNE 1
+#define HOME_DIR_NE  2
+#define HOME_DIR_ENE 3
+#define HOME_DIR_E   4	// 3 hours
+#define HOME_DIR_ESE 5
+#define HOME_DIR_SE  6
+#define HOME_DIR_SSE 7
+#define HOME_DIR_S   8	// 6 hours
+#define HOME_DIR_SSW 9
+#define HOME_DIR_SW  10
+#define HOME_DIR_WSW 11
+#define HOME_DIR_W   12	// 9 hours
+#define HOME_DIR_WNW 13
+#define HOME_DIR_NW  14
+#define HOME_DIR_NNW 15
 
 #define INPUT_CHANNELS 9
 

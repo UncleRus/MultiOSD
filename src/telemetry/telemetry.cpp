@@ -130,7 +130,7 @@ namespace home
 	uint8_t state = HOME_STATE_NO_FIX;
 
 	float distance = 0;
-	uint8_t direction = HOME_DIR_00R;
+	uint8_t direction = HOME_DIR_N;
 
 	float longitude;
 	float latitude;
