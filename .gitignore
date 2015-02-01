@@ -32,5 +32,4 @@
 *.map
 *.elf
 *.epp
-/Release/
-/Debug/
+*.d
