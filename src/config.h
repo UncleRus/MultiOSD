@@ -15,7 +15,7 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define VERSION 0001
+#define VERSION 0002
 
 /*
  * Telemetry modules config
@@ -32,12 +32,15 @@
  */
 #define UAVTALK_UART uart0
 #define UAVTALK_VERSION 0x20
-#define UAVTALK_VERSION_RELEASE 141001
+#ifndef UAVTALK_VERSION_RELEASE
+#	define UAVTALK_VERSION_RELEASE 141001
+#endif
 #define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D				// default board
 #define UAVTALK_CONNECTION_TIMEOUT 10000				// ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500	// ms
 // Home distance/direction calculation: 0 - flight controller (REVO only), 1 - min_raw_osd by GPS
-#define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 1
+// Overrided by board setting
+#define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 0
 /*
  * OSD config
  */
@@ -99,12 +102,6 @@
 #define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 1		// ADC current sensor enabled
 #define ADC_BATTERY_DEFAULT_VOLTAGE_DIVIDER 4.0		// max 20V (5S)
 #define ADC_BATTERY_DEFAULT_CURRENT_DIVIDER 18.0	// max 90A
-
-/*
- * TWI (I2C) config
- */
-#define MTWI_TIMEOUT 50			// ms
-#define MTWI_RX_BUFFER_SIZE 16
 
 /*
  * SPI config

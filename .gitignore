@@ -32,3 +32,4 @@
 *.map
 *.elf
 *.epp
+/Release/
