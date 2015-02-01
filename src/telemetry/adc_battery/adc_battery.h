@@ -15,19 +15,29 @@
 #ifndef TELEMETRY_ADC_BATTERY_ADC_BATTERY_H_
 #define TELEMETRY_ADC_BATTERY_ADC_BATTERY_H_
 
+#include <avr/pgmspace.h>
+
 #define ADC_BATTERY_EEPROM_OFFSET 0x12
+
+namespace telemetry
+{
+
+namespace modules
+{
 
 namespace adc_battery
 {
 
+const char __name [] PROGMEM = "ADCBattery";
+
+void reset ();
 void init ();
 bool update ();
 
-namespace settings
-{
-	void reset ();
-}
+}  // namespace adc_battery
 
-}
+}  // namespace modules
+
+}  // namespace telemetry
 
 #endif /* TELEMETRY_ADC_BATTERY_ADC_BATTERY_H_ */

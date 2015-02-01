@@ -45,7 +45,7 @@ void load (uint8_t num)
 	for (; i < OSD_SCREEN_PANELS; i ++)
 	{
 		_panels [i].panel = eeprom_read_byte (offset);
-		if (_panels [i].panel >= OSD_PANELS_COUNT)
+		if (_panels [i].panel >= osd::panel::count)
 			break;
 		_panels [i].x = eeprom_read_byte (offset + 1);
 		_panels [i].y = eeprom_read_byte (offset + 2);

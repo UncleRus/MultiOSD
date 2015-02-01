@@ -15,18 +15,8 @@
 #include "telemetry.h"
 #include "../config.h"
 #include <avr/pgmspace.h>
-
-#ifdef TELEMETRY_MODULES_UAVTALK
-#	include "uavtalk/uavtalk.h"
-#endif
-#ifdef TELEMETRY_MODULES_ADC_BATTERY
-#	include "adc_battery/adc_battery.h"
-#endif
-#ifdef TELEMETRY_MODULES_I2C_BARO
-#	include "i2c_baro/i2c_baro.h"
-#endif
-#include "../lib/timer/timer.h"
 #include <math.h>
+#include "../lib/timer/timer.h"
 
 namespace telemetry
 {
@@ -109,10 +99,24 @@ namespace stable
 
 namespace battery
 {
+	float nom_cell_voltage = BATTERY_NOM_CELL_VOLTAGE;
+	float low_cell_voltage = BATTERY_LOW_CELL_VOLTAGE;
 
-	float voltage = 0.0;
-	float current = 0.0;
+	float voltage = 0;
+	float current = 0;
 	float consumed = 0;
+	uint8_t cells = 0;
+	float cell_voltage = 0;
+
+	void update_voltage ()
+	{
+		cells = round (voltage / nom_cell_voltage);
+		if (cells)
+		{
+			cell_voltage = voltage / cells;
+			messages::battery_low = cell_voltage < low_cell_voltage;
+		}
+	}
 
 }  // namespace battery
 
@@ -147,7 +151,8 @@ namespace home
 	void update ()
 	{
 		//uint32_t ticks = timer::ticks ();
-		if (state != HOME_STATE_FIXED)
+		if (state == HOME_STATE_NO_FIX) return;
+		if (state == HOME_STATE_FIXING)
 			switch (gps::state)
 			{
 				case GPS_STATE_NO_FIX:
@@ -158,7 +163,6 @@ namespace home
 					if (state == HOME_STATE_NO_FIX) state = HOME_STATE_FIXING;
 					break;
 				case GPS_STATE_3D:
-					if (state == HOME_STATE_NO_FIX) break;
 					state = HOME_STATE_FIXED;
 					longitude = gps::longitude;
 					latitude = gps::latitude;
@@ -191,63 +195,74 @@ namespace home
 
 }  // namespace home
 
-void init ()
-{
-#ifdef TELEMETRY_MODULES_UAVTALK
-	uavtalk::init ();
-#endif
+}  // namespace telemetry
+
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
-	adc_battery::init ();
+#	include "adc_battery/adc_battery.h"
 #endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
-	i2c_baro::reset ();
+#	include "i2c_baro/i2c_baro.h"
 #endif
+#ifdef TELEMETRY_MODULES_I2C_COMPASS
+#	include "i2c_compass/i2c_compass.h"
+#endif
+#ifdef TELEMETRY_MODULES_UAVTALK
+#	include "uavtalk/uavtalk.h"
+#endif
+
+#define _declare_module(NS) { telemetry::modules:: NS ::__name, telemetry::modules:: NS ::reset, \
+	telemetry::modules:: NS ::init, telemetry::modules:: NS ::update }
+
+namespace telemetry
+{
+
+namespace modules
+{
+
+	const module_t modules [] PROGMEM = {
+#ifdef TELEMETRY_MODULES_ADC_BATTERY
+		_declare_module (adc_battery),
+#endif
+#ifdef TELEMETRY_MODULES_I2C_BARO
+		_declare_module (i2c_baro),
+#endif
+#ifdef TELEMETRY_MODULES_I2C_COMPASS
+		_declare_module (i2c_compass),
+#endif
+#ifdef TELEMETRY_MODULES_UAVTALK
+		_declare_module (uavtalk),
+#endif
+	};
+
+	const uint8_t count = sizeof (modules) / sizeof (module_t);
+
+}  // namespace modules
+
+
+void init ()
+{
+	for (uint8_t i = 0; i < modules::count; i ++)
+		modules::init (i);
 }
 
 bool update ()
 {
 	bool res = false;
-#ifdef TELEMETRY_MODULES_UAVTALK
-	res |= uavtalk::update ();
-#endif
-#ifdef TELEMETRY_MODULES_ADC_BATTERY
-	res |= adc_battery::update ();
-#endif
-#ifdef TELEMETRY_MODULES_I2C_BARO
-	res |= i2c_baro::update ();
-#endif
+	for (uint8_t i = 0; i < modules::count; i ++)
+		res |= modules::update (i);
 	return res;
-}
-
-void fprintf_build (FILE *stream, char delimeter)
-{
-#ifdef TELEMETRY_MODULES_UAVTALK
-	fprintf_P (stream, PSTR ("UAVTalk%c"), delimeter);
-#endif
-#ifdef TELEMETRY_MODULES_ADC_BATTERY
-	fprintf_P (stream, PSTR ("ADCBatt%c"), delimeter);
-#endif
-#ifdef TELEMETRY_MODULES_I2C_BARO
-	fprintf_P (stream, PSTR ("I2CBaro%c"), delimeter);
-#endif
 }
 
 namespace settings
 {
 
-void reset ()
-{
-#ifdef TELEMETRY_MODULES_UAVTALK
-	uavtalk::settings::reset ();
-#endif
-#ifdef TELEMETRY_MODULES_ADC_BATTERY
-	adc_battery::settings::reset ();
-#endif
-#ifdef TELEMETRY_MODULES_I2C_BARO
-	i2c_baro::settings::reset ();
-#endif
-}
+	void reset ()
+	{
+		for (uint8_t i = 0; i < modules::count; i ++)
+			modules::reset (i);
+	}
 
 }  // namespace settings
+
 
 }  // namespace telemetry

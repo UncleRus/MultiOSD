@@ -17,6 +17,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <avr/pgmspace.h>
 
 #define GPS_STATE_NO_FIX	0
 #define GPS_STATE_FIXING	1
@@ -132,9 +133,16 @@ namespace stable
 
 namespace battery
 {
+	extern float nom_cell_voltage;	// volts
+	extern float low_cell_voltage;	// volts
+
 	extern float voltage;			// volts
 	extern float current;			// amperes
 	extern float consumed;			// mAh
+	extern uint8_t cells;
+	extern float cell_voltage;		// volts
+
+	void update_voltage ();
 }
 
 namespace messages
@@ -160,11 +168,50 @@ namespace home
 void init ();
 bool update ();
 
-void fprintf_build (FILE *stream, char delimeter);
+namespace modules
+{
+
+	struct module_t
+	{
+		typedef void (* proc_t) ();
+		typedef bool (* update_t) ();
+
+		const char *name_p;
+		proc_t reset;
+		proc_t init;
+		update_t update;
+	};
+
+	extern const module_t modules [] PROGMEM;
+	extern const uint8_t count;
+
+	inline const char *name_p (uint8_t module)
+	{
+		return (const char *) pgm_read_ptr (&modules [module].name_p);
+	}
+
+	inline void reset (uint8_t module)
+	{
+		((module_t::proc_t) pgm_read_ptr (&modules [module].reset)) ();
+	}
+
+	inline void init (uint8_t module)
+	{
+		((module_t::proc_t) pgm_read_ptr (&modules [module].init)) ();
+	}
+
+	inline bool update (uint8_t module)
+	{
+		return ((module_t::update_t) pgm_read_ptr (&modules [module].update)) ();
+	}
+
+}
 
 namespace settings
 {
+
 	void reset ();
+
 }  // namespace settings
 
 }  // namespace telemetry

@@ -24,6 +24,12 @@
 #include "../../lib/max7456/max7456.h"
 #endif
 
+namespace telemetry
+{
+
+namespace modules
+{
+
 namespace uavtalk
 {
 
@@ -341,7 +347,12 @@ bool update ()
 					telemetry::battery::voltage = buffer.get<float> (0);
 					telemetry::battery::current = buffer.get<float> (4);
 					telemetry::battery::consumed = (uint16_t) buffer.get<float> (20);
-					telemetry::messages::battery_low = telemetry::battery::voltage < _battery_low_voltage;
+					telemetry::battery::cells = buffer.data [28];
+					if (telemetry::battery::cells)
+					{
+						telemetry::battery::cell_voltage = telemetry::battery::voltage / telemetry::battery::cells;
+						telemetry::messages::battery_low = telemetry::battery::cell_voltage < _battery_low_voltage;
+					}
 					break;
 #endif
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
@@ -388,9 +399,6 @@ void init ()
 	_internal_home_calc = eeprom_read_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC);
 }
 
-namespace settings
-{
-
 void reset ()
 {
 	eeprom_update_byte (UAVTALK_EEPROM_BOARD, UAVTALK_DEFAULT_BOARD);
@@ -400,6 +408,8 @@ void reset ()
 	eeprom_update_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC, UAVTALK_DEFAULT_INTERNAL_HOME_CALC);
 }
 
-}
+}  // namespace uavtalk
 
-}
+}  // namespace modules
+
+}  // namespace telemetry

@@ -285,10 +285,14 @@ void exec ()
 {
 	fprintf_P (&CONSOLE_UART::stream, PSTR ("VERSION: %04u\r\n"), VERSION);
 	CONSOLE_UART::send_string_p (PSTR ("MODULES: "));
-	telemetry::fprintf_build (&CONSOLE_UART::stream, ' ');
+	for (uint8_t i = 0; i < telemetry::modules::count; i ++)
+	{
+		CONSOLE_UART::send_string_p (telemetry::modules::name_p (i));
+		CONSOLE_UART::send (' ');
+	}
 	console::eol ();
 	CONSOLE_UART::send_string_p (PSTR ("PANELS:\r\n"));
-	for (uint8_t i = 0; i < OSD_PANELS_COUNT; i ++)
+	for (uint8_t i = 0; i < osd::panel::count; i ++)
 	{
 		fprintf_P (&CONSOLE_UART::stream, PSTR ("%03u: "), i);
 		CONSOLE_UART::send_string_p (osd::panel::name_p (i));

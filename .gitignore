@@ -26,5 +26,9 @@
 *.exe
 *.out
 *.app
-/Release/
-/Debug/
+
+*.lss
+*.hex
+*.map
+*.elf
+*.epp

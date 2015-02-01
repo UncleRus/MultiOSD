@@ -23,6 +23,10 @@
 #define TELEMETRY_MODULES_UAVTALK					// main telemetry module
 #define TELEMETRY_MODULES_ADC_BATTERY				// read battery params from adc
 
+
+#define BATTERY_NOM_CELL_VOLTAGE 3.7	// LiPo
+#define BATTERY_LOW_CELL_VOLTAGE 3.5
+
 /*
  * UAVTalk config
  */
@@ -32,7 +36,6 @@
 #define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D				// default board
 #define UAVTALK_CONNECTION_TIMEOUT 10000				// ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500	// ms
-#define UAVTALK_DEFAULT_BATTERY_LOW_VOLTAGE 9.9			// 3.3V/cell on 3S,
 // Home distance/direction calculation: 0 - flight controller (REVO only), 1 - min_raw_osd by GPS
 #define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 1
 /*
@@ -96,7 +99,6 @@
 #define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 1		// ADC current sensor enabled
 #define ADC_BATTERY_DEFAULT_VOLTAGE_DIVIDER 4.0		// max 20V (5S)
 #define ADC_BATTERY_DEFAULT_CURRENT_DIVIDER 18.0	// max 90A
-#define ADC_BATTERY_DEFAULT_LOW_VOLTAGE 9.9			// 3.3V/cell on 3S
 
 /*
  * TWI (I2C) config

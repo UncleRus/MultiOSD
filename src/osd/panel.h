@@ -39,8 +39,6 @@
 #define OSD_PANEL_HOME_DISTANCE       18
 #define OSD_PANEL_HOME_DIRECTION      19
 
-#define OSD_PANELS_COUNT (OSD_PANEL_HOME_DIRECTION + 1)
-
 namespace osd
 {
 
@@ -58,6 +56,7 @@ namespace panel
 	};
 
 	extern const panel_t panels [] PROGMEM;
+	extern const uint8_t count;
 
 	inline const char *name_p (uint8_t panel)
 	{

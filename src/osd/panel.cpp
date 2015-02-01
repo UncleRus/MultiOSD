@@ -69,6 +69,11 @@ namespace draw
 namespace __panels
 {
 
+#define STD_DRAW void draw (uint8_t x, uint8_t y) \
+{ \
+	max7456::puts (x, y, _buffer); \
+}
+
 
 namespace alt
 {
@@ -83,10 +88,7 @@ namespace alt
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		max7456::puts (x, y, _buffer);
-	}
+	STD_DRAW;
 
 }  // namespace alt
 
@@ -104,10 +106,7 @@ namespace climb
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		max7456::puts (x, y, _buffer);
-	}
+	STD_DRAW
 
 }  // namespace climb_rate
 
@@ -140,12 +139,18 @@ namespace flight_mode
 		_fm_rtb, _fm_land, _fm_plan, _fm_poi, _fm_acruise
 	};
 
-	void update () {}
+	const char *name;
+	uint8_t len;
+
+	void update ()
+	{
+		name = (const char *) pgm_read_ptr (&_fm [telemetry::status::flight_mode]);
+		len = strlen_P (name);
+	}
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		const char *name = (const char *) pgm_read_ptr (&_fm [telemetry::status::flight_mode]);
-		osd::draw::rect (x, y, strlen_P (name) + 2, 3);
+		osd::draw::rect (x, y, len + 2, 3);
 		max7456::puts_p (x + 1, y + 1, name);
 	}
 
@@ -198,10 +203,7 @@ namespace flight_time
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		max7456::puts (x, y, _buffer);
-	}
+	STD_DRAW
 
 }  // namespace flight_time
 
@@ -218,10 +220,7 @@ namespace roll
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		max7456::puts (x, y, _buffer);
-	}
+	STD_DRAW
 
 }  // namespace roll
 
@@ -238,10 +237,7 @@ namespace pitch
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		max7456::puts (x, y, _buffer);
-	}
+	STD_DRAW
 
 }  // namespace pitch
 
@@ -286,10 +282,7 @@ namespace gps_lat
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		max7456::puts (x, y, _buffer);
-	}
+	STD_DRAW
 
 }  // namespace gps_lat
 
@@ -306,10 +299,7 @@ namespace gps_lon
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		max7456::puts (x, y, _buffer);
-	}
+	STD_DRAW
 
 }  // namespace gps_lon
 
@@ -397,10 +387,7 @@ namespace throttle
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		max7456::puts (x, y, _buffer);
-	}
+	STD_DRAW
 
 }  // namespace throttle
 
@@ -417,10 +404,7 @@ namespace ground_speed
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		max7456::puts (x, y, _buffer);
-	}
+	STD_DRAW
 
 }  // namespace ground_speed
 
@@ -462,10 +446,7 @@ namespace battery_current
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		max7456::puts (x, y, _buffer);
-	}
+	STD_DRAW
 
 }  // namespace battery_current
 
@@ -482,10 +463,7 @@ namespace battery_consumed
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
-	void draw (uint8_t x, uint8_t y)
-	{
-		max7456::puts (x, y, _buffer);
-	}
+	STD_DRAW
 
 }  // namespace battery_consumed
 
@@ -517,10 +495,12 @@ namespace home_distance
 		_i_attr = telemetry::home::state != HOME_STATE_FIXED ? MAX7456_ATTR_BLINK : 0;
 		if (_i_attr)
 		{
-			sprintf_P (_buffer, PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("---\x8d"));
+			sprintf_P (_buffer, PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("\x09\x09\x09\x8d"));
 			return;
 		}
-		sprintf_P (_buffer, PSTR ("%u\x8d"), telemetry::home::distance);
+		if (telemetry::home::distance >= 10000)
+			 sprintf_P (_buffer, PSTR ("%.1f\x8b"), telemetry::home::distance / 1000);
+		else sprintf_P (_buffer, PSTR ("%u\x8d"), (uint16_t) telemetry::home::distance);
 	}
 
 	void draw (uint8_t x, uint8_t y)
@@ -583,6 +563,8 @@ const panel_t panels [] PROGMEM = {
 	_declare_panel (home_distance),
 	_declare_panel (home_direction),
 };
+
+const uint8_t count = sizeof (panels) / sizeof (panel_t);
 
 }  // namespace panels
 

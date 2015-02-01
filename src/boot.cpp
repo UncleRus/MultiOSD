@@ -40,7 +40,8 @@ bool show ()
 
 	max7456::puts_p (2, 4, PSTR ("\xfc modules:"));
 	max7456::open (13, 4);
-	telemetry::fprintf_build (&max7456::stream, '\n');
+	for (uint8_t i = 0; i < telemetry::modules::count; i ++)
+		fprintf_P (&max7456::stream, PSTR ("%S\n"), telemetry::modules::name_p (i));
 
 	osd::draw::rect (2, max7456::bottom - 3, 26, 3);
 	max7456::open (3, max7456::bottom - 2);

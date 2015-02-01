@@ -23,7 +23,6 @@
 #include "lib/spi/spi.h"
 #include "lib/max7456/max7456.h"
 #include "lib/adc/adc.h"
-#include "lib/mtwi/mtwi.h"
 #include "telemetry/telemetry.h"
 #include "lib/console/console.h"
 #include "commands.h"

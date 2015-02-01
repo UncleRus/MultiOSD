@@ -17,6 +17,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <avr/pgmspace.h>
 
 // FIXME: real openpilot fw targets
 #define UAVTALK_BOARD_CC3D 0
@@ -42,8 +43,16 @@
 #define UAVTALK_SYNC 0x3c
 #define UAVTALK_HEADER_LEN 0x0a
 
+namespace telemetry
+{
+
+namespace modules
+{
+
 namespace uavtalk
 {
+
+const char __name [] PROGMEM = "UAVTalk";
 
 struct header_t
 {
@@ -79,13 +88,12 @@ void send (const header_t &head, uint8_t *data = NULL, uint8_t size = 0);
 void send_gcs_telemetry_stats (uint8_t status);
 void request_object (uint32_t obj_id);
 bool update ();
+void reset ();
 
-namespace settings
-{
-	void reset ();
-}
+}  // namespace uavtalk
 
-}
+}  // namespace modules
 
+}  // namespace telemetry
 
 #endif /* TELEMETRY_UAVTALK_UAVTALK_H_ */
