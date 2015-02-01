@@ -33,3 +33,4 @@
 *.elf
 *.epp
 /Release/
+/Debug/

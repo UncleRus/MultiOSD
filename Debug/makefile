@@ -15,7 +15,6 @@ RM := rm -rf
 -include src/lib/uart/subdir.mk
 -include src/lib/timer/subdir.mk
 -include src/lib/spi/subdir.mk
--include src/lib/mtwi/subdir.mk
 -include src/lib/max7456/subdir.mk
 -include src/lib/console/subdir.mk
 -include src/lib/adc/subdir.mk

@@ -39,7 +39,6 @@ src/osd \
 src/lib/uart \
 src/lib/timer \
 src/lib/spi \
-src/lib/mtwi \
 src/lib/max7456 \
 src/lib/console \
 src/lib/adc \
