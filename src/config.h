@@ -29,11 +29,12 @@
 #define UAVTALK_UART uart0
 #define UAVTALK_VERSION 0x20
 #define UAVTALK_VERSION_RELEASE 141001
-#define UAVTALK_BOARD UAVTALK_BOARD_CC3D				// default board
+#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D				// default board
 #define UAVTALK_CONNECTION_TIMEOUT 10000				// ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500	// ms
-#define UAVTALK_DEFAULT_BATTERY_LOW_VOLTAGE 9.9			// 3.3V/cell on 3S, REVO only
-
+#define UAVTALK_DEFAULT_BATTERY_LOW_VOLTAGE 9.9			// 3.3V/cell on 3S,
+// Home distance/direction calculation: 0 - flight controller (REVO only), 1 - min_raw_osd by GPS
+#define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 1
 /*
  * OSD config
  */

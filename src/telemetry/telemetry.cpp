@@ -139,6 +139,11 @@ namespace home
 //	static uint16_t _fix_timeout = 3000;
 //	static uint32_t _fix_timestop = 0;
 
+	void fix ()
+	{
+		state = HOME_STATE_FIXING;
+	}
+
 	void update ()
 	{
 		//uint32_t ticks = timer::ticks ();
@@ -153,10 +158,11 @@ namespace home
 					if (state == HOME_STATE_NO_FIX) state = HOME_STATE_FIXING;
 					break;
 				case GPS_STATE_3D:
+					if (state == HOME_STATE_NO_FIX) break;
 					state = HOME_STATE_FIXED;
 					longitude = gps::longitude;
 					latitude = gps::latitude;
-					altitude = gps::altitude;
+					altitude = stable::altitude;
 					break;
 			}
 		if (state != HOME_STATE_FIXED) return;
@@ -168,7 +174,7 @@ namespace home
 	    // distance
 	    float dstlat = fabs (latitude - gps::latitude) * 111319.5;
 	    float dstlon = fabs (longitude - gps::longitude) * 111319.5 * scale_down;
-	    distance = sqrt (dstlat * dstlat + dstlon * dstlon);
+	    distance = sqrt (square (dstlat) + square (dstlon));
 
 	    // DIR to Home
 	    dstlon = (longitude - gps::longitude); 				// x offset

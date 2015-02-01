@@ -30,8 +30,8 @@
 #ifndef UAVTALK_VERSION_RELEASE
 #	define UAVTALK_VERSION_RELEASE 141001
 #endif
-#ifndef UAVTALK_BOARD
-#	define UAVTALK_BOARD CC3D
+#ifndef UAVTALK_DEFAULT_BOARD
+#	define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
 #endif
 #ifndef UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL
 #	define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500
@@ -77,6 +77,7 @@ extern message_t buffer;
 void init ();
 void send (const header_t &head, uint8_t *data = NULL, uint8_t size = 0);
 void send_gcs_telemetry_stats (uint8_t status);
+void request_object (uint32_t obj_id);
 bool update ();
 
 namespace settings

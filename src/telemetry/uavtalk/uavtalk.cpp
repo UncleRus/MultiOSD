@@ -72,24 +72,18 @@ static const uint8_t _crc_table [256] PROGMEM =
 
 #define UAVTALK_EEPROM_BOARD _eeprom_byte (UAVTALK_EEPROM_OFFSET)
 #define UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE _eeprom_float (UAVTALK_EEPROM_OFFSET + 1)
+#define UAVTALK_EEPROM_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 5)
 
 #if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 static float _battery_low_voltage;
 #endif
 
 static uint8_t _board;
+static bool _internal_home_calc;
 
 static uint8_t __attribute__ ((noinline)) _get_crc (uint8_t b)
 {
 	return pgm_read_byte (&_crc_table [b]);
-}
-
-void init ()
-{
-	_board = eeprom_read_byte (UAVTALK_EEPROM_BOARD);
-#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
-	_battery_low_voltage = eeprom_read_float (UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE);
-#endif
 }
 
 void send (const header_t &head, uint8_t *data, uint8_t size)
@@ -121,12 +115,12 @@ void send_gcs_telemetry_stats (uint8_t status)
 	send (h, data, _UT_GCSTELEMETRYSTATS_LENGTH);
 }
 
-void request_flight_status ()
+void request_object (uint32_t obj_id)
 {
 	header_t h;
 	h.msg_type = _UT_TYPE_OBJ_REQ;
 	h.length = UAVTALK_HEADER_LEN;
-	h.obj_id = UAVTALK_FLIGHTSTATUS_OBJID;
+	h.obj_id = obj_id;
 	send (h, NULL, 0);
 }
 
@@ -254,7 +248,7 @@ inline uint8_t _respond_fts (uint8_t state)
 	if (state == _UT_TELEMETRY_STATE_HANDSHAKE_ACK)
 		send_gcs_telemetry_stats (_UT_TELEMETRY_STATE_CONNECTED);
 
-	request_flight_status ();
+	request_object (UAVTALK_FLIGHTSTATUS_OBJID);
 
 	return CONNECTION_STATE_CONNECTED;
 }
@@ -268,6 +262,7 @@ bool update ()
 	{
 		// got message
 		updated = true;
+		bool _was_armed;
 		switch (buffer.head.obj_id)
 		{
 			// connection
@@ -284,8 +279,12 @@ bool update ()
 				telemetry::attitude::yaw 	= buffer.get<float> (24);
 				break;
 			case UAVTALK_FLIGHTSTATUS_OBJID:
+				_was_armed = telemetry::status::armed;
 				telemetry::status::armed = buffer.data [0] > 1;
 				telemetry::status::flight_mode = buffer.data [1];
+				// fix home if armed on CC3D
+				if ((_board == UAVTALK_BOARD_CC3D || _internal_home_calc) && !_was_armed && telemetry::status::armed)
+					telemetry::home::fix ();
 				break;
 			case UAVTALK_MANUALCONTROLCOMMAND_OBJID:
 				telemetry::input::throttle 	= (int16_t) (buffer.get<float> (0) * 100);
@@ -314,12 +313,13 @@ bool update ()
 				telemetry::gps::state 		= buffer.data [36];
 				telemetry::gps::sattelites 	= buffer.data [37];
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
+				// update stable altitude if we can't get the baro altitude
 				if (_board == UAVTALK_BOARD_CC3D)
-				{
 					telemetry::stable::altitude = telemetry::gps::altitude;
-					telemetry::home::update ();
-				}
 #endif
+				// calc home distance/direction based on gps
+				if (_board == UAVTALK_BOARD_CC3D || _internal_home_calc)
+					telemetry::home::update ();
 				break;
 			case UAVTALK_GPSVELOCITYSENSOR_OBJID:
 				telemetry::gps::climb = -buffer.get<float> (8);
@@ -350,9 +350,14 @@ bool update ()
 					telemetry::stable::update_alt_climb (telemetry::barometer::altitude);
 					break;
 #endif
+				case UAVTALK_POSITIONSTATE_OBJID:
+					if (!_internal_home_calc)
+					{
+						// TODO: update home::distance & home::direction onm REVO
+					}
+					break;
 				default:
 					revo_updated = false;
-					// TODO: REVO home position
 			}
 			updated |= revo_updated;
 		}
@@ -374,15 +379,25 @@ bool update ()
 }
 
 
+void init ()
+{
+	_board = eeprom_read_byte (UAVTALK_EEPROM_BOARD);
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
+	_battery_low_voltage = eeprom_read_float (UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE);
+#endif
+	_internal_home_calc = eeprom_read_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC);
+}
+
 namespace settings
 {
 
 void reset ()
 {
-	eeprom_write_byte (UAVTALK_EEPROM_BOARD, UAVTALK_BOARD);
+	eeprom_update_byte (UAVTALK_EEPROM_BOARD, UAVTALK_DEFAULT_BOARD);
 #if !defined (TELEMETRY_MODULES_ADC_BATTERY)
-	eeprom_write_float (UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE, UAVTALK_DEFAULT_BATTERY_LOW_VOLTAGE);
+	eeprom_update_float (UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE, UAVTALK_DEFAULT_BATTERY_LOW_VOLTAGE);
 #endif
+	eeprom_update_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC, UAVTALK_DEFAULT_INTERNAL_HOME_CALC);
 }
 
 }

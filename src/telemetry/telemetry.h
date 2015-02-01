@@ -149,6 +149,10 @@ namespace home
 	extern float distance;			// meters
 	extern uint8_t direction;		// HOME_DIR_xxx enum
 
+	extern float longitude;
+	extern float latitude;
+	extern float altitude;			// meters
+
 	void fix ();					// try to fix home
 	void update (); 				// read gps and recalc
 }
