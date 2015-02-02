@@ -28,8 +28,9 @@
 *.app
 
 *.lss
-*.hex
 *.map
 *.elf
 *.eep
 *.d
+/Debug/
+/Release/
