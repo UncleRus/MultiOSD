@@ -171,26 +171,26 @@ namespace home
 			}
 		if (state != HOME_STATE_FIXED) return;
 
-	    float rads = fabs (latitude) * 0.0174532925;
-	    double scale_down = cos (rads);
-	    double scale_up = 1.0 / cos (rads);
+		float rads = fabs (latitude) * 0.0174532925;
+		double scale_down = cos (rads);
+		double scale_up = 1.0 / cos (rads);
 
-	    // distance
-	    float dstlat = fabs (latitude - gps::latitude) * 111319.5;
-	    float dstlon = fabs (longitude - gps::longitude) * 111319.5 * scale_down;
-	    distance = sqrt (square (dstlat) + square (dstlon));
+		// distance
+		float dstlat = fabs (latitude - gps::latitude) * 111319.5;
+		float dstlon = fabs (longitude - gps::longitude) * 111319.5 * scale_down;
+		distance = sqrt (square (dstlat) + square (dstlon));
 
-	    // DIR to Home
-	    dstlon = (longitude - gps::longitude); 				// x offset
-	    dstlat = (latitude - gps::latitude) * scale_up; 	// y offset
-	    int16_t bearing = 90 + atan2 (dstlat, -dstlon) * 57.295775; // absolute home direction
-	    if (bearing < 0) bearing += 360;	// normalization
-	    bearing -= 180;						// absolute return direction
-	    if (bearing < 0) bearing += 360;	// normalization
-	    bearing -= gps::heading;			// relative home direction
-	    if (bearing < 0) bearing += 360;	// normalization
-	    direction = round ((float) (bearing / 360.0f) * 16.0f) + 1;
-	    if (direction > 15) direction = 0;
+		// DIR to Home
+		dstlon = (longitude - gps::longitude); 				// x offset
+		dstlat = (latitude - gps::latitude) * scale_up; 	// y offset
+		int16_t bearing = 90 + atan2 (dstlat, -dstlon) * 57.295775; // absolute home direction
+		if (bearing < 0) bearing += 360;	// normalization
+		bearing -= 180;						// absolute return direction
+		if (bearing < 0) bearing += 360;	// normalization
+		bearing -= gps::heading;			// relative home direction
+		if (bearing < 0) bearing += 360;	// normalization
+		direction = round ((float) (bearing / 360.0f) * 16.0f) + 1;
+		if (direction > 15) direction = 0;
 	}
 
 }  // namespace home
