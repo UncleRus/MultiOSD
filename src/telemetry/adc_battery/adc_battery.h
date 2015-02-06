@@ -17,8 +17,6 @@
 
 #include <avr/pgmspace.h>
 
-#define ADC_BATTERY_EEPROM_OFFSET 0x12
-
 namespace telemetry
 {
 

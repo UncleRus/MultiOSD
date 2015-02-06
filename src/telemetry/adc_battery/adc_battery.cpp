@@ -70,12 +70,12 @@ bool update ()
 
 	_last_update_time = ticks;
 
-	telemetry::battery::voltage = ADC_VALUE (adc::read (ADC_BATTERY_VOLTAGE_CHANNEL), _voltage_divider);
+	telemetry::battery::voltage = adc::value (ADC_BATTERY_VOLTAGE_CHANNEL, _voltage_divider);
 	telemetry::battery::update_voltage ();
 
 	if (_current_sensor)
 	{
-		telemetry::battery::current = ADC_VALUE (adc::read (ADC_BATTERY_CURRENT_CHANNEL), _current_divider);
+		telemetry::battery::current = adc::value (ADC_BATTERY_CURRENT_CHANNEL, _current_divider);
 		telemetry::battery::consumed += telemetry::battery::current * (float) interval / 3600.0;
 	}
 	return true;

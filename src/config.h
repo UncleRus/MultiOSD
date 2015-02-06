@@ -88,8 +88,8 @@
 /*
  * ADC config
  */
-#define ADC_REF	ADC_REF_AVCC	// AVCC as voltage reference
-#define ADC_REF_VOLTAGE 5.0		// 5V
+#define ADC_DEFAULT_REF	ADC_REF_AVCC	// AVCC as voltage reference
+#define ADC_DEFAULT_REF_VOLTAGE 5.0		// 5V
 
 /*
  * ADC battery

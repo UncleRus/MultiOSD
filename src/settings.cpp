@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "settings.h"
+#include "lib/adc/adc.h"
 #include "lib/max7456/max7456.h"
 #include "telemetry/telemetry.h"
 #include "osd/osd.h"
@@ -29,6 +30,7 @@ void init ()
 
 void reset ()
 {
+	adc::settings::reset ();
 	max7456::settings::reset ();
 	telemetry::settings::reset ();
 	osd::settings::reset ();

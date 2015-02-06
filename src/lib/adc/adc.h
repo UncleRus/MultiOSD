@@ -24,10 +24,16 @@ namespace adc
 #define ADC_REF_AVCC		1
 #define ADC_REF_INTERNAL	3
 
-#define ADC_VALUE(v, divider) (v / (1024.0 / ADC_REF_VOLTAGE) * (float) divider)
-
 void init ();
 uint16_t read (uint8_t channel);
+float value (uint8_t channel, float divider);
+
+namespace settings
+{
+
+	void reset ();
+
+}  // namespace settings
 
 }
 

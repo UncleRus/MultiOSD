@@ -15,15 +15,23 @@
 #include "adc.h"
 #include <avr/io.h>
 #include "../../config.h"
+#include "../../settings.h"
+
+#define ADC_EEPROM_REF     _eeprom_byte (ADC_EEPROM_OFFSET)
+#define ADC_EEPROM_REF_VOLTAGE _eeprom_float (ADC_EEPROM_OFFSET + 1)
 
 namespace adc
 {
 
-#define _ADC_REF (ADC_REF << 6)
+static uint8_t _ref;
+static float _ref_voltage;
 
 void init ()
 {
-	ADMUX = _ADC_REF;
+	_ref = eeprom_read_byte (ADC_EEPROM_REF) << 6;
+	_ref_voltage = eeprom_read_float (ADC_EEPROM_REF_VOLTAGE);
+
+	ADMUX = _ref;
 	ADCSRA |= _BV (ADEN) | _BV (ADPS0) | _BV (ADPS1) | _BV (ADPS2);
 }
 
@@ -31,11 +39,27 @@ void init ()
 
 uint16_t read (uint8_t channel)
 {
-	ADMUX = _ADC_REF | (channel & 0x0f);
+	ADMUX = _ref | (channel & 0x0f);
 	ADCSRA |= _BV (ADSC);
 	loop_until_bit_is_set (ADCSRA, ADSC);
 	ADCSRA |= _BV (ADIF);
 	return ADC;
 }
 
+float value (uint8_t channel, float divider)
+{
+	return read (channel) / (1024.0 / _ref_voltage) * divider;
 }
+
+namespace settings
+{
+
+	void reset ()
+	{
+		eeprom_update_byte (ADC_EEPROM_REF, ADC_DEFAULT_REF);
+		eeprom_update_float (ADC_EEPROM_REF_VOLTAGE, ADC_DEFAULT_REF_VOLTAGE);
+	}
+
+}  // namespace settings
+
+}  // namespace adc
