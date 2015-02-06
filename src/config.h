@@ -46,8 +46,10 @@
  */
 #define OSD_MAX_SCREENS 8			// each screen will consume (OSD_SCREEN_PANELS * 3) bytes in EEPROM
 #define OSD_SCREEN_PANELS 24		// (OSD_SCREEN_PANELS * 3) bytes in SRAM
-#define OSD_DRAW_INTERVAL_PAL  40	// 1000ms / 25fps
-#define OSD_DRAW_INTERVAL_NTSC 33	// 1000ms / 29.97fps
+#define OSD_CHANNEL_MIN 1000		// us
+#define OSD_CHANNEL_MAX 2000		// us
+//#define OSD_DRAW_INTERVAL_PAL  40	// 1000ms / 25fps
+//#define OSD_DRAW_INTERVAL_NTSC 33	// 1000ms / 29.97fps
 // when to switch between screens
 //#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_FLIGHT_MODE // flight mode switch
 // or
@@ -59,8 +61,6 @@
 /*
 #define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_OFF // single screen mode
 */
-#define OSD_RAW_CHANNEL_MIN 1000	// ms
-#define OSD_RAW_CHANNEL_MAX 2000	// ms
 
 
 /*

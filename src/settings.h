@@ -28,7 +28,7 @@
 #define OSD_SCREENS_EEPROM_OFFSET    (OSD_EEPROM_OFFSET + 0x10)
 
 #define _eeprom_byte(x) ((uint8_t *) (x))
-#define _eeprom_word(x) ((uint32_t *) (x))
+#define _eeprom_word(x) ((uint16_t *) (x))
 #define _eeprom_float(x) ((float *) (x))
 
 namespace settings
