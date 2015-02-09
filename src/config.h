@@ -89,7 +89,7 @@
  * ADC config
  */
 #define ADC_DEFAULT_REF	ADC_REF_AVCC	// AVCC as voltage reference
-#define ADC_DEFAULT_REF_VOLTAGE 5.0		// 5V
+#define ADC_DEFAULT_REF_VOLTAGE 5.3		// 5V
 
 /*
  * ADC battery
@@ -100,8 +100,8 @@
 #define ADC_BATTERY_CURRENT_CHANNEL 7				// ADC7 22 pin
 
 #define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 1		// ADC current sensor enabled
-#define ADC_BATTERY_DEFAULT_VOLTAGE_DIVIDER 4.0		// max 20V (5S)
-#define ADC_BATTERY_DEFAULT_CURRENT_DIVIDER 18.0	// max 90A
+#define ADC_BATTERY_DEFAULT_VOLTAGE_DIVIDER 10.3	// sensor output 35V ~ 3.3V
+#define ADC_BATTERY_DEFAULT_CURRENT_DIVIDER 43.0	// sensor output 90A ~ 3.3V
 
 /*
  * SPI config

@@ -20,7 +20,7 @@
 #define EEPROM_SIZE 0x400
 #define EEPROM_HEADER 0x5552
 
-#define ADC_EEPROM_OFFSET            0x04
+#define ADC_EEPROM_OFFSET            0x05
 #define MAX7456_EEPROM_OFFSET        0x10
 #define ADC_BATTERY_EEPROM_OFFSET    0x15
 #define UAVTALK_EEPROM_OFFSET        0x30

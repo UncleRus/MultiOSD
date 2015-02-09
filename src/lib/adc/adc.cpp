@@ -41,14 +41,14 @@ uint16_t read (uint8_t channel)
 {
 	ADMUX = _ref | (channel & 0x0f);
 	ADCSRA |= _BV (ADSC);
-	loop_until_bit_is_set (ADCSRA, ADSC);
+	loop_until_bit_is_clear (ADCSRA, ADSC);
 	ADCSRA |= _BV (ADIF);
 	return ADC;
 }
 
 float value (uint8_t channel, float divider)
 {
-	return read (channel) / (1024.0 / _ref_voltage) * divider;
+	return (read (channel) / 1024.0 * _ref_voltage) * divider;
 }
 
 namespace settings

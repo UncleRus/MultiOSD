@@ -17,7 +17,7 @@
 #include "../telemetry/telemetry.h"
 #include "../config.h"
 #include "../lib/timer/timer.h"
-#include "../lib/max7456/max7456.h"
+//#include "../lib/max7456/max7456.h"
 
 namespace osd
 {
@@ -34,14 +34,13 @@ namespace osd
 
 static uint8_t _switch;
 static uint8_t _channel;
-static uint8_t _chan_min, _chan_max;
+static uint16_t _chan_min, _chan_max, _raw_lvl_size;
 static uint8_t _screen;
 static uint8_t _screens_enabled;
-static uint8_t _raw_lvl_size;
 static bool _visible;
 
 #if (OSD_MAX_SCREENS <= 0) || (OSD_MAX_SCREENS > 8)
-#	error OSD_MAX_SCREENS need to be > 0 and < 9
+#	error OSD_MAX_SCREENS must be between 0 and 8
 #endif
 
 #if OSD_MAX_SCREENS > 1
