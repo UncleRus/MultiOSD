@@ -133,7 +133,9 @@ namespace stable
 
 namespace battery
 {
+	extern float max_cell_voltage;	// volts
 	extern float nom_cell_voltage;	// volts
+	extern float min_cell_voltage;	// volts
 	extern float low_cell_voltage;	// volts
 
 	extern float voltage;			// volts
@@ -141,6 +143,7 @@ namespace battery
 	extern float consumed;			// mAh
 	extern uint8_t cells;
 	extern float cell_voltage;		// volts
+	extern uint8_t level;			// percents
 
 	void update_voltage ();
 }

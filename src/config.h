@@ -21,11 +21,16 @@
  * Telemetry modules config
  */
 #define TELEMETRY_MODULES_UAVTALK					// main telemetry module
-#define TELEMETRY_MODULES_ADC_BATTERY				// read battery params from adc
+#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
+#define TELEMETRY_MODULES_APM_CURRENT				// read current from APM power board
 
-
+/*
+ * Telemetry config
+ */
+#define BATTERY_MAX_CELL_VOLTAGE 4.2	// LiPo
 #define BATTERY_NOM_CELL_VOLTAGE 3.7	// LiPo
-#define BATTERY_LOW_CELL_VOLTAGE 3.5
+#define BATTERY_MIN_CELL_VOLTAGE 3.2	// LiPo
+#define BATTERY_LOW_CELL_VOLTAGE 3.5	// Warning threshold
 
 /*
  * UAVTalk config
@@ -94,13 +99,13 @@
 /*
  * ADC battery
  */
-#define ADC_BATTERY_UPDATE_INTERVAL 200				// ms
+#define ADC_BATTERY_DEFAULT_UPDATE_INTERVAL 200		// ms
 
-#define ADC_BATTERY_VOLTAGE_CHANNEL 6				// ADC6 19 pin
-#define ADC_BATTERY_CURRENT_CHANNEL 7				// ADC7 22 pin
+#define ADC_BATTERY_DEFAULT_VOLTAGE_CHANNEL 6		// ADC6 19 pin
+#define ADC_BATTERY_DEFAULT_CURRENT_CHANNEL 7		// ADC7 22 pin
 
-#define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 1		// ADC current sensor enabled
-#define ADC_BATTERY_DEFAULT_VOLTAGE_DIVIDER 10.3	// sensor output 35V ~ 3.3V
+#define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 0		// ADC current sensor enabled
+#define ADC_BATTERY_DEFAULT_VOLTAGE_DIVIDER 10.98	// sensor output 35V ~ 3.3V
 #define ADC_BATTERY_DEFAULT_CURRENT_DIVIDER 43.0	// sensor output 90A ~ 3.3V
 
 /*

@@ -414,20 +414,21 @@ namespace battery_voltage
 	const char __name [] PROGMEM = "BatVoltage";
 
 	char _buffer [7];
+	char _symbol;
+	uint8_t _attr;
 
 	void update ()
 	{
 		sprintf_P (_buffer, PSTR ("%.2f\x8e"), telemetry::battery::voltage);
 		_buffer [sizeof (_buffer) - 1] = 0;
+
+		_symbol = 0xf4 + (uint8_t) round (telemetry::battery::level / 20.0);
+		_attr = telemetry::messages::battery_low ? MAX7456_ATTR_BLINK : 0;
 	}
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		// TODO : change battery icon depending on voltage
-		max7456::put (x, y,
-			telemetry::messages::battery_low ? 0xf4 : 0xf7,
-			telemetry::messages::battery_low ? MAX7456_ATTR_BLINK : 0
-		);
+		max7456::put (x, y, _symbol, _attr);
 		max7456::puts (x + 1, y, _buffer);
 	}
 

@@ -345,14 +345,10 @@ bool update ()
 #if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 				case UAVTALK_FLIGHTBATTERYSTATE_OBJID:
 					telemetry::battery::voltage = buffer.get<float> (0);
+					telemetry::battery::cells = buffer.data [28];
+					telemetry::battery::update_voltage ();
 					telemetry::battery::current = buffer.get<float> (4);
 					telemetry::battery::consumed = (uint16_t) buffer.get<float> (20);
-					telemetry::battery::cells = buffer.data [28];
-					if (telemetry::battery::cells)
-					{
-						telemetry::battery::cell_voltage = telemetry::battery::voltage / telemetry::battery::cells;
-						telemetry::messages::battery_low = telemetry::battery::cell_voltage < _battery_low_voltage;
-					}
 					break;
 #endif
 #if !defined (TELEMETRY_MODULES_I2C_BARO)

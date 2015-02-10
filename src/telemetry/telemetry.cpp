@@ -15,8 +15,10 @@
 #include "telemetry.h"
 #include "../config.h"
 #include <avr/pgmspace.h>
+#include <avr/eeprom.h>
 #include <math.h>
 #include "../lib/timer/timer.h"
+#include "../settings.h"
 
 namespace telemetry
 {
@@ -97,9 +99,17 @@ namespace stable
 
 }  // namespace stable
 
+#define TELEMETRY_EEPROM_MIN_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET)
+#define TELEMETRY_EEPROM_NOM_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 4)
+#define TELEMETRY_EEPROM_MAX_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 8)
+#define TELEMETRY_EEPROM_LOW_VOLTAGE		_eeprom_float (TELEMETRY_EEPROM_OFFSET + 12)
+
 namespace battery
 {
+
+	float min_cell_voltage = BATTERY_MIN_CELL_VOLTAGE;
 	float nom_cell_voltage = BATTERY_NOM_CELL_VOLTAGE;
+	float max_cell_voltage = BATTERY_MAX_CELL_VOLTAGE;
 	float low_cell_voltage = BATTERY_LOW_CELL_VOLTAGE;
 
 	float voltage = 0;
@@ -107,15 +117,40 @@ namespace battery
 	float consumed = 0;
 	uint8_t cells = 0;
 	float cell_voltage = 0;
+	uint8_t level = 0;
+
+	static float _cell_range;
+
+	void reset ()
+	{
+		eeprom_update_float (TELEMETRY_EEPROM_MIN_CELL_VOLTAGE, BATTERY_MIN_CELL_VOLTAGE);
+		eeprom_update_float (TELEMETRY_EEPROM_NOM_CELL_VOLTAGE, BATTERY_NOM_CELL_VOLTAGE);
+		eeprom_update_float (TELEMETRY_EEPROM_MAX_CELL_VOLTAGE, BATTERY_MAX_CELL_VOLTAGE);
+		eeprom_update_float (TELEMETRY_EEPROM_LOW_VOLTAGE, BATTERY_LOW_CELL_VOLTAGE);
+	}
+
+	void init ()
+	{
+		min_cell_voltage = eeprom_read_float (TELEMETRY_EEPROM_MIN_CELL_VOLTAGE);
+		nom_cell_voltage = eeprom_read_float (TELEMETRY_EEPROM_NOM_CELL_VOLTAGE);
+		max_cell_voltage = eeprom_read_float (TELEMETRY_EEPROM_MAX_CELL_VOLTAGE);
+		low_cell_voltage = eeprom_read_float (TELEMETRY_EEPROM_LOW_VOLTAGE);
+		_cell_range = max_cell_voltage - min_cell_voltage;
+	}
 
 	void update_voltage ()
 	{
-		cells = round (voltage / nom_cell_voltage);
+		if (!cells) cells = round (voltage / nom_cell_voltage);
+		//cells = (uint8_t)(voltage / max_cell_voltage) + 1;
 		if (cells)
 		{
 			cell_voltage = voltage / cells;
 			messages::battery_low = cell_voltage < low_cell_voltage;
 		}
+		level = cell_voltage >= min_cell_voltage
+			? (cell_voltage - min_cell_voltage) / _cell_range * 100
+			: 0;
+		if (level > 100) level = 100;
 	}
 
 }  // namespace battery
@@ -200,6 +235,9 @@ namespace home
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 #	include "adc_battery/adc_battery.h"
 #endif
+//#ifdef TELEMETRY_MODULES_APM_CURRENT
+//#	include "apm_current/apm_current.h"
+//#endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
 #	include "i2c_baro/i2c_baro.h"
 #endif
@@ -223,6 +261,9 @@ namespace modules
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 		_declare_module (adc_battery),
 #endif
+//#ifdef TELEMETRY_MODULES_APM_CURRENT
+//		_declare_module (apm_current),
+//#endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
 		_declare_module (i2c_baro),
 #endif
@@ -241,6 +282,7 @@ namespace modules
 
 void init ()
 {
+	battery::init ();
 	for (uint8_t i = 0; i < modules::count; i ++)
 		modules::init (i);
 }
@@ -255,9 +297,9 @@ bool update ()
 
 namespace settings
 {
-
 	void reset ()
 	{
+		battery::reset ();
 		for (uint8_t i = 0; i < modules::count; i ++)
 			modules::reset (i);
 	}
