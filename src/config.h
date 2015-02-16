@@ -15,21 +15,20 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define VERSION 0002
+#define VERSION 3
 
 /*
  * Telemetry modules config
  */
 #define TELEMETRY_MODULES_UAVTALK					// main telemetry module
 #define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
-#define TELEMETRY_MODULES_APM_CURRENT				// read current from APM power board
 
 /*
  * Telemetry config
  */
-#define BATTERY_MAX_CELL_VOLTAGE 4.2	// LiPo
-#define BATTERY_NOM_CELL_VOLTAGE 3.7	// LiPo
-#define BATTERY_MIN_CELL_VOLTAGE 3.2	// LiPo
+#define BATTERY_MAX_CELL_VOLTAGE 4.2	// Maximal cell voltage, 4.2 for LiPo
+#define BATTERY_NOM_CELL_VOLTAGE 3.7	// Nominal cell voltage, 3.7 for LiPo
+#define BATTERY_MIN_CELL_VOLTAGE 3.2	// Minimal cell voltage (dead battery), 3.2 for LiPo
 #define BATTERY_LOW_CELL_VOLTAGE 3.5	// Warning threshold
 
 /*
@@ -66,6 +65,7 @@
 /*
 #define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_OFF // single screen mode
 */
+#define UAVTALK_FAKE_GPS	// debug
 
 
 /*
@@ -74,7 +74,7 @@
 #define UART_STDIO					// we need fprintf
 #define UART_BAUD_RATE 57600
 #define UART_RX_BUFFER_SIZE 128		// I like big buffers
-#define UART_TX_BUFFER_SIZE 128
+#define UART_TX_BUFFER_SIZE 64
 
 /*
  * Console config
@@ -94,7 +94,7 @@
  * ADC config
  */
 #define ADC_DEFAULT_REF	ADC_REF_AVCC	// AVCC as voltage reference
-#define ADC_DEFAULT_REF_VOLTAGE 5.3		// 5V
+#define ADC_DEFAULT_REF_VOLTAGE 5.31	// 5V
 
 /*
  * ADC battery
@@ -104,9 +104,9 @@
 #define ADC_BATTERY_DEFAULT_VOLTAGE_CHANNEL 6		// ADC6 19 pin
 #define ADC_BATTERY_DEFAULT_CURRENT_CHANNEL 7		// ADC7 22 pin
 
-#define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 0		// ADC current sensor enabled
-#define ADC_BATTERY_DEFAULT_VOLTAGE_DIVIDER 10.98	// sensor output 35V ~ 3.3V
-#define ADC_BATTERY_DEFAULT_CURRENT_DIVIDER 43.0	// sensor output 90A ~ 3.3V
+#define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 1		// ADC current sensor enabled
+#define ADC_BATTERY_DEFAULT_VOLTAGE_MULTIPLIER 10.98
+#define ADC_BATTERY_DEFAULT_CURRENT_MULTIPLIER 18.1818
 
 /*
  * SPI config

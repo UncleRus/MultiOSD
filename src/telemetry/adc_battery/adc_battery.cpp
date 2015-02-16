@@ -22,12 +22,12 @@
 #include "../../config.h"
 
 // eeprom addresses
-#define ADC_BATTERY_EEPROM_CURRENT_SENSOR	_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET)
-#define ADC_BATTERY_EEPROM_VOLTAGE_DIVIDER	_eeprom_float (ADC_BATTERY_EEPROM_OFFSET + 1)
-#define ADC_BATTERY_EEPROM_CURRENT_DIVIDER	_eeprom_float (ADC_BATTERY_EEPROM_OFFSET + 5)
-#define ADC_BATTERY_EEPROM_UPDATE_INTERVAL	_eeprom_word (ADC_BATTERY_EEPROM_OFFSET + 9)
-#define ADC_BATTERY_EEPROM_VOLTAGE_CHANNEL	_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET + 11)
-#define ADC_BATTERY_EEPROM_CURRENT_CHANNEL	_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET + 12)
+#define ADC_BATTERY_EEPROM_CURRENT_SENSOR		_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET)
+#define ADC_BATTERY_EEPROM_VOLTAGE_MULTIPLIER	_eeprom_float (ADC_BATTERY_EEPROM_OFFSET + 1)
+#define ADC_BATTERY_EEPROM_CURRENT_MULTIPLIER	_eeprom_float (ADC_BATTERY_EEPROM_OFFSET + 5)
+#define ADC_BATTERY_EEPROM_UPDATE_INTERVAL		_eeprom_word (ADC_BATTERY_EEPROM_OFFSET + 9)
+#define ADC_BATTERY_EEPROM_VOLTAGE_CHANNEL		_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET + 11)
+#define ADC_BATTERY_EEPROM_CURRENT_CHANNEL		_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET + 12)
 
 namespace telemetry
 {
@@ -41,8 +41,8 @@ namespace adc_battery
 void reset ()
 {
 	eeprom_update_byte (ADC_BATTERY_EEPROM_CURRENT_SENSOR, ADC_BATTERY_DEFAULT_CURRENT_SENSOR);
-	eeprom_update_float (ADC_BATTERY_EEPROM_VOLTAGE_DIVIDER, ADC_BATTERY_DEFAULT_VOLTAGE_DIVIDER);
-	eeprom_update_float (ADC_BATTERY_EEPROM_CURRENT_DIVIDER, ADC_BATTERY_DEFAULT_CURRENT_DIVIDER);
+	eeprom_update_float (ADC_BATTERY_EEPROM_VOLTAGE_MULTIPLIER, ADC_BATTERY_DEFAULT_VOLTAGE_MULTIPLIER);
+	eeprom_update_float (ADC_BATTERY_EEPROM_CURRENT_MULTIPLIER, ADC_BATTERY_DEFAULT_CURRENT_MULTIPLIER);
 	eeprom_update_word (ADC_BATTERY_EEPROM_UPDATE_INTERVAL, ADC_BATTERY_DEFAULT_UPDATE_INTERVAL);
 	eeprom_update_byte (ADC_BATTERY_EEPROM_VOLTAGE_CHANNEL, ADC_BATTERY_DEFAULT_VOLTAGE_CHANNEL);
 	eeprom_update_byte (ADC_BATTERY_EEPROM_CURRENT_CHANNEL, ADC_BATTERY_DEFAULT_CURRENT_CHANNEL);
@@ -50,17 +50,17 @@ void reset ()
 
 static uint32_t _last_update_time = 0;
 static bool _current_sensor;
-static float _voltage_divider;
-static float _current_divider;
+static float _voltage_multiplier;
+static float _current_multiplier;
 static uint16_t _interval;
 static uint8_t _voltage_channel, _current_channel;
 
 void init ()
 {
 	_current_sensor = eeprom_read_byte (ADC_BATTERY_EEPROM_CURRENT_SENSOR);
-	_voltage_divider = eeprom_read_float (ADC_BATTERY_EEPROM_VOLTAGE_DIVIDER);
+	_voltage_multiplier = eeprom_read_float (ADC_BATTERY_EEPROM_VOLTAGE_MULTIPLIER);
 	if (_current_sensor)
-		_current_divider = eeprom_read_float (ADC_BATTERY_EEPROM_CURRENT_DIVIDER);
+		_current_multiplier = eeprom_read_float (ADC_BATTERY_EEPROM_CURRENT_MULTIPLIER);
 	_interval = eeprom_read_word (ADC_BATTERY_EEPROM_UPDATE_INTERVAL);
 	_voltage_channel = eeprom_read_byte (ADC_BATTERY_EEPROM_VOLTAGE_CHANNEL);
 	_current_channel = eeprom_read_byte (ADC_BATTERY_EEPROM_CURRENT_CHANNEL);
@@ -75,12 +75,12 @@ bool update ()
 
 	_last_update_time = ticks;
 
-	telemetry::battery::voltage = adc::value (_voltage_channel, _voltage_divider);
+	telemetry::battery::voltage = adc::value (_voltage_channel, _voltage_multiplier);
 	telemetry::battery::update_voltage ();
 
 	if (_current_sensor)
 	{
-		telemetry::battery::current = adc::value (_current_channel, _current_divider);
+		telemetry::battery::current = adc::value (_current_channel, _current_multiplier);
 		telemetry::battery::consumed += telemetry::battery::current * (float) interval / 3600.0;
 	}
 	return true;

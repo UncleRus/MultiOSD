@@ -77,12 +77,7 @@ static const uint8_t _crc_table [256] PROGMEM =
 #define _UT_TELEMETRY_STATE_CONNECTED     3
 
 #define UAVTALK_EEPROM_BOARD _eeprom_byte (UAVTALK_EEPROM_OFFSET)
-#define UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE _eeprom_float (UAVTALK_EEPROM_OFFSET + 1)
-#define UAVTALK_EEPROM_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 5)
-
-#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
-static float _battery_low_voltage;
-#endif
+#define UAVTALK_EEPROM_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 1)
 
 static uint8_t _board;
 static bool _internal_home_calc;
@@ -259,6 +254,22 @@ inline uint8_t _respond_fts (uint8_t state)
 	return CONNECTION_STATE_CONNECTED;
 }
 
+#ifdef UAVTALK_FAKE_GPS
+struct _gps_data_t
+{
+	float latitude, longitude, altitude;
+};
+static const _gps_data_t _fake_gps_data [] PROGMEM = {
+	{56.864610, 60.638541, 100},
+	{56.865202, 60.637607, 110},
+	{56.865009, 60.639506, 200},
+	{56.864053, 60.639131, 50},
+	{56.864164, 60.637275, 80},
+};
+static uint8_t _fake_idx = 0;
+static uint32_t _fake_gps_update_timeout;
+#endif
+
 bool update ()
 {
 	bool updated = false;
@@ -311,6 +322,19 @@ bool update ()
 				memcpy (telemetry::input::channels, buffer.data + _UT_OFFS_MCC_CHANNELS, INPUT_CHANNELS * sizeof (uint16_t));
 				break;
 			case UAVTALK_GPSPOSITIONSENSOR_OBJID:
+#ifdef UAVTALK_FAKE_GPS
+				if (ticks < _fake_gps_update_timeout) break;
+
+				_fake_gps_update_timeout = ticks + 2000;
+				telemetry::gps::latitude 	= pgm_read_float (&_fake_gps_data [_fake_idx].latitude);
+				telemetry::gps::longitude 	= pgm_read_float (&_fake_gps_data [_fake_idx].longitude);
+				telemetry::gps::altitude 	= pgm_read_float (&_fake_gps_data [_fake_idx].altitude);
+				telemetry::gps::speed 		= 8.0;
+				telemetry::gps::state 		= GPS_STATE_3D;
+				telemetry::gps::sattelites 	= 12;
+				if (++_fake_idx >= sizeof (_fake_gps_data) / sizeof (_gps_data_t))
+					_fake_idx = 0;
+#else
 				telemetry::gps::latitude 	= buffer.get<int32_t> (0) / 10000000.0;
 				telemetry::gps::longitude 	= buffer.get<int32_t> (4) / 10000000.0;
 				telemetry::gps::altitude 	= buffer.get<float> (8);
@@ -318,6 +342,7 @@ bool update ()
 				telemetry::gps::speed 		= buffer.get<float> (20);
 				telemetry::gps::state 		= buffer.data [36];
 				telemetry::gps::sattelites 	= buffer.data [37];
+#endif
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
 				// update stable altitude if we can't get the baro altitude
 				if (_board == UAVTALK_BOARD_CC3D)
@@ -358,10 +383,12 @@ bool update ()
 					break;
 #endif
 				case UAVTALK_POSITIONSTATE_OBJID:
-					if (!_internal_home_calc)
+					if (_internal_home_calc)
 					{
-						// TODO: update home::distance & home::direction onm REVO
+						revo_updated = false;
+						break;
 					}
+					// TODO: update home::distance & home::direction on REVO
 					break;
 				default:
 					revo_updated = false;
@@ -389,18 +416,12 @@ bool update ()
 void init ()
 {
 	_board = eeprom_read_byte (UAVTALK_EEPROM_BOARD);
-#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
-	_battery_low_voltage = eeprom_read_float (UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE);
-#endif
 	_internal_home_calc = eeprom_read_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC);
 }
 
 void reset ()
 {
 	eeprom_update_byte (UAVTALK_EEPROM_BOARD, UAVTALK_DEFAULT_BOARD);
-#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
-	eeprom_update_float (UAVTALK_EEPROM_BATTERY_LOW_VOLTAGE, UAVTALK_DEFAULT_BATTERY_LOW_VOLTAGE);
-#endif
 	eeprom_update_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC, UAVTALK_DEFAULT_INTERNAL_HOME_CALC);
 }
 

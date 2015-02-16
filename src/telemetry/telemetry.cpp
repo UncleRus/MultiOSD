@@ -76,6 +76,7 @@ namespace barometer
 {
 
 	float altitude = 0.0;
+	int16_t temperature = 0;
 
 }  // namespace barometer
 
@@ -86,6 +87,7 @@ namespace stable
 	float altitude = 0.0;
 	float ground_speed = 0.0;
 	float air_speed = 0.0;
+	int16_t temperature = 0;
 
 	static uint32_t _alt_update_time = 0;
 
@@ -145,9 +147,9 @@ namespace battery
 		if (cells)
 		{
 			cell_voltage = voltage / cells;
-			messages::battery_low = cell_voltage < low_cell_voltage;
+			messages::battery_low = cell_voltage <= low_cell_voltage;
 		}
-		level = cell_voltage >= min_cell_voltage
+		level = cell_voltage > min_cell_voltage
 			? (cell_voltage - min_cell_voltage) / _cell_range * 100
 			: 0;
 		if (level > 100) level = 100;
@@ -235,9 +237,6 @@ namespace home
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 #	include "adc_battery/adc_battery.h"
 #endif
-//#ifdef TELEMETRY_MODULES_APM_CURRENT
-//#	include "apm_current/apm_current.h"
-//#endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
 #	include "i2c_baro/i2c_baro.h"
 #endif
@@ -261,9 +260,6 @@ namespace modules
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 		_declare_module (adc_battery),
 #endif
-//#ifdef TELEMETRY_MODULES_APM_CURRENT
-//		_declare_module (apm_current),
-//#endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
 		_declare_module (i2c_baro),
 #endif

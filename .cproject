@@ -22,7 +22,12 @@
 							<option id="de.innot.avreclipse.toolchain.options.toolchain.size.app.release.198907693" name="Print Size" superClass="de.innot.avreclipse.toolchain.options.toolchain.size.app.release"/>
 							<option id="de.innot.avreclipse.toolchain.options.toolchain.avrdude.app.release.1092223364" name="AVRDude" superClass="de.innot.avreclipse.toolchain.options.toolchain.avrdude.app.release"/>
 							<targetPlatform id="de.innot.avreclipse.targetplatform.winavr.app.release.793270334" name="AVR Cross-Target" superClass="de.innot.avreclipse.targetplatform.winavr.app.release"/>
-							<builder buildPath="${workspace_loc:/min_raw_osd}/Release" id="de.innot.avreclipse.target.builder.winavr.app.release.1539753602" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="de.innot.avreclipse.target.builder.winavr.app.release"/>
+							<builder buildPath="${workspace_loc:/min_raw_osd}/Release" id="de.innot.avreclipse.target.builder.winavr.app.release.1539753602" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="de.innot.avreclipse.target.builder.winavr.app.release">
+								<outputEntries>
+									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="Release"/>
+									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="Debug"/>
+								</outputEntries>
+							</builder>
 							<tool id="de.innot.avreclipse.tool.assembler.winavr.app.release.765376623" name="AVR Assembler" superClass="de.innot.avreclipse.tool.assembler.winavr.app.release">
 								<option id="de.innot.avreclipse.assembler.option.debug.level.263208816" name="Generate Debugging Info" superClass="de.innot.avreclipse.assembler.option.debug.level" value="de.innot.avreclipse.assembler.option.debug.level.none" valueType="enumerated"/>
 								<inputType id="de.innot.avreclipse.tool.assembler.input.1468289028" superClass="de.innot.avreclipse.tool.assembler.input"/>
@@ -53,9 +58,29 @@
 							<tool id="de.innot.avreclipse.tool.avrdude.app.release.1375377608" name="AVRDude" superClass="de.innot.avreclipse.tool.avrdude.app.release"/>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="de.innot.avreclipse.configuration.app.release.2052081039.735210435" name="/" resourcePath="src/lib/i2c">
+						<toolChain id="de.innot.avreclipse.toolchain.winavr.app.release.659406362" name="AVR-GCC Toolchain" superClass="de.innot.avreclipse.toolchain.winavr.app.release" unusedChildren="">
+							<option id="de.innot.avreclipse.toolchain.options.toolchain.objcopy.flash.app.release.258525453.2078365451" name="Generate HEX file for Flash memory" superClass="de.innot.avreclipse.toolchain.options.toolchain.objcopy.flash.app.release.258525453"/>
+							<option id="de.innot.avreclipse.toolchain.options.toolchain.objcopy.eeprom.app.release.1440361258.53744263" name="Generate HEX file for EEPROM" superClass="de.innot.avreclipse.toolchain.options.toolchain.objcopy.eeprom.app.release.1440361258"/>
+							<option id="de.innot.avreclipse.toolchain.options.toolchain.objdump.app.release.764352645.898000110" name="Generate Extended Listing (Source + generated Assembler)" superClass="de.innot.avreclipse.toolchain.options.toolchain.objdump.app.release.764352645"/>
+							<option id="de.innot.avreclipse.toolchain.options.toolchain.size.app.release.198907693.119433138" name="Print Size" superClass="de.innot.avreclipse.toolchain.options.toolchain.size.app.release.198907693"/>
+							<option id="de.innot.avreclipse.toolchain.options.toolchain.avrdude.app.release.1092223364.964833347" name="AVRDude" superClass="de.innot.avreclipse.toolchain.options.toolchain.avrdude.app.release.1092223364"/>
+							<tool id="de.innot.avreclipse.tool.assembler.winavr.app.release.1771701246" name="AVR Assembler" superClass="de.innot.avreclipse.tool.assembler.winavr.app.release.765376623"/>
+							<tool id="de.innot.avreclipse.tool.compiler.winavr.app.release.1710841120" name="AVR Compiler" superClass="de.innot.avreclipse.tool.compiler.winavr.app.release.121297935"/>
+							<tool id="de.innot.avreclipse.tool.cppcompiler.app.release.141031332" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.app.release.2102218542"/>
+							<tool id="de.innot.avreclipse.tool.linker.winavr.app.release.1203517950" name="AVR C Linker" superClass="de.innot.avreclipse.tool.linker.winavr.app.release.1276541947"/>
+							<tool id="de.innot.avreclipse.tool.cpplinker.app.release.1394610055" name="AVR C++ Linker" superClass="de.innot.avreclipse.tool.cpplinker.app.release.189089250"/>
+							<tool id="de.innot.avreclipse.tool.archiver.winavr.base.271804480" name="AVR Archiver" superClass="de.innot.avreclipse.tool.archiver.winavr.base.582657789"/>
+							<tool id="de.innot.avreclipse.tool.objdump.winavr.app.release.990517543" name="AVR Create Extended Listing" superClass="de.innot.avreclipse.tool.objdump.winavr.app.release.1697617186"/>
+							<tool id="de.innot.avreclipse.tool.objcopy.flash.winavr.app.release.1327230034" name="AVR Create Flash image" superClass="de.innot.avreclipse.tool.objcopy.flash.winavr.app.release.913176437"/>
+							<tool id="de.innot.avreclipse.tool.objcopy.eeprom.winavr.app.release.1213415678" name="AVR Create EEPROM image" superClass="de.innot.avreclipse.tool.objcopy.eeprom.winavr.app.release.1544822109"/>
+							<tool id="de.innot.avreclipse.tool.size.winavr.app.release.99512391" name="Print Size" superClass="de.innot.avreclipse.tool.size.winavr.app.release.2016560369"/>
+							<tool id="de.innot.avreclipse.tool.avrdude.app.release.1653217741" name="AVRDude" superClass="de.innot.avreclipse.tool.avrdude.app.release.1375377608"/>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
-						<entry excluding="src|lib/uavtalk/UAVTalk.cpp|lib/uavtalk/old" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="lib/uavtalk/UAVTalk.cpp|lib/uavtalk/old|i2c_master|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="lib/i2c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -114,7 +139,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="i2c_master|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
@@ -135,7 +160,14 @@
 		</scannerConfigBuildInfo>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/min_raw_osd"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/min_raw_osd"/>
+		</configuration>
+	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 		<buildTargets>
 			<target name="font" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">

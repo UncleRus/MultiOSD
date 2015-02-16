@@ -25,7 +25,6 @@ namespace osd
 namespace draw
 {
 
-	bool flash = false;
 	/*
 	 * 012
 	 * 3 7
@@ -80,7 +79,7 @@ namespace alt
 
 	const char __name [] PROGMEM = "StableAlt";
 
-	char _buffer [8];
+	static char _buffer [8];
 
 	void update ()
 	{
@@ -97,7 +96,7 @@ namespace climb
 
 	const char __name [] PROGMEM = "Climb";
 
-	char _buffer [8];
+	static char _buffer [8];
 
 	void update ()
 	{
@@ -139,8 +138,8 @@ namespace flight_mode
 		_fm_rtb, _fm_land, _fm_plan, _fm_poi, _fm_acruise
 	};
 
-	const char *name;
-	uint8_t len;
+	static const char *name;
+	static uint8_t len;
 
 	void update ()
 	{
@@ -195,7 +194,7 @@ namespace flight_time
 
 	const char __name [] PROGMEM = "FlightTime";
 
-	char _buffer [8];
+	static char _buffer [8];
 
 	void update ()
 	{
@@ -212,7 +211,7 @@ namespace roll
 
 	const char __name [] PROGMEM = "Roll";
 
-	char _buffer [7];
+	static char _buffer [7];
 
 	void update ()
 	{
@@ -229,7 +228,7 @@ namespace pitch
 
 	const char __name [] PROGMEM = "Pitch";
 
-	char _buffer [7];
+	static char _buffer [7];
 
 	void update ()
 	{
@@ -249,7 +248,7 @@ namespace gps_state
 #define _PAN_GPS_2D 0x01
 #define _PAN_GPS_3D 0x02
 
-	char _buffer [4];
+	static char _buffer [4];
 
 	void update ()
 	{
@@ -274,7 +273,7 @@ namespace gps_lat
 
 	const char __name [] PROGMEM = "Lat";
 
-	char _buffer [11];
+	static char _buffer [11];
 
 	void update ()
 	{
@@ -291,11 +290,11 @@ namespace gps_lon
 
 	const char __name [] PROGMEM = "Lon";
 
-	char _buffer [11];
+	static char _buffer [11];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\x83%02.6f"), telemetry::gps::longitude);
+		sprintf_P (_buffer, PSTR ("\x84%02.6f"), telemetry::gps::longitude);
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
@@ -379,7 +378,7 @@ namespace throttle
 
 	const char __name [] PROGMEM = "Throttle";
 
-	char _buffer [7];
+	static char _buffer [7];
 
 	void update ()
 	{
@@ -396,7 +395,7 @@ namespace ground_speed
 
 	const char __name [] PROGMEM = "GroundSpeed";
 
-	char _buffer [7];
+	static char _buffer [7];
 
 	void update ()
 	{
@@ -413,9 +412,9 @@ namespace battery_voltage
 
 	const char __name [] PROGMEM = "BatVoltage";
 
-	char _buffer [7];
-	char _symbol;
-	uint8_t _attr;
+	static char _buffer [7];
+	static char _symbol;
+	static uint8_t _attr;
 
 	void update ()
 	{
@@ -439,7 +438,7 @@ namespace battery_current
 
 	const char __name [] PROGMEM = "BatCurrent";
 
-	char _buffer [8];
+	static char _buffer [8];
 
 	void update ()
 	{
@@ -456,7 +455,7 @@ namespace battery_consumed
 
 	const char __name [] PROGMEM = "BatConsumed";
 
-	char _buffer [8];
+	static char _buffer [8];
 
 	void update ()
 	{
@@ -487,8 +486,8 @@ namespace home_distance
 
 	const char __name [] PROGMEM = "HomeDistance";
 
-	char _buffer [8];
-	uint8_t _attr, _i_attr;
+	static char _buffer [8];
+	static uint8_t _attr, _i_attr;
 
 	void update ()
 	{

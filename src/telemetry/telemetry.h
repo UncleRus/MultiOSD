@@ -119,6 +119,7 @@ namespace gps
 namespace barometer
 {
 	extern float altitude;			// meters
+	extern int16_t temperature;		// Celsius
 }
 
 namespace stable
@@ -127,6 +128,7 @@ namespace stable
 	extern float altitude;			// meters
 	extern float ground_speed;		// m/s
 	extern float air_speed;			// m/s
+	extern int16_t temperature;		// Celsius
 
 	void update_alt_climb (float altitude);
 }

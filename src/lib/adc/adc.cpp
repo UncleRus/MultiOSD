@@ -35,7 +35,7 @@ void init ()
 	ADCSRA |= _BV (ADEN) | _BV (ADPS0) | _BV (ADPS1) | _BV (ADPS2);
 }
 
-// TODO: Interrupt-based conversions
+// TODO: Interrupt-based conversions, filters
 
 uint16_t read (uint8_t channel)
 {
