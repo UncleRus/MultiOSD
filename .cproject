@@ -65,9 +65,16 @@
 							<option id="de.innot.avreclipse.toolchain.options.toolchain.objdump.app.release.764352645.898000110" name="Generate Extended Listing (Source + generated Assembler)" superClass="de.innot.avreclipse.toolchain.options.toolchain.objdump.app.release.764352645"/>
 							<option id="de.innot.avreclipse.toolchain.options.toolchain.size.app.release.198907693.119433138" name="Print Size" superClass="de.innot.avreclipse.toolchain.options.toolchain.size.app.release.198907693"/>
 							<option id="de.innot.avreclipse.toolchain.options.toolchain.avrdude.app.release.1092223364.964833347" name="AVRDude" superClass="de.innot.avreclipse.toolchain.options.toolchain.avrdude.app.release.1092223364"/>
-							<tool id="de.innot.avreclipse.tool.assembler.winavr.app.release.1771701246" name="AVR Assembler" superClass="de.innot.avreclipse.tool.assembler.winavr.app.release.765376623"/>
-							<tool id="de.innot.avreclipse.tool.compiler.winavr.app.release.1710841120" name="AVR Compiler" superClass="de.innot.avreclipse.tool.compiler.winavr.app.release.121297935"/>
-							<tool id="de.innot.avreclipse.tool.cppcompiler.app.release.141031332" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.app.release.2102218542"/>
+							<targetPlatform id="de.innot.avreclipse.targetplatform.winavr.app.release" name="AVR Cross-Target" superClass="de.innot.avreclipse.targetplatform.winavr.app.release"/>
+							<tool id="de.innot.avreclipse.tool.assembler.winavr.app.release.1771701246" name="AVR Assembler" superClass="de.innot.avreclipse.tool.assembler.winavr.app.release.765376623">
+								<inputType id="de.innot.avreclipse.tool.assembler.input.1956283878" superClass="de.innot.avreclipse.tool.assembler.input"/>
+							</tool>
+							<tool id="de.innot.avreclipse.tool.compiler.winavr.app.release.1710841120" name="AVR Compiler" superClass="de.innot.avreclipse.tool.compiler.winavr.app.release.121297935">
+								<inputType id="de.innot.avreclipse.compiler.winavr.input.1704099425" name="C Source Files" superClass="de.innot.avreclipse.compiler.winavr.input"/>
+							</tool>
+							<tool id="de.innot.avreclipse.tool.cppcompiler.app.release.141031332" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.app.release.2102218542">
+								<inputType id="de.innot.avreclipse.cppcompiler.input.1394618606" superClass="de.innot.avreclipse.cppcompiler.input"/>
+							</tool>
 							<tool id="de.innot.avreclipse.tool.linker.winavr.app.release.1203517950" name="AVR C Linker" superClass="de.innot.avreclipse.tool.linker.winavr.app.release.1276541947"/>
 							<tool id="de.innot.avreclipse.tool.cpplinker.app.release.1394610055" name="AVR C++ Linker" superClass="de.innot.avreclipse.tool.cpplinker.app.release.189089250"/>
 							<tool id="de.innot.avreclipse.tool.archiver.winavr.base.271804480" name="AVR Archiver" superClass="de.innot.avreclipse.tool.archiver.winavr.base.582657789"/>
@@ -140,7 +147,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="i2c_master|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="lib/i2c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

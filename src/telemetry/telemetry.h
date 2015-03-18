@@ -111,7 +111,7 @@ namespace gps
 	extern float altitude;			// meters
 	extern float speed;				// m/s
 	extern float heading;			// degrees
-	extern int8_t sattelites;
+	extern int8_t satellites;
 	extern uint8_t state;			// GPS_STATE_xxx enum
 	extern float climb;				// m/s
 }

@@ -66,7 +66,7 @@ namespace gps
 	float altitude = 0.0;
 	float speed = 0.0;
 	float heading = 0.0;
-	int8_t sattelites = 0;
+	int8_t satellites = 0;
 	uint8_t state = GPS_STATE_NO_FIX;
 	float climb = 0.0;
 

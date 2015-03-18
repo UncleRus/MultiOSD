@@ -331,7 +331,7 @@ bool update ()
 				telemetry::gps::altitude 	= pgm_read_float (&_fake_gps_data [_fake_idx].altitude);
 				telemetry::gps::speed 		= 8.0;
 				telemetry::gps::state 		= GPS_STATE_3D;
-				telemetry::gps::sattelites 	= 12;
+				telemetry::gps::satellites 	= 12;
 				if (++_fake_idx >= sizeof (_fake_gps_data) / sizeof (_gps_data_t))
 					_fake_idx = 0;
 #else
@@ -341,7 +341,7 @@ bool update ()
 				telemetry::gps::heading 	= buffer.get<float> (16);
 				telemetry::gps::speed 		= buffer.get<float> (20);
 				telemetry::gps::state 		= buffer.data [36];
-				telemetry::gps::sattelites 	= buffer.data [37];
+				telemetry::gps::satellites 	= buffer.data [37];
 #endif
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
 				// update stable altitude if we can't get the baro altitude

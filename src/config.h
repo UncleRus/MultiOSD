@@ -65,7 +65,7 @@
 /*
 #define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_OFF // single screen mode
 */
-#define UAVTALK_FAKE_GPS	// debug
+//#define UAVTALK_FAKE_GPS	// debug
 
 
 /*

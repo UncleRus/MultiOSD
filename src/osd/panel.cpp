@@ -252,7 +252,7 @@ namespace gps_state
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("%d"), telemetry::gps::sattelites);
+		sprintf_P (_buffer, PSTR ("%d"), telemetry::gps::satellites);
 		_buffer [sizeof (_buffer) - 1] = 0;
 	}
 
