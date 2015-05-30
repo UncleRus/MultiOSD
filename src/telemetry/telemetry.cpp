@@ -29,6 +29,7 @@ namespace status
 	uint8_t connection = CONNECTION_STATE_DISCONNECTED;
 	uint16_t flight_time = 0;
 	uint8_t flight_mode = FLIGHT_MODE_MANUAL;
+	const char *flight_mode_name = NULL;
 	bool armed = false;
 	uint8_t rssi = 0;
 
@@ -65,7 +66,7 @@ namespace gps
 	float longitude = 0.0;
 	float altitude = 0.0;
 	float speed = 0.0;
-	float heading = 0.0;
+	uint16_t heading = 0;
 	int8_t satellites = 0;
 	uint8_t state = GPS_STATE_NO_FIX;
 	float climb = 0.0;
@@ -75,8 +76,9 @@ namespace gps
 namespace barometer
 {
 
-	float altitude = 0.0;
-	int16_t temperature = 0;
+	int16_t altitude = 0;
+	float temperature = 0.0;
+	int16_t pressure = 0;
 
 }  // namespace barometer
 
@@ -88,6 +90,7 @@ namespace stable
 	float ground_speed = 0.0;
 	float air_speed = 0.0;
 	int16_t temperature = 0;
+	uint16_t heading = 0;
 
 	static uint32_t _alt_update_time = 0;
 
@@ -101,10 +104,11 @@ namespace stable
 
 }  // namespace stable
 
-#define TELEMETRY_EEPROM_MIN_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET)
-#define TELEMETRY_EEPROM_NOM_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 4)
-#define TELEMETRY_EEPROM_MAX_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 8)
-#define TELEMETRY_EEPROM_LOW_VOLTAGE		_eeprom_float (TELEMETRY_EEPROM_OFFSET + 12)
+#define TELEMETRY_EEPROM_MAIN_MODULE_ID		_eeprom_byte (TELEMETRY_EEPROM_OFFSET)
+#define TELEMETRY_EEPROM_MIN_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 1)
+#define TELEMETRY_EEPROM_NOM_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 5)
+#define TELEMETRY_EEPROM_MAX_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 9)
+#define TELEMETRY_EEPROM_LOW_VOLTAGE		_eeprom_float (TELEMETRY_EEPROM_OFFSET + 13)
 
 namespace battery
 {
@@ -246,6 +250,13 @@ namespace home
 #ifdef TELEMETRY_MODULES_UAVTALK
 #	include "uavtalk/uavtalk.h"
 #endif
+#ifdef TELEMETRY_MODULES_MAVLINK
+#	include "mavlink/mavlink.h"
+#endif
+
+#ifndef TELEMETRY_MAIN_MODULE_ID
+#	error No main telemetry module defined
+#endif
 
 #define _declare_module(NS) { telemetry::modules:: NS ::__name, telemetry::modules:: NS ::reset, \
 	telemetry::modules:: NS ::init, telemetry::modules:: NS ::update }
@@ -269,6 +280,9 @@ namespace modules
 #ifdef TELEMETRY_MODULES_UAVTALK
 		_declare_module (uavtalk),
 #endif
+#ifdef TELEMETRY_MODULES_MAVLINK
+		_declare_module (mavlink),
+#endif
 	};
 
 	const uint8_t count = sizeof (modules) / sizeof (module_t);
@@ -278,6 +292,9 @@ namespace modules
 
 void init ()
 {
+	if (eeprom_read_byte (TELEMETRY_EEPROM_MAIN_MODULE_ID) != TELEMETRY_MAIN_MODULE_ID)
+		::settings::reset ();
+
 	battery::init ();
 	for (uint8_t i = 0; i < modules::count; i ++)
 		modules::init (i);
@@ -295,6 +312,7 @@ namespace settings
 {
 	void reset ()
 	{
+		eeprom_update_byte (TELEMETRY_EEPROM_MAIN_MODULE_ID, TELEMETRY_MAIN_MODULE_ID);
 		battery::reset ();
 		for (uint8_t i = 0; i < modules::count; i ++)
 			modules::reset (i);

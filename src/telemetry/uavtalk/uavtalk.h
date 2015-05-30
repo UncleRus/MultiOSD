@@ -15,6 +15,11 @@
 #ifndef TELEMETRY_UAVTALK_UAVTALK_H_
 #define TELEMETRY_UAVTALK_UAVTALK_H_
 
+#ifdef TELEMETRY_MAIN_MODULE_ID
+#	error Conflicting modules
+#endif
+#define TELEMETRY_MAIN_MODULE_ID 'U'
+
 #include <stdint.h>
 #include <stddef.h>
 #include <avr/pgmspace.h>

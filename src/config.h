@@ -15,13 +15,14 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define VERSION 3
+#define VERSION 4
 
 /*
  * Telemetry modules config
  */
-#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
-#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
+//#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
+#define TELEMETRY_MODULES_MAVLINK					// main telemetry module
+//#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
 
 /*
  * Telemetry config
@@ -37,14 +38,23 @@
 #define UAVTALK_UART uart0
 #define UAVTALK_VERSION 0x20
 #ifndef UAVTALK_VERSION_RELEASE
-#	define UAVTALK_VERSION_RELEASE 141001
+#	define UAVTALK_VERSION_RELEASE 150202
 #endif
-#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D				// default board
+#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D		// default board
 #define UAVTALK_CONNECTION_TIMEOUT 10000				// ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500	// ms
 // Home distance/direction calculation: 0 - flight controller (REVO only), 1 - min_raw_osd by GPS
 // Overrided by board setting
 #define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 0
+
+/*
+ * MAVLink config
+ */
+#define MAVLINK_UART uart0
+#define MAVLINK_CONNECTION_TIMEOUT 5000					// ms
+#define MAVLINK_DEFAULT_BOARD MAVLINK_BOARD_APM			// default board
+#define MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL 0			// Internal battery level calculation
+
 /*
  * OSD config
  */
@@ -93,8 +103,8 @@
 /*
  * ADC config
  */
-#define ADC_DEFAULT_REF	ADC_REF_AVCC	// AVCC as voltage reference
-#define ADC_DEFAULT_REF_VOLTAGE 5.31	// 5V
+#define ADC_DEFAULT_REF	ADC_REF_INTERNAL	// Internal source as voltage reference
+#define ADC_DEFAULT_REF_VOLTAGE 1.1			// 1.1V
 
 /*
  * ADC battery

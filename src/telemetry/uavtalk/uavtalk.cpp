@@ -15,6 +15,7 @@
 #include "uavtalk.h"
 #include <avr/pgmspace.h>
 #include <string.h>
+#include <math.h>
 #include "../../settings.h"
 #include "../../lib/uart/uart.h"
 #include "../../lib/timer/timer.h"
@@ -32,6 +33,30 @@ namespace modules
 
 namespace uavtalk
 {
+
+const char _fm_man [] PROGMEM = "MANU";
+const char _fm_stab1 [] PROGMEM = "STB1";
+const char _fm_stab2 [] PROGMEM = "STB2";
+const char _fm_stab3 [] PROGMEM = "STB3";
+const char _fm_stab4 [] PROGMEM = "STB4";
+const char _fm_stab5 [] PROGMEM = "STB5";
+const char _fm_stab6 [] PROGMEM = "STB6";
+const char _fm_atune [] PROGMEM = "ATUN";
+const char _fm_pos_hold [] PROGMEM = "PHLD";
+const char _fm_pos_v_fpv [] PROGMEM = "PVAF";
+const char _fm_pos_v_los [] PROGMEM = "PVAL";
+const char _fm_pos_v_nsew [] PROGMEM = "PVAN";
+const char _fm_rtb [] PROGMEM = "RTH ";
+const char _fm_land [] PROGMEM = "LAND";
+const char _fm_plan [] PROGMEM = "PLAN";
+const char _fm_poi [] PROGMEM = "POI ";
+const char _fm_acruise [] PROGMEM = "ACRU";
+
+const char * const _fm [] PROGMEM = {
+	_fm_man, _fm_stab1, _fm_stab2, _fm_stab3, _fm_stab4, _fm_stab5, _fm_stab6,
+	_fm_atune, _fm_pos_hold, _fm_pos_v_fpv, _fm_pos_v_los, _fm_pos_v_nsew,
+	_fm_rtb, _fm_land, _fm_plan, _fm_poi, _fm_acruise
+};
 
 static const uint8_t _crc_table [256] PROGMEM =
 {
@@ -299,6 +324,7 @@ bool update ()
 				_was_armed = telemetry::status::armed;
 				telemetry::status::armed = buffer.data [0] > 1;
 				telemetry::status::flight_mode = buffer.data [1];
+				telemetry::status::flight_mode_name = _fm [telemetry::status::flight_mode];
 				// fix home if armed on CC3D
 				if ((_board == UAVTALK_BOARD_CC3D || _internal_home_calc) && !_was_armed && telemetry::status::armed)
 					telemetry::home::fix ();
@@ -338,15 +364,15 @@ bool update ()
 				telemetry::gps::latitude 	= buffer.get<int32_t> (0) / 10000000.0;
 				telemetry::gps::longitude 	= buffer.get<int32_t> (4) / 10000000.0;
 				telemetry::gps::altitude 	= buffer.get<float> (8);
-				telemetry::gps::heading 	= buffer.get<float> (16);
-				telemetry::gps::speed 		= buffer.get<float> (20);
+				telemetry::gps::heading 	= round (buffer.get<float> (16));
+				telemetry::stable::ground_speed = telemetry::gps::speed = buffer.get<float> (20);
 				telemetry::gps::state 		= buffer.data [36];
 				telemetry::gps::satellites 	= buffer.data [37];
 #endif
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
 				// update stable altitude if we can't get the baro altitude
 				if (_board == UAVTALK_BOARD_CC3D)
-					telemetry::stable::altitude = telemetry::gps::altitude;
+					telemetry::stable::update_alt_climb (telemetry::gps::altitude);
 #endif
 				// calc home distance/direction based on gps
 				if (_board == UAVTALK_BOARD_CC3D || _internal_home_calc)
@@ -354,9 +380,9 @@ bool update ()
 				break;
 			case UAVTALK_GPSVELOCITYSENSOR_OBJID:
 				telemetry::gps::climb = -buffer.get<float> (8);
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
-				if (_board == UAVTALK_BOARD_CC3D) telemetry::stable::climb = telemetry::gps::climb;
-#endif
+//#if !defined (TELEMETRY_MODULES_I2C_BARO)
+//				if (_board == UAVTALK_BOARD_CC3D) telemetry::stable::climb = telemetry::gps::climb;
+//#endif
 				// TODO: north/east
 				break;
 			default:

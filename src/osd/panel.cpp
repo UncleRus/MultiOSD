@@ -114,43 +114,14 @@ namespace flight_mode
 
 	const char __name [] PROGMEM = "FlightMode";
 
-	const char _fm_man [] PROGMEM = "MANU";
-	const char _fm_stab1 [] PROGMEM = "STB1";
-	const char _fm_stab2 [] PROGMEM = "STB2";
-	const char _fm_stab3 [] PROGMEM = "STB3";
-	const char _fm_stab4 [] PROGMEM = "STB4";
-	const char _fm_stab5 [] PROGMEM = "STB5";
-	const char _fm_stab6 [] PROGMEM = "STB6";
-	const char _fm_atune [] PROGMEM = "ATUN";
-	const char _fm_pos_hold [] PROGMEM = "PHLD";
-	const char _fm_pos_v_fpv [] PROGMEM = "PVAF";
-	const char _fm_pos_v_los [] PROGMEM = "PVAL";
-	const char _fm_pos_v_nsew [] PROGMEM = "PVAN";
-	const char _fm_rtb [] PROGMEM = "RTH ";
-	const char _fm_land [] PROGMEM = "LAND";
-	const char _fm_plan [] PROGMEM = "PLAN";
-	const char _fm_poi [] PROGMEM = "POI ";
-	const char _fm_acruise [] PROGMEM = "ACRU";
+	const char _empty [] = "\x09\x09\x09\x09";
 
-	const char * const _fm [] PROGMEM = {
-		_fm_man, _fm_stab1, _fm_stab2, _fm_stab3, _fm_stab4, _fm_stab5, _fm_stab6,
-		_fm_atune, _fm_pos_hold, _fm_pos_v_fpv, _fm_pos_v_los, _fm_pos_v_nsew,
-		_fm_rtb, _fm_land, _fm_plan, _fm_poi, _fm_acruise
-	};
-
-	static const char *name;
-	static uint8_t len;
-
-	void update ()
-	{
-		name = (const char *) pgm_read_ptr (&_fm [telemetry::status::flight_mode]);
-		len = strlen_P (name);
-	}
+	void update () {}
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		osd::draw::rect (x, y, len + 2, 3);
-		max7456::puts_p (x + 1, y + 1, name);
+		osd::draw::rect (x, y, 6, 3);
+		max7456::puts_p (x + 1, y + 1, telemetry::status::flight_mode_name ? telemetry::status::flight_mode_name : _empty);
 	}
 
 }  // namespace flight_mode

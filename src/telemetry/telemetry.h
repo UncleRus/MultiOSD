@@ -79,7 +79,8 @@ namespace status
 {
 	extern uint8_t connection;		// CONNECTION_STATE_xxx enum
 	extern uint16_t flight_time;	// seconds
-	extern uint8_t flight_mode;		// FLIGHT_MODE_xxx enum
+	extern uint8_t flight_mode;		//
+	extern const char *flight_mode_name; // progmem string
 	extern bool armed;
 	extern uint8_t rssi;			// percents
 }
@@ -110,7 +111,7 @@ namespace gps
 	extern float longitude;
 	extern float altitude;			// meters
 	extern float speed;				// m/s
-	extern float heading;			// degrees
+	extern uint16_t heading;		// degrees, 0..360
 	extern int8_t satellites;
 	extern uint8_t state;			// GPS_STATE_xxx enum
 	extern float climb;				// m/s
@@ -118,8 +119,9 @@ namespace gps
 
 namespace barometer
 {
-	extern float altitude;			// meters
-	extern int16_t temperature;		// Celsius
+	extern int16_t altitude;		// meters
+	extern float temperature;		// Celsius
+	extern int16_t pressure;		// Pascal
 }
 
 namespace stable
@@ -129,6 +131,7 @@ namespace stable
 	extern float ground_speed;		// m/s
 	extern float air_speed;			// m/s
 	extern int16_t temperature;		// Celsius
+	extern uint16_t heading;		// degrees, 0..360
 
 	void update_alt_climb (float altitude);
 }

@@ -12,33 +12,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SETTINGS_H_
-#define SETTINGS_H_
+#ifndef TELEMETRY_MAVLINK_MAVLINK_H_
+#define TELEMETRY_MAVLINK_MAVLINK_H_
 
-#include <avr/eeprom.h>
+#ifdef TELEMETRY_MAIN_MODULE_ID
+#	error Conflicting modules
+#endif
+#define TELEMETRY_MAIN_MODULE_ID 'M'
 
-#define EEPROM_SIZE 0x400
-#define EEPROM_HEADER 0x5552
+#include <avr/pgmspace.h>
 
-#define ADC_EEPROM_OFFSET            0x05
-#define MAX7456_EEPROM_OFFSET        0x10
-#define ADC_BATTERY_EEPROM_OFFSET    0x15
-#define UAVTALK_EEPROM_OFFSET        0x30
-#define MAVLINK_EEPROM_OFFSET        0x30
-#define TELEMETRY_EEPROM_OFFSET      0x40
-#define OSD_EEPROM_OFFSET            0x70
-#define OSD_SCREENS_EEPROM_OFFSET    (OSD_EEPROM_OFFSET + 0x10)
+#define MAVLINK_BOARD_APM 0
 
-#define _eeprom_byte(x) ((uint8_t *) (x))
-#define _eeprom_word(x) ((uint16_t *) (x))
-#define _eeprom_float(x) ((float *) (x))
+#include "../../config.h"
 
-namespace settings
+
+namespace telemetry
 {
 
+namespace modules
+{
+
+namespace mavlink
+{
+
+const char __name [] PROGMEM = "MAVLink";
+
 void init ();
+bool update ();
 void reset ();
 
-}
 
-#endif /* SETTINGS_H_ */
+}  // namespace mavlink
+
+}  // namespace modules
+
+}  // namespace telemetry
+
+#endif /* TELEMETRY_MAVLINK_MAVLINK_H_ */
