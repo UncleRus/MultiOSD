@@ -133,6 +133,13 @@ namespace rates
 
 	const uint8_t count = sizeof (values) / sizeof (stream_rate_t);
 
+	void setup ()
+	{
+		for (uint8_t i = 0; i < rates::count; i ++)
+	        mavlink_msg_request_data_stream_send (MAVLINK_COMM_0, _msg.sysid, _msg.compid,
+	        	pgm_read_byte (&rates::values [i].stream), pgm_read_byte (&rates::values [i].rate), 1);
+	}
+
 }  // namespace rates
 
 bool update ()
@@ -145,10 +152,15 @@ bool update ()
 	while (_receive ())
 	{
 		bool changed = true;
+		bool _was_armed;
 		switch (_msg.msgid)
 		{
 			case MAVLINK_MSG_ID_HEARTBEAT:
-				telemetry::status::armed = mavlink_msg_heartbeat_get_base_mode (&_msg) & _BV (MAV_MODE_FLAG_SAFETY_ARMED);
+				_was_armed = telemetry::status::armed;
+				telemetry::status::armed = mavlink_msg_heartbeat_get_base_mode (&_msg) & MAV_MODE_FLAG_SAFETY_ARMED;
+				if (!_was_armed && telemetry::status::armed)
+					telemetry::home::fix ();
+
 				telemetry::status::flight_mode = mavlink_msg_heartbeat_get_custom_mode (&_msg);
 				// TODO: apm/acm
 				telemetry::status::flight_mode_name = telemetry::status::flight_mode >= _FM_COUNT
@@ -159,9 +171,7 @@ bool update ()
 				if (telemetry::status::connection != CONNECTION_STATE_CONNECTED)
 				{
 					telemetry::status::connection = CONNECTION_STATE_CONNECTED;
-					for (uint8_t i = 0; i < rates::count; i ++)
-				        mavlink_msg_request_data_stream_send (MAVLINK_COMM_0, _msg.sysid, _msg.compid,
-				        	pgm_read_byte (&rates::values [i].stream), pgm_read_byte (&rates::values [i].rate), 1);
+					rates::setup ();
 				}
 
 				break;
@@ -177,14 +187,14 @@ bool update ()
 					telemetry::battery::update_voltage ();
 
 				{
-					float cur_mah = mavlink_msg_sys_status_get_current_battery (&_msg) * 10;
-					telemetry::battery::current = cur_mah / 1000.0;
+					float cur_mah = mavlink_msg_sys_status_get_current_battery (&_msg);
+					telemetry::battery::current = cur_mah / 100.0;
 					_batt_current_sum += cur_mah;
 					_batt_mean_cnt ++;
 					uint16_t interval = ticks - _battery_consumed_last;
 					if (interval >= MAVLINK_BATTERY_CONSUMED_INTERVAL)
 					{
-						telemetry::battery::consumed += _batt_current_sum / _batt_mean_cnt * interval / 3600000;
+						telemetry::battery::consumed += _batt_current_sum / _batt_mean_cnt * interval / 360000;
 						_batt_current_sum = 0;
 						_batt_mean_cnt = 0;
 						_battery_consumed_last = ticks;
@@ -205,6 +215,7 @@ bool update ()
 				telemetry::gps::longitude = mavlink_msg_gps_raw_int_get_lon (&_msg) / 10000000.0;
 				telemetry::gps::altitude = mavlink_msg_gps_raw_int_get_alt (&_msg) / 1000.0;
 				telemetry::gps::speed = mavlink_msg_gps_raw_int_get_vel (&_msg) / 100.0;
+				telemetry::home::update ();
 				break;
 			case MAVLINK_MSG_ID_VFR_HUD:
 				telemetry::stable::ground_speed = mavlink_msg_vfr_hud_get_groundspeed (&_msg);
