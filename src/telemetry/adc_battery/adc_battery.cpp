@@ -81,7 +81,7 @@ bool update ()
 	if (_current_sensor)
 	{
 		telemetry::battery::current = adc::value (_current_channel, _current_multiplier);
-		telemetry::battery::consumed += telemetry::battery::current * (float) interval / 3600.0;
+		telemetry::battery::consumed += telemetry::battery::current * interval / 3600;
 	}
 	return true;
 }

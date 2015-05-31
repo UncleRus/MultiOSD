@@ -24,6 +24,10 @@ void _get_cmd (char *buf, uint8_t len, uint16_t timeout)
 		uint16_t data = timer::ticks () < stop ? CONSOLE_UART::receive () : 0;
 		if (data & 0xff00) continue;
 		if (data == 0x0d || i == len - 1) data = 0;
+
+		max7456::open (3 + i * 3, max7456::bottom - 4);
+		fprintf_P (&max7456::stream, PSTR ("%02x"), data);
+
 		buf [i ++] = data;
 		if (!data) break;
 	}

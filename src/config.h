@@ -50,10 +50,13 @@
 /*
  * MAVLink config
  */
+#define MAVLINK_SYSID 254								// our system id
+#define MAVLINK_COMPID 1
 #define MAVLINK_UART uart0
 #define MAVLINK_CONNECTION_TIMEOUT 5000					// ms
-#define MAVLINK_DEFAULT_BOARD MAVLINK_BOARD_APM			// default board
-#define MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL 0			// Internal battery level calculation
+#define MAVLINK_BATTERY_CONSUMED_INTERVAL 100			// ms
+#define MAVLINK_DEFAULT_FW MAVLINK_BOARD_APM			// default board
+#define MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL 1			// Internal battery level calculation (better)
 
 /*
  * OSD config
@@ -67,14 +70,14 @@
 // when to switch between screens
 //#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_FLIGHT_MODE // flight mode switch
 // or
-///*
+/*
 #define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_RAW_CHANNEL // raw channel value
 #define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6 // it's ACCESSORY1 on my Tx
-//*/
-// or
-/*
-#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_OFF // single screen mode
 */
+// or
+///*
+#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_OFF // single screen mode
+//*/
 //#define UAVTALK_FAKE_GPS	// debug
 
 

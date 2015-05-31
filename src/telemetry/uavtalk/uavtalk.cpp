@@ -324,7 +324,7 @@ bool update ()
 				_was_armed = telemetry::status::armed;
 				telemetry::status::armed = buffer.data [0] > 1;
 				telemetry::status::flight_mode = buffer.data [1];
-				telemetry::status::flight_mode_name = _fm [telemetry::status::flight_mode];
+				telemetry::status::flight_mode_name = (const char *) pgm_read_ptr (&_fm [telemetry::status::flight_mode]);
 				// fix home if armed on CC3D
 				if ((_board == UAVTALK_BOARD_CC3D || _internal_home_calc) && !_was_armed && telemetry::status::armed)
 					telemetry::home::fix ();

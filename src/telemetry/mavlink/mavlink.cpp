@@ -19,12 +19,11 @@
 #include "../../lib/timer/timer.h"
 #include "../telemetry.h"
 
-#define MAVLINK_COMM_NUM_BUFFERS 1
+#include "../../lib/max7456/max7456.h"
 
-//#include "lib/include/mavlink/v1.0/mavlink_types.h"
-#include "lib/include/mavlink/v1.0/ardupilotmega/mavlink.h"
+#include "setup.h"
 
-#define MAVLINK_EEPROM_BOARD _eeprom_byte (MAVLINK_EEPROM_OFFSET)
+#define MAVLINK_EEPROM_FW _eeprom_byte (MAVLINK_EEPROM_OFFSET)
 #define MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL _eeprom_byte (MAVLINK_EEPROM_OFFSET + 1)
 
 namespace telemetry
@@ -36,33 +35,65 @@ namespace modules
 namespace mavlink
 {
 
-const char _fm_0 [] PROGMEM  = "MANU";
-const char _fm_1 [] PROGMEM  = "CRCL";
-const char _fm_2 [] PROGMEM  = "STAB";
-const char _fm_3 [] PROGMEM  = "TRN ";
-const char _fm_4 [] PROGMEM  = "ACRO";
-const char _fm_5 [] PROGMEM  = "FWBA";
-const char _fm_6 [] PROGMEM  = "FWBB";
-const char _fm_7 [] PROGMEM  = "CRUI";
-const char _fm_8 [] PROGMEM  = "ATUN";
-const char _fm_10 [] PROGMEM = "AUTO";
-const char _fm_11 [] PROGMEM = "RTL ";
-const char _fm_12 [] PROGMEM = "LOIT";
-const char _fm_14 [] PROGMEM = "LAND";
-const char _fm_15 [] PROGMEM = "GUID";
-const char _fm_16 [] PROGMEM = "INIT";
+const char _apm_fm_0 [] PROGMEM  = "MANU";
+const char _apm_fm_1 [] PROGMEM  = "CRCL";
+const char _apm_fm_2 [] PROGMEM  = "STAB";
+const char _apm_fm_3 [] PROGMEM  = "TRN ";
+const char _apm_fm_4 [] PROGMEM  = "ACRO";
+const char _apm_fm_5 [] PROGMEM  = "FWBA";
+const char _apm_fm_6 [] PROGMEM  = "FWBB";
+const char _apm_fm_7 [] PROGMEM  = "CRUI";
+const char _apm_fm_8 [] PROGMEM  = "ATUN";
+const char _apm_fm_10 [] PROGMEM = "AUTO";
+const char _apm_fm_11 [] PROGMEM = "RTL ";
+const char _apm_fm_12 [] PROGMEM = "LOIT";
+const char _apm_fm_14 [] PROGMEM = "LAND";
+const char _apm_fm_15 [] PROGMEM = "GUID";
+const char _apm_fm_16 [] PROGMEM = "INIT";
 
-const char * const _fm [] PROGMEM = { _fm_0, _fm_1, _fm_2, _fm_3, _fm_4, _fm_5, _fm_6, _fm_7, _fm_8, NULL, _fm_10, _fm_11, _fm_12, NULL, _fm_14, _fm_15, _fm_16 };
+const char * const _apm_fm [] PROGMEM = {
+	_apm_fm_0, _apm_fm_1, _apm_fm_2, _apm_fm_3,
+	_apm_fm_4, _apm_fm_5, _apm_fm_6, _apm_fm_7,
+	_apm_fm_8, NULL, _apm_fm_10, _apm_fm_11,
+	_apm_fm_12, NULL, _apm_fm_14, _apm_fm_15,
+	_apm_fm_16
+};
+
+const char _acm_fm_0 [] PROGMEM  = "STAB";
+const char _acm_fm_1 [] PROGMEM  = "ACRO";
+const char _acm_fm_2 [] PROGMEM  = "ALTH";
+const char _acm_fm_3 [] PROGMEM  = "AUTO";
+const char _acm_fm_4 [] PROGMEM  = "GUID";
+const char _acm_fm_5 [] PROGMEM  = "LOIT";
+const char _acm_fm_6 [] PROGMEM  = "RTL ";
+const char _acm_fm_7 [] PROGMEM  = "CRCL";
+const char _acm_fm_8 [] PROGMEM  = "POS ";
+const char _acm_fm_9 [] PROGMEM  = "LAND";
+const char _acm_fm_10 [] PROGMEM = "OFLT";
+const char _acm_fm_11 [] PROGMEM = "DRFT";
+const char _acm_fm_13 [] PROGMEM = "SPRT";
+const char _acm_fm_14 [] PROGMEM = "FLIP";
+const char _acm_fm_15 [] PROGMEM = "ATUN";
+const char _acm_fm_16 [] PROGMEM = "POSH";
+
+const char * const _acm_fm [] PROGMEM = {
+	_acm_fm_0, _acm_fm_1, _acm_fm_2, _acm_fm_3,
+	_acm_fm_4, _acm_fm_5, _acm_fm_6, _acm_fm_7,
+	_acm_fm_8, _acm_fm_9, _acm_fm_10, _acm_fm_11,
+	NULL, _acm_fm_13, _acm_fm_14, _acm_fm_15,
+	_acm_fm_16
+};
 
 #define _FM_COUNT 17
 
-static uint8_t _board;
+static uint8_t _fw;
 static uint8_t _int_batt_level;
 
 static mavlink_message_t _msg;
 static mavlink_status_t _status;
 
 static uint32_t _connection_timeout = 0;
+static uint32_t _battery_consumed_last = 0;
 
 bool _receive ()
 {
@@ -82,11 +113,35 @@ float __attribute__ ((noinline)) rad_to_deg (float rad)
 	return rad * 57.2957795131;
 }
 
+namespace rates
+{
+
+	struct stream_rate_t
+	{
+		MAV_DATA_STREAM stream;
+		uint8_t rate;
+	};
+
+	const stream_rate_t values [] PROGMEM = {
+		{MAV_DATA_STREAM_RAW_SENSORS, 10},
+		{MAV_DATA_STREAM_EXTENDED_STATUS, 25},
+		{MAV_DATA_STREAM_RC_CHANNELS, 5},
+		{MAV_DATA_STREAM_POSITION, 15},
+		{MAV_DATA_STREAM_EXTRA1, 20},
+		{MAV_DATA_STREAM_EXTRA2, 5},
+	};
+
+	const uint8_t count = sizeof (values) / sizeof (stream_rate_t);
+
+}  // namespace rates
+
 bool update ()
 {
 	bool updated = false;
 	uint32_t ticks = timer::ticks ();
 
+	float _batt_current_sum = 0;
+	uint8_t _batt_mean_cnt = 0;
 	while (_receive ())
 	{
 		bool changed = true;
@@ -95,19 +150,50 @@ bool update ()
 			case MAVLINK_MSG_ID_HEARTBEAT:
 				telemetry::status::armed = mavlink_msg_heartbeat_get_base_mode (&_msg) & _BV (MAV_MODE_FLAG_SAFETY_ARMED);
 				telemetry::status::flight_mode = mavlink_msg_heartbeat_get_custom_mode (&_msg);
-				telemetry::status::flight_mode_name = telemetry::status::flight_mode >= _FM_COUNT ? NULL : _fm [telemetry::status::flight_mode];
+				// TODO: apm/acm
+				telemetry::status::flight_mode_name = telemetry::status::flight_mode >= _FM_COUNT
+					? NULL
+					: (const char *) pgm_read_ptr (&_acm_fm [telemetry::status::flight_mode]);
+
 				_connection_timeout = ticks + MAVLINK_CONNECTION_TIMEOUT;
-				telemetry::status::connection = CONNECTION_STATE_CONNECTED;
+				if (telemetry::status::connection != CONNECTION_STATE_CONNECTED)
+				{
+					telemetry::status::connection = CONNECTION_STATE_CONNECTED;
+					for (uint8_t i = 0; i < rates::count; i ++)
+				        mavlink_msg_request_data_stream_send (MAVLINK_COMM_0, _msg.sysid, _msg.compid,
+				        	pgm_read_byte (&rates::values [i].stream), pgm_read_byte (&rates::values [i].rate), 1);
+				}
+
 				break;
 			case MAVLINK_MSG_ID_SYS_STATUS:
 				telemetry::battery::voltage = mavlink_msg_sys_status_get_voltage_battery (&_msg) / 1000.0;
-				telemetry::battery::current = mavlink_msg_sys_status_get_current_battery (&_msg) / 100.0;
 				if (!_int_batt_level)
-					telemetry::battery::level = mavlink_msg_sys_status_get_battery_remaining (&_msg) / 10;
+				{
+					telemetry::battery::level = mavlink_msg_sys_status_get_battery_remaining (&_msg);
+					if (telemetry::battery::level > 100)
+						telemetry::battery::level = 0;
+				}
 				else
 					telemetry::battery::update_voltage ();
+
+				{
+					float cur_mah = mavlink_msg_sys_status_get_current_battery (&_msg) * 10;
+					telemetry::battery::current = cur_mah / 1000.0;
+					_batt_current_sum += cur_mah;
+					_batt_mean_cnt ++;
+					uint16_t interval = ticks - _battery_consumed_last;
+					if (interval >= MAVLINK_BATTERY_CONSUMED_INTERVAL)
+					{
+						telemetry::battery::consumed += _batt_current_sum / _batt_mean_cnt * interval / 3600000;
+						_batt_current_sum = 0;
+						_batt_mean_cnt = 0;
+						_battery_consumed_last = ticks;
+					}
+				}
+
 				break;
             case MAVLINK_MSG_ID_ATTITUDE:
+				telemetry::status::flight_time = mavlink_msg_attitude_get_time_boot_ms (&_msg) / 1000;
             	telemetry::attitude::roll = rad_to_deg (mavlink_msg_attitude_get_roll (&_msg));
             	telemetry::attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (&_msg));
             	telemetry::attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (&_msg));
@@ -163,13 +249,13 @@ bool update ()
 
 void init ()
 {
-	_board = eeprom_read_byte (MAVLINK_EEPROM_BOARD);
+	_fw = eeprom_read_byte (MAVLINK_EEPROM_FW);
 	_int_batt_level = eeprom_read_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL);
 }
 
 void reset ()
 {
-	eeprom_update_byte (MAVLINK_EEPROM_BOARD, MAVLINK_DEFAULT_BOARD);
+	eeprom_update_byte (MAVLINK_EEPROM_FW, MAVLINK_DEFAULT_FW);
 	eeprom_update_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL, MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL);
 }
 
