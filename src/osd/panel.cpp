@@ -114,14 +114,12 @@ namespace flight_mode
 
 	const char __name [] PROGMEM = "FlightMode";
 
-	const char _empty [] = "\x09\x09\x09\x09";
-
 	void update () {}
 
 	void draw (uint8_t x, uint8_t y)
 	{
 		osd::draw::rect (x, y, 6, 3);
-		max7456::puts_p (x + 1, y + 1, telemetry::status::flight_mode_name ? telemetry::status::flight_mode_name : _empty);
+		max7456::puts_p (x + 1, y + 1, telemetry::status::flight_mode_name_p ? telemetry::status::flight_mode_name_p : PSTR ("\x09\x09\x09\x09"));
 	}
 
 }  // namespace flight_mode

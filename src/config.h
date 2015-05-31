@@ -101,7 +101,7 @@
  * Boot config
  */
 #define BOOT_CONFIG_CODE "config"
-#define BOOT_CONFIG_WAIT_TIME 5000
+#define BOOT_CONFIG_WAIT_TIME 8000
 
 /*
  * ADC config

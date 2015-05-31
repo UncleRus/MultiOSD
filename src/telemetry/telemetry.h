@@ -80,7 +80,7 @@ namespace status
 	extern uint8_t connection;		// CONNECTION_STATE_xxx enum
 	extern uint16_t flight_time;	// seconds
 	extern uint8_t flight_mode;		//
-	extern const char *flight_mode_name; // progmem string
+	extern const char *flight_mode_name_p; // progmem string
 	extern bool armed;
 	extern uint8_t rssi;			// percents
 }

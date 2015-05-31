@@ -75,6 +75,10 @@ void main ()
 
 	screen::load (0);
 
+	// first draw
+	screen::update ();
+	screen::draw ();
+
 	while (true)
 	{
 		bool updated = telemetry::update ();

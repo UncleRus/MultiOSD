@@ -29,7 +29,7 @@ namespace status
 	uint8_t connection = CONNECTION_STATE_DISCONNECTED;
 	uint16_t flight_time = 0;
 	uint8_t flight_mode = FLIGHT_MODE_MANUAL;
-	const char *flight_mode_name = NULL;
+	const char *flight_mode_name_p = NULL;
 	bool armed = false;
 	uint8_t rssi = 0;
 

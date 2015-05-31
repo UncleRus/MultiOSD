@@ -35,57 +35,6 @@ namespace modules
 namespace mavlink
 {
 
-const char _apm_fm_0 [] PROGMEM  = "MANU";
-const char _apm_fm_1 [] PROGMEM  = "CRCL";
-const char _apm_fm_2 [] PROGMEM  = "STAB";
-const char _apm_fm_3 [] PROGMEM  = "TRN ";
-const char _apm_fm_4 [] PROGMEM  = "ACRO";
-const char _apm_fm_5 [] PROGMEM  = "FWBA";
-const char _apm_fm_6 [] PROGMEM  = "FWBB";
-const char _apm_fm_7 [] PROGMEM  = "CRUI";
-const char _apm_fm_8 [] PROGMEM  = "ATUN";
-const char _apm_fm_10 [] PROGMEM = "AUTO";
-const char _apm_fm_11 [] PROGMEM = "RTL ";
-const char _apm_fm_12 [] PROGMEM = "LOIT";
-const char _apm_fm_14 [] PROGMEM = "LAND";
-const char _apm_fm_15 [] PROGMEM = "GUID";
-const char _apm_fm_16 [] PROGMEM = "INIT";
-
-const char * const _apm_fm [] PROGMEM = {
-	_apm_fm_0, _apm_fm_1, _apm_fm_2, _apm_fm_3,
-	_apm_fm_4, _apm_fm_5, _apm_fm_6, _apm_fm_7,
-	_apm_fm_8, NULL, _apm_fm_10, _apm_fm_11,
-	_apm_fm_12, NULL, _apm_fm_14, _apm_fm_15,
-	_apm_fm_16
-};
-
-const char _acm_fm_0 [] PROGMEM  = "STAB";
-const char _acm_fm_1 [] PROGMEM  = "ACRO";
-const char _acm_fm_2 [] PROGMEM  = "ALTH";
-const char _acm_fm_3 [] PROGMEM  = "AUTO";
-const char _acm_fm_4 [] PROGMEM  = "GUID";
-const char _acm_fm_5 [] PROGMEM  = "LOIT";
-const char _acm_fm_6 [] PROGMEM  = "RTL ";
-const char _acm_fm_7 [] PROGMEM  = "CRCL";
-const char _acm_fm_8 [] PROGMEM  = "POS ";
-const char _acm_fm_9 [] PROGMEM  = "LAND";
-const char _acm_fm_10 [] PROGMEM = "OFLT";
-const char _acm_fm_11 [] PROGMEM = "DRFT";
-const char _acm_fm_13 [] PROGMEM = "SPRT";
-const char _acm_fm_14 [] PROGMEM = "FLIP";
-const char _acm_fm_15 [] PROGMEM = "ATUN";
-const char _acm_fm_16 [] PROGMEM = "POSH";
-
-const char * const _acm_fm [] PROGMEM = {
-	_acm_fm_0, _acm_fm_1, _acm_fm_2, _acm_fm_3,
-	_acm_fm_4, _acm_fm_5, _acm_fm_6, _acm_fm_7,
-	_acm_fm_8, _acm_fm_9, _acm_fm_10, _acm_fm_11,
-	NULL, _acm_fm_13, _acm_fm_14, _acm_fm_15,
-	_acm_fm_16
-};
-
-#define _FM_COUNT 17
-
 static uint8_t _fw;
 static uint8_t _int_batt_level;
 
@@ -112,6 +61,93 @@ float __attribute__ ((noinline)) rad_to_deg (float rad)
 {
 	return rad * 57.2957795131;
 }
+
+namespace flight_modes
+{
+
+	namespace apm
+	{
+
+		const char fm_0 [] PROGMEM  = "MANU";
+		const char fm_1 [] PROGMEM  = "CRCL";
+		const char fm_2 [] PROGMEM  = "STAB";
+		const char fm_3 [] PROGMEM  = "TRN ";
+		const char fm_4 [] PROGMEM  = "ACRO";
+		const char fm_5 [] PROGMEM  = "FWBA";
+		const char fm_6 [] PROGMEM  = "FWBB";
+		const char fm_7 [] PROGMEM  = "CRUI";
+		const char fm_8 [] PROGMEM  = "ATUN";
+		const char fm_10 [] PROGMEM = "AUTO";
+		const char fm_11 [] PROGMEM = "RTL ";
+		const char fm_12 [] PROGMEM = "LOIT";
+		const char fm_14 [] PROGMEM = "LAND";
+		const char fm_15 [] PROGMEM = "GUID";
+		const char fm_16 [] PROGMEM = "INIT";
+
+		const char * const values [] PROGMEM = {
+			fm_0, fm_1, fm_2, fm_3, fm_4, fm_5, fm_6, fm_7,
+			fm_8, NULL, fm_10, fm_11, fm_12, NULL, fm_14, fm_15,
+			fm_16
+		};
+
+		const uint8_t size = sizeof (values) / sizeof (char *);
+
+	}  // namespace apm
+
+	namespace acm
+	{
+
+		const char fm_0 [] PROGMEM  = "STAB";
+		const char fm_1 [] PROGMEM  = "ACRO";
+		const char fm_2 [] PROGMEM  = "AHLD";
+		const char fm_3 [] PROGMEM  = "AUTO";
+		const char fm_4 [] PROGMEM  = "GUID";
+		const char fm_5 [] PROGMEM  = "LOIT";
+		const char fm_6 [] PROGMEM  = "RTL ";
+		const char fm_7 [] PROGMEM  = "CRCL";
+		const char fm_8 [] PROGMEM  = "POS ";
+		const char fm_9 [] PROGMEM  = "LAND";
+		const char fm_10 [] PROGMEM = "OFLT";
+		const char fm_11 [] PROGMEM = "DRFT";
+		const char fm_13 [] PROGMEM = "SPRT";
+		const char fm_14 [] PROGMEM = "FLIP";
+		const char fm_15 [] PROGMEM = "ATUN";
+		const char fm_16 [] PROGMEM = "PHLD";
+
+		const char * const values [] PROGMEM = {
+			fm_0, fm_1, fm_2, fm_3, fm_4, fm_5, fm_6, fm_7,
+			fm_8, fm_9, fm_10, fm_11, NULL, fm_13, fm_14, fm_15,
+			fm_16
+		};
+
+		const uint8_t size = sizeof (values) / sizeof (char *);
+
+	}  // namespace acm
+
+	const char *get (uint8_t v_type)
+	{
+		const char * const *values = NULL;
+		uint8_t size = 0;
+		switch (v_type)
+		{
+			case MAV_TYPE_QUADROTOR:
+			case MAV_TYPE_HELICOPTER:
+			case MAV_TYPE_HEXAROTOR:
+			case MAV_TYPE_OCTOROTOR:
+			case MAV_TYPE_TRICOPTER:
+				values = acm::values;
+				size = acm::size;
+				break;
+			case MAV_TYPE_FIXED_WING:
+				values = apm::values;
+				size = apm::size;
+				break;
+		}
+		if (!values || telemetry::status::flight_mode >= size) return NULL;
+		return (const char *) pgm_read_ptr (&values [telemetry::status::flight_mode]);
+	}
+
+}  // namespace flight_modes
 
 namespace rates
 {
@@ -157,15 +193,13 @@ bool update ()
 		{
 			case MAVLINK_MSG_ID_HEARTBEAT:
 				_was_armed = telemetry::status::armed;
+
 				telemetry::status::armed = mavlink_msg_heartbeat_get_base_mode (&_msg) & MAV_MODE_FLAG_SAFETY_ARMED;
 				if (!_was_armed && telemetry::status::armed)
 					telemetry::home::fix ();
 
 				telemetry::status::flight_mode = mavlink_msg_heartbeat_get_custom_mode (&_msg);
-				// TODO: apm/acm
-				telemetry::status::flight_mode_name = telemetry::status::flight_mode >= _FM_COUNT
-					? NULL
-					: (const char *) pgm_read_ptr (&_acm_fm [telemetry::status::flight_mode]);
+				telemetry::status::flight_mode_name_p = flight_modes::get (mavlink_msg_heartbeat_get_type (&_msg));
 
 				_connection_timeout = ticks + MAVLINK_CONNECTION_TIMEOUT;
 				if (telemetry::status::connection != CONNECTION_STATE_CONNECTED)
@@ -180,7 +214,7 @@ bool update ()
 				if (!_int_batt_level)
 				{
 					telemetry::battery::level = mavlink_msg_sys_status_get_battery_remaining (&_msg);
-					if (telemetry::battery::level > 100)
+					if (telemetry::battery::level > 100) // -1 (0xff) means "unknown"
 						telemetry::battery::level = 0;
 				}
 				else
