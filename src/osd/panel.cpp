@@ -14,7 +14,6 @@
  */
 
 #include "panel.h"
-#include "../lib/common.h"
 #include "../lib/max7456/max7456.h"
 #include "../telemetry/telemetry.h"
 #include <math.h>
