@@ -548,17 +548,19 @@ namespace rssi
 
 	const char * const levels [] PROGMEM = { _l0, _l1, _l2, _l3, _l4, _l5 };
 
-	static uint8_t _level;
+	static const char *_scale;
 
 	void update ()
 	{
-		_level = round (telemetry::input::rssi / 20.0);
-		if (_level > 5) _level = 5;
+		uint8_t level = round (telemetry::input::rssi / 20.0);
+		if (level == 0 && telemetry::input::rssi > 0) level = 1;
+		if (level > 5) level = 5;
+		_scale = (const char *) pgm_read_ptr (&levels [level]);
 	}
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::puts_p (x, y, (const char *) pgm_read_ptr (&levels [_level]));
+		max7456::puts_p (x, y, _scale);
 	}
 
 }  // namespace rssi
