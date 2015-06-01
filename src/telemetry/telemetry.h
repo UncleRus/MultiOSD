@@ -83,7 +83,6 @@ namespace status
 	extern uint8_t flight_mode;		//
 	extern const char *flight_mode_name_p; // progmem string
 	extern bool armed;
-	extern uint8_t rssi;			// percents
 }
 
 namespace attitude
@@ -96,6 +95,7 @@ namespace attitude
 namespace input
 {
 	extern bool connected;			// input values are valid
+	extern uint8_t rssi;			// percents
 	extern int16_t throttle;		// percents
 	extern int16_t roll;			// percents
 	extern int16_t pitch;			// percents

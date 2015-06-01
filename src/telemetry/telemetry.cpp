@@ -33,7 +33,6 @@ namespace status
 	uint8_t flight_mode = FLIGHT_MODE_MANUAL;
 	const char *flight_mode_name_p = NULL;
 	bool armed = false;
-	uint8_t rssi = 0;
 
 }  // namespace status
 
@@ -49,6 +48,7 @@ namespace attitude
 namespace input
 {
 
+	uint8_t rssi = 0;
 	bool connected = false;
 	int16_t throttle = 0;
 	int16_t roll = 0;

@@ -268,8 +268,8 @@ bool update ()
             	telemetry::input::channels [5] = mavlink_msg_rc_channels_raw_get_chan6_raw (&_msg);
             	telemetry::input::channels [6] = mavlink_msg_rc_channels_raw_get_chan7_raw (&_msg);
             	telemetry::input::channels [7] = mavlink_msg_rc_channels_raw_get_chan8_raw (&_msg);
-            	telemetry::status::rssi = mavlink_msg_rc_channels_raw_get_rssi (&_msg) * 100 / 255;
-            	telemetry::messages::rssi_low = telemetry::status::rssi < 10; // TODO: config
+            	telemetry::input::rssi = mavlink_msg_rc_channels_raw_get_rssi (&_msg) * 100 / 255;
+            	telemetry::messages::rssi_low = telemetry::input::rssi < 10; // TODO: config
             	break;
             case MAVLINK_MSG_ID_SCALED_PRESSURE:
             	telemetry::barometer::temperature = mavlink_msg_scaled_pressure_get_temperature (&_msg) / 100.0;

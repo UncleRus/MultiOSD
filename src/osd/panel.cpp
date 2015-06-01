@@ -14,7 +14,7 @@
  */
 
 #include "panel.h"
-#include <avr/pgmspace.h>
+#include "../lib/common.h"
 #include "../lib/max7456/max7456.h"
 #include "../telemetry/telemetry.h"
 #include <math.h>
@@ -512,7 +512,7 @@ namespace callsign
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		if (telemetry::status::callsign) max7456::puts (x, y, telemetry::status::callsign);
+		max7456::puts (x, y, telemetry::status::callsign);
 	}
 
 }  // namespace callsign
@@ -533,6 +533,36 @@ namespace temperature
 	STD_DRAW
 
 }  // namespace temperature
+
+
+namespace rssi
+{
+
+	const char __name [] PROGMEM = "RSSI";
+
+	const char _l5 [] PROGMEM = "\xe2\xe3\xe4";
+	const char _l4 [] PROGMEM = "\xe2\xe3\xe7";
+	const char _l3 [] PROGMEM = "\xe2\xe3\xe8";
+	const char _l2 [] PROGMEM = "\xe2\xe6\xe8";
+	const char _l1 [] PROGMEM = "\xe2\xe8\xe8";
+	const char _l0 [] PROGMEM = "\xe5\xe8\xe8";
+
+	const char * const levels [] PROGMEM = { _l0, _l1, _l2, _l3, _l4, _l5 };
+
+	static uint8_t _level;
+
+	void update ()
+	{
+		_level = round (telemetry::input::rssi / 20.0);
+		if (_level > 5) _level = 5;
+	}
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		max7456::puts_p (x, y, (const char *) pgm_read_ptr (&levels [_level]));
+	}
+
+}  // namespace rssi
 
 }  // namespace __panels
 
@@ -564,6 +594,7 @@ const panel_t panels [] PROGMEM = {
 	_declare_panel (home_direction),
 	_declare_panel (callsign),
 	_declare_panel (temperature),
+	_declare_panel (rssi),
 };
 
 const uint8_t count = sizeof (panels) / sizeof (panel_t);

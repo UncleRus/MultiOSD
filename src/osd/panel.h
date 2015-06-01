@@ -38,6 +38,9 @@
 #define OSD_PANEL_RSSI_FLAG           17
 #define OSD_PANEL_HOME_DISTANCE       18
 #define OSD_PANEL_HOME_DIRECTION      19
+#define OSD_PANEL_CALLSIGN            20
+#define OSD_PANEL_TEMPERATURE         21
+#define OSD_PANEL_RSSI                22
 
 namespace osd
 {
