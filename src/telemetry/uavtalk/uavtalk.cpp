@@ -21,7 +21,7 @@
 #include "../../lib/timer/timer.h"
 #include "../telemetry.h"
 
-#ifdef DEBUG
+#ifdef _DEBUG
 #include "../../lib/max7456/max7456.h"
 #endif
 
@@ -237,7 +237,7 @@ bool _parse (uint8_t b)
 			head.msg_type = _UT_TYPE_ACK;
 			send (head);
 		}
-#ifdef DEBUG
+#ifdef _DEBUG
 		max7456::open (15, 14);
 		fprintf_P (&max7456::stream, res ? PSTR ("OK") : PSTR ("FAIL"));
 #endif

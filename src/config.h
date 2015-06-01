@@ -31,6 +31,7 @@
 #define BATTERY_NOM_CELL_VOLTAGE 3.7	// Nominal cell voltage, 3.7 for LiPo
 #define BATTERY_MIN_CELL_VOLTAGE 3.2	// Minimal cell voltage (dead battery), 3.2 for LiPo
 #define BATTERY_LOW_CELL_VOLTAGE 3.5	// Warning threshold
+#define DEFAULT_CALLSIGN 0x454e4f4e		// "NONE"
 
 /*
  * UAVTalk config

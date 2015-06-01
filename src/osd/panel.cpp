@@ -503,6 +503,37 @@ namespace home_direction
 
 }  // namespace home_direction
 
+namespace callsign
+{
+
+	const char __name [] PROGMEM = "CallSign";
+
+	void update () {}
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		if (telemetry::status::callsign) max7456::puts (x, y, telemetry::status::callsign);
+	}
+
+}  // namespace callsign
+
+namespace temperature
+{
+
+	const char __name [] PROGMEM = "Temperature";
+
+	static char _buffer [6];
+
+	void update ()
+	{
+		sprintf_P (_buffer, PSTR ("\xfd%d\xb0"), telemetry::stable::temperature);
+		_buffer [sizeof (_buffer) - 1] = 0;
+	}
+
+	STD_DRAW
+
+}  // namespace temperature
+
 }  // namespace __panels
 
 namespace panel
@@ -531,6 +562,8 @@ const panel_t panels [] PROGMEM = {
 	_declare_panel (rssi_flag),
 	_declare_panel (home_distance),
 	_declare_panel (home_direction),
+	_declare_panel (callsign),
+	_declare_panel (temperature),
 };
 
 const uint8_t count = sizeof (panels) / sizeof (panel_t);
