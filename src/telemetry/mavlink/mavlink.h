@@ -26,7 +26,6 @@
 
 #include "../../config.h"
 
-
 namespace telemetry
 {
 
@@ -41,7 +40,6 @@ const char __name [] PROGMEM = "MAVLink";
 void init ();
 bool update ();
 void reset ();
-
 
 }  // namespace mavlink
 

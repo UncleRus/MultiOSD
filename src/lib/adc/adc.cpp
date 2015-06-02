@@ -23,15 +23,15 @@
 namespace adc
 {
 
-static uint8_t _ref;
-static float _ref_voltage;
+uint8_t s_ref;
+float s_ref_voltage;
 
 void init ()
 {
-	_ref = eeprom_read_byte (ADC_EEPROM_REF) << 6;
-	_ref_voltage = eeprom_read_float (ADC_EEPROM_REF_VOLTAGE);
+	s_ref = eeprom_read_byte (ADC_EEPROM_REF) << 6;
+	s_ref_voltage = eeprom_read_float (ADC_EEPROM_REF_VOLTAGE);
 
-	ADMUX = _ref;
+	ADMUX = s_ref;
 	ADCSRA |= _BV (ADEN) | _BV (ADPS0) | _BV (ADPS1) | _BV (ADPS2);
 }
 
@@ -39,7 +39,7 @@ void init ()
 
 uint16_t read (uint8_t channel)
 {
-	ADMUX = _ref | (channel & 0x0f);
+	ADMUX = s_ref | (channel & 0x0f);
 	ADCSRA |= _BV (ADSC);
 	loop_until_bit_is_clear (ADCSRA, ADSC);
 	ADCSRA |= _BV (ADIF);
@@ -48,7 +48,7 @@ uint16_t read (uint8_t channel)
 
 float value (uint8_t channel, float divider)
 {
-	return (read (channel) / 1024.0 * _ref_voltage) * divider;
+	return (read (channel) / 1024.0 * s_ref_voltage) * divider;
 }
 
 namespace settings

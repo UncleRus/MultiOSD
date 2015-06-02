@@ -30,7 +30,7 @@ namespace status
 	char callsign [5] = "NONE";
 	uint8_t connection = CONNECTION_STATE_DISCONNECTED;
 	uint16_t flight_time = 0;
-	uint8_t flight_mode = FLIGHT_MODE_MANUAL;
+	uint8_t flight_mode = 0;
 	const char *flight_mode_name_p = NULL;
 	bool armed = false;
 

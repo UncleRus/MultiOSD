@@ -17,6 +17,7 @@
 #include "../lib/max7456/max7456.h"
 #include "../telemetry/telemetry.h"
 #include <math.h>
+#include <string.h>
 
 namespace osd
 {
@@ -32,33 +33,42 @@ namespace draw
 	const uint8_t _rect_thin [] PROGMEM = {0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7};
 	const uint8_t _rect_fill [] PROGMEM = {0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xdd, 0xde, 0xdf};
 
-#define _get_rect_char(x) (pgm_read_byte (&_rect [x]))
-
 	void rect (uint8_t l, uint8_t t, uint8_t w, uint8_t h, bool filled, uint8_t attr)
 	{
-		uint8_t r = l + w - 1;
-		uint8_t b = t + h - 1;
+		if (w < 2 || h < 2) return;
 
-		const uint8_t *_rect = filled ? _rect_fill : _rect_thin;
+		uint8_t r = w - 1;
+		uint8_t b = h - 1;
 
-		max7456::put (l, t, _get_rect_char (0), attr);
-		max7456::put (r, t, _get_rect_char (2), attr);
-		max7456::put (l, b, _get_rect_char (4), attr);
-		max7456::put (r, b, _get_rect_char (6), attr);
+		char _rect [8];
+		memcpy_P (_rect, filled ? _rect_fill : _rect_thin, 8);
+		char buffer [w + 1];
 
-		if (w > 2)
-			for (uint8_t i = 1; i < w - 1; i ++)
+		for (uint8_t i = 0; i < h; i ++)
+		{
+			char spacer;
+			if (i == 0)
 			{
-				max7456::put (l + i, t, _get_rect_char (1), attr);
-				max7456::put (l + i, b, _get_rect_char (5), attr);
+				buffer [0] = _rect [0];
+				buffer [r] = _rect [2];
+				spacer = _rect [1];
 			}
-
-		if (h > 2)
-			for (uint8_t i = 1; i < h - 1; i ++)
+			else if (i == b)
 			{
-				max7456::put (l, t + i, _get_rect_char (3), attr);
-				max7456::put (r, t + i, _get_rect_char (7), attr);
+				buffer [0] = _rect [4];
+				buffer [r] = _rect [6];
+				spacer = _rect [5];
 			}
+			else
+			{
+				buffer [0] = _rect [3];
+				buffer [r] = _rect [7];
+				spacer = ' ';
+			}
+			memset (buffer + 1, spacer, w - 2);
+			buffer [w] = 0;
+			max7456::puts (l, t + i, buffer, attr);
+		}
 	}
 
 }  // namespace draw
@@ -69,8 +79,10 @@ namespace __panels
 
 #define STD_DRAW void draw (uint8_t x, uint8_t y) \
 { \
-	max7456::puts (x, y, _buffer); \
+	max7456::puts (x, y, buffer); \
 }
+
+#define terminate_buffer() { buffer [sizeof (buffer) - 1] = 0; }
 
 
 namespace alt
@@ -78,12 +90,12 @@ namespace alt
 
 	const char __name [] PROGMEM = "StableAlt";
 
-	char _buffer [8];
+	char buffer [8];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\x85%d\x8d"), (int16_t) telemetry::stable::altitude);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("\x85%d\x8d"), (int16_t) telemetry::stable::altitude);
+		terminate_buffer ();
 	}
 
 	STD_DRAW;
@@ -95,13 +107,13 @@ namespace climb
 
 	const char __name [] PROGMEM = "Climb";
 
-	char _buffer [8];
+	char buffer [8];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("%c%.1f\x8c"),
+		sprintf_P (buffer, PSTR ("%c%.1f\x8c"),
 			telemetry::stable::climb < 0 ? 0x07 : 0x08, telemetry::stable::climb);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		terminate_buffer ();
 	}
 
 	STD_DRAW
@@ -162,12 +174,12 @@ namespace flight_time
 
 	const char __name [] PROGMEM = "FlightTime";
 
-	char _buffer [8];
+	char buffer [8];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\xb3%02u:%02u"), telemetry::status::flight_time / 60, telemetry::status::flight_time % 60);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("\xb3%02u:%02u"), telemetry::status::flight_time / 60, telemetry::status::flight_time % 60);
+		terminate_buffer ();
 	}
 
 	STD_DRAW
@@ -179,12 +191,12 @@ namespace roll
 
 	const char __name [] PROGMEM = "Roll";
 
-	char _buffer [7];
+	char buffer [7];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\xb2%d\xb0"), (int16_t) telemetry::attitude::roll);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("\xb2%d\xb0"), (int16_t) telemetry::attitude::roll);
+		terminate_buffer ();
 	}
 
 	STD_DRAW
@@ -196,12 +208,12 @@ namespace pitch
 
 	const char __name [] PROGMEM = "Pitch";
 
-	char _buffer [7];
+	char buffer [7];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\xb1%d\xb0"), (int16_t) telemetry::attitude::pitch);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("\xb1%d\xb0"), (int16_t) telemetry::attitude::pitch);
+		terminate_buffer ();
 	}
 
 	STD_DRAW
@@ -216,12 +228,12 @@ namespace gps_state
 #define _PAN_GPS_2D 0x01
 #define _PAN_GPS_3D 0x02
 
-	char _buffer [4];
+	char buffer [4];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("%d"), telemetry::gps::satellites);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("%d"), telemetry::gps::satellites);
+		terminate_buffer ();
 	}
 
 	void draw (uint8_t x, uint8_t y)
@@ -231,7 +243,7 @@ namespace gps_state
 		max7456::put (x + 2, y, telemetry::gps::state <  GPS_STATE_3D ? _PAN_GPS_2D : _PAN_GPS_3D,
 			telemetry::gps::state < GPS_STATE_2D ? MAX7456_ATTR_BLINK : 0);
 		if (err) max7456::puts_p (x + 3, y, PSTR ("ERR"), MAX7456_ATTR_BLINK);
-		else max7456::puts (x + 3, y, _buffer);
+		else max7456::puts (x + 3, y, buffer);
 	}
 
 }  // namespace gps_state
@@ -241,12 +253,12 @@ namespace gps_lat
 
 	const char __name [] PROGMEM = "Lat";
 
-	char _buffer [11];
+	char buffer [11];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\x83%02.6f"), telemetry::gps::latitude);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("\x83%02.6f"), telemetry::gps::latitude);
+		terminate_buffer ();
 	}
 
 	STD_DRAW
@@ -258,12 +270,12 @@ namespace gps_lon
 
 	const char __name [] PROGMEM = "Lon";
 
-	char _buffer [11];
+	char buffer [11];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\x84%02.6f"), telemetry::gps::longitude);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("\x84%02.6f"), telemetry::gps::longitude);
+		terminate_buffer ();
 	}
 
 	STD_DRAW
@@ -293,10 +305,18 @@ namespace horizon
 
 	const char __name [] PROGMEM = "Horizon";
 
-	uint8_t _buffer [_PAN_HORZ_INT_WIDTH];
+	const char _line [PANEL_HORIZON_WIDTH + 1] PROGMEM = "\xb8            \xb9";
+	const char _center [PANEL_HORIZON_WIDTH + 1] PROGMEM = "\xc8            \xc9";
+	char buffer [PANEL_HORIZON_HEIGHT][PANEL_HORIZON_WIDTH + 1];
 
 	void update ()
 	{
+		for (uint8_t i = 0; i < PANEL_HORIZON_HEIGHT; i ++)
+		{
+			memcpy_P (buffer [i], i == PANEL_HORIZON_HEIGHT / 2 ? _center : _line, PANEL_HORIZON_WIDTH);
+			buffer [i][PANEL_HORIZON_WIDTH] = 0;
+		}
+
 		// code below was taken from minoposd
 		int16_t pitch_line = tan (-_RADIAN * telemetry::attitude::pitch) * _PAN_HORZ_LINES;
 		float roll = tan (_RADIAN * telemetry::attitude::roll);
@@ -305,38 +325,22 @@ namespace horizon
 			// center X point at middle of each column
 			int16_t middle = col * _PAN_HORZ_INT_WIDTH - (_PAN_HORZ_INT_WIDTH * _PAN_HORZ_INT_WIDTH / 2) - _PAN_HORZ_INT_WIDTH / 2;
 			// calculating hit point on Y plus offset to eliminate negative values
-			//int8_t hit = roll * middle / 1000000 + pitch_line + _PAN_HORZ_LINES + 2;
 			int8_t hit = roll * middle + pitch_line + _PAN_HORZ_LINES;
 			if (hit > 0 && hit < _PAN_HORZ_TOTAL_LINES)
 			{
 				int8_t row = PANEL_HORIZON_HEIGHT - ((hit - 1) / _PAN_HORZ_CHAR_LINES);
-				int8_t subval = (hit - (_PAN_HORZ_TOTAL_LINES - row * _PAN_HORZ_CHAR_LINES + 1)) * _PAN_HORZ_VRES / _PAN_HORZ_CHAR_LINES ;
-				_buffer [col - 1] = (row - 1) << 4 | subval;
+				int8_t subval = (hit - (_PAN_HORZ_TOTAL_LINES - row * _PAN_HORZ_CHAR_LINES + 1)) * _PAN_HORZ_VRES / _PAN_HORZ_CHAR_LINES;
+				if (subval == _PAN_HORZ_VRES - 1)
+					buffer [row - 2][col] = PANEL_HORIZON_TOP;
+				buffer [row - 1][col] = PANEL_HORIZON_LINE + subval;
 			}
-			else _buffer [col - 1] = 0xff;
 		}
 	}
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		uint8_t r = x + PANEL_HORIZON_WIDTH - 1;
-		uint8_t c = y + PANEL_HORIZON_HEIGHT / 2;
-		for (uint8_t i = y; i < y + PANEL_HORIZON_HEIGHT; i ++)
-		{
-			max7456::put (x, i, i == c ? PANEL_HORIZON_LEFT_CENTER : PANEL_HORIZON_LEFT_BORDER);
-			max7456::put (r, i, i == c ? PANEL_HORIZON_RIGHT_CENTER : PANEL_HORIZON_RIGHT_BORDER);
-		}
-
-		for (uint8_t i = 0; i < _PAN_HORZ_INT_WIDTH; i ++)
-		{
-			if (_buffer [i] == 0xff) continue;
-
-			uint8_t row = _buffer [i] >> 4;
-			uint8_t subval = _buffer [i] & 0x0f;
-
-			if (subval == _PAN_HORZ_VRES - 1) max7456::put (x + i + 1, y + row - 1, PANEL_HORIZON_TOP);
-			max7456::put (x + i + 1, y + row, PANEL_HORIZON_LINE + subval);
-		}
+		for (uint8_t i = 0; i < PANEL_HORIZON_HEIGHT; i ++)
+			max7456::puts (x, y + i, buffer [i]);
 	}
 
 }  // namespace horizon
@@ -346,12 +350,12 @@ namespace throttle
 
 	const char __name [] PROGMEM = "Throttle";
 
-	char _buffer [7];
+	char buffer [7];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\x87%d%%"), telemetry::input::throttle);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("\x87%d%%"), telemetry::input::throttle);
+		terminate_buffer ();
 	}
 
 	STD_DRAW
@@ -363,12 +367,12 @@ namespace ground_speed
 
 	const char __name [] PROGMEM = "GroundSpeed";
 
-	char _buffer [7];
+	char buffer [7];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\x0a%d\x81"), (int16_t) (telemetry::stable::ground_speed * 3.6));
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("\x0a%d\x81"), (int16_t) (telemetry::stable::ground_speed * 3.6));
+		terminate_buffer ();
 	}
 
 	STD_DRAW
@@ -380,14 +384,14 @@ namespace battery_voltage
 
 	const char __name [] PROGMEM = "BatVoltage";
 
-	char _buffer [7];
+	char buffer [7];
 	char _symbol;
 	uint8_t _attr;
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("%.2f\x8e"), telemetry::battery::voltage);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("%.2f\x8e"), telemetry::battery::voltage);
+		terminate_buffer ();
 
 		_symbol = 0xf4 + (uint8_t) round (telemetry::battery::level / 20.0);
 		_attr = telemetry::messages::battery_low ? MAX7456_ATTR_BLINK : 0;
@@ -396,7 +400,7 @@ namespace battery_voltage
 	void draw (uint8_t x, uint8_t y)
 	{
 		max7456::put (x, y, _symbol, _attr);
-		max7456::puts (x + 1, y, _buffer);
+		max7456::puts (x + 1, y, buffer);
 	}
 
 }  // namespace battery_voltage
@@ -406,12 +410,12 @@ namespace battery_current
 
 	const char __name [] PROGMEM = "BatCurrent";
 
-	char _buffer [8];
+	char buffer [8];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\xfa%.2f\x8f"), telemetry::battery::current);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("\xfa%.2f\x8f"), telemetry::battery::current);
+		terminate_buffer ();
 	}
 
 	STD_DRAW
@@ -423,12 +427,12 @@ namespace battery_consumed
 
 	const char __name [] PROGMEM = "BatConsumed";
 
-	char _buffer [8];
+	char buffer [8];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\xfb%u\x82"), (uint16_t) telemetry::battery::consumed);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("\xfb%u\x82"), (uint16_t) telemetry::battery::consumed);
+		terminate_buffer ();
 	}
 
 	STD_DRAW
@@ -454,7 +458,7 @@ namespace home_distance
 
 	const char __name [] PROGMEM = "HomeDistance";
 
-	char _buffer [8];
+	char buffer [8];
 	uint8_t _attr, _i_attr;
 
 	void update ()
@@ -463,18 +467,18 @@ namespace home_distance
 		_i_attr = telemetry::home::state != HOME_STATE_FIXED ? MAX7456_ATTR_BLINK : 0;
 		if (_i_attr)
 		{
-			sprintf_P (_buffer, PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("\x09\x09\x09\x8d"));
+			sprintf_P (buffer, PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("\x09\x09\x09\x8d"));
 			return;
 		}
 		if (telemetry::home::distance >= 10000)
-			 sprintf_P (_buffer, PSTR ("%.1f\x8b"), telemetry::home::distance / 1000);
-		else sprintf_P (_buffer, PSTR ("%u\x8d"), (uint16_t) telemetry::home::distance);
+			 sprintf_P (buffer, PSTR ("%.1f\x8b"), telemetry::home::distance / 1000);
+		else sprintf_P (buffer, PSTR ("%u\x8d"), (uint16_t) telemetry::home::distance);
 	}
 
 	void draw (uint8_t x, uint8_t y)
 	{
 		max7456::put (x, y, 0x12, _i_attr);
-		max7456::puts (x + 1, y, _buffer, _attr);
+		max7456::puts (x + 1, y, buffer, _attr);
 	}
 
 }  // namespace home_distance
@@ -521,12 +525,12 @@ namespace temperature
 
 	const char __name [] PROGMEM = "Temperature";
 
-	char _buffer [6];
+	char buffer [6];
 
 	void update ()
 	{
-		sprintf_P (_buffer, PSTR ("\xfd%d\xb0"), telemetry::stable::temperature);
-		_buffer [sizeof (_buffer) - 1] = 0;
+		sprintf_P (buffer, PSTR ("\xfd%d\xb0"), telemetry::stable::temperature);
+		terminate_buffer ();
 	}
 
 	STD_DRAW
