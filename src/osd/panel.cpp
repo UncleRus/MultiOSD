@@ -78,7 +78,7 @@ namespace alt
 
 	const char __name [] PROGMEM = "StableAlt";
 
-	static char _buffer [8];
+	char _buffer [8];
 
 	void update ()
 	{
@@ -95,7 +95,7 @@ namespace climb
 
 	const char __name [] PROGMEM = "Climb";
 
-	static char _buffer [8];
+	char _buffer [8];
 
 	void update ()
 	{
@@ -162,7 +162,7 @@ namespace flight_time
 
 	const char __name [] PROGMEM = "FlightTime";
 
-	static char _buffer [8];
+	char _buffer [8];
 
 	void update ()
 	{
@@ -179,7 +179,7 @@ namespace roll
 
 	const char __name [] PROGMEM = "Roll";
 
-	static char _buffer [7];
+	char _buffer [7];
 
 	void update ()
 	{
@@ -196,7 +196,7 @@ namespace pitch
 
 	const char __name [] PROGMEM = "Pitch";
 
-	static char _buffer [7];
+	char _buffer [7];
 
 	void update ()
 	{
@@ -216,7 +216,7 @@ namespace gps_state
 #define _PAN_GPS_2D 0x01
 #define _PAN_GPS_3D 0x02
 
-	static char _buffer [4];
+	char _buffer [4];
 
 	void update ()
 	{
@@ -241,7 +241,7 @@ namespace gps_lat
 
 	const char __name [] PROGMEM = "Lat";
 
-	static char _buffer [11];
+	char _buffer [11];
 
 	void update ()
 	{
@@ -258,7 +258,7 @@ namespace gps_lon
 
 	const char __name [] PROGMEM = "Lon";
 
-	static char _buffer [11];
+	char _buffer [11];
 
 	void update ()
 	{
@@ -346,7 +346,7 @@ namespace throttle
 
 	const char __name [] PROGMEM = "Throttle";
 
-	static char _buffer [7];
+	char _buffer [7];
 
 	void update ()
 	{
@@ -363,7 +363,7 @@ namespace ground_speed
 
 	const char __name [] PROGMEM = "GroundSpeed";
 
-	static char _buffer [7];
+	char _buffer [7];
 
 	void update ()
 	{
@@ -380,9 +380,9 @@ namespace battery_voltage
 
 	const char __name [] PROGMEM = "BatVoltage";
 
-	static char _buffer [7];
-	static char _symbol;
-	static uint8_t _attr;
+	char _buffer [7];
+	char _symbol;
+	uint8_t _attr;
 
 	void update ()
 	{
@@ -406,7 +406,7 @@ namespace battery_current
 
 	const char __name [] PROGMEM = "BatCurrent";
 
-	static char _buffer [8];
+	char _buffer [8];
 
 	void update ()
 	{
@@ -423,7 +423,7 @@ namespace battery_consumed
 
 	const char __name [] PROGMEM = "BatConsumed";
 
-	static char _buffer [8];
+	char _buffer [8];
 
 	void update ()
 	{
@@ -454,8 +454,8 @@ namespace home_distance
 
 	const char __name [] PROGMEM = "HomeDistance";
 
-	static char _buffer [8];
-	static uint8_t _attr, _i_attr;
+	char _buffer [8];
+	uint8_t _attr, _i_attr;
 
 	void update ()
 	{
@@ -486,7 +486,7 @@ namespace home_direction
 
 	const char __name [] PROGMEM = "HomeDirection";
 
-	static uint8_t _arrow;
+	uint8_t _arrow;
 
 	void update ()
 	{
@@ -521,7 +521,7 @@ namespace temperature
 
 	const char __name [] PROGMEM = "Temperature";
 
-	static char _buffer [6];
+	char _buffer [6];
 
 	void update ()
 	{
@@ -539,16 +539,16 @@ namespace rssi
 
 	const char __name [] PROGMEM = "RSSI";
 
-	const char _l5 [] PROGMEM = "\xe2\xe3\xe4";
-	const char _l4 [] PROGMEM = "\xe2\xe3\xe7";
-	const char _l3 [] PROGMEM = "\xe2\xe3\xe8";
-	const char _l2 [] PROGMEM = "\xe2\xe6\xe8";
-	const char _l1 [] PROGMEM = "\xe2\xe8\xe8";
 	const char _l0 [] PROGMEM = "\xe5\xe8\xe8";
+	const char _l1 [] PROGMEM = "\xe2\xe8\xe8";
+	const char _l2 [] PROGMEM = "\xe2\xe6\xe8";
+	const char _l3 [] PROGMEM = "\xe2\xe3\xe8";
+	const char _l4 [] PROGMEM = "\xe2\xe3\xe7";
+	const char _l5 [] PROGMEM = "\xe2\xe3\xe4";
 
 	const char * const levels [] PROGMEM = { _l0, _l1, _l2, _l3, _l4, _l5 };
 
-	static const char *_scale;
+	const char *_scale = NULL;
 
 	void update ()
 	{
@@ -560,6 +560,7 @@ namespace rssi
 
 	void draw (uint8_t x, uint8_t y)
 	{
+
 		max7456::puts_p (x, y, _scale);
 	}
 

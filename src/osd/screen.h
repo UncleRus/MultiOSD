@@ -27,6 +27,8 @@ namespace screen
 	void update ();
 	void draw ();
 
+	extern bool updated;
+
 	namespace settings
 	{
 

@@ -25,62 +25,66 @@ namespace osd
 namespace screen
 {
 
-struct _panel_pos_t
+struct panel_pos_t
 {
 	uint8_t panel;
 	uint8_t x;
 	uint8_t y;
 };
 
-static _panel_pos_t _panels [OSD_SCREEN_PANELS];
-static uint8_t _count = 0;
+static panel_pos_t records [OSD_SCREEN_PANELS];
+static uint8_t count = 0;
 
 void load (uint8_t num)
 {
 	if (num >= OSD_MAX_SCREENS) num = 0;
 
-	uint8_t *offset = _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (_panel_pos_t) * OSD_SCREEN_PANELS);
+	uint8_t *offset = _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (panel_pos_t) * OSD_SCREEN_PANELS);
 
 	uint8_t i = 0;
 	for (; i < OSD_SCREEN_PANELS; i ++)
 	{
-		_panels [i].panel = eeprom_read_byte (offset);
-		if (_panels [i].panel >= osd::panel::count)
+		records [i].panel = eeprom_read_byte (offset);
+		if (records [i].panel >= osd::panel::count)
 			break;
-		_panels [i].x = eeprom_read_byte (offset + 1);
-		_panels [i].y = eeprom_read_byte (offset + 2);
-		offset += sizeof (_panel_pos_t);
+		records [i].x = eeprom_read_byte (offset + 1);
+		records [i].y = eeprom_read_byte (offset + 2);
+		offset += sizeof (panel_pos_t);
 	}
-	_count = i;
+	count = i;
 
 	max7456::clear ();
+}
+
+bool updated = false;
+
+void update ()
+{
+	for (uint8_t i = 0; i < count; i ++)
+		osd::panel::update (records [i].panel);
+	updated = true;
 }
 
 void draw ()
 {
-	max7456::wait_vsync ();
+	if (!updated) return;
 	max7456::clear ();
-	for (uint8_t i = 0; i < _count; i ++)
-		osd::panel::draw (_panels [i].panel, _panels [i].x, _panels [i].y);
-}
-
-void update ()
-{
-	for (uint8_t i = 0; i < _count; i ++)
-		osd::panel::update (i);
+	for (uint8_t i = 0; i < count; i ++)
+		osd::panel::draw (records [i].panel, records [i].x, records [i].y);
+	updated = false;
 }
 
 namespace settings
 {
 
-const _panel_pos_t _default_screen_0 [] PROGMEM = {
+const panel_pos_t _default_screen_0 [] PROGMEM = {
 	{OSD_PANEL_GPS_STATE, 1, 1},
 	{OSD_PANEL_GPS_LAT, 8, 1},
 	{OSD_PANEL_GPS_LON, 19, 1},
 
 	{OSD_PANEL_CONNECTION_STATE, 0, 2},
 	{OSD_PANEL_ARMING_STATE, 3, 2},
-	{OSD_PANEL_RSSI_FLAG, 23, 3},
+	{OSD_PANEL_RSSI, 21, 3},
 	{OSD_PANEL_FLIGHT_MODE, 24, 2},
 
 	{OSD_PANEL_PITCH, 1, 6},
@@ -106,9 +110,10 @@ const _panel_pos_t _default_screen_0 [] PROGMEM = {
 };
 
 #if OSD_MAX_SCREENS > 1
-const _panel_pos_t _default_screen_1 [] PROGMEM = {
+const panel_pos_t _default_screen_1 [] PROGMEM = {
 	{OSD_PANEL_CONNECTION_STATE, 0, 0},
 	{OSD_PANEL_ARMING_STATE, 3, 0},
+	{OSD_PANEL_CALLSIGN, 7, 1},
 	{OSD_PANEL_RSSI_FLAG, 23, 1},
 	{OSD_PANEL_FLIGHT_MODE, 24, 0},
 
@@ -125,10 +130,10 @@ const _panel_pos_t _default_screen_1 [] PROGMEM = {
 #endif
 
 #if OSD_MAX_SCREENS > 2
-const _panel_pos_t _default_screen_2 [] PROGMEM = {
+const panel_pos_t _default_screen_2 [] PROGMEM = {
 	{OSD_PANEL_CONNECTION_STATE, 0, 0},
 	{OSD_PANEL_ARMING_STATE, 3, 0},
-	{OSD_PANEL_RSSI_FLAG, 23, 1},
+	{OSD_PANEL_RSSI, 20, 1},
 	{OSD_PANEL_FLIGHT_MODE, 24, 0},
 
 	{OSD_PANEL_PITCH, 1, 6},
@@ -144,26 +149,26 @@ const _panel_pos_t _default_screen_2 [] PROGMEM = {
 #endif
 
 
-void _reset_screen (uint8_t num, const _panel_pos_t screen [], uint8_t len)
+void reset_screen (uint8_t num, const panel_pos_t screen [], uint8_t len)
 {
-	uint8_t *offset = _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (_panel_pos_t) * OSD_SCREEN_PANELS);
+	uint8_t *offset = _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (panel_pos_t) * OSD_SCREEN_PANELS);
 	for (uint8_t i = 0; i < len; i ++)
 	{
 		eeprom_update_byte (offset, pgm_read_byte (&(screen [i].panel)));
 		eeprom_update_byte (offset + 1, pgm_read_byte (&(screen [i].x)));
 		eeprom_update_byte (offset + 2, pgm_read_byte (&(screen [i].y)));
-		offset += sizeof (_panel_pos_t);
+		offset += sizeof (panel_pos_t);
 	}
 }
 
 void reset ()
 {
-	_reset_screen (0, _default_screen_0, sizeof (_default_screen_0) / sizeof (_panel_pos_t));
+	reset_screen (0, _default_screen_0, sizeof (_default_screen_0) / sizeof (panel_pos_t));
 #if OSD_MAX_SCREENS > 1
-	_reset_screen (1, _default_screen_1, sizeof (_default_screen_1) / sizeof (_panel_pos_t));
+	reset_screen (1, _default_screen_1, sizeof (_default_screen_1) / sizeof (panel_pos_t));
 #endif
 #if OSD_MAX_SCREENS > 2
-	_reset_screen (2, _default_screen_2, sizeof (_default_screen_2) / sizeof (_panel_pos_t));
+	reset_screen (2, _default_screen_2, sizeof (_default_screen_2) / sizeof (panel_pos_t));
 #endif
 }
 

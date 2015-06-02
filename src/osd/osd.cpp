@@ -18,6 +18,8 @@
 #include "../config.h"
 #include "../lib/timer/timer.h"
 //#include "../lib/max7456/max7456.h"
+#include <avr/interrupt.h>
+#include <avr/io.h>
 
 namespace osd
 {
@@ -32,12 +34,12 @@ namespace osd
 #	define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6
 #endif
 
-static uint8_t _switch;
-static uint8_t _channel;
-static uint16_t _chan_min, _chan_max, _raw_lvl_size;
-static uint8_t _screen;
-static uint8_t _screens_enabled;
-static bool _visible;
+uint8_t _switch;
+uint8_t _channel;
+uint16_t _chan_min, _chan_max, _raw_lvl_size;
+uint8_t cur_screen;
+uint8_t _screens_enabled;
+//bool visible;
 
 #if (OSD_MAX_SCREENS <= 0) || (OSD_MAX_SCREENS > 8)
 #	error OSD_MAX_SCREENS must be between 0 and 8
@@ -45,57 +47,76 @@ static bool _visible;
 
 #if OSD_MAX_SCREENS > 1
 
-uint8_t _get_screen (uint16_t raw)
+uint8_t get_screen (uint16_t raw)
 {
 	if (raw < _chan_min) raw = _chan_min;
 	if (raw > _chan_max) raw = _chan_max;
 	return (raw - _chan_min) / _raw_lvl_size;
 }
 
-bool _check_input ()
+bool check_input ()
 {
 	if (_switch == OSD_SWITCH_OFF || !telemetry::input::connected) return false;
 
-	uint8_t old_screen = _screen;
+	uint8_t old_screen = cur_screen;
 
-	_screen = _switch == OSD_SWITCH_FLIGHT_MODE
+	cur_screen = _switch == OSD_SWITCH_FLIGHT_MODE
 		? telemetry::input::flight_mode_switch
-		: _get_screen (telemetry::input::channels [_channel]);
+		: get_screen (telemetry::input::channels [_channel]);
 
-	if (_screen >= _screens_enabled) _screen = _screens_enabled - 1;
+	if (cur_screen >= _screens_enabled) cur_screen = _screens_enabled - 1;
 
-	return _screen != old_screen;
+	return cur_screen != old_screen;
 }
+
 #endif
+
+bool started = false;
+bool mutex = false;
+
+ISR (INT0_vect)
+{
+	if (!started || !screen::updated || mutex) return;
+	mutex = true;
+	sei ();	// I know, I know, but timer::ticks...
+	screen::draw ();
+	mutex = false;
+}
 
 void main ()
 {
 	// TODO: hide and show
-	_visible = true;
+	// visible = true;
 
 	screen::load (0);
-
-	// first draw
 	screen::update ();
-	screen::draw ();
+
+	EICRA = _BV (ISC01);	// VSYNC falling edge
+	EIMSK = _BV (INT0);		// enable
+	started = true;
 
 	while (true)
 	{
 		bool updated = telemetry::update ();
 #if OSD_MAX_SCREENS > 1
-		if (_screens_enabled > 1 && _check_input ())
+		if (_screens_enabled > 1 && check_input ())
 		{
-			screen::load (_screen);
+			screen::load (cur_screen);
 			updated = true;
 		}
 #endif
+		//if (updated && visible)
 		if (updated)
 		{
+			while (mutex) {}
+			mutex = true;
 			screen::update ();
-			if (_visible) screen::draw ();
+			mutex = false;
 		}
 	}
 }
+
+
 
 void init ()
 {
