@@ -23,8 +23,7 @@
 
 #include "setup.h"
 
-#define MAVLINK_EEPROM_FW _eeprom_byte (MAVLINK_EEPROM_OFFSET)
-#define MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL _eeprom_byte (MAVLINK_EEPROM_OFFSET + 1)
+#define MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL _eeprom_byte (MAVLINK_EEPROM_OFFSET)
 
 namespace telemetry
 {
@@ -35,27 +34,7 @@ namespace modules
 namespace mavlink
 {
 
-static uint8_t _fw;
 static uint8_t _int_batt_level;
-
-static mavlink_message_t _msg;
-static mavlink_status_t _status;
-
-static uint32_t _connection_timeout = 0;
-static uint32_t _battery_consumed_last = 0;
-
-bool _receive ()
-{
-	uint16_t err = 0;
-	do
-	{
-		uint16_t raw = MAVLINK_UART::receive ();
-		err = raw & 0xff00;
-		if (!err && mavlink_parse_char (MAVLINK_COMM_0, raw, &_msg, &_status)) return true;
-	}
-	while (!err);
-	return false;
-}
 
 float __attribute__ ((noinline)) rad_to_deg (float rad)
 {
@@ -149,6 +128,12 @@ namespace flight_modes
 
 }  // namespace flight_modes
 
+static mavlink_message_t _msg;
+static mavlink_status_t _status;
+
+static uint32_t _connection_timeout = 0;
+static uint32_t _battery_consumed_last = 0;
+
 namespace rates
 {
 
@@ -178,6 +163,19 @@ namespace rates
 
 }  // namespace rates
 
+bool receive ()
+{
+	uint16_t err = 0;
+	do
+	{
+		uint16_t raw = MAVLINK_UART::receive ();
+		err = raw & 0xff00;
+		if (!err && mavlink_parse_char (MAVLINK_COMM_0, raw, &_msg, &_status)) return true;
+	}
+	while (!err);
+	return false;
+}
+
 bool update ()
 {
 	bool updated = false;
@@ -185,7 +183,7 @@ bool update ()
 
 	float _batt_current_sum = 0;
 	uint8_t _batt_mean_cnt = 0;
-	while (_receive ())
+	while (receive ())
 	{
 		bool changed = true;
 		bool _was_armed;
@@ -221,9 +219,9 @@ bool update ()
 					telemetry::battery::update_voltage ();
 
 				{
-					float cur_mah = mavlink_msg_sys_status_get_current_battery (&_msg);
-					telemetry::battery::current = cur_mah / 100.0;
-					_batt_current_sum += cur_mah;
+					float current = mavlink_msg_sys_status_get_current_battery (&_msg);
+					telemetry::battery::current = current / 100.0;
+					_batt_current_sum += current;
 					_batt_mean_cnt ++;
 					uint16_t interval = ticks - _battery_consumed_last;
 					if (interval >= MAVLINK_BATTERY_CONSUMED_INTERVAL)
@@ -294,13 +292,11 @@ bool update ()
 
 void init ()
 {
-	_fw = eeprom_read_byte (MAVLINK_EEPROM_FW);
 	_int_batt_level = eeprom_read_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL);
 }
 
 void reset ()
 {
-	eeprom_update_byte (MAVLINK_EEPROM_FW, MAVLINK_DEFAULT_FW);
 	eeprom_update_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL, MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL);
 }
 

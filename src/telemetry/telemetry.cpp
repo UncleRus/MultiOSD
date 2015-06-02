@@ -111,7 +111,7 @@ namespace stable
 #define TELEMETRY_EEPROM_NOM_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 5)
 #define TELEMETRY_EEPROM_MAX_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 9)
 #define TELEMETRY_EEPROM_LOW_VOLTAGE		_eeprom_float (TELEMETRY_EEPROM_OFFSET + 13)
-#define TELEMETRY_EEPROM_CALLSIGN			_eeprom_dword (TELEMETRY_EEPROM_OFFSET + 17)
+#define TELEMETRY_EEPROM_CALLSIGN			_eeprom_str (TELEMETRY_EEPROM_OFFSET + 17)
 
 namespace battery
 {
@@ -297,9 +297,7 @@ void init ()
 {
 	if (eeprom_read_byte (TELEMETRY_EEPROM_MAIN_MODULE_ID) != TELEMETRY_MAIN_MODULE_ID)
 		::settings::reset ();
-
-	uint32_t cs = eeprom_read_dword (TELEMETRY_EEPROM_CALLSIGN);
-	memcpy (status::callsign, &cs, 4);
+	eeprom_read_block (status::callsign, TELEMETRY_EEPROM_CALLSIGN, 4);
 	status::callsign [4] = 0;
 
 	battery::init ();
@@ -320,7 +318,8 @@ namespace settings
 	void reset ()
 	{
 		eeprom_update_byte (TELEMETRY_EEPROM_MAIN_MODULE_ID, TELEMETRY_MAIN_MODULE_ID);
-		eeprom_update_dword (TELEMETRY_EEPROM_CALLSIGN, DEFAULT_CALLSIGN);
+		eeprom_update_block (DEFAULT_CALLSIGN, TELEMETRY_EEPROM_CALLSIGN, 5);
+
 		battery::reset ();
 		for (uint8_t i = 0; i < modules::count; i ++)
 			modules::reset (i);

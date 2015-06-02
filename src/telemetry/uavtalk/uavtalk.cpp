@@ -52,13 +52,13 @@ const char _fm_plan [] PROGMEM = "PLAN";
 const char _fm_poi [] PROGMEM = "POI ";
 const char _fm_acruise [] PROGMEM = "ACRU";
 
-const char * const _fm [] PROGMEM = {
+const char * const fm [] PROGMEM = {
 	_fm_man, _fm_stab1, _fm_stab2, _fm_stab3, _fm_stab4, _fm_stab5, _fm_stab6,
 	_fm_atune, _fm_pos_hold, _fm_pos_v_fpv, _fm_pos_v_los, _fm_pos_v_nsew,
 	_fm_rtb, _fm_land, _fm_plan, _fm_poi, _fm_acruise
 };
 
-static const uint8_t _crc_table [256] PROGMEM =
+static const uint8_t crc_table [256] PROGMEM =
 {
 	0x00, 0x07, 0x0e, 0x09, 0x1c, 0x1b, 0x12, 0x15, 0x38, 0x3f, 0x36, 0x31, 0x24, 0x23, 0x2a, 0x2d,
 	0x70, 0x77, 0x7e, 0x79, 0x6c, 0x6b, 0x62, 0x65, 0x48, 0x4f, 0x46, 0x41, 0x54, 0x53, 0x5a, 0x5d,
@@ -104,13 +104,14 @@ static const uint8_t _crc_table [256] PROGMEM =
 #define UAVTALK_EEPROM_BOARD _eeprom_byte (UAVTALK_EEPROM_OFFSET)
 #define UAVTALK_EEPROM_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 1)
 
-static uint8_t _board;
-static bool _internal_home_calc;
+static uint8_t board;
+static bool internal_home_calc;
 
 static uint8_t __attribute__ ((noinline)) _get_crc (uint8_t b)
 {
-	return pgm_read_byte (&_crc_table [b]);
+	return pgm_read_byte (&crc_table [b]);
 }
+//#define _get_crc(b) (pgm_read_byte (&crc_table [b]))
 
 void send (const header_t &head, uint8_t *data, uint8_t size)
 {
@@ -159,7 +160,7 @@ static uint8_t _step = 0;
 
 message_t buffer;
 
-bool _parse (uint8_t b)
+bool parse (uint8_t b)
 {
 	switch (_state)
 	{
@@ -247,23 +248,23 @@ bool _parse (uint8_t b)
 	return false;
 }
 
-bool _receive ()
+bool receive ()
 {
 	uint16_t err = 0;
 	do
 	{
 		uint16_t raw = UAVTALK_UART::receive ();
 		err = raw & 0xff00;
-		if (!err && _parse (raw)) return true;
+		if (!err && parse (raw)) return true;
 	}
 	while (!err);
 	return false;
 }
 
-static uint32_t _telemetry_request_timeout = 0;
-static uint32_t _connection_timeout = 0;
+static uint32_t telemetry_request_timeout = 0;
+static uint32_t connection_timeout = 0;
 
-inline uint8_t _respond_fts (uint8_t state)
+inline uint8_t fts_respond (uint8_t state)
 {
 	if (state == _UT_TELEMETRY_STATE_DISCONNECTED)
 	{
@@ -300,17 +301,17 @@ bool update ()
 	bool updated = false;
 	uint32_t ticks = timer::ticks ();
 
-	if (uavtalk::_receive ())
+	while (uavtalk::receive ())
 	{
 		// got message
-		updated = true;
-		bool _was_armed;
+		bool changed = true;
+		bool was_armed;
 		switch (buffer.head.obj_id)
 		{
 			// connection
 			case UAVTALK_FLIGHTTELEMETRYSTATS_OBJID:
-				telemetry::status::connection = _respond_fts (buffer.data [_UT_OFFS_FTS_STATUS]);
-				_connection_timeout = ticks + UAVTALK_CONNECTION_TIMEOUT;
+				telemetry::status::connection = fts_respond (buffer.data [_UT_OFFS_FTS_STATUS]);
+				connection_timeout = ticks + UAVTALK_CONNECTION_TIMEOUT;
 				break;
 			case UAVTALK_SYSTEMSTATS_OBJID:
 				telemetry::status::flight_time = buffer.get<uint32_t> (0) / 1000;
@@ -321,12 +322,12 @@ bool update ()
 				telemetry::attitude::yaw 	= buffer.get<float> (24);
 				break;
 			case UAVTALK_FLIGHTSTATUS_OBJID:
-				_was_armed = telemetry::status::armed;
+				was_armed = telemetry::status::armed;
 				telemetry::status::armed = buffer.data [0] > 1;
 				telemetry::status::flight_mode = buffer.data [1];
-				telemetry::status::flight_mode_name_p = (const char *) pgm_read_ptr (&_fm [telemetry::status::flight_mode]);
+				telemetry::status::flight_mode_name_p = (const char *) pgm_read_ptr (&fm [telemetry::status::flight_mode]);
 				// fix home if armed on CC3D
-				if ((_board == UAVTALK_BOARD_CC3D || _internal_home_calc) && !_was_armed && telemetry::status::armed)
+				if ((board == UAVTALK_BOARD_CC3D || internal_home_calc) && !was_armed && telemetry::status::armed)
 					telemetry::home::fix ();
 				break;
 			case UAVTALK_MANUALCONTROLCOMMAND_OBJID:
@@ -365,32 +366,32 @@ bool update ()
 				telemetry::gps::longitude 	= buffer.get<int32_t> (4) / 10000000.0;
 				telemetry::gps::altitude 	= buffer.get<float> (8);
 				telemetry::gps::heading 	= round (buffer.get<float> (16));
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+				// let's set heading, we don't have compass anyway
+				telemetry::stable::heading 	= telemetry::gps::heading;
+#endif
 				telemetry::stable::ground_speed = telemetry::gps::speed = buffer.get<float> (20);
 				telemetry::gps::state 		= buffer.data [36];
 				telemetry::gps::satellites 	= buffer.data [37];
 #endif
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
 				// update stable altitude if we can't get the baro altitude
-				if (_board == UAVTALK_BOARD_CC3D)
+				if (board == UAVTALK_BOARD_CC3D)
 					telemetry::stable::update_alt_climb (telemetry::gps::altitude);
 #endif
 				// calc home distance/direction based on gps
-				if (_board == UAVTALK_BOARD_CC3D || _internal_home_calc)
+				if (board == UAVTALK_BOARD_CC3D || internal_home_calc)
 					telemetry::home::update ();
 				break;
 			case UAVTALK_GPSVELOCITYSENSOR_OBJID:
 				telemetry::gps::climb = -buffer.get<float> (8);
-//#if !defined (TELEMETRY_MODULES_I2C_BARO)
-//				if (_board == UAVTALK_BOARD_CC3D) telemetry::stable::climb = telemetry::gps::climb;
-//#endif
 				// TODO: north/east
 				break;
 			default:
-				updated = false;
+				changed = false;
 		}
-		if (_board == UAVTALK_BOARD_REVO)
+		if (board == UAVTALK_BOARD_REVO)
 		{
-			bool revo_updated = true;
 			switch (buffer.head.obj_id)
 			{
 #if !defined (TELEMETRY_MODULES_ADC_BATTERY)
@@ -409,30 +410,30 @@ bool update ()
 					break;
 #endif
 				case UAVTALK_POSITIONSTATE_OBJID:
-					if (_internal_home_calc)
+					if (internal_home_calc)
 					{
-						revo_updated = false;
+						changed = false;
 						break;
 					}
 					// TODO: update home::distance & home::direction on REVO
 					break;
 				default:
-					revo_updated = false;
+					changed = false;
 			}
-			updated |= revo_updated;
 		}
+		updated |= changed;
 	}
 
-	if (ticks >= _connection_timeout && telemetry::status::connection != CONNECTION_STATE_DISCONNECTED)
+	if (ticks >= connection_timeout && telemetry::status::connection != CONNECTION_STATE_DISCONNECTED)
 	{
 		telemetry::status::connection = CONNECTION_STATE_DISCONNECTED;
 		updated = true;
 	}
 
-	if (ticks >= _telemetry_request_timeout && telemetry::status::connection == CONNECTION_STATE_CONNECTED)
+	if (ticks >= telemetry_request_timeout && telemetry::status::connection == CONNECTION_STATE_CONNECTED)
 	{
 		uavtalk::send_gcs_telemetry_stats (_UT_TELEMETRY_STATE_CONNECTED);
-		_telemetry_request_timeout = ticks + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL;
+		telemetry_request_timeout = ticks + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL;
 	}
 
 	return updated;
@@ -441,8 +442,8 @@ bool update ()
 
 void init ()
 {
-	_board = eeprom_read_byte (UAVTALK_EEPROM_BOARD);
-	_internal_home_calc = eeprom_read_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC);
+	board = eeprom_read_byte (UAVTALK_EEPROM_BOARD);
+	internal_home_calc = eeprom_read_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC);
 }
 
 void reset ()

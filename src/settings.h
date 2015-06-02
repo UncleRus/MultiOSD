@@ -32,6 +32,7 @@
 #define _eeprom_byte(x) ((uint8_t *) (x))
 #define _eeprom_word(x) ((uint16_t *) (x))
 #define _eeprom_dword(x) ((uint32_t *) (x))
+#define _eeprom_str(x) ((char *) (x))
 #define _eeprom_float(x) ((float *) (x))
 
 namespace settings

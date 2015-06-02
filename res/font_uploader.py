@@ -3,7 +3,6 @@
 
 import serial
 import sys
-import time
 
 
 filename = 'main_font.mcm' if len (sys.argv) < 2 else sys.argv [1]
@@ -28,3 +27,5 @@ print 'uploading'
 with open (filename, 'rb') as f:
     for line in iter (f.readline, ""):
         port.write (line)
+
+print 'done'

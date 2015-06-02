@@ -31,7 +31,7 @@
 #define BATTERY_NOM_CELL_VOLTAGE 3.7	// Nominal cell voltage, 3.7 for LiPo
 #define BATTERY_MIN_CELL_VOLTAGE 3.2	// Minimal cell voltage (dead battery), 3.2 for LiPo
 #define BATTERY_LOW_CELL_VOLTAGE 3.5	// Warning threshold
-#define DEFAULT_CALLSIGN 0x454e4f4e		// "NONE"
+#define DEFAULT_CALLSIGN "NONE"			// Default callsign
 
 /*
  * UAVTalk config
@@ -56,8 +56,7 @@
 #define MAVLINK_UART uart0
 #define MAVLINK_CONNECTION_TIMEOUT 2000					// ms
 #define MAVLINK_BATTERY_CONSUMED_INTERVAL 100			// ms
-#define MAVLINK_DEFAULT_FW MAVLINK_BOARD_APM			// default board
-#define MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL 1			// Internal battery level calculation (better)
+#define MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL 1			// Internal battery level calculation (may be better)
 
 /*
  * OSD config
