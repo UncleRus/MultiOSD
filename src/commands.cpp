@@ -49,10 +49,11 @@ namespace font
 
 	void draw ()
 	{
+		uint8_t left = max7456::hcenter - 8;
 		max7456::clear ();
 		for (uint8_t h = 0; h < 0x10; h ++)
 			for (uint8_t l = 0; l < 0x10; l ++)
-				max7456::put (max7456::hcenter - 8 + l, h, (h << 4) | l);
+				max7456::put (left + l, h, (h << 4) | l);
 	}
 
 	void print_byte (uint8_t b)

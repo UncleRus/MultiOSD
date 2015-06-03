@@ -108,7 +108,8 @@ void main ()
 		//if (updated && visible)
 		if (updated)
 		{
-			while (mutex) {}
+			while (mutex)
+				;
 			mutex = true;
 			screen::update ();
 			mutex = false;

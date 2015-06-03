@@ -46,17 +46,6 @@
 #define MAX7456_MASK_PAL  0x40 // PAL mask 01000000
 #define MAX7456_MASK_NTCS 0x00 // NTSC mask 00000000
 
-// screen sizes
-#define MAX7456_PAL_COLUMNS		30
-#define MAX7456_PAL_ROWS		16
-#define MAX7456_PAL_HCENTER		(MAX7456_PAL_COLUMNS / 2)
-#define MAX7456_PAL_VCENTER		(MAX7456_PAL_ROWS / 2)
-
-#define MAX7456_NTSC_COLUMNS	30
-#define MAX7456_NTSC_ROWS		13
-#define MAX7456_NTSC_HCENTER	(MAX7456_NTSC_COLUMNS / 2)
-#define MAX7456_NTSC_VCENTER	(MAX7456_NTSC_ROWS / 2)
-
 // eeprom addresses
 #define MAX7456_EEPROM_VIDEO_MODE	_eeprom_byte (MAX7456_EEPROM_OFFSET)
 #define MAX7456_EEPROM_BRIGHTNESS	_eeprom_byte (MAX7456_EEPROM_OFFSET + 1)
@@ -138,6 +127,8 @@ inline void _detect_mode ()
 		return;
 	}
 
+	_set_mode (eeprom_read_byte (MAX7456_EEPROM_VIDEO_MODE));
+	/*
 	// no video signal detected, try to read video mode setting
 	uint8_t opt = eeprom_read_byte (MAX7456_EEPROM_VIDEO_MODE);
 	if (opt == MAX7456_MODE_PAL || opt == MAX7456_MODE_NTSC)
@@ -148,6 +139,7 @@ inline void _detect_mode ()
 
 	// garbage in EEPROM, set default mode
 	_set_mode (MAX7456_DEFAULT_MODE);
+	*/
 }
 
 FILE stream;
@@ -284,8 +276,6 @@ void put (uint8_t col, uint8_t row, uint8_t chr, uint8_t attr)
 	_chip_unselect ();
 }
 
-static uint8_t _start_col = 0;
-static uint8_t _start_row = 0;
 static uint8_t _cur_attr = 0;
 
 void open (uint8_t col, uint8_t row, uint8_t attr)
@@ -293,8 +283,6 @@ void open (uint8_t col, uint8_t row, uint8_t attr)
 	if (_opened) close ();
 
 	// remember start
-	_start_col = col;
-	_start_row = row;
 	_cur_attr = attr;
 
 	_opened = true;
@@ -335,13 +323,6 @@ void __attribute__ ((noinline)) close ()
 
 int _put (char chr, FILE *s)
 {
-	if (chr == MAX7456_EOL_CHAR)
-	{
-		// end of line (kinda CR/LF)
-		close ();
-		open (_start_col, _start_row + 1, _cur_attr);
-		return 0;
-	}
 	write_register (MAX7456_REG_DMDI, _valid_char (chr));
 	return 0;
 }

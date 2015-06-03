@@ -144,8 +144,9 @@ namespace arming_state
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		osd::draw::rect (x, y, 3, 3, telemetry::status::armed);
-		max7456::put (x + 1, y + 1, telemetry::status::armed ? 0xe0 : 'A');
+		uint8_t attr = telemetry::status::armed ? 0 : MAX7456_ATTR_INVERT;
+		osd::draw::rect (x, y, 3, 3, true, attr);
+		max7456::put (x + 1, y + 1, 0xe0, attr);
 	}
 
 }  // namespace name

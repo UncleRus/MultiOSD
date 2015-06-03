@@ -139,7 +139,6 @@
  */
 #define MAX7456_DEFAULT_MODE MAX7456_MODE_PAL 	// default video mode, if jumper closed
 #define MAX7456_DEFAULT_BRIGHTNESS 0x00			// 120% white, 0% black
-#define MAX7456_EOL_CHAR '\n' 					// Special next row char
 
 // ~CS (Chip Select) pin
 #define MAX7456_SELECT_PORT PORTD
