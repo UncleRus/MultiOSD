@@ -128,18 +128,6 @@ inline void _detect_mode ()
 	}
 
 	_set_mode (eeprom_read_byte (MAX7456_EEPROM_VIDEO_MODE));
-	/*
-	// no video signal detected, try to read video mode setting
-	uint8_t opt = eeprom_read_byte (MAX7456_EEPROM_VIDEO_MODE);
-	if (opt == MAX7456_MODE_PAL || opt == MAX7456_MODE_NTSC)
-	{
-		_set_mode (opt);
-		return;
-	}
-
-	// garbage in EEPROM, set default mode
-	_set_mode (MAX7456_DEFAULT_MODE);
-	*/
 }
 
 FILE stream;
@@ -157,10 +145,10 @@ void init ()
 	// Detect video mode
 	_detect_mode ();
 
-	// Reset?
-	//write_register (MAX7456_REG_VM0, MAX7456_CMD_RESET);
+	// Reset doesn't work
+	//write_register (MAX7456_REG_VM0, _BV (1));
 	//_delay_us (100);
-	//while (read_register (MAX7456_REG_STAT) & 0x40)
+	//while (read_register (MAX7456_REG_VM0) & _BV (1))
 	//	;
 
 	_chip_select ();

@@ -41,6 +41,7 @@
 #define OSD_PANEL_CALLSIGN            20
 #define OSD_PANEL_TEMPERATURE         21
 #define OSD_PANEL_RSSI                22
+#define OSD_PANEL_COMPASS             23
 
 namespace osd
 {

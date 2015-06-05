@@ -128,7 +128,7 @@ namespace battery
 
 	extern float voltage;			// volts
 	extern float current;			// amperes
-	extern float consumed;			// mAh
+	extern uint16_t consumed;		// mAh
 	extern uint8_t cells;
 	extern float cell_voltage;		// volts
 	extern uint8_t level;			// percents

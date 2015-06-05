@@ -123,7 +123,7 @@ namespace battery
 
 	float voltage = 0;
 	float current = 0;
-	float consumed = 0;
+	uint16_t consumed = 0;
 	uint8_t cells = 0;
 	float cell_voltage = 0;
 	uint8_t level = 0;

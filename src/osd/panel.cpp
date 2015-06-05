@@ -77,42 +77,55 @@ namespace draw
 namespace __panels
 {
 
+#define terminate_buffer() { buffer [sizeof (buffer) - 1] = 0; }
+
+#define DECLARE_BUF(n) const uint8_t buf_size = n; char buffer [n];
+
 #define STD_DRAW void draw (uint8_t x, uint8_t y) \
 { \
 	max7456::puts (x, y, buffer); \
 }
 
-#define terminate_buffer() { buffer [sizeof (buffer) - 1] = 0; }
+#define STD_UPDATE(fmt, ...) void update () \
+{ \
+	snprintf_P (buffer, buf_size, PSTR (fmt), __VA_ARGS__); \
+	terminate_buffer (); \
+}
+
+#define STD_PANEL(name, bs, fmt, ...) \
+	const char __name [] PROGMEM = name; \
+	DECLARE_BUF (bs); \
+	STD_UPDATE (fmt, __VA_ARGS__); \
+	STD_DRAW;
 
 
 namespace alt
 {
 
-	const char __name [] PROGMEM = "StableAlt";
-
-	char buffer [8];
-
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("\x85%d\x8d"), (int16_t) telemetry::stable::altitude);
-		terminate_buffer ();
-	}
-
-	STD_DRAW;
+	STD_PANEL ("StableAlt", 8, "\x85%d\x8d", (int16_t) telemetry::stable::altitude);
 
 }  // namespace alt
 
 namespace climb
 {
 
+#define _PAN_CLIMB_SYMB 0x03
+
 	const char __name [] PROGMEM = "Climb";
 
-	char buffer [8];
+	DECLARE_BUF (8);
 
 	void update ()
 	{
-		sprintf_P (buffer, PSTR ("%c%.1f\x8c"),
-			telemetry::stable::climb < 0 ? 0x07 : 0x08, telemetry::stable::climb);
+		int8_t c = round (telemetry::stable::climb);
+		uint8_t s;
+		if (c >= 2) s = _PAN_CLIMB_SYMB + 5;
+		else if (c == 1) s = _PAN_CLIMB_SYMB + 4;
+		else if (c == 0) s = _PAN_CLIMB_SYMB + 3;
+		else if (c <= -2) s = _PAN_CLIMB_SYMB + 2;
+		else if (c == -1) s = _PAN_CLIMB_SYMB + 1;
+		else s = _PAN_CLIMB_SYMB;
+		snprintf_P (buffer, buf_size, PSTR ("%c%.1f\x8c"), s, telemetry::stable::climb);
 		terminate_buffer ();
 	}
 
@@ -172,52 +185,20 @@ namespace connection_state
 
 namespace flight_time
 {
-
-	const char __name [] PROGMEM = "FlightTime";
-
-	char buffer [8];
-
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("\xb3%02u:%02u"), telemetry::status::flight_time / 60, telemetry::status::flight_time % 60);
-		terminate_buffer ();
-	}
-
-	STD_DRAW
+	STD_PANEL ("FlightTime", 8, "\xb3%02u:%02u", telemetry::status::flight_time / 60, telemetry::status::flight_time % 60);
 
 }  // namespace flight_time
 
 namespace roll
 {
-
-	const char __name [] PROGMEM = "Roll";
-
-	char buffer [7];
-
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("\xb2%d\xb0"), (int16_t) telemetry::attitude::roll);
-		terminate_buffer ();
-	}
-
-	STD_DRAW
+	STD_PANEL ("Roll", 7, "\xb2%d\xb0", (int16_t) telemetry::attitude::roll);
 
 }  // namespace roll
 
 namespace pitch
 {
 
-	const char __name [] PROGMEM = "Pitch";
-
-	char buffer [7];
-
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("\xb1%d\xb0"), (int16_t) telemetry::attitude::pitch);
-		terminate_buffer ();
-	}
-
-	STD_DRAW
+	STD_PANEL ("Pitch", 7, "\xb1%d\xb0", (int16_t) telemetry::attitude::pitch);
 
 }  // namespace pitch
 
@@ -229,13 +210,9 @@ namespace gps_state
 #define _PAN_GPS_2D 0x01
 #define _PAN_GPS_3D 0x02
 
-	char buffer [4];
+	DECLARE_BUF (4);
 
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("%d"), telemetry::gps::satellites);
-		terminate_buffer ();
-	}
+	STD_UPDATE ("%d", telemetry::gps::satellites);
 
 	void draw (uint8_t x, uint8_t y)
 	{
@@ -252,34 +229,14 @@ namespace gps_state
 namespace gps_lat
 {
 
-	const char __name [] PROGMEM = "Lat";
-
-	char buffer [11];
-
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("\x83%02.6f"), telemetry::gps::latitude);
-		terminate_buffer ();
-	}
-
-	STD_DRAW
+	STD_PANEL ("Lat", 11, "\x83%02.6f", telemetry::gps::latitude);
 
 }  // namespace gps_lat
 
 namespace gps_lon
 {
 
-	const char __name [] PROGMEM = "Lon";
-
-	char buffer [11];
-
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("\x84%02.6f"), telemetry::gps::longitude);
-		terminate_buffer ();
-	}
-
-	STD_DRAW
+	STD_PANEL ("Lon", 11, "\x84%02.6f", telemetry::gps::longitude);
 
 }  // namespace gps_lon
 
@@ -349,34 +306,14 @@ namespace horizon
 namespace throttle
 {
 
-	const char __name [] PROGMEM = "Throttle";
-
-	char buffer [7];
-
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("\x87%d%%"), telemetry::input::throttle);
-		terminate_buffer ();
-	}
-
-	STD_DRAW
+	STD_PANEL ("Throttle", 7, "\x87%d%%", telemetry::input::throttle);
 
 }  // namespace throttle
 
 namespace ground_speed
 {
 
-	const char __name [] PROGMEM = "GroundSpeed";
-
-	char buffer [7];
-
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("\x0a%d\x81"), (int16_t) (telemetry::stable::ground_speed * 3.6));
-		terminate_buffer ();
-	}
-
-	STD_DRAW
+	STD_PANEL ("GroundSpeed", 7, "\x0a%d\x81", (int16_t) (telemetry::stable::ground_speed * 3.6));
 
 }  // namespace ground_speed
 
@@ -385,13 +322,13 @@ namespace battery_voltage
 
 	const char __name [] PROGMEM = "BatVoltage";
 
-	char buffer [7];
+	DECLARE_BUF (7);
 	char _symbol;
 	uint8_t _attr;
 
 	void update ()
 	{
-		sprintf_P (buffer, PSTR ("%.2f\x8e"), telemetry::battery::voltage);
+		snprintf_P (buffer, buf_size, PSTR ("%.2f\x8e"), telemetry::battery::voltage);
 		terminate_buffer ();
 
 		_symbol = 0xf4 + (uint8_t) round (telemetry::battery::level / 20.0);
@@ -409,34 +346,14 @@ namespace battery_voltage
 namespace battery_current
 {
 
-	const char __name [] PROGMEM = "BatCurrent";
-
-	char buffer [8];
-
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("\xfa%.2f\x8f"), telemetry::battery::current);
-		terminate_buffer ();
-	}
-
-	STD_DRAW
+	STD_PANEL ("BatCurrent", 8, "\xfa%.2f\x8f", telemetry::battery::current);
 
 }  // namespace battery_current
 
 namespace battery_consumed
 {
 
-	const char __name [] PROGMEM = "BatConsumed";
-
-	char buffer [8];
-
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("\xfb%u\x82"), (uint16_t) telemetry::battery::consumed);
-		terminate_buffer ();
-	}
-
-	STD_DRAW
+	STD_PANEL ("BatConsumed", 8, "\xfb%u\x82", (uint16_t) telemetry::battery::consumed);
 
 }  // namespace battery_consumed
 
@@ -459,7 +376,7 @@ namespace home_distance
 
 	const char __name [] PROGMEM = "HomeDistance";
 
-	char buffer [8];
+	DECLARE_BUF (8);
 	uint8_t _attr, _i_attr;
 
 	void update ()
@@ -468,12 +385,12 @@ namespace home_distance
 		_i_attr = telemetry::home::state != HOME_STATE_FIXED ? MAX7456_ATTR_BLINK : 0;
 		if (_i_attr)
 		{
-			sprintf_P (buffer, PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("\x09\x09\x09\x8d"));
+			snprintf_P (buffer, buf_size, PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("\x09\x09\x09\x8d"));
 			return;
 		}
 		if (telemetry::home::distance >= 10000)
-			 sprintf_P (buffer, PSTR ("%.1f\x8b"), telemetry::home::distance / 1000);
-		else sprintf_P (buffer, PSTR ("%u\x8d"), (uint16_t) telemetry::home::distance);
+			 snprintf_P (buffer, buf_size, PSTR ("%.1f\x8b"), telemetry::home::distance / 1000);
+		else snprintf_P (buffer, buf_size, PSTR ("%u\x8d"), (uint16_t) telemetry::home::distance);
 	}
 
 	void draw (uint8_t x, uint8_t y)
@@ -524,17 +441,7 @@ namespace callsign
 namespace temperature
 {
 
-	const char __name [] PROGMEM = "Temperature";
-
-	char buffer [6];
-
-	void update ()
-	{
-		sprintf_P (buffer, PSTR ("\xfd%d\xb0"), telemetry::stable::temperature);
-		terminate_buffer ();
-	}
-
-	STD_DRAW
+	STD_PANEL ("Temperature", 8, "\xfd%d\xb0", telemetry::stable::temperature);
 
 }  // namespace temperature
 
@@ -565,11 +472,43 @@ namespace rssi
 
 	void draw (uint8_t x, uint8_t y)
 	{
-
 		max7456::puts_p (x, y, _scale);
 	}
 
 }  // namespace rssi
+
+namespace compass
+{
+
+	const char __name [] PROGMEM = "Compass";
+
+	// Code from MinOpOSD
+	const uint8_t ruler [] PROGMEM = {
+		0xc2, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0,
+		0xc4, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0,
+		0xc3, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0,
+		0xc5, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0,
+	};
+
+	const int8_t ruler_size = sizeof (ruler);
+
+	DECLARE_BUF (12);
+
+	void update ()
+	{
+		int16_t offset = round (telemetry::stable::heading * ruler_size / 360.0) - 5;
+		if (offset < 0) offset += ruler_size;
+		for (uint8_t i = 0; i < buf_size - 1; i ++)
+		{
+			buffer [i] = pgm_read_byte (&ruler [offset]);
+			if (++ offset >= ruler_size) offset = 0;
+		}
+		terminate_buffer ();
+	}
+
+	STD_DRAW;
+
+}  // namespace compass
 
 }  // namespace __panels
 
@@ -602,6 +541,7 @@ const panel_t panels [] PROGMEM = {
 	_declare_panel (callsign),
 	_declare_panel (temperature),
 	_declare_panel (rssi),
+	_declare_panel (compass),
 };
 
 const uint8_t count = sizeof (panels) / sizeof (panel_t);
