@@ -117,13 +117,13 @@ namespace climb
 
 	void update ()
 	{
-		int8_t c = round (telemetry::stable::climb);
+		int8_t c = round (telemetry::stable::climb * 10);
 		uint8_t s;
-		if (c >= 2) s = _PAN_CLIMB_SYMB + 5;
-		else if (c == 1) s = _PAN_CLIMB_SYMB + 4;
-		else if (c == 0) s = _PAN_CLIMB_SYMB + 3;
-		else if (c <= -2) s = _PAN_CLIMB_SYMB + 2;
-		else if (c == -1) s = _PAN_CLIMB_SYMB + 1;
+		if (c >= 20) s = _PAN_CLIMB_SYMB + 5;
+		else if (c >= 10) s = _PAN_CLIMB_SYMB + 4;
+		else if (c >= 0) s = _PAN_CLIMB_SYMB + 3;
+		else if (c <= -20) s = _PAN_CLIMB_SYMB + 2;
+		else if (c <= -10) s = _PAN_CLIMB_SYMB + 1;
 		else s = _PAN_CLIMB_SYMB;
 		snprintf_P (buffer, buf_size, PSTR ("%c%.1f\x8c"), s, telemetry::stable::climb);
 		terminate_buffer ();
@@ -275,7 +275,7 @@ namespace horizon
 			buffer [i][PANEL_HORIZON_WIDTH] = 0;
 		}
 
-		// code below was taken from minoposd
+		// code below from minoposd
 		int16_t pitch_line = tan (-_RADIAN * telemetry::attitude::pitch) * _PAN_HORZ_LINES;
 		float roll = tan (_RADIAN * telemetry::attitude::roll);
 		for (uint8_t col = 1; col <= _PAN_HORZ_INT_WIDTH; col ++)
@@ -313,7 +313,7 @@ namespace throttle
 namespace ground_speed
 {
 
-	STD_PANEL ("GroundSpeed", 7, "\x0a%d\x81", (int16_t) (telemetry::stable::ground_speed * 3.6));
+	STD_PANEL ("GroundSpeed", 7, "\x80%d\x81", (int16_t) (telemetry::stable::ground_speed * 3.6));
 
 }  // namespace ground_speed
 
@@ -484,10 +484,10 @@ namespace compass
 
 	// Code from MinOpOSD
 	const uint8_t ruler [] PROGMEM = {
-		0xc2, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0,
-		0xc4, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0,
-		0xc3, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0,
-		0xc5, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0, 0xc1, 0xc0, 0xc0,
+		0xc2, 0xc0, 0xc1, 0xc0, 0xc1, 0xc0,
+		0xc4, 0xc0, 0xc1, 0xc0, 0xc1, 0xc0,
+		0xc3, 0xc0, 0xc1, 0xc0, 0xc1, 0xc0,
+		0xc5, 0xc0, 0xc1, 0xc0, 0xc1, 0xc0,
 	};
 
 	const int8_t ruler_size = sizeof (ruler);

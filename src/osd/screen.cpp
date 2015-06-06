@@ -98,6 +98,7 @@ const panel_pos_t _default_screen_0 [] PROGMEM = {
 	{OSD_PANEL_CLIMB, 23, 10},
 
 	{OSD_PANEL_FLIGHT_TIME, 1, 13},
+	//{OSD_PANEL_COMPASS, 8, 13},
 
 	{OSD_PANEL_HOME_DISTANCE, 1, 14},
 	{OSD_PANEL_HOME_DIRECTION, 14, 14},
@@ -114,7 +115,7 @@ const panel_pos_t _default_screen_1 [] PROGMEM = {
 	{OSD_PANEL_CONNECTION_STATE, 0, 0},
 	{OSD_PANEL_ARMING_STATE, 3, 0},
 	{OSD_PANEL_CALLSIGN, 7, 1},
-	{OSD_PANEL_RSSI_FLAG, 23, 1},
+	{OSD_PANEL_RSSI, 21, 1},
 	{OSD_PANEL_FLIGHT_MODE, 24, 0},
 
 	{OSD_PANEL_ALT, 1, 8},
