@@ -24,6 +24,8 @@
 namespace telemetry
 {
 
+uint32_t ticks = 0;
+
 namespace status
 {
 
@@ -98,7 +100,6 @@ namespace stable
 
 	void update_alt_climb (float _alt)
 	{
-		uint32_t ticks = timer::ticks ();
 		climb = (_alt - altitude) / (ticks - _alt_update_time) * 1000;
 		altitude = _alt;
 		_alt_update_time = ticks;
@@ -123,12 +124,15 @@ namespace battery
 
 	float voltage = 0;
 	float current = 0;
-	uint16_t consumed = 0;
+	float consumed = 0;
 	uint8_t cells = 0;
 	float cell_voltage = 0;
 	uint8_t level = 0;
 
-	static float _cell_range;
+	float _cell_range;
+	float _total_current = 0;
+	uint8_t _current_iter = 0;
+	uint32_t _consumed_last = 0;
 
 	void reset ()
 	{
@@ -160,6 +164,20 @@ namespace battery
 			? (cell_voltage - min_cell_voltage) / _cell_range * 100
 			: 0;
 		if (level > 100) level = 100;
+	}
+
+	void update_consumed ()
+	{
+		_total_current += current;
+		_current_iter ++;
+		uint16_t interval = ticks - _consumed_last;
+		if (interval >= BATTERY_CONSUMED_INTERVAL)
+		{
+			consumed += _total_current / _current_iter * interval / 3600;
+			_total_current = 0;
+			_current_iter = 0;
+			_consumed_last = ticks;
+		}
 	}
 
 }  // namespace battery
@@ -194,7 +212,6 @@ namespace home
 
 	void update ()
 	{
-		//uint32_t ticks = timer::ticks ();
 		if (state == HOME_STATE_NO_FIX) return;
 		if (state == HOME_STATE_FIXING)
 			switch (gps::state)
@@ -307,6 +324,8 @@ void init ()
 
 bool update ()
 {
+	ticks = timer::ticks ();
+
 	bool res = false;
 	for (uint8_t i = 0; i < modules::count; i ++)
 		res |= modules::update (i);

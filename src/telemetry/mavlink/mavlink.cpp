@@ -16,7 +16,6 @@
 
 #include "../../settings.h"
 #include "../../lib/uart/uart.h"
-#include "../../lib/timer/timer.h"
 #include "../telemetry.h"
 
 #include "setup.h"
@@ -129,7 +128,6 @@ namespace flight_modes
 mavlink_status_t _status;
 
 uint32_t _connection_timeout = 0;
-uint32_t _battery_consumed_last = 0;
 
 namespace rates
 {
@@ -176,10 +174,7 @@ bool receive ()
 bool update ()
 {
 	bool updated = false;
-	uint32_t ticks = timer::ticks ();
 
-	float _batt_current_sum = 0;
-	uint8_t _batt_mean_cnt = 0;
 	while (receive ())
 	{
 		bool changed = true;
@@ -196,7 +191,7 @@ bool update ()
 				telemetry::status::flight_mode = mavlink_msg_heartbeat_get_custom_mode (&message);
 				telemetry::status::flight_mode_name_p = flight_modes::get (mavlink_msg_heartbeat_get_type (&message));
 
-				_connection_timeout = ticks + MAVLINK_CONNECTION_TIMEOUT;
+				_connection_timeout = telemetry::ticks + MAVLINK_CONNECTION_TIMEOUT;
 				if (telemetry::status::connection != CONNECTION_STATE_CONNECTED)
 				{
 					telemetry::status::connection = CONNECTION_STATE_CONNECTED;
@@ -214,22 +209,14 @@ bool update ()
 				}
 				else
 					telemetry::battery::update_voltage ();
-
 				{
-					float current = mavlink_msg_sys_status_get_current_battery (&message);
-					telemetry::battery::current = current / 100.0;
-					_batt_current_sum += current;
-					_batt_mean_cnt ++;
-					uint16_t interval = ticks - _battery_consumed_last;
-					if (interval >= MAVLINK_BATTERY_CONSUMED_INTERVAL)
+					int16_t current = mavlink_msg_sys_status_get_current_battery (&message);
+					if (current >= 0)
 					{
-						telemetry::battery::consumed += _batt_current_sum / _batt_mean_cnt * interval / 360000;
-						_batt_current_sum = 0;
-						_batt_mean_cnt = 0;
-						_battery_consumed_last = ticks;
+						telemetry::battery::current = current / 100.0;
+						telemetry::battery::update_consumed ();
 					}
 				}
-
 				break;
             case MAVLINK_MSG_ID_ATTITUDE:
 				telemetry::status::flight_time = mavlink_msg_attitude_get_time_boot_ms (&message) / 1000;
@@ -268,17 +255,17 @@ bool update ()
             	break;
             case MAVLINK_MSG_ID_SCALED_PRESSURE:
             	telemetry::barometer::temperature = mavlink_msg_scaled_pressure_get_temperature (&message) / 100.0;
-            	telemetry::stable::temperature = telemetry::barometer::temperature;	// TODO: config
+            	telemetry::stable::temperature = telemetry::barometer::temperature;
             	telemetry::barometer::pressure = mavlink_msg_scaled_pressure_get_press_abs (&message) / 100;
-            	// TODO: calculate TEMPERATURE COMPENSATED alt
             	break;
+            // TODO: waypoints, windspeed
             default:
             	changed = false;
 		}
 		updated |= changed;
 	}
 
-	if (ticks >= _connection_timeout && telemetry::status::connection != CONNECTION_STATE_DISCONNECTED)
+	if (telemetry::ticks >= _connection_timeout && telemetry::status::connection != CONNECTION_STATE_DISCONNECTED)
 	{
 		telemetry::status::connection = CONNECTION_STATE_DISCONNECTED;
 		updated = true;

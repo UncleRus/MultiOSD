@@ -492,7 +492,7 @@ namespace compass
 
 	const int8_t ruler_size = sizeof (ruler);
 
-	DECLARE_BUF (12);
+	DECLARE_BUF (9);
 
 	void update ()
 	{

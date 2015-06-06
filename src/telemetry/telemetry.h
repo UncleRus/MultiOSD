@@ -57,6 +57,8 @@
 namespace telemetry
 {
 
+extern uint32_t ticks;		// update time
+
 namespace status
 {
 	extern char callsign [];	// 4 chars max
@@ -128,12 +130,13 @@ namespace battery
 
 	extern float voltage;			// volts
 	extern float current;			// amperes
-	extern uint16_t consumed;		// mAh
+	extern float consumed;			// mAh
 	extern uint8_t cells;
 	extern float cell_voltage;		// volts
 	extern uint8_t level;			// percents
 
 	void update_voltage ();
+	void update_consumed ();
 }
 
 namespace messages

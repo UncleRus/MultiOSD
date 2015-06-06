@@ -18,7 +18,6 @@
 #include <math.h>
 #include "../../settings.h"
 #include "../../lib/uart/uart.h"
-#include "../../lib/timer/timer.h"
 #include "../telemetry.h"
 
 #ifdef _DEBUG
@@ -299,7 +298,6 @@ static uint32_t _fake_gps_update_timeout;
 bool update ()
 {
 	bool updated = false;
-	uint32_t ticks = timer::ticks ();
 
 	while (uavtalk::receive ())
 	{
@@ -311,7 +309,7 @@ bool update ()
 			// connection
 			case UAVTALK_FLIGHTTELEMETRYSTATS_OBJID:
 				telemetry::status::connection = fts_respond (buffer.data [_UT_OFFS_FTS_STATUS]);
-				connection_timeout = ticks + UAVTALK_CONNECTION_TIMEOUT;
+				connection_timeout = telemetry::ticks + UAVTALK_CONNECTION_TIMEOUT;
 				break;
 			case UAVTALK_SYSTEMSTATS_OBJID:
 				telemetry::status::flight_time = buffer.get<uint32_t> (0) / 1000;
@@ -350,9 +348,9 @@ bool update ()
 				break;
 			case UAVTALK_GPSPOSITIONSENSOR_OBJID:
 #ifdef UAVTALK_FAKE_GPS
-				if (ticks < _fake_gps_update_timeout) break;
+				if (telemetry::ticks < _fake_gps_update_timeout) break;
 
-				_fake_gps_update_timeout = ticks + 2000;
+				_fake_gps_update_timeout = telemetry::ticks + 2000;
 				telemetry::gps::latitude 	= pgm_read_float (&_fake_gps_data [_fake_idx].latitude);
 				telemetry::gps::longitude 	= pgm_read_float (&_fake_gps_data [_fake_idx].longitude);
 				telemetry::gps::altitude 	= pgm_read_float (&_fake_gps_data [_fake_idx].altitude);
@@ -424,16 +422,16 @@ bool update ()
 		updated |= changed;
 	}
 
-	if (ticks >= connection_timeout && telemetry::status::connection != CONNECTION_STATE_DISCONNECTED)
+	if (telemetry::ticks >= connection_timeout && telemetry::status::connection != CONNECTION_STATE_DISCONNECTED)
 	{
 		telemetry::status::connection = CONNECTION_STATE_DISCONNECTED;
 		updated = true;
 	}
 
-	if (ticks >= telemetry_request_timeout && telemetry::status::connection == CONNECTION_STATE_CONNECTED)
+	if (telemetry::ticks >= telemetry_request_timeout && telemetry::status::connection == CONNECTION_STATE_CONNECTED)
 	{
 		uavtalk::send_gcs_telemetry_stats (_UT_TELEMETRY_STATE_CONNECTED);
-		telemetry_request_timeout = ticks + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL;
+		telemetry_request_timeout = telemetry::ticks + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL;
 	}
 
 	return updated;

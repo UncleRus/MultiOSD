@@ -27,6 +27,7 @@
 /*
  * Telemetry config
  */
+#define BATTERY_CONSUMED_INTERVAL 500	// ms
 #define BATTERY_MAX_CELL_VOLTAGE 4.2	// Maximal cell voltage, 4.2 for LiPo
 #define BATTERY_NOM_CELL_VOLTAGE 3.7	// Nominal cell voltage, 3.7 for LiPo
 #define BATTERY_MIN_CELL_VOLTAGE 3.2	// Minimal cell voltage (dead battery), 3.2 for LiPo
@@ -55,7 +56,6 @@
 #define MAVLINK_COMPID 1
 #define MAVLINK_UART uart0
 #define MAVLINK_CONNECTION_TIMEOUT 2000					// ms
-#define MAVLINK_BATTERY_CONSUMED_INTERVAL 100			// ms
 #define MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL 1			// Internal battery level calculation (may be better)
 
 /*
