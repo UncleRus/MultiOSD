@@ -304,6 +304,7 @@ bool update ()
 		// got message
 		bool changed = true;
 		bool was_armed;
+
 		switch (buffer.head.obj_id)
 		{
 			// connection
@@ -343,6 +344,7 @@ bool update ()
 #endif
 #if !defined (TELEMETRY_MODULES_RSSI)
 				telemetry::messages::rssi_low = !telemetry::input::connected;
+				telemetry::input::rssi = telemetry::input::connected ? 100 : 0;
 #endif
 				memcpy (telemetry::input::channels, buffer.data + _UT_OFFS_MCC_CHANNELS, INPUT_CHANNELS * sizeof (uint16_t));
 				break;

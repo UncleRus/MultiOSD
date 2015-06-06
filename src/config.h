@@ -20,9 +20,9 @@
 /*
  * Telemetry modules config
  */
-//#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
-#define TELEMETRY_MODULES_MAVLINK					// main telemetry module
-//#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
+#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
+#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
+//#define TELEMETRY_MODULES_MAVLINK					// main telemetry module
 
 /*
  * Telemetry config

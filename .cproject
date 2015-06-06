@@ -86,7 +86,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="lib/uavtalk/UAVTalk.cpp|lib/uavtalk/old|src|i2c_master" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src|res" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 						<entry excluding="lib/i2c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>

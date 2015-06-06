@@ -31,7 +31,7 @@ namespace modules
 namespace mavlink
 {
 
-uint8_t _int_batt_level;
+uint8_t internal_battery_level;
 
 float __attribute__ ((noinline)) rad_to_deg (float rad)
 {
@@ -125,9 +125,9 @@ namespace flight_modes
 
 }  // namespace flight_modes
 
-mavlink_status_t _status;
+mavlink_status_t status;
 
-uint32_t _connection_timeout = 0;
+uint32_t connection_timeout = 0;
 
 namespace rates
 {
@@ -165,7 +165,7 @@ bool receive ()
 	{
 		uint16_t raw = MAVLINK_UART::receive ();
 		err = raw & 0xff00;
-		if (!err && mavlink_parse_char (MAVLINK_COMM_0, raw, &message, &_status)) return true;
+		if (!err && mavlink_parse_char (MAVLINK_COMM_0, raw, &message, &status)) return true;
 	}
 	while (!err);
 	return false;
@@ -178,20 +178,22 @@ bool update ()
 	while (receive ())
 	{
 		bool changed = true;
-		bool _was_armed;
+		bool was_armed;
+		int16_t current;
+
 		switch (message.msgid)
 		{
 			case MAVLINK_MSG_ID_HEARTBEAT:
-				_was_armed = telemetry::status::armed;
+				was_armed = telemetry::status::armed;
 
 				telemetry::status::armed = mavlink_msg_heartbeat_get_base_mode (&message) & MAV_MODE_FLAG_SAFETY_ARMED;
-				if (!_was_armed && telemetry::status::armed)
+				if (!was_armed && telemetry::status::armed)
 					telemetry::home::fix ();
 
 				telemetry::status::flight_mode = mavlink_msg_heartbeat_get_custom_mode (&message);
 				telemetry::status::flight_mode_name_p = flight_modes::get (mavlink_msg_heartbeat_get_type (&message));
 
-				_connection_timeout = telemetry::ticks + MAVLINK_CONNECTION_TIMEOUT;
+				connection_timeout = telemetry::ticks + MAVLINK_CONNECTION_TIMEOUT;
 				if (telemetry::status::connection != CONNECTION_STATE_CONNECTED)
 				{
 					telemetry::status::connection = CONNECTION_STATE_CONNECTED;
@@ -201,21 +203,19 @@ bool update ()
 				break;
 			case MAVLINK_MSG_ID_SYS_STATUS:
 				telemetry::battery::voltage = mavlink_msg_sys_status_get_voltage_battery (&message) / 1000.0;
-				if (!_int_batt_level)
+				if (!internal_battery_level)
 				{
 					telemetry::battery::level = mavlink_msg_sys_status_get_battery_remaining (&message);
-					if (telemetry::battery::level > 100) // -1 (0xff) means "unknown"
+					if (telemetry::battery::level == 0xff) // -1 (0xff) means "unknown"
 						telemetry::battery::level = 0;
 				}
 				else
 					telemetry::battery::update_voltage ();
+				current = mavlink_msg_sys_status_get_current_battery (&message);
+				if (current >= 0)
 				{
-					int16_t current = mavlink_msg_sys_status_get_current_battery (&message);
-					if (current >= 0)
-					{
-						telemetry::battery::current = current / 100.0;
-						telemetry::battery::update_consumed ();
-					}
+					telemetry::battery::current = current / 100.0;
+					telemetry::battery::update_consumed ();
 				}
 				break;
             case MAVLINK_MSG_ID_ATTITUDE:
@@ -258,14 +258,14 @@ bool update ()
             	telemetry::stable::temperature = telemetry::barometer::temperature;
             	telemetry::barometer::pressure = mavlink_msg_scaled_pressure_get_press_abs (&message) / 100;
             	break;
-            // TODO: waypoints, windspeed
+            // TODO: waypoints stuff (idx, dir, dist), windspeed
             default:
             	changed = false;
 		}
 		updated |= changed;
 	}
 
-	if (telemetry::ticks >= _connection_timeout && telemetry::status::connection != CONNECTION_STATE_DISCONNECTED)
+	if (telemetry::ticks >= connection_timeout && telemetry::status::connection != CONNECTION_STATE_DISCONNECTED)
 	{
 		telemetry::status::connection = CONNECTION_STATE_DISCONNECTED;
 		updated = true;
@@ -276,7 +276,7 @@ bool update ()
 
 void init ()
 {
-	_int_batt_level = eeprom_read_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL);
+	internal_battery_level = eeprom_read_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL);
 }
 
 void reset ()
