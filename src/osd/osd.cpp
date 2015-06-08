@@ -16,10 +16,9 @@
 #include "../settings.h"
 #include "../telemetry/telemetry.h"
 #include "../config.h"
-#include "../lib/timer/timer.h"
-//#include "../lib/max7456/max7456.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include <avr/wdt.h>
 
 namespace osd
 {
@@ -95,8 +94,12 @@ void main ()
 	EIMSK = _BV (INT0);		// enable
 	started = true;
 
+	wdt_enable (WDTO_250MS);
+
 	while (true)
 	{
+		wdt_reset ();
+
 		bool updated = telemetry::update ();
 #if OSD_MAX_SCREENS > 1
 		if (_screens_enabled > 1 && check_input ())
@@ -116,8 +119,6 @@ void main ()
 		}
 	}
 }
-
-
 
 void init ()
 {
