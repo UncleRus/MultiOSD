@@ -16,7 +16,6 @@
 #include <avr/io.h>
 #include <avr/eeprom.h>
 #include "../../lib/adc/adc.h"
-#include "../../lib/timer/timer.h"
 #include "../telemetry.h"
 #include "../../settings.h"
 #include "../../config.h"
@@ -68,12 +67,11 @@ void init ()
 
 bool update ()
 {
-	uint32_t ticks = timer::ticks ();
-	uint16_t interval = ticks - _last_update_time;
+	uint16_t interval = telemetry::ticks - _last_update_time;
 
 	if (interval < _interval) return false;
 
-	_last_update_time = ticks;
+	_last_update_time = telemetry::ticks;
 
 	telemetry::battery::voltage = adc::value (_voltage_channel, _voltage_multiplier);
 	telemetry::battery::update_voltage ();
