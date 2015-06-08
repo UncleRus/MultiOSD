@@ -82,7 +82,7 @@ namespace barometer
 
 	int16_t altitude = 0;
 	float temperature = 0.0;
-	int32_t pressure = 0;
+	uint32_t pressure = 0;
 
 }  // namespace barometer
 

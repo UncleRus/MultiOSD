@@ -258,7 +258,7 @@ bool update ()
             case MAVLINK_MSG_ID_SCALED_PRESSURE:
             	telemetry::barometer::temperature = mavlink_msg_scaled_pressure_get_temperature (&message) / 100.0;
             	telemetry::stable::temperature = telemetry::barometer::temperature;
-            	telemetry::barometer::pressure = mavlink_msg_scaled_pressure_get_press_abs (&message) / 100;
+            	telemetry::barometer::pressure = mavlink_msg_scaled_pressure_get_press_abs (&message) * 100;
             	break;
             // TODO: waypoints stuff (idx, dir, dist), windspeed
             default:

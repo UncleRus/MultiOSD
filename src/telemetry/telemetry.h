@@ -86,7 +86,7 @@ namespace barometer
 {
 	extern int16_t altitude;		// meters
 	extern float temperature;		// Celsius
-	extern int32_t pressure;		// Pa
+	extern uint32_t pressure;		// Pa
 }
 
 namespace stable
