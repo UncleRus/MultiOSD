@@ -32,26 +32,6 @@
 #define HOME_STATE_FIXING	1
 #define HOME_STATE_FIXED	2
 
-/*
- * Direction to home. 16 rhumbs clockwise: 0 - forward, 4 - right, 8 - backward, 12 - left
- */
-#define HOME_DIR_N   0	// 12 hours
-#define HOME_DIR_NNE 1
-#define HOME_DIR_NE  2
-#define HOME_DIR_ENE 3
-#define HOME_DIR_E   4	// 3 hours
-#define HOME_DIR_ESE 5
-#define HOME_DIR_SE  6
-#define HOME_DIR_SSE 7
-#define HOME_DIR_S   8	// 6 hours
-#define HOME_DIR_SSW 9
-#define HOME_DIR_SW  10
-#define HOME_DIR_WSW 11
-#define HOME_DIR_W   12	// 9 hours
-#define HOME_DIR_WNW 13
-#define HOME_DIR_NW  14
-#define HOME_DIR_NNW 15
-
 #define INPUT_CHANNELS 9
 
 namespace telemetry
@@ -106,7 +86,7 @@ namespace barometer
 {
 	extern int16_t altitude;		// meters
 	extern float temperature;		// Celsius
-	extern int16_t pressure;		// Pascal
+	extern int32_t pressure;		// Pa
 }
 
 namespace stable
@@ -149,7 +129,7 @@ namespace home
 {
 	extern uint8_t state;			// HOME_STATE_xxx enum
 	extern float distance;			// meters
-	extern uint8_t direction;		// HOME_DIR_xxx enum
+	extern uint16_t direction;		// degrees, 0..360
 
 	extern float longitude;
 	extern float latitude;

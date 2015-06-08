@@ -201,6 +201,9 @@ bool update ()
 				}
 
 				break;
+			case MAVLINK_MSG_ID_SYSTEM_TIME:
+				telemetry::status::flight_time = mavlink_msg_system_time_get_time_boot_ms (&message) / 1000;
+				break;
 			case MAVLINK_MSG_ID_SYS_STATUS:
 				telemetry::battery::voltage = mavlink_msg_sys_status_get_voltage_battery (&message) / 1000.0;
 				if (!internal_battery_level)
@@ -219,7 +222,6 @@ bool update ()
 				}
 				break;
             case MAVLINK_MSG_ID_ATTITUDE:
-				telemetry::status::flight_time = mavlink_msg_attitude_get_time_boot_ms (&message) / 1000;
             	telemetry::attitude::roll = rad_to_deg (mavlink_msg_attitude_get_roll (&message));
             	telemetry::attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (&message));
             	telemetry::attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (&message));

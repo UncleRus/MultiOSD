@@ -82,7 +82,7 @@ namespace barometer
 
 	int16_t altitude = 0;
 	float temperature = 0.0;
-	int16_t pressure = 0;
+	int32_t pressure = 0;
 
 }  // namespace barometer
 
@@ -196,7 +196,7 @@ namespace home
 	uint8_t state = HOME_STATE_NO_FIX;
 
 	float distance = 0;
-	uint8_t direction = HOME_DIR_N;
+	uint16_t direction = 0;
 
 	float longitude;
 	float latitude;
@@ -248,10 +248,9 @@ namespace home
 		if (bearing < 0) bearing += 360;	// normalization
 		bearing -= 180;						// absolute return direction
 		if (bearing < 0) bearing += 360;	// normalization
-		bearing -= gps::heading;			// relative home direction
+		bearing -= stable::heading;			// relative home direction
 		if (bearing < 0) bearing += 360;	// normalization
-		direction = round ((float) (bearing / 360.0f) * 16.0f) + 1;
-		if (direction > 15) direction = 0;
+		direction = bearing;
 	}
 
 }  // namespace home

@@ -412,7 +412,7 @@ namespace home_direction
 
 	void update ()
 	{
-		_arrow = _PAN_HD_ARROWS + telemetry::home::direction * 2;
+		_arrow = _PAN_HD_ARROWS + round (telemetry::home::direction / 360.0 * 32);
 	}
 
 	void draw (uint8_t x, uint8_t y)
