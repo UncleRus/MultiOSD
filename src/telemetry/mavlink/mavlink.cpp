@@ -244,6 +244,7 @@ bool update ()
 				telemetry::input::throttle = mavlink_msg_vfr_hud_get_throttle (&message);
 				break;
             case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
+            	telemetry::input::connected = true;		// enable switching between screens
             	telemetry::input::channels [0] = mavlink_msg_rc_channels_raw_get_chan1_raw (&message);
             	telemetry::input::channels [1] = mavlink_msg_rc_channels_raw_get_chan2_raw (&message);
             	telemetry::input::channels [2] = mavlink_msg_rc_channels_raw_get_chan3_raw (&message);

@@ -20,9 +20,9 @@
 /*
  * Telemetry modules config
  */
-#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
-#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
-//#define TELEMETRY_MODULES_MAVLINK					// main telemetry module
+//#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
+//#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
+#define TELEMETRY_MODULES_MAVLINK					// main telemetry module
 
 /*
  * Telemetry config
@@ -72,7 +72,8 @@
 // or
 ///*
 #define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_RAW_CHANNEL // raw channel value
-#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6 // it's ACCESSORY1 on my Tx
+//#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6 // it's ACCESSORY1 on my Tx in UAVTalk
+#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 5 // it's ACCESSORY1 on my Tx in MAVLink
 //*/
 // or
 /*
