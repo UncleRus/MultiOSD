@@ -77,8 +77,10 @@ ISR (INT0_vect)
 {
 	if (!started || !screen::updated || mutex) return;
 	mutex = true;
+
 	sei ();	// I know, I know, but timer::ticks...
 	screen::draw ();
+
 	mutex = false;
 }
 
