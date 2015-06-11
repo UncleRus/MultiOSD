@@ -15,24 +15,24 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define VERSION 4
+#define VERSION 5
 
 /*
  * Telemetry modules config
  */
-//#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
-//#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
-#define TELEMETRY_MODULES_MAVLINK					// main telemetry module
+#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
+#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
+//#define TELEMETRY_MODULES_MAVLINK					// main telemetry module
 
 /*
  * Telemetry config
  */
-#define BATTERY_CONSUMED_INTERVAL 500	// ms
-#define BATTERY_MAX_CELL_VOLTAGE 4.2	// Maximal cell voltage, 4.2 for LiPo
-#define BATTERY_NOM_CELL_VOLTAGE 3.7	// Nominal cell voltage, 3.7 for LiPo
-#define BATTERY_MIN_CELL_VOLTAGE 3.2	// Minimal cell voltage (dead battery), 3.2 for LiPo
-#define BATTERY_LOW_CELL_VOLTAGE 3.5	// Warning threshold
-#define DEFAULT_CALLSIGN "NONE"			// Default callsign
+#define TELEMETRY_DEFAULT_BATTERY_CONSUMED_INTERVAL 500	// ms
+#define TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE 4.2	// Maximal cell voltage, 4.2 for LiPo
+#define TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE 3.7	// Nominal cell voltage, 3.7 for LiPo
+#define TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE 3.2	// Minimal cell voltage (dead battery), 3.2 for LiPo
+#define TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE 3.5	// Warning threshold
+#define TELEMETRY_DEFAULT_CALLSIGN "----"			// Default callsign
 
 /*
  * UAVTalk config
@@ -45,14 +45,14 @@
 #define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D		// default board
 #define UAVTALK_CONNECTION_TIMEOUT 10000				// ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500	// ms
-// Home distance/direction calculation: 0 - flight controller (REVO only), 1 - min_raw_osd by GPS
+// Home distance/direction calculation: 0 - flight controller (REVO only), 1 - MultiOSD by GPS
 // Overrided by board setting
 #define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 0
 
 /*
  * MAVLink config
  */
-#define MAVLINK_SYSID 254								// our system id
+#define MAVLINK_SYSID 'R'								// our system id
 #define MAVLINK_COMPID 1
 #define MAVLINK_UART uart0
 #define MAVLINK_CONNECTION_TIMEOUT 2000					// ms
@@ -65,8 +65,6 @@
 #define OSD_SCREEN_PANELS 24		// (OSD_SCREEN_PANELS * 3) bytes in SRAM
 #define OSD_CHANNEL_MIN 1000		// us
 #define OSD_CHANNEL_MAX 2000		// us
-//#define OSD_DRAW_INTERVAL_PAL  40	// 1000ms / 25fps
-//#define OSD_DRAW_INTERVAL_NTSC 33	// 1000ms / 29.97fps
 // when to switch between screens
 //#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_FLIGHT_MODE // flight mode switch
 // or

@@ -117,10 +117,10 @@ namespace stable
 namespace battery
 {
 
-	float min_cell_voltage = BATTERY_MIN_CELL_VOLTAGE;
-	float nom_cell_voltage = BATTERY_NOM_CELL_VOLTAGE;
-	float max_cell_voltage = BATTERY_MAX_CELL_VOLTAGE;
-	float low_cell_voltage = BATTERY_LOW_CELL_VOLTAGE;
+	float min_cell_voltage = TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE;
+	float nom_cell_voltage = TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE;
+	float max_cell_voltage = TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE;
+	float low_cell_voltage = TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE;
 
 	float voltage = 0;
 	float current = 0;
@@ -136,10 +136,10 @@ namespace battery
 
 	void reset ()
 	{
-		eeprom_update_float (TELEMETRY_EEPROM_MIN_CELL_VOLTAGE, BATTERY_MIN_CELL_VOLTAGE);
-		eeprom_update_float (TELEMETRY_EEPROM_NOM_CELL_VOLTAGE, BATTERY_NOM_CELL_VOLTAGE);
-		eeprom_update_float (TELEMETRY_EEPROM_MAX_CELL_VOLTAGE, BATTERY_MAX_CELL_VOLTAGE);
-		eeprom_update_float (TELEMETRY_EEPROM_LOW_VOLTAGE, BATTERY_LOW_CELL_VOLTAGE);
+		eeprom_update_float (TELEMETRY_EEPROM_MIN_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE);
+		eeprom_update_float (TELEMETRY_EEPROM_NOM_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE);
+		eeprom_update_float (TELEMETRY_EEPROM_MAX_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE);
+		eeprom_update_float (TELEMETRY_EEPROM_LOW_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE);
 	}
 
 	void init ()
@@ -153,6 +153,7 @@ namespace battery
 
 	void update_voltage ()
 	{
+		// FIXME: other way to calc battery cells
 		if (!cells) cells = round (voltage / nom_cell_voltage);
 		//cells = (uint8_t)(voltage / max_cell_voltage) + 1;
 		if (cells)
@@ -171,7 +172,7 @@ namespace battery
 		_total_current += current;
 		_current_iter ++;
 		uint16_t interval = ticks - _consumed_last;
-		if (interval >= BATTERY_CONSUMED_INTERVAL)
+		if (interval >= TELEMETRY_DEFAULT_BATTERY_CONSUMED_INTERVAL)
 		{
 			consumed += _total_current / _current_iter * interval / 3600;
 			_total_current = 0;
@@ -237,12 +238,12 @@ namespace home
 		double scale_up = 1.0 / cos (rads);
 
 		// distance
-		float dstlat = fabs (latitude - gps::latitude) * 111319.5;
 		float dstlon = fabs (longitude - gps::longitude) * 111319.5 * scale_down;
-		distance = sqrt (square (dstlat) + square (dstlon));
+		float dstlat = fabs (latitude - gps::latitude) * 111319.5;
+		distance = sqrt (square (dstlon) + square (dstlat));
 
 		// DIR to Home
-		dstlon = (longitude - gps::longitude); 				// x offset
+		dstlon = longitude - gps::longitude; 				// x offset
 		dstlat = (latitude - gps::latitude) * scale_up; 	// y offset
 		int16_t bearing = 90 + atan2 (dstlat, -dstlon) * 57.295775; // absolute home direction
 		if (bearing < 0) bearing += 360;	// normalization
@@ -277,7 +278,7 @@ namespace home
 #	error No main telemetry module defined
 #endif
 
-#define _declare_module(NS) { telemetry::modules:: NS ::__name, telemetry::modules:: NS ::reset, \
+#define declare_module(NS) { telemetry::modules:: NS ::__name, telemetry::modules:: NS ::reset, \
 	telemetry::modules:: NS ::init, telemetry::modules:: NS ::update }
 
 namespace telemetry
@@ -288,19 +289,19 @@ namespace modules
 
 	const module_t modules [] PROGMEM = {
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
-		_declare_module (adc_battery),
+		declare_module (adc_battery),
 #endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
-		_declare_module (i2c_baro),
+		declare_module (i2c_baro),
 #endif
 #ifdef TELEMETRY_MODULES_I2C_COMPASS
-		_declare_module (i2c_compass),
+		declare_module (i2c_compass),
 #endif
 #ifdef TELEMETRY_MODULES_UAVTALK
-		_declare_module (uavtalk),
+		declare_module (uavtalk),
 #endif
 #ifdef TELEMETRY_MODULES_MAVLINK
-		_declare_module (mavlink),
+		declare_module (mavlink),
 #endif
 	};
 
@@ -336,7 +337,7 @@ namespace settings
 	void reset ()
 	{
 		eeprom_update_byte (TELEMETRY_EEPROM_MAIN_MODULE_ID, TELEMETRY_MAIN_MODULE_ID);
-		eeprom_update_block (DEFAULT_CALLSIGN, TELEMETRY_EEPROM_CALLSIGN, 5);
+		eeprom_update_block (TELEMETRY_DEFAULT_CALLSIGN, TELEMETRY_EEPROM_CALLSIGN, 5);
 
 		battery::reset ();
 		for (uint8_t i = 0; i < modules::count; i ++)

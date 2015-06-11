@@ -77,7 +77,7 @@ namespace panel
 		((panel_t::draw_t) pgm_read_ptr (&panels [panel].draw)) (x, y);
 	}
 
-}  // namespace panels
+}  // namespace panel
 
 namespace draw
 {

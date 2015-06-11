@@ -74,12 +74,14 @@ namespace draw
 }  // namespace draw
 
 
-namespace __panels
+namespace panels
 {
 
 #define terminate_buffer() { buffer [sizeof (buffer) - 1] = 0; }
 
-#define DECLARE_BUF(n) const uint8_t buf_size = n; char buffer [n];
+#define DECLARE_BUF(n) char buffer [n];
+
+#define SET_NAME(__name) const char name [] PROGMEM = __name;
 
 #define STD_DRAW void draw (uint8_t x, uint8_t y) \
 { \
@@ -88,12 +90,12 @@ namespace __panels
 
 #define STD_UPDATE(fmt, ...) void update () \
 { \
-	snprintf_P (buffer, buf_size, PSTR (fmt), __VA_ARGS__); \
+	snprintf_P (buffer, sizeof (buffer), PSTR (fmt), __VA_ARGS__); \
 	terminate_buffer (); \
 }
 
-#define STD_PANEL(name, bs, fmt, ...) \
-	const char __name [] PROGMEM = name; \
+#define STD_PANEL(__name, bs, fmt, ...) \
+	SET_NAME (__name); \
 	DECLARE_BUF (bs); \
 	STD_UPDATE (fmt, __VA_ARGS__); \
 	STD_DRAW;
@@ -111,7 +113,8 @@ namespace climb
 
 #define _PAN_CLIMB_SYMB 0x03
 
-	const char __name [] PROGMEM = "Climb";
+
+	SET_NAME ("Climb");
 
 	DECLARE_BUF (8);
 
@@ -125,7 +128,7 @@ namespace climb
 		else if (c <= -20) s = _PAN_CLIMB_SYMB + 2;
 		else if (c <= -10) s = _PAN_CLIMB_SYMB + 1;
 		else s = _PAN_CLIMB_SYMB;
-		snprintf_P (buffer, buf_size, PSTR ("%c%.1f\x8c"), s, telemetry::stable::climb);
+		snprintf_P (buffer, sizeof (buffer), PSTR ("%c%.1f\x8c"), s, telemetry::stable::climb);
 		terminate_buffer ();
 	}
 
@@ -136,7 +139,7 @@ namespace climb
 namespace flight_mode
 {
 
-	const char __name [] PROGMEM = "FlightMode";
+	SET_NAME ("FlightMode");
 
 	void update () {}
 
@@ -148,10 +151,10 @@ namespace flight_mode
 
 }  // namespace flight_mode
 
-namespace arming_state
+namespace armed_flag
 {
 
-	const char __name [] PROGMEM = "ArmState";
+	SET_NAME ("ArmedFlag");
 
 	void update () {}
 
@@ -167,7 +170,7 @@ namespace arming_state
 namespace connection_state
 {
 
-	const char __name [] PROGMEM = "ConState";
+	SET_NAME ("ConState");
 
 	void update () {}
 
@@ -205,7 +208,7 @@ namespace pitch
 namespace gps_state
 {
 
-	const char __name [] PROGMEM = "GPS";
+	SET_NAME ("GPS");
 
 #define _PAN_GPS_2D 0x01
 #define _PAN_GPS_3D 0x02
@@ -255,7 +258,7 @@ namespace horizon
 #define _PAN_HORZ_LINES (PANEL_HORIZON_HEIGHT * _PAN_HORZ_VRES)
 #define _PAN_HORZ_TOTAL_LINES (PANEL_HORIZON_HEIGHT * _PAN_HORZ_CHAR_LINES)
 
-	const char __name [] PROGMEM = "Horizon";
+	SET_NAME ("Horizon");
 
 	const char _line [PANEL_HORIZON_WIDTH + 1] PROGMEM   = "\xb8            \xb9";
 	const char _center [PANEL_HORIZON_WIDTH + 1] PROGMEM = "\xc8            \xc9";
@@ -319,7 +322,7 @@ namespace ground_speed
 namespace battery_voltage
 {
 
-	const char __name [] PROGMEM = "BatVoltage";
+	SET_NAME ("BatVoltage");
 
 	DECLARE_BUF (7);
 	char symbol;
@@ -327,7 +330,7 @@ namespace battery_voltage
 
 	void update ()
 	{
-		snprintf_P (buffer, buf_size, PSTR ("%.2f\x8e"), telemetry::battery::voltage);
+		snprintf_P (buffer, sizeof (buffer), PSTR ("%.2f\x8e"), telemetry::battery::voltage);
 		terminate_buffer ();
 
 		symbol = 0xf4 + (uint8_t) round (telemetry::battery::level / 20.0);
@@ -359,7 +362,7 @@ namespace battery_consumed
 namespace rssi_flag
 {
 
-	const char __name [] PROGMEM = "RSSIFlag";
+	SET_NAME ("RSSIFlag");
 
 	void update () {}
 
@@ -373,7 +376,7 @@ namespace rssi_flag
 namespace home_distance
 {
 
-	const char __name [] PROGMEM = "HomeDistance";
+	SET_NAME ("HomeDistance");
 
 	DECLARE_BUF (8);
 	uint8_t attr, i_attr;
@@ -384,12 +387,12 @@ namespace home_distance
 		i_attr = telemetry::home::state != HOME_STATE_FIXED ? MAX7456_ATTR_BLINK : 0;
 		if (i_attr)
 		{
-			snprintf_P (buffer, buf_size, PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("\x09\x09\x09\x8d"));
+			snprintf_P (buffer, sizeof (buffer), PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("\x09\x09\x09\x8d"));
 			return;
 		}
 		if (telemetry::home::distance >= 10000)
-			 snprintf_P (buffer, buf_size, PSTR ("%.1f\x8b"), telemetry::home::distance / 1000);
-		else snprintf_P (buffer, buf_size, PSTR ("%u\x8d"), (uint16_t) telemetry::home::distance);
+			 snprintf_P (buffer, sizeof (buffer), PSTR ("%.1f\x8b"), telemetry::home::distance / 1000);
+		else snprintf_P (buffer, sizeof (buffer), PSTR ("%u\x8d"), (uint16_t) telemetry::home::distance);
 	}
 
 	void draw (uint8_t x, uint8_t y)
@@ -405,7 +408,7 @@ namespace home_direction
 
 #define _PAN_HD_ARROWS 0x90
 
-	const char __name [] PROGMEM = "HomeDirection";
+	SET_NAME ("HomeDirection");
 
 	uint8_t arrow;
 
@@ -427,7 +430,7 @@ namespace home_direction
 namespace callsign
 {
 
-	const char __name [] PROGMEM = "CallSign";
+	SET_NAME ("CallSign");
 
 	void update () {}
 
@@ -449,7 +452,7 @@ namespace temperature
 namespace rssi
 {
 
-	const char __name [] PROGMEM = "RSSI";
+	SET_NAME ("RSSI");
 
 	const char _l0 [] PROGMEM = "\xe5\xe8\xe8";
 	const char _l1 [] PROGMEM = "\xe2\xe8\xe8";
@@ -480,7 +483,7 @@ namespace rssi
 namespace compass
 {
 
-	const char __name [] PROGMEM = "Compass";
+	SET_NAME ("Compass");
 
 	// Code from MinOpOSD
 	const uint8_t ruler [] PROGMEM = {
@@ -498,7 +501,7 @@ namespace compass
 	{
 		int16_t offset = round (telemetry::stable::heading * ruler_size / 360.0) - 5;
 		if (offset < 0) offset += ruler_size;
-		for (uint8_t i = 0; i < buf_size - 1; i ++)
+		for (uint8_t i = 0; i < sizeof (buffer) - 1; i ++)
 		{
 			buffer [i] = pgm_read_byte (&ruler [offset]);
 			if (++ offset >= ruler_size) offset = 0;
@@ -510,38 +513,38 @@ namespace compass
 
 }  // namespace compass
 
-}  // namespace __panels
+}  // namespace panels
 
 namespace panel
 {
 
-#define _declare_panel(NS) { osd::__panels:: NS ::__name, osd::__panels:: NS ::update, osd::__panels:: NS ::draw }
+#define declare_panel(NS) { osd::panels:: NS ::name, osd::panels:: NS ::update, osd::panels:: NS ::draw }
 
 const panel_t panels [] PROGMEM = {
-	_declare_panel (alt),
-	_declare_panel (climb),
-	_declare_panel (flight_mode),
-	_declare_panel (arming_state),
-	_declare_panel (connection_state),
-	_declare_panel (flight_time),
-	_declare_panel (roll),
-	_declare_panel (pitch),
-	_declare_panel (gps_state),
-	_declare_panel (gps_lat),
-	_declare_panel (gps_lon),
-	_declare_panel (horizon),
-	_declare_panel (throttle),
-	_declare_panel (ground_speed),
-	_declare_panel (battery_voltage),
-	_declare_panel (battery_current),
-	_declare_panel (battery_consumed),
-	_declare_panel (rssi_flag),
-	_declare_panel (home_distance),
-	_declare_panel (home_direction),
-	_declare_panel (callsign),
-	_declare_panel (temperature),
-	_declare_panel (rssi),
-	_declare_panel (compass),
+	declare_panel (alt),
+	declare_panel (climb),
+	declare_panel (flight_mode),
+	declare_panel (armed_flag),
+	declare_panel (connection_state),
+	declare_panel (flight_time),
+	declare_panel (roll),
+	declare_panel (pitch),
+	declare_panel (gps_state),
+	declare_panel (gps_lat),
+	declare_panel (gps_lon),
+	declare_panel (horizon),
+	declare_panel (throttle),
+	declare_panel (ground_speed),
+	declare_panel (battery_voltage),
+	declare_panel (battery_current),
+	declare_panel (battery_consumed),
+	declare_panel (rssi_flag),
+	declare_panel (home_distance),
+	declare_panel (home_direction),
+	declare_panel (callsign),
+	declare_panel (temperature),
+	declare_panel (rssi),
+	declare_panel (compass),
 };
 
 const uint8_t count = sizeof (panels) / sizeof (panel_t);

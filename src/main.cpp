@@ -40,7 +40,7 @@ inline void init ()
 	{
 		max7456::clear ();
 		max7456::puts_p (max7456::hcenter - 4, max7456::vcenter, PSTR ("\xfc CONFIG"));
-		fprintf_P (&CONSOLE_UART::stream, PSTR ("MIN_RAW_OSD v.%04u\r\n"), VERSION);
+		fprintf_P (&CONSOLE_UART::stream, PSTR ("MultiOSD v.%04u\r\n"), VERSION);
 		console::run (console::process);
 	}
 	CONSOLE_UART::send_string_p (PSTR ("BOOT\r\n"));

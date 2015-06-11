@@ -129,6 +129,8 @@ mavlink_status_t status;
 
 uint32_t connection_timeout = 0;
 
+mavlink_message_t *msg = &message;
+
 namespace rates
 {
 
@@ -138,6 +140,7 @@ namespace rates
 		uint8_t rate;
 	};
 
+	// TODO: config
 	const stream_rate_t values [] PROGMEM = {
 		{MAV_DATA_STREAM_RAW_SENSORS, 10},
 		{MAV_DATA_STREAM_EXTENDED_STATUS, 25},
@@ -165,7 +168,7 @@ bool receive ()
 	{
 		uint16_t raw = MAVLINK_UART::receive ();
 		err = raw & 0xff00;
-		if (!err && mavlink_parse_char (MAVLINK_COMM_0, raw, &message, &status)) return true;
+		if (!err && mavlink_parse_char (MAVLINK_COMM_0, raw, msg, &status)) return true;
 	}
 	while (!err);
 	return false;
@@ -181,17 +184,17 @@ bool update ()
 		bool was_armed;
 		int16_t current;
 
-		switch (message.msgid)
+		switch (msg->msgid)
 		{
 			case MAVLINK_MSG_ID_HEARTBEAT:
 				was_armed = telemetry::status::armed;
 
-				telemetry::status::armed = mavlink_msg_heartbeat_get_base_mode (&message) & MAV_MODE_FLAG_SAFETY_ARMED;
+				telemetry::status::armed = mavlink_msg_heartbeat_get_base_mode (msg) & MAV_MODE_FLAG_SAFETY_ARMED;
 				if (!was_armed && telemetry::status::armed)
 					telemetry::home::fix ();
 
-				telemetry::status::flight_mode = mavlink_msg_heartbeat_get_custom_mode (&message);
-				telemetry::status::flight_mode_name_p = flight_modes::get (mavlink_msg_heartbeat_get_type (&message));
+				telemetry::status::flight_mode = mavlink_msg_heartbeat_get_custom_mode (msg);
+				telemetry::status::flight_mode_name_p = flight_modes::get (mavlink_msg_heartbeat_get_type (msg));
 
 				connection_timeout = telemetry::ticks + MAVLINK_CONNECTION_TIMEOUT;
 				if (telemetry::status::connection != CONNECTION_STATE_CONNECTED)
@@ -202,19 +205,19 @@ bool update ()
 
 				break;
 			case MAVLINK_MSG_ID_SYSTEM_TIME:
-				telemetry::status::flight_time = mavlink_msg_system_time_get_time_boot_ms (&message) / 1000;
+				telemetry::status::flight_time = mavlink_msg_system_time_get_time_boot_ms (msg) / 1000;
 				break;
 			case MAVLINK_MSG_ID_SYS_STATUS:
-				telemetry::battery::voltage = mavlink_msg_sys_status_get_voltage_battery (&message) / 1000.0;
+				telemetry::battery::voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
 				if (!internal_battery_level)
 				{
-					telemetry::battery::level = mavlink_msg_sys_status_get_battery_remaining (&message);
+					telemetry::battery::level = mavlink_msg_sys_status_get_battery_remaining (msg);
 					if (telemetry::battery::level == 0xff) // -1 (0xff) means "unknown"
 						telemetry::battery::level = 0;
 				}
 				else
 					telemetry::battery::update_voltage ();
-				current = mavlink_msg_sys_status_get_current_battery (&message);
+				current = mavlink_msg_sys_status_get_current_battery (msg);
 				if (current >= 0)
 				{
 					telemetry::battery::current = current / 100.0;
@@ -222,44 +225,50 @@ bool update ()
 				}
 				break;
             case MAVLINK_MSG_ID_ATTITUDE:
-            	telemetry::attitude::roll = rad_to_deg (mavlink_msg_attitude_get_roll (&message));
-            	telemetry::attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (&message));
-            	telemetry::attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (&message));
+            	telemetry::attitude::roll = rad_to_deg (mavlink_msg_attitude_get_roll (msg));
+            	telemetry::attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (msg));
+            	telemetry::attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
                 break;
 			case MAVLINK_MSG_ID_GPS_RAW_INT:
-				telemetry::gps::state = mavlink_msg_gps_raw_int_get_fix_type (&message);
-				telemetry::gps::satellites = mavlink_msg_gps_raw_int_get_satellites_visible (&message);
-				telemetry::gps::latitude = mavlink_msg_gps_raw_int_get_lat (&message) / 10000000.0;
-				telemetry::gps::longitude = mavlink_msg_gps_raw_int_get_lon (&message) / 10000000.0;
-				telemetry::gps::altitude = mavlink_msg_gps_raw_int_get_alt (&message) / 1000.0;
-				telemetry::gps::speed = mavlink_msg_gps_raw_int_get_vel (&message) / 100.0;
+				telemetry::gps::state = mavlink_msg_gps_raw_int_get_fix_type (msg);
+				telemetry::gps::satellites = mavlink_msg_gps_raw_int_get_satellites_visible (msg);
+				telemetry::gps::latitude = mavlink_msg_gps_raw_int_get_lat (msg) / 10000000.0;
+				telemetry::gps::longitude = mavlink_msg_gps_raw_int_get_lon (msg) / 10000000.0;
+				telemetry::gps::altitude = mavlink_msg_gps_raw_int_get_alt (msg) / 1000.0;
+				telemetry::gps::speed = mavlink_msg_gps_raw_int_get_vel (msg) / 100.0;
 				telemetry::home::update ();
 				break;
 			case MAVLINK_MSG_ID_VFR_HUD:
-				telemetry::stable::ground_speed = mavlink_msg_vfr_hud_get_groundspeed (&message);
-				telemetry::stable::air_speed = mavlink_msg_vfr_hud_get_airspeed (&message);
-				telemetry::stable::altitude = mavlink_msg_vfr_hud_get_alt (&message);
-				telemetry::stable::climb = mavlink_msg_vfr_hud_get_climb (&message);
-				telemetry::stable::heading = mavlink_msg_vfr_hud_get_heading (&message);
-				telemetry::input::throttle = mavlink_msg_vfr_hud_get_throttle (&message);
+				telemetry::stable::ground_speed = mavlink_msg_vfr_hud_get_groundspeed (msg);
+				telemetry::stable::air_speed = mavlink_msg_vfr_hud_get_airspeed (msg);
+				telemetry::stable::altitude = mavlink_msg_vfr_hud_get_alt (msg);
+				telemetry::stable::climb = mavlink_msg_vfr_hud_get_climb (msg);
+				telemetry::stable::heading = mavlink_msg_vfr_hud_get_heading (msg);
+				break;
+			case MAVLINK_MSG_ID_HIL_CONTROLS:
+				telemetry::input::throttle = mavlink_msg_hil_controls_get_throttle (msg) * 100;
+				telemetry::input::roll = mavlink_msg_hil_controls_get_roll_ailerons (msg) * 100;
+				telemetry::input::pitch = mavlink_msg_hil_controls_get_pitch_elevator (msg) * 100;
+				telemetry::input::yaw = mavlink_msg_hil_controls_get_yaw_rudder (msg) * 100;
 				break;
             case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
             	telemetry::input::connected = true;		// enable switching between screens
-            	telemetry::input::channels [0] = mavlink_msg_rc_channels_raw_get_chan1_raw (&message);
-            	telemetry::input::channels [1] = mavlink_msg_rc_channels_raw_get_chan2_raw (&message);
-            	telemetry::input::channels [2] = mavlink_msg_rc_channels_raw_get_chan3_raw (&message);
-            	telemetry::input::channels [3] = mavlink_msg_rc_channels_raw_get_chan4_raw (&message);
-            	telemetry::input::channels [4] = mavlink_msg_rc_channels_raw_get_chan5_raw (&message);
-            	telemetry::input::channels [5] = mavlink_msg_rc_channels_raw_get_chan6_raw (&message);
-            	telemetry::input::channels [6] = mavlink_msg_rc_channels_raw_get_chan7_raw (&message);
-            	telemetry::input::channels [7] = mavlink_msg_rc_channels_raw_get_chan8_raw (&message);
-            	telemetry::input::rssi = mavlink_msg_rc_channels_raw_get_rssi (&message) * 100 / 255;
+            	// memcpy?
+            	telemetry::input::channels [0] = mavlink_msg_rc_channels_raw_get_chan1_raw (msg);
+            	telemetry::input::channels [1] = mavlink_msg_rc_channels_raw_get_chan2_raw (msg);
+            	telemetry::input::channels [2] = mavlink_msg_rc_channels_raw_get_chan3_raw (msg);
+            	telemetry::input::channels [3] = mavlink_msg_rc_channels_raw_get_chan4_raw (msg);
+            	telemetry::input::channels [4] = mavlink_msg_rc_channels_raw_get_chan5_raw (msg);
+            	telemetry::input::channels [5] = mavlink_msg_rc_channels_raw_get_chan6_raw (msg);
+            	telemetry::input::channels [6] = mavlink_msg_rc_channels_raw_get_chan7_raw (msg);
+            	telemetry::input::channels [7] = mavlink_msg_rc_channels_raw_get_chan8_raw (msg);
+            	telemetry::input::rssi = mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
             	telemetry::messages::rssi_low = telemetry::input::rssi < 10; // TODO: config
             	break;
             case MAVLINK_MSG_ID_SCALED_PRESSURE:
-            	telemetry::barometer::temperature = mavlink_msg_scaled_pressure_get_temperature (&message) / 100.0;
+            	telemetry::barometer::temperature = mavlink_msg_scaled_pressure_get_temperature (msg) / 100.0;
             	telemetry::stable::temperature = telemetry::barometer::temperature;
-            	telemetry::barometer::pressure = mavlink_msg_scaled_pressure_get_press_abs (&message) * 100;
+            	telemetry::barometer::pressure = mavlink_msg_scaled_pressure_get_press_abs (msg) * 100;
             	break;
             // TODO: waypoints stuff (idx, dir, dist), windspeed
             default:
