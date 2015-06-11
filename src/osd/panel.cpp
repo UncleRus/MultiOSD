@@ -129,7 +129,7 @@ namespace climb
 		terminate_buffer ();
 	}
 
-	STD_DRAW
+	STD_DRAW;
 
 }  // namespace climb_rate
 
@@ -246,12 +246,8 @@ namespace horizon
 #define PANEL_HORIZON_WIDTH 14
 #define PANEL_HORIZON_HEIGHT 5
 
-#define PANEL_HORIZON_LEFT_BORDER 0xb8
-#define PANEL_HORIZON_LEFT_CENTER 0xc8
-#define PANEL_HORIZON_RIGHT_BORDER 0xb9
-#define PANEL_HORIZON_RIGHT_CENTER 0xc9
-#define PANEL_HORIZON_LINE 0x16
-#define PANEL_HORIZON_TOP 0x0e
+#define _PAN_HORZ_LINE 0x16
+#define _PAN_HORZ_TOP 0x0e
 
 #define _PAN_HORZ_CHAR_LINES 18
 #define _PAN_HORZ_VRES 9
@@ -259,13 +255,16 @@ namespace horizon
 #define _PAN_HORZ_LINES (PANEL_HORIZON_HEIGHT * _PAN_HORZ_VRES)
 #define _PAN_HORZ_TOTAL_LINES (PANEL_HORIZON_HEIGHT * _PAN_HORZ_CHAR_LINES)
 
-#define _RADIAN 0.017453293
-
 	const char __name [] PROGMEM = "Horizon";
 
-	const char _line [PANEL_HORIZON_WIDTH + 1] PROGMEM = "\xb8            \xb9";
+	const char _line [PANEL_HORIZON_WIDTH + 1] PROGMEM   = "\xb8            \xb9";
 	const char _center [PANEL_HORIZON_WIDTH + 1] PROGMEM = "\xc8            \xc9";
 	char buffer [PANEL_HORIZON_HEIGHT][PANEL_HORIZON_WIDTH + 1];
+
+	float __attribute__ ((noinline)) deg2rad (float deg)
+	{
+		return deg * 0.017453293;
+	}
 
 	void update ()
 	{
@@ -276,8 +275,8 @@ namespace horizon
 		}
 
 		// code below from minoposd
-		int16_t pitch_line = tan (-_RADIAN * telemetry::attitude::pitch) * _PAN_HORZ_LINES;
-		float roll = tan (_RADIAN * telemetry::attitude::roll);
+		int16_t pitch_line = tan (deg2rad (telemetry::attitude::pitch)) * _PAN_HORZ_LINES;
+		float roll = tan (deg2rad (telemetry::attitude::roll));
 		for (uint8_t col = 1; col <= _PAN_HORZ_INT_WIDTH; col ++)
 		{
 			// center X point at middle of each column
@@ -289,8 +288,8 @@ namespace horizon
 				int8_t row = PANEL_HORIZON_HEIGHT - ((hit - 1) / _PAN_HORZ_CHAR_LINES);
 				int8_t subval = (hit - (_PAN_HORZ_TOTAL_LINES - row * _PAN_HORZ_CHAR_LINES + 1)) * _PAN_HORZ_VRES / _PAN_HORZ_CHAR_LINES;
 				if (subval == _PAN_HORZ_VRES - 1)
-					buffer [row - 2][col] = PANEL_HORIZON_TOP;
-				buffer [row - 1][col] = PANEL_HORIZON_LINE + subval;
+					buffer [row - 2][col] = _PAN_HORZ_TOP;
+				buffer [row - 1][col] = _PAN_HORZ_LINE + subval;
 			}
 		}
 	}
@@ -323,21 +322,21 @@ namespace battery_voltage
 	const char __name [] PROGMEM = "BatVoltage";
 
 	DECLARE_BUF (7);
-	char _symbol;
-	uint8_t _attr;
+	char symbol;
+	uint8_t attr;
 
 	void update ()
 	{
 		snprintf_P (buffer, buf_size, PSTR ("%.2f\x8e"), telemetry::battery::voltage);
 		terminate_buffer ();
 
-		_symbol = 0xf4 + (uint8_t) round (telemetry::battery::level / 20.0);
-		_attr = telemetry::messages::battery_low ? MAX7456_ATTR_BLINK : 0;
+		symbol = 0xf4 + (uint8_t) round (telemetry::battery::level / 20.0);
+		attr = telemetry::messages::battery_low ? MAX7456_ATTR_BLINK : 0;
 	}
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::put (x, y, _symbol, _attr);
+		max7456::put (x, y, symbol, attr);
 		max7456::puts (x + 1, y, buffer);
 	}
 
@@ -377,13 +376,13 @@ namespace home_distance
 	const char __name [] PROGMEM = "HomeDistance";
 
 	DECLARE_BUF (8);
-	uint8_t _attr, _i_attr;
+	uint8_t attr, i_attr;
 
 	void update ()
 	{
-		_attr = telemetry::home::state == HOME_STATE_NO_FIX ? MAX7456_ATTR_BLINK : 0;
-		_i_attr = telemetry::home::state != HOME_STATE_FIXED ? MAX7456_ATTR_BLINK : 0;
-		if (_i_attr)
+		attr = telemetry::home::state == HOME_STATE_NO_FIX ? MAX7456_ATTR_BLINK : 0;
+		i_attr = telemetry::home::state != HOME_STATE_FIXED ? MAX7456_ATTR_BLINK : 0;
+		if (i_attr)
 		{
 			snprintf_P (buffer, buf_size, PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("\x09\x09\x09\x8d"));
 			return;
@@ -395,8 +394,8 @@ namespace home_distance
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::put (x, y, 0x12, _i_attr);
-		max7456::puts (x + 1, y, buffer, _attr);
+		max7456::put (x, y, 0x12, i_attr);
+		max7456::puts (x + 1, y, buffer, attr);
 	}
 
 }  // namespace home_distance
@@ -408,18 +407,19 @@ namespace home_direction
 
 	const char __name [] PROGMEM = "HomeDirection";
 
-	uint8_t _arrow;
+	uint8_t arrow;
 
 	void update ()
 	{
-		_arrow = _PAN_HD_ARROWS + round (telemetry::home::direction / 360.0 * 32);
+		if (telemetry::home::state != HOME_STATE_FIXED) return;
+		arrow = _PAN_HD_ARROWS + round (telemetry::home::direction / 360.0 * 32);
 	}
 
 	void draw (uint8_t x, uint8_t y)
 	{
 		if (telemetry::home::state != HOME_STATE_FIXED) return;
-		max7456::put (x, y, _arrow);
-		max7456::put (x + 1, y, _arrow + 1);
+		max7456::put (x, y, arrow);
+		max7456::put (x + 1, y, arrow + 1);
 	}
 
 }  // namespace home_direction
@@ -460,19 +460,19 @@ namespace rssi
 
 	const char * const levels [] PROGMEM = { _l0, _l1, _l2, _l3, _l4, _l5 };
 
-	const char *_scale = NULL;
+	const char *scale = NULL;
 
 	void update ()
 	{
 		uint8_t level = round (telemetry::input::rssi / 20.0);
 		if (level == 0 && telemetry::input::rssi > 0) level = 1;
 		if (level > 5) level = 5;
-		_scale = (const char *) pgm_read_ptr (&levels [level]);
+		scale = (const char *) pgm_read_ptr (&levels [level]);
 	}
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::puts_p (x, y, _scale);
+		max7456::puts_p (x, y, scale);
 	}
 
 }  // namespace rssi
