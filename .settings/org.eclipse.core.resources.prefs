@@ -1,4 +1,9 @@
 eclipse.preferences.version=1
+encoding//configurator/__t.py=utf-8
+encoding//configurator/hw/board.py=utf-8
+encoding//configurator/hw/catalog.py=utf-8
+encoding//configurator/hw/options.py=utf-8
+encoding//configurator/scr.py=utf-8
 encoding//res/__test__.py=utf-8
 encoding//res/eeprom_reader.py=utf-8
 encoding//res/font_uploader.py=utf-8
