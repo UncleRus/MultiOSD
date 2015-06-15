@@ -27,7 +27,7 @@ extern "C" {
 static const uint8_t mavlink_message_crcs [256] PROGMEM = MAVLINK_MESSAGE_CRCS;
 #define MAVLINK_MESSAGE_CRC(msgid) pgm_read_byte (&mavlink_message_crcs [msgid])
 
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/protocol.h"
+#include "../protocol.h"
 
 #define MAVLINK_ENABLED_ARDUPILOTMEGA
 
@@ -145,7 +145,7 @@ enum LIMIT_MODULE
 };
 #endif
 
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/common/common.h"
+#include "../common/common.h"
 
 // MAVLINK VERSION
 
@@ -159,24 +159,24 @@ enum LIMIT_MODULE
 #endif
 
 // MESSAGE DEFINITIONS
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_sensor_offsets.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_set_mag_offsets.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_meminfo.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_ap_adc.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_digicam_configure.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_digicam_control.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_mount_configure.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_mount_control.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_mount_status.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_fence_point.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_fence_fetch_point.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_fence_status.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_ahrs.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_simstate.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_hwstatus.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_radio.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_limits_status.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/mavlink_msg_wind.h"
+#include "./mavlink_msg_sensor_offsets.h"
+#include "./mavlink_msg_set_mag_offsets.h"
+#include "./mavlink_msg_meminfo.h"
+#include "./mavlink_msg_ap_adc.h"
+#include "./mavlink_msg_digicam_configure.h"
+#include "./mavlink_msg_digicam_control.h"
+#include "./mavlink_msg_mount_configure.h"
+#include "./mavlink_msg_mount_control.h"
+#include "./mavlink_msg_mount_status.h"
+#include "./mavlink_msg_fence_point.h"
+#include "./mavlink_msg_fence_fetch_point.h"
+#include "./mavlink_msg_fence_status.h"
+#include "./mavlink_msg_ahrs.h"
+#include "./mavlink_msg_simstate.h"
+#include "./mavlink_msg_hwstatus.h"
+#include "./mavlink_msg_radio.h"
+#include "./mavlink_msg_limits_status.h"
+#include "./mavlink_msg_wind.h"
 
 #ifdef __cplusplus
 }

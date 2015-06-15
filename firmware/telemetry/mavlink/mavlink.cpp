@@ -12,13 +12,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "../../settings.h"
-#include "../../../firmware/telemetry/mavlink/mavlink.h"
+#include "mavlink.h"
 
-#include "../../../firmware/lib/uart/uart.h"
-#include "../../../firmware/settings.h"
-#include "../../../firmware/telemetry/mavlink/setup.h"
-#include "../../../firmware/telemetry/telemetry.h"
+#include "../../settings.h"
+#include "../../lib/uart/uart.h"
+#include "../telemetry.h"
+
+#include "setup.h"
 
 #define MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL _eeprom_byte (MAVLINK_EEPROM_OFFSET)
 

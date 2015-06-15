@@ -15,8 +15,8 @@
 #ifndef OSD_OSD_H_
 #define OSD_OSD_H_
 
-#include "../../firmware/osd/panel.h"
-#include "../../firmware/osd/screen.h"
+#include "panel.h"
+#include "screen.h"
 
 #define OSD_SWITCH_OFF         0
 #define OSD_SWITCH_FLIGHT_MODE 1

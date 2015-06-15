@@ -1,13 +1,11 @@
-#include "../firmware/boot.h"
-
+#include "boot.h"
 #include <avr/pgmspace.h>
-
-#include "../firmware/config.h"
-#include "../firmware/lib/max7456/max7456.h"
-#include "../firmware/lib/timer/timer.h"
-#include "../firmware/lib/uart/uart.h"
-#include "../firmware/osd/osd.h"
-#include "../firmware/telemetry/telemetry.h"
+#include "config.h"
+#include "lib/timer/timer.h"
+#include "lib/uart/uart.h"
+#include "lib/max7456/max7456.h"
+#include "osd/osd.h"
+#include "telemetry/telemetry.h"
 
 #define _BOOT_LOGO "\xbd\xbe\xbf"
 

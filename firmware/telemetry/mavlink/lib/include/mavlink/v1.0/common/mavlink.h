@@ -21,7 +21,7 @@
 #define MAVLINK_CRC_EXTRA 1
 #endif
 
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/common/version.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/common/common.h"
+#include "version.h"
+#include "common.h"
 
 #endif // MAVLINK_H

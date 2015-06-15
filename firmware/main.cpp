@@ -15,20 +15,19 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/pgmspace.h>
-#include "lib/timer/timer.h"
+#include "config.h"
+#include "settings.h"
 
-#include "../firmware/boot.h"
-#include "../firmware/commands.h"
-#include "../firmware/config.h"
-#include "../firmware/lib/adc/adc.h"
-#include "../firmware/lib/console/console.h"
-#include "../firmware/lib/max7456/max7456.h"
-#include "../firmware/lib/spi/spi.h"
-#include "../firmware/lib/timer/timer.h"
-#include "../firmware/lib/uart/uart.h"
-#include "../firmware/osd/osd.h"
-#include "../firmware/settings.h"
-#include "../firmware/telemetry/telemetry.h"
+#include "lib/timer/timer.h"
+#include "lib/uart/uart.h"
+#include "lib/spi/spi.h"
+#include "lib/max7456/max7456.h"
+#include "lib/adc/adc.h"
+#include "telemetry/telemetry.h"
+#include "lib/console/console.h"
+#include "commands.h"
+#include "boot.h"
+#include "osd/osd.h"
 
 inline void init ()
 {

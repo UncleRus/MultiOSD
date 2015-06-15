@@ -2,8 +2,7 @@
 #define  _MAVLINK_PROTOCOL_H_
 
 #include "string.h"
-
-#include "../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/mavlink_types.h"
+#include "mavlink_types.h"
 
 /* 
    If you want MAVLink on a system that is native big-endian,
@@ -39,7 +38,7 @@
 #define MAVLINK_HELPER
 #else
 #define MAVLINK_HELPER static inline
-#include "../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/mavlink_helpers.h"
+#include "mavlink_helpers.h"
 #endif // MAVLINK_SEPARATE_HELPERS
 
 /* always include the prototypes to ensure we don't get out of sync */

@@ -1,10 +1,8 @@
-#include "../../../firmware/lib/console/console.h"
-
+#include "console.h"
 #include <stddef.h>
 #include <stdlib.h>
 #include <avr/pgmspace.h>
-
-#include "../../../firmware/lib/uart/uart.h"
+#include "../uart/uart.h"
 
 #define KEY_ENTER	0x0D
 #define KEY_BS		0x08

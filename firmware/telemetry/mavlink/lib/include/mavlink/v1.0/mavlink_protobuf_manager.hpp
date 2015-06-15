@@ -6,10 +6,10 @@
 #include <iostream>
 #include <tr1/memory>
 
+#include <checksum.h>
+#include <common/mavlink.h>
+#include <mavlink_types.h>
 #include <pixhawk/pixhawk.pb.h>
-#include "../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/checksum.h"
-#include "../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/common/mavlink.h"
-#include "../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/mavlink_types.h"
 
 namespace mavlink
 {

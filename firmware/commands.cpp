@@ -12,19 +12,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "../firmware/commands.h"
-
+#include "commands.h"
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 #include <stdlib.h>
-
-#include "../firmware/config.h"
-#include "../firmware/lib/console/console.h"
-#include "../firmware/lib/max7456/max7456.h"
-#include "../firmware/lib/uart/uart.h"
-#include "../firmware/osd/panel.h"
-#include "../firmware/settings.h"
-#include "../firmware/telemetry/telemetry.h"
+#include "config.h"
+#include "lib/console/console.h"
+#include "lib/uart/uart.h"
+#include "lib/max7456/max7456.h"
+#include "settings.h"
+#include "osd/panel.h"
+#include "telemetry/telemetry.h"
 
 namespace console
 {

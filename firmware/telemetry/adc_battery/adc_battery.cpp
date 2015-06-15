@@ -12,15 +12,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "../../../firmware/telemetry/adc_battery/adc_battery.h"
-
+#include "adc_battery.h"
 #include <avr/io.h>
 #include <avr/eeprom.h>
-
-#include "../../../firmware/config.h"
-#include "../../../firmware/lib/adc/adc.h"
-#include "../../../firmware/settings.h"
-#include "../../../firmware/telemetry/telemetry.h"
+#include "../../lib/adc/adc.h"
+#include "../telemetry.h"
+#include "../../settings.h"
+#include "../../config.h"
 
 // eeprom addresses
 #define ADC_BATTERY_EEPROM_CURRENT_SENSOR		_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET)

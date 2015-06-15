@@ -41,7 +41,7 @@ extern uint32_t ticks;		// update time
 
 namespace status
 {
-	extern char callsign [];	// 4 chars max
+	extern char callsign [];	// 5 chars max
 	extern uint8_t connection;		// CONNECTION_STATE_xxx enum
 	extern uint16_t flight_time;	// seconds
 	extern uint8_t flight_mode;		//

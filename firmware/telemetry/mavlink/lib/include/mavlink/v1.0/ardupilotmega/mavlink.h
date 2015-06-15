@@ -21,7 +21,7 @@
 #define MAVLINK_CRC_EXTRA 1
 #endif
 
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/version.h"
-#include "../../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/ardupilotmega/ardupilotmega.h"
+#include "version.h"
+#include "ardupilotmega.h"
 
 #endif // MAVLINK_H

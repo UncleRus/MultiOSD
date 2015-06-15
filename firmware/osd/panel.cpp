@@ -13,12 +13,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../../firmware/osd/panel.h"
-
+#include "panel.h"
+#include "../lib/max7456/max7456.h"
+#include "../telemetry/telemetry.h"
 #include <math.h>
 #include <string.h>
-#include "../../firmware/lib/max7456/max7456.h"
-#include "../../firmware/telemetry/telemetry.h"
 
 namespace osd
 {
@@ -221,10 +220,10 @@ namespace gps_state
 	void draw (uint8_t x, uint8_t y)
 	{
 		bool err = telemetry::gps::state == GPS_STATE_NO_FIX;
-		max7456::puts_p (x, y, PSTR ("\x10\x11"), err ? MAX7456_ATTR_BLINK : 0);
+		max7456::puts_p (x, y, PSTR ("\x10\x11"), err ? MAX7456_ATTR_INVERT : 0);
 		max7456::put (x + 2, y, telemetry::gps::state <  GPS_STATE_3D ? _PAN_GPS_2D : _PAN_GPS_3D,
-			telemetry::gps::state < GPS_STATE_2D ? MAX7456_ATTR_BLINK : 0);
-		if (err) max7456::puts_p (x + 3, y, PSTR ("ERR"), MAX7456_ATTR_BLINK);
+			err ? MAX7456_ATTR_INVERT : (telemetry::gps::state < GPS_STATE_2D ? MAX7456_ATTR_BLINK : 0));
+		if (err) max7456::puts_p (x + 3, y, PSTR ("ERR"), MAX7456_ATTR_INVERT);
 		else max7456::puts (x + 3, y, buffer);
 	}
 
@@ -384,8 +383,8 @@ namespace home_distance
 
 	void update ()
 	{
-		attr = telemetry::home::state == HOME_STATE_NO_FIX ? MAX7456_ATTR_BLINK : 0;
-		i_attr = telemetry::home::state != HOME_STATE_FIXED ? MAX7456_ATTR_BLINK : 0;
+		attr = telemetry::home::state == HOME_STATE_NO_FIX ? MAX7456_ATTR_INVERT : 0;
+		i_attr = telemetry::home::state != HOME_STATE_FIXED ? MAX7456_ATTR_INVERT : 0;
 		if (i_attr)
 		{
 			snprintf_P (buffer, sizeof (buffer), PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("\x09\x09\x09\x8d"));
@@ -488,19 +487,19 @@ namespace compass
 
 	// Code from MinOpOSD
 	const uint8_t ruler [] PROGMEM = {
-		0xc2, 0xc0, 0xc1, 0xc0, 0xc1, 0xc0,
-		0xc4, 0xc0, 0xc1, 0xc0, 0xc1, 0xc0,
-		0xc3, 0xc0, 0xc1, 0xc0, 0xc1, 0xc0,
-		0xc5, 0xc0, 0xc1, 0xc0, 0xc1, 0xc0,
+		0xc2, 0xc0, 0xc1, 0xc0,
+		0xc4, 0xc0, 0xc1, 0xc0,
+		0xc3, 0xc0, 0xc1, 0xc0,
+		0xc5, 0xc0, 0xc1, 0xc0,
 	};
 
 	const int8_t ruler_size = sizeof (ruler);
 
-	DECLARE_BUF (9);
+	DECLARE_BUF (12);
 
 	void update ()
 	{
-		int16_t offset = round (telemetry::stable::heading * ruler_size / 360.0) - 5;
+		int16_t offset = round (telemetry::stable::heading * ruler_size / 360.0) - (sizeof (buffer) - 1) / 2;
 		if (offset < 0) offset += ruler_size;
 		for (uint8_t i = 0; i < sizeof (buffer) - 1; i ++)
 		{
@@ -510,7 +509,11 @@ namespace compass
 		terminate_buffer ();
 	}
 
-	STD_DRAW;
+	void draw (uint8_t x, uint8_t y)
+	{
+		max7456::put (x + (sizeof (buffer) - 1) / 2, y, 0xc6);
+		max7456::puts (x, y + 1, buffer);
+	}
 
 }  // namespace compass
 

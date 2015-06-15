@@ -12,18 +12,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "../../../firmware/telemetry/uavtalk/uavtalk.h"
-
+#include "uavtalk.h"
 #include <avr/pgmspace.h>
 #include <string.h>
 #include <math.h>
-
-#include "../../../firmware/lib/uart/uart.h"
-#include "../../../firmware/settings.h"
-#include "../../../firmware/telemetry/telemetry.h"
+#include "../../settings.h"
+#include "../../lib/uart/uart.h"
+#include "../telemetry.h"
 
 #ifdef _DEBUG
-#include "../../../firmware/lib/max7456/max7456.h"
+#include "../../lib/max7456/max7456.h"
 #endif
 
 namespace telemetry

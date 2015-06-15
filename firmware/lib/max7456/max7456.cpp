@@ -12,17 +12,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "../../../firmware/lib/max7456/max7456.h"
-
+#include "max7456.h"
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/pgmspace.h>
 #include <avr/eeprom.h>
-
-#include "../../../firmware/config.h"
-#include "../../../firmware/lib/common.h"
-#include "../../../firmware/lib/spi/spi.h"
-#include "../../../firmware/settings.h"
+#include "../common.h"
+#include "../spi/spi.h"
+#include "../../settings.h"
+#include "../../config.h"
 
 // MAX7456 reg read addresses
 #define MAX7456_REG_STAT  0x20 // 0xa0 Status

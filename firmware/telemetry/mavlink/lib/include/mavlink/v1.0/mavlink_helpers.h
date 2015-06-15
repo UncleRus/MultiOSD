@@ -2,9 +2,8 @@
 #define  _MAVLINK_HELPERS_H_
 
 #include "string.h"
-
-#include "../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/checksum.h"
-#include "../../../../../../../firmware/telemetry/mavlink/lib/include/mavlink/v1.0/mavlink_types.h"
+#include "checksum.h"
+#include "mavlink_types.h"
 
 #ifndef MAVLINK_HELPER
 #define MAVLINK_HELPER

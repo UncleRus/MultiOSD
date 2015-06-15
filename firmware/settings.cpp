@@ -12,13 +12,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "../firmware/settings.h"
-
-#include "../firmware/config.h"
-#include "../firmware/lib/adc/adc.h"
-#include "../firmware/lib/max7456/max7456.h"
-#include "../firmware/osd/osd.h"
-#include "../firmware/telemetry/telemetry.h"
+#include "settings.h"
+#include "lib/adc/adc.h"
+#include "lib/max7456/max7456.h"
+#include "telemetry/telemetry.h"
+#include "osd/osd.h"
+#include "config.h"
 
 namespace settings
 {

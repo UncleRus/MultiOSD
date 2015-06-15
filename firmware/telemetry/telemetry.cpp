@@ -12,16 +12,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "../../firmware/telemetry/telemetry.h"
-
+#include "telemetry.h"
+#include "../config.h"
 #include <avr/pgmspace.h>
 #include <avr/eeprom.h>
 #include <math.h>
 #include <string.h>
-
-#include "../../firmware/config.h"
-#include "../../firmware/lib/timer/timer.h"
-#include "../../firmware/settings.h"
+#include "../lib/timer/timer.h"
+#include "../settings.h"
 
 namespace telemetry
 {
@@ -31,7 +29,7 @@ uint32_t ticks = 0;
 namespace status
 {
 
-	char callsign [5] = "NONE";
+	char callsign [6];
 	uint8_t connection = CONNECTION_STATE_DISCONNECTED;
 	uint16_t flight_time = 0;
 	uint8_t flight_mode = 0;
@@ -261,7 +259,7 @@ namespace home
 }  // namespace telemetry
 
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
-#	include "../../firmware/telemetry/adc_battery/adc_battery.h"
+#	include "adc_battery/adc_battery.h"
 #endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
 #	include "i2c_baro/i2c_baro.h"
@@ -270,10 +268,10 @@ namespace home
 #	include "i2c_compass/i2c_compass.h"
 #endif
 #ifdef TELEMETRY_MODULES_UAVTALK
-#	include "../../firmware/telemetry/uavtalk/uavtalk.h"
+#	include "uavtalk/uavtalk.h"
 #endif
 #ifdef TELEMETRY_MODULES_MAVLINK
-#	include "../../firmware/telemetry/mavlink/mavlink.h"
+#	include "mavlink/mavlink.h"
 #endif
 
 #ifndef TELEMETRY_MAIN_MODULE_ID
@@ -316,8 +314,8 @@ void init ()
 {
 	if (eeprom_read_byte (TELEMETRY_EEPROM_MAIN_MODULE_ID) != TELEMETRY_MAIN_MODULE_ID)
 		::settings::reset ();
-	eeprom_read_block (status::callsign, TELEMETRY_EEPROM_CALLSIGN, 4);
-	status::callsign [4] = 0;
+	eeprom_read_block (status::callsign, TELEMETRY_EEPROM_CALLSIGN, sizeof (status::callsign) - 1);
+	status::callsign [sizeof (status::callsign) - 1] = 0;
 
 	battery::init ();
 	for (uint8_t i = 0; i < modules::count; i ++)

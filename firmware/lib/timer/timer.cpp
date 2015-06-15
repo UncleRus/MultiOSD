@@ -12,8 +12,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "../../../firmware/lib/timer/timer.h"
-
+#include "timer.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 

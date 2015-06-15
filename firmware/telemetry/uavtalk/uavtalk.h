@@ -43,7 +43,7 @@
 #	define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500
 #endif
 
-#include "../../../firmware/telemetry/uavtalk/versions.h"
+#include "versions.h"
 
 #define UAVTALK_SYNC 0x3c
 #define UAVTALK_HEADER_LEN 0x0a

@@ -13,12 +13,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../../firmware/osd/screen.h"
-
-#include "../../firmware/config.h"
-#include "../../firmware/lib/max7456/max7456.h"
-#include "../../firmware/osd/panel.h"
-#include "../../firmware/settings.h"
+#include "screen.h"
+#include "../settings.h"
+#include "../config.h"
+#include "../lib/max7456/max7456.h"
+#include "panel.h"
 
 namespace osd
 {
@@ -57,7 +56,7 @@ void load (uint8_t num)
 	max7456::clear ();
 }
 
-bool updated = false;
+volatile bool updated = false;
 
 void update ()
 {
@@ -99,10 +98,10 @@ const panel_pos_t _default_screen_0 [] PROGMEM = {
 	{OSD_PANEL_CLIMB, 23, 10},
 
 	{OSD_PANEL_FLIGHT_TIME, 1, 13},
-	//{OSD_PANEL_COMPASS, 8, 13},
+	{OSD_PANEL_COMPASS, 9, 12},
 
 	{OSD_PANEL_HOME_DISTANCE, 1, 14},
-	{OSD_PANEL_HOME_DIRECTION, 14, 14},
+	{OSD_PANEL_HOME_DIRECTION, 8, 14},
 
 	{OSD_PANEL_BATTERY_VOLTAGE, 22, 12},
 	{OSD_PANEL_BATTERY_CURRENT, 22, 13},

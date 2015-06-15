@@ -12,12 +12,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "../../../firmware/lib/spi/spi.h"
-
+#include "spi.h"
 #include <avr/io.h>
-
-#include "../../../firmware/config.h"
-#include "../../../firmware/lib/common.h"
+#include "../common.h"
+#include "../../config.h"
 
 namespace spi
 {

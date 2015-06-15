@@ -12,12 +12,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "../../../firmware/lib/adc/adc.h"
-
+#include "adc.h"
 #include <avr/io.h>
-
-#include "../../../firmware/config.h"
-#include "../../../firmware/settings.h"
+#include "../../config.h"
+#include "../../settings.h"
 
 #define ADC_EEPROM_REF     _eeprom_byte (ADC_EEPROM_OFFSET)
 #define ADC_EEPROM_REF_VOLTAGE _eeprom_float (ADC_EEPROM_OFFSET + 1)

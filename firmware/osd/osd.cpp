@@ -12,14 +12,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "../../firmware/osd/osd.h"
-
+#include "osd.h"
+#include "../settings.h"
+#include "../telemetry/telemetry.h"
+#include "../config.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <avr/wdt.h>
-#include "../../firmware/config.h"
-#include "../../firmware/settings.h"
-#include "../../firmware/telemetry/telemetry.h"
 
 namespace osd
 {
@@ -71,8 +70,8 @@ bool check_input ()
 
 #endif
 
-bool started = false;
-bool mutex = false;
+volatile bool started = false;
+volatile bool mutex = false;
 
 ISR (INT0_vect)
 {

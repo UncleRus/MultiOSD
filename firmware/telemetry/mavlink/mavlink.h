@@ -24,7 +24,7 @@
 
 #define MAVLINK_BOARD_APM 0
 
-#include "../../../firmware/config.h"
+#include "../../config.h"
 
 namespace telemetry
 {
