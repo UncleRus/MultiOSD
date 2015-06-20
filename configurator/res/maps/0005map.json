@@ -1,0 +1,520 @@
+{
+	"product": {
+		"name": "MultiOSD",
+		"version": "0005",
+		"builds": [
+			["UAVTalk"],
+			["UAVTalk", "ADCBattery"],
+			["MAVLink"]
+		]
+	},
+	"map": {
+		"Picture": [
+			"MAX7456/Video mode",
+			"MAX7456/Brightness"
+		],
+		"Battery": [
+			"ADC/Source",
+			"ADC/Uref",
+			"ADCBattery/Update interval",
+			"ADCBattery/Voltage ADC channel",
+			"ADCBattery/Voltage multiplier",
+			"ADCBattery/Current sensor",
+			"ADCBattery/Current ADC channel",
+			"ADCBattery/Current multiplier",
+			"MAVLink/Internal battery level calc",
+			"Telemetry/Minimal cell voltage",
+			"Telemetry/Nominal cell voltage",
+			"Telemetry/Maximal cell voltage",
+			"Telemetry/Cell low voltage"
+		],
+		"Telemetry": [
+			"Telemetry/Main module",
+			"UAVTalk/Board",
+			"UAVTalk/Internal home calc",
+			"Telemetry/Callsign"
+		],
+		"OSD": [
+			"OSD/Screens count",
+			"OSD/Screens switch",
+			"OSD/Input channel",
+			"OSD/Channel min",
+			"OSD/Channel max"
+		]
+	},
+	"options": {
+		"HEADER": {
+			"address": 0,
+			"peristent": true,
+			"options": {
+				"Magic": {
+					"offset": 0,
+					"descr": "Magic word",
+					"type": "uint16",
+					"readonly": true
+				},
+				"Version": {
+					"offset": 2,
+					"descr": "Firmware version",
+					"type": "uint16",
+					"readonly": true
+				}
+			}
+		},
+		"ADC": {
+			"address": 5,
+			"persistent": true,
+			"options": {
+				"Source": {
+					"offset": 0,
+					"descr": "Reference voltage source",
+					"type": "enum",
+					"items": {
+						"0": "AREF",
+						"1": "AVCC",
+						"3": "Internal 1.1V"
+					}
+				},
+				"Uref": {
+					"offset": 1,
+					"descr": "Reference voltage, V",
+					"type": "float",
+					"min": 0.01,
+					"max": 6
+				}
+			}
+		},
+		"MAX7456": {
+			"address": 16,
+			"persistent": true,
+			"options": {
+				"Video mode": {
+					"offset": 0,
+					"descr": "OSD composite video mode",
+					"type": "enum",
+					"items": ["PAL", "NTSC"]
+				},
+				"Brightness": {
+					"offset": 1,
+					"descr": "OSD character brithness in % of OSD white level",
+					"type": "enum",
+					"items": [
+				        "120% white, 0% black",
+				        "100% white, 0% black",
+				        "90% white, 0% black",
+				        "80% white, 0% black",
+				        "120% white, 10% black",
+				        "100% white, 10% black",
+				        "90% white, 10% black",
+				        "80% white, 10% black",
+				        "120% white, 20% black",
+				        "100% white, 20% black",
+				        "90% white, 20% black",
+				        "80% white, 20% black",
+				        "120% white, 30% black",
+				        "100% white, 30% black",
+				        "90% white, 30% black",
+				        "80% white, 30% black"
+					]
+				}
+			}
+		},
+		"ADCBattery": {
+			"address": 21,
+			"persistent": false,
+			"options": {
+				"Current sensor": {
+					"offset": 0,
+					"descr": "Read current from sensor connected to ADC",
+					"type": "bool"
+				},
+				"Voltage multiplier": {
+					"offset": 1,
+					"descr": "Voltage multiplier = Umax / Uref",
+					"type": "float",
+					"min": 0.01,
+					"max": 1000000
+				},
+				"Current multiplier": {
+					"offset": 5,
+					"descr": "Current multiplier = Imax / Uref",
+					"type": "float",
+					"min": 0.01,
+					"max": 1000000
+				},
+				"Update interval": {
+					"offset": 9,
+					"descr": "Interval between battery parameters updates, ms",
+					"type": "uint16",
+					"min": 50,
+					"max": 65535
+				},
+				"Voltage ADC channel": {
+					"offset": 11,
+					"descr": "Atmega328p ADC channel for voltage",
+					"type": "enum",
+					"items": [
+						"Channel 0",
+						"Channel 1",
+						"Channel 2",
+						"Channel 3",
+						"Channel 4",
+						"Channel 5",
+						"Channel 6",
+						"Channel 7"
+					]
+				},
+				"Current ADC channel": {
+					"offset": 12,
+					"descr": "Atmega328p ADC channel for current",
+					"type": "enum",
+					"items": [
+						"Channel 0",
+						"Channel 1",
+						"Channel 2",
+						"Channel 3",
+						"Channel 4",
+						"Channel 5",
+						"Channel 6",
+						"Channel 7"
+					]
+				}
+			}
+		},
+		"UAVTalk": {
+			"address": 48,
+			"persistent": false,
+			"options": {
+				"Board": {
+					"offset": 0,
+					"descr": "UAVTalk board type",
+					"type": "enum",
+					"items": [
+						"CC/CC3D/Atom",
+						"REVO"
+					]
+				},
+				"Internal home calc": {
+					"offset": 1,
+					"descr": "Internal home calc",
+					"type": "bool"
+				}
+			}
+		},
+		"MAVLink": {
+			"address": 48,
+			"persistent": false,
+			"options": {
+				"Internal battery level calc": {
+					"offset": 0,
+					"descr": "Internal battery level calculation",
+					"type": "bool"
+				}
+			}
+		},
+		"Telemetry": {
+			"address": 64,
+			"persistent": true,
+			"options": {
+				"Main module": {
+					"offset": 0,
+					"descr": "Main telemetry module",
+					"type": "uint8",
+					"readonly": true
+				},
+				"Minimal cell voltage": {
+					"offset": 1,
+					"descr": "Minimal cell voltage (dead battery), V. 3.2 for LiPo",
+					"type": "float",
+					"min": 0.01,
+					"max": 100
+				},
+				"Nominal cell voltage": {
+					"offset": 5,
+					"descr": "Nominal cell voltage, V. 3.7 for LiPo",
+					"type": "float",
+					"min": 0.01,
+					"max": 100
+				},
+				"Maximal cell voltage": {
+					"offset": 9,
+					"descr": "Maximal cell voltage, V. 4.2 for LiPo",
+					"type": "float",
+					"min": 0.01,
+					"max": 100
+				},
+				"Cell low voltage": {
+					"offset": 13,
+					"descr": "Warning threshold, V. About 3.5V for LiPo",
+					"type": "float",
+					"min": 0.01,
+					"max": 100
+				},
+				"Callsign": {
+					"offset": 17,
+					"descr": "Just a tag",
+					"type": "str",
+					"length": 5
+				}
+			}
+		},
+		"OSD": {
+			"address": 112,
+			"persistent": true,
+			"options": {
+				"Screens switch": {
+					"offset": 0,
+					"descr": "How to switch between screens",
+					"type": "enum",
+					"items": [
+						"Never",
+						"By flight mode",
+						"By input channel"
+					]
+				},
+				"Input channel": {
+					"offset": 1,
+					"descr": "Input channel number for screen switch",
+					"type": "enum",
+					"items": [
+						"Channel 0",
+						"Channel 1",
+						"Channel 2",
+						"Channel 3",
+						"Channel 4",
+						"Channel 5",
+						"Channel 6",
+						"Channel 7",
+						"Channel 8"
+					]
+				},
+				"Screens count": {
+					"offset": 2,
+					"descr": "Number of available screens",
+					"type": "uint8",
+					"min": 1,
+					"max": 8
+				},
+				"Channel min": {
+					"offset": 3,
+					"descr": "Minimal pulse width of raw input channel (usually 1000)",
+					"type": "uint16",
+					"min": 500,
+					"max": 3000
+				},
+				"Channel max": {
+					"offset": 5,
+					"descr": "Maximal pulse width of raw input channel (usually 2000)",
+					"type": "uint16",
+					"min": 500,
+					"max": 3000
+				}
+			}
+		}
+	},
+	"panels": [
+		{
+			"name": "StableAlt",
+			"size": [7, 1],
+			"max_size": [6, 1],
+			"filler": [
+				"85 31 33 38 8d" 
+			]
+		},
+		{
+			"name": "Climb",
+			"size": [6, 1],
+			"max_size": [6, 1],
+			"filler": [
+				"04 2d 31 2e 37 8c" 
+			]
+		},
+		{
+			"name": "FlightMode",
+			"size": [6, 3],
+			"max_size": [6, 3],
+			"filler": [
+				"d0 d1 d1 d1 d1 d2",
+				"d3 4d 4f 44 45 d7",
+				"d4 d5 d5 d5 d5 d6"
+			]
+		},
+		{
+			"name": "ArmedFlag",
+			"size": [3, 3],
+			"max_size": [3, 3],
+			"filler": [
+				"d8 d9 da",
+				"db e0 df",
+				"dc dd de"
+			]
+		},
+		{
+			"name": "ConState",
+			"size": [3, 3],
+			"max_size": [3, 3],
+			"filler": [
+				"d8 d9 da",
+				"db e1 df",
+				"dc dd de"
+			]
+		},
+		{
+			"name": "FlightTime",
+			"size": [7, 1],
+			"max_size": [6, 1],
+			"filler": [
+				"b3 31 32 3a 33 34" 
+			]
+		},
+		{
+			"name": "Roll",
+			"size": [6, 1],
+			"max_size": [5, 1],
+			"filler": [
+				"b2 2d 31 35 b0"
+			]
+		},
+		{
+			"name": "Pitch",
+			"size": [6, 1],
+			"max_size": [5, 1],
+			"filler": [
+				"b1 31 30 b0"
+			]
+		},
+		{
+			"name": "GPS",
+			"size": [6, 1],
+			"max_size": [5, 1],
+			"filler": [
+				"10 11 02 31 32"
+			]
+		},
+		{
+			"name": "Lat",
+			"size": [10, 1],
+			"max_size": [10, 1],
+			"filler": [
+				"83 35 36 2e 38 33 33 32 33 33"
+			]
+		},
+		{
+			"name": "Lon",
+			"size": [10, 1],
+			"max_size": [10, 1],
+			"filler": [
+				"84 35 36 2e 38 33 33 32 33 33"
+			]
+		},
+		{
+			"name": "Horizon",
+			"size": [14, 5],
+			"max_size": [14, 5],
+			"filler": [
+				"b8 20 20 20 20 20 20 20 20 20 20 20 20 b9",
+				"b8 20 20 20 20 20 20 20 20 20 20 20 20 b9",
+				"c8 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 1a 99",
+				"b8 20 20 20 20 20 20 20 20 20 20 20 20 b9",
+				"b8 20 20 20 20 20 20 20 20 20 20 20 20 b9"
+			]
+		},
+		{
+			"name": "Throttle",
+			"size": [6, 1],
+			"max_size": [5, 1],
+			"filler": [
+				"87 32 35 25"
+			]
+		},
+		{
+			"name": "GroundSpeed",
+			"size": [6, 1],
+			"max_size": [5, 1],
+			"filler": [
+				"80 32 37 81"
+			]
+		},
+		{
+			"name": "BatVoltage",
+			"size": [7, 1],
+			"max_size": [7, 1],
+			"filler": [
+				"f8 31 31 2e 33 38 8e"
+			]
+		},
+		{
+			"name": "BatCurrent",
+			"size": [7, 1],
+			"max_size": [7, 1],
+			"filler": [
+				"fa 32 31 2e 35 38 8f"
+			]
+		},
+		{
+			"name": "BatConsumed",
+			"size": [7, 1],
+			"max_size": [6, 1],
+			"filler": [
+				"fb 31 30 34 37 82"
+			]
+		},
+		{
+			"name": "RSSIFlag",
+			"size": [1, 1],
+			"max_size": [1, 1],
+			"filler": [
+				"b4"
+			]
+		},
+		{
+			"name": "HomeDistance",
+			"size": [7, 1],
+			"max_size": [6, 1],
+			"filler": [
+				"12 32 30 37 26 8b"
+			]
+		},
+		{
+			"name": "HomeDirection",
+			"size": [2, 1],
+			"max_size": [2, 1],
+			"filler": [
+				"90 91"
+			]
+		},
+		{
+			"name": "CallSign",
+			"size": [5, 1],
+			"max_size": [5, 1],
+			"filler": [
+				"43 53 69 67 6e"
+			]
+		},
+		{
+			"name": "Temperature",
+			"size": [7, 1],
+			"max_size": [5, 1],
+			"filler": [
+				"fd 31 37 b0"
+			]
+		},
+		{
+			"name": "RSSI",
+			"size": [3, 1],
+			"max_size": [3, 1],
+			"filler": [
+				"e2 e3 e4"
+			]
+		},
+		{
+			"name": "Compass",
+			"size": [3, 1],
+			"max_size": [3, 1],
+			"filler": [
+				"20 20 20 20 20 c6 20 20 20 20 20",
+				"c0 c5 c0 c1 c0 c2 c0 c1 c0 c4 c0"
+			]
+		}
+	]
+}

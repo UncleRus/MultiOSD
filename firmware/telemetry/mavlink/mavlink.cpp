@@ -14,6 +14,7 @@
  */
 #include "mavlink.h"
 
+#include <math.h>
 #include "../../settings.h"
 #include "../../lib/uart/uart.h"
 #include "../telemetry.h"
@@ -21,6 +22,7 @@
 #include "setup.h"
 
 #define MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL _eeprom_byte (MAVLINK_EEPROM_OFFSET)
+#define MAVLINK_EEPROM_RSSI_LOW_THRESHOLD _eeprom_byte (MAVLINK_EEPROM_OFFSET + 1)
 
 namespace telemetry
 {
@@ -32,6 +34,7 @@ namespace mavlink
 {
 
 uint8_t internal_battery_level;
+uint8_t rssi_low_threshold;
 
 float __attribute__ ((noinline)) rad_to_deg (float rad)
 {
@@ -225,9 +228,9 @@ bool update ()
 				}
 				break;
             case MAVLINK_MSG_ID_ATTITUDE:
-            	telemetry::attitude::roll = rad_to_deg (mavlink_msg_attitude_get_roll (msg));
-            	telemetry::attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (msg));
-            	telemetry::attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
+            	attitude::roll = rad_to_deg (mavlink_msg_attitude_get_roll (msg));
+            	attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (msg));
+            	attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
                 break;
 			case MAVLINK_MSG_ID_GPS_RAW_INT:
 				telemetry::gps::state = mavlink_msg_gps_raw_int_get_fix_type (msg);
@@ -263,14 +266,24 @@ bool update ()
             	telemetry::input::channels [6] = mavlink_msg_rc_channels_raw_get_chan7_raw (msg);
             	telemetry::input::channels [7] = mavlink_msg_rc_channels_raw_get_chan8_raw (msg);
             	telemetry::input::rssi = mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
-            	telemetry::messages::rssi_low = telemetry::input::rssi < 10; // TODO: config
+            	telemetry::messages::rssi_low = telemetry::input::rssi < rssi_low_threshold;
             	break;
             case MAVLINK_MSG_ID_SCALED_PRESSURE:
             	telemetry::barometer::temperature = mavlink_msg_scaled_pressure_get_temperature (msg) / 100.0;
-            	telemetry::stable::temperature = telemetry::barometer::temperature;
+            	telemetry::stable::temperature = round (telemetry::barometer::temperature);
             	telemetry::barometer::pressure = mavlink_msg_scaled_pressure_get_press_abs (msg) * 100;
             	break;
-            // TODO: waypoints stuff (idx, dir, dist), windspeed
+            case MAVLINK_MSG_ID_WIND:
+            	telemetry::wind::direction = mavlink_msg_wind_get_direction (msg);
+            	telemetry::wind::speed = mavlink_msg_wind_get_speed (msg);
+            	break;
+            case MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT:
+            	telemetry::waypoint::bearing = mavlink_msg_nav_controller_output_get_target_bearing (msg);
+            	telemetry::waypoint::distance = mavlink_msg_nav_controller_output_get_wp_dist (msg);
+            	break;
+            case MAVLINK_MSG_ID_MISSION_CURRENT:
+            	telemetry::waypoint::num = mavlink_msg_mission_current_get_seq (msg);
+            	break;
             default:
             	changed = false;
 		}
@@ -289,11 +302,13 @@ bool update ()
 void init ()
 {
 	internal_battery_level = eeprom_read_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL);
+	rssi_low_threshold = eeprom_read_byte (MAVLINK_EEPROM_RSSI_LOW_THRESHOLD);
 }
 
 void reset ()
 {
 	eeprom_update_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL, MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL);
+	eeprom_update_byte (MAVLINK_EEPROM_RSSI_LOW_THRESHOLD, MAVLINK_DEFAULT_RSSI_LOW_THRESHOLD);
 }
 
 }  // namespace mavlink

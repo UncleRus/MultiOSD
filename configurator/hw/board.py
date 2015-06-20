@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from serial import Serial
-import time
 import re
-from . import catalog
-from . import const
+import time
+from serial import Serial
 
 
-def _connection (func):
+__all__ = ['TimeoutError', 'Board']
+
+
+def needs_connection (func):
     def _wrapped (*args, **kwargs):
         if not args [0].connected:
             raise IOError ('Board not found')
@@ -15,7 +16,13 @@ def _connection (func):
     return _wrapped
 
 
+class TimeoutError (IOError):
+    pass
+
+
 class Board (object):
+
+    EEPROM_SIZE = 0x400
 
     osd_prompt = 'osd#'
 
@@ -24,15 +31,7 @@ class Board (object):
     def __init__ (self, port = '/dev/ttyUSB0', baudrate = 57600):
         self.port = port
         self.baudrate = baudrate
-        self._reset ()
-
-    def _reset (self):
         self.connected = False
-        self.modules = []
-        self.panels = []
-        self.version = None
-        self.eeprom = bytearray ([0xff] * const.EEPROM_SIZE)
-        self.options = None
 
     def connect (self, timeout = 5):
         if self.connected:
@@ -43,73 +42,98 @@ class Board (object):
         _stop_at = time.time () + timeout
         while self.serial.readline ().strip () != 'READY':
             if time.time () >= _stop_at:
-                raise IOError ('Connection timeout')
+                raise TimeoutError ('Connection timeout')
 
-        self.serial.write ('config\r')
+        self.serial.write (b'config\r')
         while self.serial.readline ().strip () != self.osd_prompt:
             pass
 
         self.connected = True
-
         self.info ()
-        self.eeprom = self.eeprom_read ()
-        self.options = catalog.options [self.version].copy ()
-        self.options.board = self
-        self.options.load ()
 
     def disconnect (self):
         if not self.connected:
             return
         self.serial.close ()
-        self._reset ()
+        self.connected = False
 
-    @_connection
+    @needs_connection
     def execute (self, cmd):
-        self.serial.write ('%s\r' % cmd)
+        self.serial.write (b'%s\r' % cmd)
         echo = self.serial.readline ().strip ()
         if echo != cmd:
             raise IOError ('Invalid board response')
 
-    @_connection
+    @needs_connection
     def info (self):
+        version = 0
+        modules = []
+        panels = []
+
         self.execute ('info')
-        panels = False
-        for line in iter (self.serial.readline (), self.osd_prompt):
+
+        _pan = False
+        for line in iter (lambda: self.serial.readline ().strip (), self.osd_prompt):
             if not line:
                 continue
 
-            if panels:
-                self.panels.append (line.split (':')[1].strip ())
+            if _pan:
+                panels.append (line.split (':')[1].strip ())
                 continue
 
             m = self.info_regexp.match (line)
             if not m:
                 raise IOError ('Unknown info response')
             if m.group (1) == 'VERSION':
-                self.version = m.group (2)
+                version = m.group (2)
             elif m.group (1) == 'MODULES':
-                self.modules = m.group (2).split (' ')
+                modules = m.group (2).split (' ')
             elif m.group (1) == 'PANELS':
-                panels = True
+                _pan = True
 
-    @_connection
+        return (version, modules, panels)
+
+    @needs_connection
     def eeprom_read (self):
         self.execute ('eeprom r')
-        res = self.serial.read (const.EEPROM_SIZE)
+        res = self.serial.read (self.EEPROM_SIZE)
         self.serial.readline ()
         self.serial.readline ()
         return bytearray (res)
 
-    @_connection
+    @needs_connection
     def eeprom_write (self, data):
         self.execute ('eeprom w')
-        self.serial.write (bytes (data [:const.EEPROM_SIZE]))
+        self.serial.write (bytes (data [:self.EEPROM_SIZE]))
         self.serial.readline ()
         self.serial.readline ()
         self.serial.readline ()
+
+    @needs_connection
+    def font_upload (self, fp, callback = None):
+        self.execute ('font u')
+        for i in xrange (16385):
+            line = fp.readline ()
+            if not line:
+                raise IOError ('Invalid file format')
+            self.serial.write (line)
+            if callback:
+                callback (i)
+        self.serial.write (b'\r\r')
+
+    @needs_connection
+    def font_download (self, fp, callback = None):
+        self.execute ('font d')
+        for i in xrange (16385):
+            line = self.serial.readline ().strip ()
+            if line == self.osd_prompt:
+                raise IOError ('Cannot download font')
+            fp.write (line)
+            fp.write (b'\r\n')
+            if callback:
+                callback (i)
 
     def __repr__ (self):
         return '<Board port={} connected={}, version={}, modules={}, panels={}>'.format (
             self.port, self.connected, self.version, self.modules, self.panels
         )
-

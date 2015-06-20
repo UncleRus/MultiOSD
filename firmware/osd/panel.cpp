@@ -444,7 +444,7 @@ namespace callsign
 namespace temperature
 {
 
-	STD_PANEL ("Temperature", 8, "\xfd%d\xb0", telemetry::stable::temperature);
+	STD_PANEL ("Temperature", 8, "\xfd%d\x8a", telemetry::stable::temperature);
 
 }  // namespace temperature
 

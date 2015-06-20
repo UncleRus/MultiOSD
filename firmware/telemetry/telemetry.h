@@ -89,6 +89,12 @@ namespace barometer
 	extern uint32_t pressure;		// Pa
 }
 
+namespace wind
+{
+	extern uint16_t direction;		// degress
+	extern float speed;				// m/s in ground plane
+}
+
 namespace stable
 {
 	extern float climb;				// m/s
@@ -137,6 +143,15 @@ namespace home
 
 	void fix ();					// try to fix home
 	void update (); 				// read gps and recalc
+}
+
+namespace waypoint
+{
+
+	extern uint8_t num;				// current waypoint number
+	extern uint16_t distance;		// meters, distance to active waypoint
+	extern int16_t bearing;			// degrees
+
 }
 
 void init ();

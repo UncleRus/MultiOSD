@@ -22,7 +22,7 @@
  */
 #define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
 #define TELEMETRY_MODULES_UAVTALK					// main telemetry module
-//#define TELEMETRY_MODULES_MAVLINK					// main telemetry module
+// #define TELEMETRY_MODULES_MAVLINK					// main telemetry module
 
 /*
  * Telemetry config
@@ -32,7 +32,7 @@
 #define TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE 3.7	// Nominal cell voltage, 3.7 for LiPo
 #define TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE 3.2	// Minimal cell voltage (dead battery), 3.2 for LiPo
 #define TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE 3.5	// Warning threshold
-#define TELEMETRY_DEFAULT_CALLSIGN "----"			// Default callsign
+#define TELEMETRY_DEFAULT_CALLSIGN "-----"			// Default callsign
 
 /*
  * UAVTalk config
@@ -57,6 +57,7 @@
 #define MAVLINK_UART uart0
 #define MAVLINK_CONNECTION_TIMEOUT 2000					// ms
 #define MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL 1			// Internal battery level calculation (may be better)
+#define MAVLINK_DEFAULT_RSSI_LOW_THRESHOLD 10			// percentes
 
 /*
  * OSD config

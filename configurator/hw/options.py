@@ -1,180 +1,122 @@
 # -*- coding: utf-8 -*-
 
 import struct
-from . import const
+from .board import Board
 
 
-__all__ = ['BoolOption', 'FloatOption', 'UInt8Option', 'UInt16Option', 'StrOption', 'EnumOption', 'Section', 'Options']
+__all__ = ['Option', 'StrOption', 'EnumOption', 'NumericOption', 'Section', 'OptionsMap']
 
 
 class Option (object):
 
-    def __init__ (self, name, offset, description, fmt, readonly = False):
+    @classmethod
+    def create (cls, name, **params):
+        return _opt_types [params.get ('type', 'uint8')] (name, **params)
+
+    def __init__ (self, name, **kwargs):
         self.name = name
-        self.offset = offset
-        self.fmt = fmt
-        self.description = description
-        self.section = None
+        self.offset = kwargs ['offset']
+        self.description = kwargs ['descr']
+        self.type = kwargs ['type']
+        self.readonly = kwargs.get ('readonly', False)
         self.value = None
-        self.readonly = readonly
-
-    def copy (self):
-        return type (self) (self.name, self.offset, self.description, readonly = self.readonly)
-
-    def get (self):
-        res = struct.unpack_from (self.fmt, self.section.eeprom (), self.offset)
-        self.value = res [0] if len (res) == 1 else res
-        return self.value
 
     def pack (self):
-        return struct.pack (self.fmt, self.value)
+        return self.struct.pack (self.value)
 
-    def __repr__ (self):
-        return '%s=%r' % (self.name, self.get ())
+    def pack_into (self, addr, data):
+        packed = self.pack ()
+        data [addr + self.offset : addr + self.offset + len (packed)] = packed
 
-
-class BoolOption (Option):
-
-    def __init__ (self, name, offset, description, **kwargs):
-        super (BoolOption, self).__init__ (name, offset, description, 'B', **kwargs)
-
-    def get (self):
-        return bool (super (BoolOption, self).get ())
-
-
-class FloatOption (Option):
-
-    def __init__ (self, name, offset, description, **kwargs):
-        super (FloatOption, self).__init__ (name, offset, description, '<f', **kwargs)
-
-
-class UInt8Option (Option):
-
-    def __init__ (self, name, offset, description, **kwargs):
-        super (UInt8Option, self).__init__ (name, offset, description, 'B', **kwargs)
-
-
-class UInt16Option (Option):
-
-    def __init__ (self, name, offset, description, **kwargs):
-        super (UInt16Option, self).__init__ (name, offset, description, '<H', **kwargs)
+    def unpack (self, addr, data):
+        self.value = self.struct.unpack_from (data, addr + self.offset)
+        if len (self.value) == 1:
+            self.value = self.value [0]
 
 
 class StrOption (Option):
 
-    def __init__(self, name, offset, description, length, **kwargs):
-        super (StrOption, self).__init__ (name, offset, description, '%ds' % length, **kwargs)
-        self.length = length
-
-    def copy (self):
-        return type (self) (self.name, self.offset, self.description, self.length, readonly = self.readonly)
+    def __init__ (self, name, **kwargs):
+        super (StrOption, self).__init__ (name, **kwargs)
+        self.length = kwargs ['length']
+        self.struct = struct.Struct ('%ds' % self.length)
 
 
 class EnumOption (Option):
 
-    def __init__ (self, name, offset, description, items = (), fmt = 'B', **kwargs):
-        super (EnumOption, self).__init__ (name, offset, description, fmt, **kwargs)
-        self.items = items
-
-    def copy (self):
-        return type (self) (self.name, self.offset, self.description, self.items, self.fmt, readonly = self.readonly)
-
-    def get (self):
-        idx = super (EnumOption, self).get ()
-        if isinstance (self.items, dict):
-            if idx in self.items:
-                return idx, self.items [idx]
-            else:
-                return self.items.items ()[0]
-        idx = idx if 0 <= idx < len (self.items) else 0
-        return idx, self.items [idx]
-
-    def __iter__ (self):
-        return ((idx, item) for idx, item in (self.items.items () if isinstance (self.items, dict) else enumerate (self.items)))
+    def __init__ (self, name, **kwargs):
+        super (EnumOption, self).__init__ (name, **kwargs)
+        self.items = kwargs.get ['items']
+        self.struct = struct.Struct ('B')
+        if not isinstance (self.items, dict):
+            self.items = dict (enumerate (self.items))
 
 
-class Iterable (object):
+def NumericOption (bfmt):
 
-    def __init__ (self, names):
-        self.names = names
+    class _NumericOption (Option):
 
-    def __getitem__ (self, name):
-        return self.names [name]
+        def __init__ (self, name, **kwargs):
+            super (_NumericOption, self).__init__ (name, **kwargs)
+            self.struct = struct.Struct (bfmt)
+            self.min = kwargs.get ('min')
+            self.max = kwargs.get ('max')
 
-    def __iter__ (self):
-        return self.names.__iter__
+    return _NumericOption
 
 
-class Section (Iterable):
+_opt_types = {
+    'uint8': NumericOption ('B'),
+    'uint16': NumericOption ('<H'),
+    'bool': NumericOption ('B'),
+    'float': NumericOption ('f'),
+    'enum': NumericOption ('B'),
+    'str': StrOption
+}
 
-    def __init__ (self, name, offset, *options, **kwargs):
-        super (Section, self).__init__ ({opt.name: opt for opt in options})
+class Section (dict):
+
+    def __init__ (self, name, **kwargs):
+        super (Section, self).__init__ ()
         self.name = name
-        self.offset = offset
-        self.options = options
-        for opt in options:
-            opt.section = self
-        self.board = None
-        self.persistent = kwargs.get ('persistent', True)
+        self.address = kwargs ['address']
+        self.persistent = kwargs ['persistent']
         self.enabled = True
 
-    def eeprom (self):
-        return self.board.eeprom [self.offset:]
+    def pack_into (self, data):
+        for opt in self.values ():
+            if not opt.readonly:
+                opt.pack_into (self.address, data)
 
-    def build (self, res):
-        for opt in self.options:
-            data = tuple (opt.pack ())
-            res [self.offset + opt.offset : self.offset + opt.offset + len (data)] = data
-
-    def load (self):
-        for opt in self.options:
-            opt.get ()
-
-    def copy (self):
-        return Section (self.name, self.offset, *[option.copy () for option in self.options], persistent = self.persistent)
-
-    def __repr__ (self):
-        res = ['[%s]' % self.name]
-        for opt in self.options:
-            res.append (repr (opt))
-        return '\n'.join (res)
+    def unpack (self, data):
+        for opt in self.values ():
+            opt.unpack (self.address)
 
 
-class Options (Iterable):
+class OptionsMap (object):
 
-    def __init__ (self, *sections):
-        super (Options, self).__init__ ({section.name: section for section in sections})
-        self._board = None
-        self.sections = sections
+    def __init__ (self, struct = None):
+        self.sections = {}
+        self.map = {}
+        if struct:
+            self.parse (struct)
 
-    @property
-    def board (self):
-        return self._board
+    def parse (self, struct):
+        self.sections.clear ()
+        for sname, sdef in struct ['options'].items ():
+            self.sections [sname] = Section (sname, **sdef)
+            for oname, odef in sdef ['options'].items ():
+                opt = Option.create (oname, **odef)
+                self.sections [sname][oname] = opt
+                self.map ['%s/%s' % (sname, oname)] = opt
 
-    @board.setter
-    def board (self, value):
-        self._board = value
-        for section in self.sections:
-            section.board = self._board
-            section.enabled = self._board and (section.persistent or section.name in self._board.modules)
+    def load (self, eeprom):
+        for s in self.sections:
+            s.unpack (eeprom)
 
-    def build (self):
-        res = bytearray ([0xff] * const.EEPROM_SIZE)
-        for section in self.sections:
-            if section.enabled:
-                section.build (res)
-        return res
-
-    def save (self):
-        self._board.eeprom_write (self.build ())
-
-    def load (self):
-        for section in self.sections:
-            section.load ()
-
-    def copy (self):
-        return Options (*[section.copy () for section in self.sections])
-
-    def __repr__ (self):
-        return '\n\n'.join ((repr (section) for section in self.sections))
-
+    def save (self, modules):
+        result = bytearray ([0xff] * Board.EEPROM_SIZE)
+        for s in self.sections:
+            if s.persistent or s.name in modules:
+                s.pack_into (result)
+        return result

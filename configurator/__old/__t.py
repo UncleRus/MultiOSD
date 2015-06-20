@@ -11,8 +11,8 @@ class Control (QWidget):
 
     changed = Signal ()
 
-    def __init__ (self, option, parent = None, setup = True):
-        super (Control, self).__init__ (parent)
+    def __init__ (self, option, owner = None, setup = True):
+        super (Control, self).__init__ (owner)
         self.option = option
         if setup:
             self.setupUi ()
@@ -81,8 +81,8 @@ class EnumControl (Control):
 
 class IntControl (Control):
 
-    def __init__ (self, option, min, max, parent = None):
-        super (IntControl, self).__init__ (option, parent, setup = False)
+    def __init__ (self, option, min, max, owner = None):
+        super (IntControl, self).__init__ (option, owner, setup = False)
         self.min = min
         self.max = max
         self.setupUi ()
@@ -106,14 +106,14 @@ class IntControl (Control):
 
 class UInt16Control (IntControl):
 
-    def __init__ (self, option, parent = None):
-        super (UInt16Control, self).__init__ (option, 0, 0xffff, parent = parent)
+    def __init__ (self, option, owner = None):
+        super (UInt16Control, self).__init__ (option, 0, 0xffff, owner = owner)
 
 
 class UInt8Control (IntControl):
 
-    def __init__ (self, option, parent = None):
-        super (UInt8Control, self).__init__ (option, 0, 0xff, parent = parent)
+    def __init__ (self, option, owner = None):
+        super (UInt8Control, self).__init__ (option, 0, 0xff, owner = owner)
 
 
 class StrControl (Control):
@@ -134,19 +134,19 @@ class StrControl (Control):
         self.option.value = self.input.text ()
 
 
-class SectionWidget (QGroupBox):
+class PageWidget (QWidget):
 
     _factories = {
-        hw.options.BoolOption: BoolControl,
-        hw.options.FloatOption: FloatControl,
-        hw.options.EnumOption: EnumControl,
-        hw.options.UInt8Option: UInt8Control,
-        hw.options.UInt16Option: UInt16Control,
-        hw.options.StrOption: StrControl,
+        'bool': BoolControl,
+        'float': FloatControl,
+        'enum': EnumControl,
+        'uint8': UInt8Control,
+        'uint16': UInt16Control,
+        'str': StrControl
     }
 
-    def __init__ (self, section, parent = None):
-        super (SectionWidget, self).__init__ (parent)
+    def __init__ (self, section, owner = None):
+        super (PageWidget, self).__init__ (owner)
         self.setSizePolicy (QSizePolicy (QSizePolicy.Minimum, QSizePolicy.Fixed))
         self.fl = None
         self.clear ()
@@ -189,8 +189,8 @@ class SectionWidget (QGroupBox):
 
 class OptionsWidget (QWidget):
 
-    def __init__ (self, options, modules, parent = None):
-        super (OptionsWidget, self).__init__ (parent)
+    def __init__ (self, options, modules, owner = None):
+        super (OptionsWidget, self).__init__ (owner)
         self.items = []
         self.l_outer = QVBoxLayout (self)
         self.box = QScrollArea (self)

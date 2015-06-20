@@ -86,6 +86,14 @@ namespace barometer
 
 }  // namespace barometer
 
+namespace wind
+{
+
+	uint16_t direction = 0;
+	float speed = 0.0;
+
+}  // namespace wind
+
 namespace stable
 {
 
@@ -255,6 +263,15 @@ namespace home
 	}
 
 }  // namespace home
+
+namespace waypoint
+{
+
+	uint8_t num = 0;
+	uint16_t distance = 0;
+	int16_t bearing = 0;
+
+}  // namespace waypoint
 
 }  // namespace telemetry
 

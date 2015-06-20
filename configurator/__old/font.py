@@ -68,8 +68,8 @@ class Font (object):
 
 class Panel (QLabel):
 
-    def __init__ (self, image, parent = None):
-        super (Panel, self).__init__ (parent)
+    def __init__ (self, image, owner = None):
+        super (Panel, self).__init__ (owner)
         self.setPixmap (QPixmap.fromImage (image))
 
 

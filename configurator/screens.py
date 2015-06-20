@@ -167,8 +167,8 @@ class Panel (QGraphicsItem):
 
 class Screen (QGraphicsScene):
 
-    def __init__ (self, cols, rows, fixedFont, bgImage = None, parent = None):
-        super (Screen, self).__init__ (parent)
+    def __init__ (self, cols, rows, fixedFont, bgImage = None, owner = None):
+        super (Screen, self).__init__ (owner)
         self.setScreenSize (cols, rows)
         self.setBgImage (bgImage)
         self.fixedFont = fixedFont
@@ -258,8 +258,8 @@ class Screen (QGraphicsScene):
 
 class ScreenEditor (QGraphicsView):
 
-    def __init__ (self, screen, parent = None):
-        super (ScreenEditor, self).__init__ (screen, parent)
+    def __init__ (self, screen, owner = None):
+        super (ScreenEditor, self).__init__ (screen, owner)
         self.setMouseTracking (True)
 
     def resizeEvent (self, e):
@@ -291,7 +291,7 @@ class Win (QWidget):
 
     def __init__ (self):
         super (Win, self).__init__ ()
-        self.screen = Screen (30, 16, Font (open ('main_font.mcm', 'rb')), QImage ('background.jpg'), parent = self)
+        self.screen = Screen (30, 16, Font (open ('main_font.mcm', 'rb')), QImage ('background.jpg'), owner = self)
         self.view = ScreenEditor (self.screen, self)
 
         [Panel (self.screen, self.screen.fixedFont, _) for _ in panelTypes]
