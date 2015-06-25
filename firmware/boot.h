@@ -19,6 +19,7 @@
 namespace boot
 {
 
+// Show the bootscreen and check UART input. Result will be true if user wants console
 bool show ();
 
 }

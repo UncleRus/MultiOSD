@@ -32,9 +32,11 @@ namespace commands
 		proc_t exec;
 	};
 
+	// console commands collection
 	extern const command_t values [] PROGMEM;
 	extern const uint8_t count;
 
+	// execute command
 	bool exec (const char *cmd, uint8_t size);
 
 	inline const char *get_cmd_p (uint8_t n)

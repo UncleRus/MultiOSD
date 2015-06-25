@@ -60,12 +60,12 @@ namespace input
 {
 	extern bool connected;			// input values are valid
 	extern uint8_t rssi;			// percents
-	extern int16_t throttle;		// percents
-	extern int16_t roll;			// percents
-	extern int16_t pitch;			// percents
-	extern int16_t yaw;				// percents
-	extern int16_t collective;		// percents
-	extern int16_t thrust;			// percents
+	extern int8_t throttle;			// percents
+	extern int8_t roll;				// percents
+	extern int8_t pitch;			// percents
+	extern int8_t yaw;				// percents
+	extern int8_t collective;		// percents
+	extern int8_t thrust;			// percents
 	extern uint8_t flight_mode_switch;	// switch position
 	extern uint16_t channels [INPUT_CHANNELS]; // raw values
 }
@@ -171,6 +171,7 @@ namespace modules
 		update_t update;
 	};
 
+	// telemetry modules collection
 	extern const module_t modules [] PROGMEM;
 	extern const uint8_t count;
 

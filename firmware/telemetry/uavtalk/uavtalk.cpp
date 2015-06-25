@@ -330,17 +330,17 @@ bool update ()
 					telemetry::home::fix ();
 				break;
 			case UAVTALK_MANUALCONTROLCOMMAND_OBJID:
-				telemetry::input::throttle 	= (int16_t) (buffer.get<float> (0) * 100);
-				telemetry::input::roll 		= (int16_t) (buffer.get<float> (4) * 100);
-				telemetry::input::pitch 	= (int16_t) (buffer.get<float> (8) * 100);
-				telemetry::input::yaw 		= (int16_t) (buffer.get<float> (12) * 100);
-				telemetry::input::collective = (int16_t) (buffer.get<float> (16) * 100);
+				telemetry::input::throttle 	= (int8_t) (buffer.get<float> (0) * 100);
+				telemetry::input::roll 		= (int8_t) (buffer.get<float> (4) * 100);
+				telemetry::input::pitch 	= (int8_t) (buffer.get<float> (8) * 100);
+				telemetry::input::yaw 		= (int8_t) (buffer.get<float> (12) * 100);
+				telemetry::input::collective = (int8_t) (buffer.get<float> (16) * 100);
 				telemetry::input::connected = (bool) buffer.data [_UT_OFFS_MCC_CONN];
 #ifdef _UT_OFFS_MCC_FMS
 				telemetry::input::flight_mode_switch = buffer.data [_UT_OFFS_MCC_FMS];
 #endif
 #if UAVTALK_VERSION_RELEASE >= 141001
-				telemetry::input::thrust 	= (int16_t) (buffer.get<float> (20) * 100);
+				telemetry::input::thrust 	= (int8_t) (buffer.get<float> (20) * 100);
 #endif
 #if !defined (TELEMETRY_MODULES_RSSI)
 				telemetry::messages::rssi_low = !telemetry::input::connected;

@@ -38,7 +38,10 @@
 namespace settings
 {
 
+// Check EEPROM header & version and reset if needed
 void init ();
+
+// Write default settings to EEPROM
 void reset ();
 
 }

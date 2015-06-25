@@ -59,6 +59,7 @@ namespace panel
 		draw_t draw;
 	};
 
+	// panels collection
 	extern const panel_t panels [] PROGMEM;
 	extern const uint8_t count;
 

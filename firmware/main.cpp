@@ -31,21 +31,32 @@
 
 inline void init ()
 {
+	// let's check EEPROM state
 	settings::init ();
+	// setup timer
 	timer::init ();
+	// setup UART
 	CONSOLE_UART::init (UART_BAUD_SELECT (UART_BAUD_RATE));
+	// setup SPI...
 	spi::init ();
+	// ...and MAX7456
 	max7456::init ();
+	// Show boot screen
 	if (boot::show ())
 	{
+		// magic word has been entered so let's run console
 		max7456::clear ();
 		max7456::puts_p (max7456::hcenter - 4, max7456::vcenter, PSTR ("\xfc CONFIG"));
 		fprintf_P (&CONSOLE_UART::stream, PSTR ("MultiOSD v.%04u\r\n"), VERSION);
 		console::run (console::process);
 	}
+	// boot to OSD
 	CONSOLE_UART::send_string_p (PSTR ("BOOT\r\n"));
+	// ADC init. FIXME: exclude ADC when no ADC modules included (ADCBattery, ADCRSSI and so on)
 	adc::init ();
+	// load telemetry settings
 	telemetry::init ();
+	// load OSD settings
 	osd::init ();
 }
 
@@ -53,6 +64,7 @@ int main ()
 {
 	init ();
 
+	// main loop
 	osd::main ();
 
 	return 0;

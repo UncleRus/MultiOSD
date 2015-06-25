@@ -65,7 +65,8 @@ namespace draw
 				buffer [r] = _rect [7];
 				spacer = ' ';
 			}
-			memset (buffer + 1, spacer, w - 2);
+			if (w > 2)
+				memset (buffer + 1, spacer, w - 2);
 			buffer [w] = 0;
 			max7456::puts (l, t + i, buffer, attr);
 		}

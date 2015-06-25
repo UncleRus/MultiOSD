@@ -52,12 +52,12 @@ namespace input
 
 	uint8_t rssi = 0;
 	bool connected = false;
-	int16_t throttle = 0;
-	int16_t roll = 0;
-	int16_t pitch = 0;
-	int16_t yaw = 0;
-	int16_t collective = 0;
-	int16_t thrust = 0;
+	int8_t throttle = 0;
+	int8_t roll = 0;
+	int8_t pitch = 0;
+	int8_t yaw = 0;
+	int8_t collective = 0;
+	int8_t thrust = 0;
 	uint8_t flight_mode_switch = 0;
 	uint16_t channels [INPUT_CHANNELS];
 

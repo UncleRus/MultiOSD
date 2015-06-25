@@ -73,12 +73,11 @@ bool check_input ()
 volatile bool started = false;
 volatile bool mutex = false;
 
-ISR (INT0_vect)
+ISR (INT0_vect, ISR_NOBLOCK)
 {
 	if (!started || !screen::updated || mutex) return;
 	mutex = true;
 
-	sei ();	// I know, I know, but timer::ticks...
 	screen::draw ();
 
 	mutex = false;
@@ -92,10 +91,12 @@ void main ()
 	screen::load (0);
 	screen::update ();
 
+	// VSYNC external interrupt
 	EICRA = _BV (ISC01);	// VSYNC falling edge
 	EIMSK = _BV (INT0);		// enable
 	started = true;
 
+	// just in case
 	wdt_enable (WDTO_250MS);
 
 	while (true)

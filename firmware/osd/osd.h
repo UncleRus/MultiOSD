@@ -25,8 +25,11 @@
 namespace osd
 {
 
-void main ();
+// load settings
 void init ();
+
+// Main loop
+void main ();
 
 namespace settings
 {
