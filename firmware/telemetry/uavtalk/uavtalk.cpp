@@ -112,7 +112,7 @@ static uint8_t __attribute__ ((noinline)) _get_crc (uint8_t b)
 }
 //#define _get_crc(b) (pgm_read_byte (&crc_table [b]))
 
-void send (const header_t &head, uint8_t *data, uint8_t size)
+void send (const header_t &head, uint8_t *data = NULL, uint8_t size = 0)
 {
 	uint8_t crc = 0;
 	uint8_t *offset = (uint8_t *) &head;
