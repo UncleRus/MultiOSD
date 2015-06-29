@@ -1,86 +1,48 @@
--include config.mk
-
-TARGET = MultiOSD_$(TAG)
 BUILD_DIR = build
-SOURCE_DIR = 
-TARGET_MCU = atmega328p
-F_CPU = 16000000
-#DEFS = -D_DEBUG
-#DEFS = -DTELEMETRY_MODULES_UAVTALK -DTELEMETRY_MODULES_ADC_BATTERY
-#DEFS = -DTELEMETRY_MODULES_MAVLINK
+TARGET = MultiOSD
+FW_DIR = firmware
 
-# It can be "float", "min", and empty
-STDIO_VPRINTF = float
-LIBS =
 
-#######################################################################
+all: firmware
 
-SRCS := $(shell find $(SOURCE_DIR) -name '*.cpp')
-HDRS := $(shell find $(SOURCE_DIR) -name '*.h')
-OBJS := $(addprefix $(BUILD_DIR)/,$(SRCS:%.cpp=%.o))
-DEPS := $(addprefix $(BUILD_DIR)/,$(SRCS:%.cpp=%.d))
+set_tag = $(file >$(BUILD_DIR)/config.mk,TAG = $1)
+set_defs = $(file >>$(BUILD_DIR)/config.mk,DEFS = $1)
+clear = @rm -rf $(BUILD_DIR)/*[!.hex]
+fw_tgt = $(BUILD_DIR)/$(TARGET)_$1.hex
 
-ifeq ($(strip $(STDIO_VPRINTF)),float)
-LIBS += -Wl,-u,vfprintf -lprintf_flt -lm
-else ifeq ($(strip $(STDIO_VPRINTF)),min)
-LIBS += -Wl,-u,vfprintf -lprintf_min
-endif
+firmware: $(call fw_tgt,uavtalk) $(call fw_tgt,uavtalk_adcbattery) $(call fw_tgt,mavlink)
 
-ELF = $(BUILD_DIR)/$(TARGET).elf
-LSS = $(BUILD_DIR)/$(TARGET).lss
-HEX = $(BUILD_DIR)/$(TARGET).hex
-MAP = $(BUILD_DIR)/$(TARGET).map
+$(call fw_tgt,uavtalk):
+	$(call set_tag,uavtalk)
+	$(call set_defs,-DTELEMETRY_MODULES_UAVTALK)
+	$(MAKE) -C $(FW_DIR)
+	$(clear)
 
-CXX = avr-g++
-CXXFLAGS = -Wall -g2 -gstabs -Os -fpack-struct -fshort-enums -ffunction-sections \
-	-fdata-sections -funsigned-char -funsigned-bitfields -fno-exceptions -mmcu=$(TARGET_MCU) \
-	-MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -c
+$(call fw_tgt,uavtalk_adcrssi):
+	$(call set_tag,uavtalk_adcrssi)
+	$(call set_defs,-DTELEMETRY_MODULES_UAVTALK -DTELEMETRY_MODULES_ADC_RSSI)
+	$(MAKE) -C $(FW_DIR)
+	$(clear)
 
-LD = avr-g++
-LDFLAGS = -Wl,-Map,$(MAP),--cref -mrelax -Wl,--gc-sections $(LIBS) -mmcu=$(TARGET_MCU)
+$(call fw_tgt,uavtalk_adcbattery):
+	$(call set_tag,uavtalk_adcbattery)
+	$(call set_defs,-DTELEMETRY_MODULES_UAVTALK -DTELEMETRY_MODULES_ADC_BATTERY)
+	$(MAKE) -C $(FW_DIR)
+	$(clear)
 
-OBJDUMP = -avr-objdump
-OBJDUMP_FLAGS = -h -S
+$(call fw_tgt,uavtalk_adcbattery_adcrssi):
+	$(call set_tag,uavtalk_adcbattery_adcrssi)
+	$(call set_defs,-DTELEMETRY_MODULES_UAVTALK -DTELEMETRY_MODULES_ADC_BATTERY -DTELEMETRY_MODULES_ADC_RSSI)
+	$(MAKE) -C $(FW_DIR)
+	$(clear)
 
-OBJCOPY = -avr-objcopy
-OBJCOPY_FLAGS = -R .eeprom -R .fuse -R .lock -R .signature
-OBJCOPY_FMT = ihex
-
-AVRSIZE = -avr-size
-AVRSIZE_FLAGS = --format=avr --mcu=$(TARGET_MCU)  
-
-all: $(ELF) secondary-outputs
-
-$(BUILD_DIR)/%.o: %.cpp
-	@echo 'Building file: $<'
-	@mkdir -p $(dir $@)
-	$(CXX) -DF_CPU=$(F_CPU)UL $(DEFS) $(CXXFLAGS) -o "$@" $<
-	@echo ' '
-
-$(BUILD_DIR)/%.elf: $(OBJS)
-	@echo 'Building target: $<'
-	$(LD) $(LDFLAGS) -o "$@" $(OBJS)
-	@echo ''
-
-$(LSS): $(ELF)
-	@echo 'AVR Extended Listing'
-	$(OBJDUMP) $(OBJDUMP_FLAGS) "$(ELF)" > "$(LSS)"
-	@echo ' '
-
-$(HEX): $(ELF)
-	@echo 'Create Flash image ($(OBJCOPY_FMT) format)'
-	$(OBJCOPY) $(OBJCOPY_FLAGS) -O $(OBJCOPY_FMT) "$(ELF)" "$(HEX)"
-	@echo ' '
-
-sizedummy: $(ELF)
-	@echo 'Print Size'
-	$(AVRSIZE) $(AVRSIZE_FLAGS) "$(ELF)"
-	@echo ' '
-
-secondary-outputs: $(LSS) $(HEX) sizedummy
+$(call fw_tgt,mavlink):
+	$(call set_tag,mavlink)
+	$(call set_defs,-DTELEMETRY_MODULES_MAVLINK)
+	$(MAKE) -C $(FW_DIR)
+	$(clear)
 
 clean:
-	rm -f $(OBJS) $(LSS) $(HEX) $(MAP) $(ELF) $(DEPS)
+	@rm -rf $(BUILD_DIR)/*
 
-.PHONY: all clean dependents sizedummy secondary-outputs 
-.SECONDARY:
+.PHONY: all clean firmware
