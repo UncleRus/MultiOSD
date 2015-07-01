@@ -62,6 +62,9 @@
 #define MAVLINK_CONNECTION_TIMEOUT 2000					// ms
 #define MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL 1			// Internal battery level calculation (may be better)
 #define MAVLINK_DEFAULT_RSSI_LOW_THRESHOLD 10			// percentes
+#define MAVLINK_DEFAULT_EMULATE_RSSI 0					// bool
+#define MAVLINK_DEFAULT_EMULATE_RSSI_CHANNEL 2			// 0 - roll, 1 - pitch, 2 - throttle and so on
+#define MAVLINK_DEFAULT_EMULATE_RSSI_THRESHOLD 920		// rssi_low
 
 /*
  * OSD config

@@ -23,6 +23,9 @@
 
 #define MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL _eeprom_byte (MAVLINK_EEPROM_OFFSET)
 #define MAVLINK_EEPROM_RSSI_LOW_THRESHOLD _eeprom_byte (MAVLINK_EEPROM_OFFSET + 1)
+#define MAVLINK_EEPROM_EMULATE_RSSI	_eeprom_byte (MAVLINK_EEPROM_OFFSET + 2)
+#define MAVLINK_EEPROM_EMULATE_RSSI_CHANNEL _eeprom_byte (MAVLINK_EEPROM_OFFSET + 3)
+#define MAVLINK_EEPROM_EMULATE_RSSI_THRESHOLD _eeprom_word (MAVLINK_EEPROM_OFFSET + 4)
 
 namespace telemetry
 {
@@ -35,6 +38,9 @@ namespace mavlink
 
 uint8_t internal_battery_level;
 uint8_t rssi_low_threshold;
+bool emulate_rssi;
+uint8_t emulate_rssi_channel;
+uint16_t emulate_rssi_threshold;
 
 float __attribute__ ((noinline)) rad_to_deg (float rad)
 {
@@ -247,9 +253,9 @@ bool update ()
 				telemetry::stable::altitude = mavlink_msg_vfr_hud_get_alt (msg);
 				telemetry::stable::climb = mavlink_msg_vfr_hud_get_climb (msg);
 				telemetry::stable::heading = mavlink_msg_vfr_hud_get_heading (msg);
+				telemetry::input::throttle = mavlink_msg_vfr_hud_get_throttle (msg);
 				break;
 			case MAVLINK_MSG_ID_HIL_CONTROLS:
-				telemetry::input::throttle = mavlink_msg_hil_controls_get_throttle (msg) * 100;
 				telemetry::input::roll = mavlink_msg_hil_controls_get_roll_ailerons (msg) * 100;
 				telemetry::input::pitch = mavlink_msg_hil_controls_get_pitch_elevator (msg) * 100;
 				telemetry::input::yaw = mavlink_msg_hil_controls_get_yaw_rudder (msg) * 100;
@@ -265,8 +271,16 @@ bool update ()
             	telemetry::input::channels [5] = mavlink_msg_rc_channels_raw_get_chan6_raw (msg);
             	telemetry::input::channels [6] = mavlink_msg_rc_channels_raw_get_chan7_raw (msg);
             	telemetry::input::channels [7] = mavlink_msg_rc_channels_raw_get_chan8_raw (msg);
-            	telemetry::input::rssi = mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
-            	telemetry::messages::rssi_low = telemetry::input::rssi < rssi_low_threshold;
+            	if (!emulate_rssi)
+            	{
+            		telemetry::input::rssi = mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
+            		telemetry::messages::rssi_low = telemetry::input::rssi < rssi_low_threshold;
+            	}
+            	else
+            	{
+            		telemetry::messages::rssi_low = telemetry::input::channels [emulate_rssi_channel] < emulate_rssi_threshold;
+            		telemetry::input::rssi = telemetry::messages::rssi_low ? 100 : 0;
+            	}
             	break;
             case MAVLINK_MSG_ID_SCALED_PRESSURE:
             	telemetry::barometer::temperature = mavlink_msg_scaled_pressure_get_temperature (msg) / 100.0;
@@ -303,12 +317,18 @@ void init ()
 {
 	internal_battery_level = eeprom_read_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL);
 	rssi_low_threshold = eeprom_read_byte (MAVLINK_EEPROM_RSSI_LOW_THRESHOLD);
+	emulate_rssi = eeprom_read_byte (MAVLINK_EEPROM_EMULATE_RSSI);
+	emulate_rssi_channel = eeprom_read_byte (MAVLINK_EEPROM_EMULATE_RSSI_CHANNEL);;
+	emulate_rssi_threshold = eeprom_read_word (MAVLINK_EEPROM_EMULATE_RSSI_THRESHOLD);
 }
 
 void reset ()
 {
 	eeprom_update_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL, MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL);
 	eeprom_update_byte (MAVLINK_EEPROM_RSSI_LOW_THRESHOLD, MAVLINK_DEFAULT_RSSI_LOW_THRESHOLD);
+	eeprom_update_byte (MAVLINK_EEPROM_EMULATE_RSSI, MAVLINK_DEFAULT_EMULATE_RSSI);
+	eeprom_update_byte (MAVLINK_EEPROM_EMULATE_RSSI_CHANNEL, MAVLINK_DEFAULT_EMULATE_RSSI_CHANNEL);
+	eeprom_update_word (MAVLINK_EEPROM_EMULATE_RSSI_THRESHOLD, MAVLINK_DEFAULT_EMULATE_RSSI_THRESHOLD);
 }
 
 }  // namespace mavlink
