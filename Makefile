@@ -10,7 +10,7 @@ set_defs = $(file >>$(BUILD_DIR)/config.mk,DEFS = $1)
 clear = @rm -rf $(BUILD_DIR)/*[!.hex]
 fw_tgt = $(BUILD_DIR)/$(TARGET)_$1.hex
 
-firmware: $(call fw_tgt,uavtalk) $(call fw_tgt,uavtalk_adcbattery) $(call fw_tgt,mavlink)
+firmware: $(call fw_tgt,uavtalk) $(call fw_tgt,uavtalk_adcrssi) $(call fw_tgt,uavtalk_adcbattery) $(call fw_tgt,uavtalk_adcbattery_adcrssi) $(call fw_tgt,mavlink)
 
 $(call fw_tgt,uavtalk):
 	$(call set_tag,uavtalk)

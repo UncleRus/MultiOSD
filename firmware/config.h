@@ -15,13 +15,14 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define VERSION 5
+#define VERSION 6
 
 /*
  * Telemetry modules config
  */
 
-//#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from adc
+//#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from ADC
+//#define TELEMETRY_MODULES_ADC_RSSI					// read RSSI level from ADC
 //#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
 #if !defined (TELEMETRY_MODULES_UAVTALK) && !defined (TELEMETRY_MODULES_MAVLINK)
 #define TELEMETRY_MODULES_MAVLINK					// main telemetry module
@@ -123,6 +124,15 @@
 #define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 1		// ADC current sensor enabled
 #define ADC_BATTERY_DEFAULT_VOLTAGE_MULTIPLIER 10.98
 #define ADC_BATTERY_DEFAULT_CURRENT_MULTIPLIER 18.1818
+
+/*
+ * ADC RSSI
+ */
+#define ADC_RSSI_DEFAULT_CHANNEL 1				// ADC1 24 pin
+#define ADC_RSSI_DEFAULT_UPDATE_INTERVAL 200	// ms
+#define ADC_RSSI_DEFAULT_LOW_THRESHOLD 10		// percents
+#define ADC_RSSI_DEFAULT_MULTIPLIER 100.0
+
 
 /*
  * SPI config

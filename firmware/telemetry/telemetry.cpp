@@ -278,6 +278,9 @@ namespace waypoint
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 #	include "adc_battery/adc_battery.h"
 #endif
+#ifdef TELEMETRY_MODULES_ADC_RSSI
+#	include "adc_rssi/adc_rssi.h"
+#endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
 #	include "i2c_baro/i2c_baro.h"
 #endif
@@ -307,6 +310,9 @@ namespace modules
 	const module_t modules [] PROGMEM = {
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
 		declare_module (adc_battery),
+#endif
+#ifdef TELEMETRY_MODULES_ADC_RSSI
+		declare_module (adc_rssi),
 #endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
 		declare_module (i2c_baro),
@@ -354,7 +360,7 @@ namespace settings
 	void reset ()
 	{
 		eeprom_update_byte (TELEMETRY_EEPROM_MAIN_MODULE_ID, TELEMETRY_MAIN_MODULE_ID);
-		eeprom_update_block (TELEMETRY_DEFAULT_CALLSIGN, TELEMETRY_EEPROM_CALLSIGN, 5);
+		eeprom_update_block (TELEMETRY_DEFAULT_CALLSIGN, TELEMETRY_EEPROM_CALLSIGN, sizeof (status::callsign) - 1);
 
 		battery::reset ();
 		for (uint8_t i = 0; i < modules::count; i ++)

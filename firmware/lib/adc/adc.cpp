@@ -46,9 +46,9 @@ uint16_t read (uint8_t channel)
 	return ADC;
 }
 
-float value (uint8_t channel, float divider)
+float value (uint8_t channel, float multiplier)
 {
-	return (read (channel) / 1024.0 * s_ref_voltage) * divider;
+	return (read (channel) / 1024.0 * s_ref_voltage) * multiplier;
 }
 
 namespace settings

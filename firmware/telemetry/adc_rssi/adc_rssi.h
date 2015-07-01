@@ -12,29 +12,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIB_ADC_ADC_H_
-#define LIB_ADC_ADC_H_
+#ifndef TELEMETRY_ADC_RSSI_ADC_RSSI_H_
+#define TELEMETRY_ADC_RSSI_ADC_RSSI_H_
 
-#include <stdint.h>
+#include <avr/pgmspace.h>
 
-namespace adc
+namespace telemetry
 {
 
-#define ADC_REF_AREF		0
-#define ADC_REF_AVCC		1
-#define ADC_REF_INTERNAL	3
+namespace modules
+{
 
+namespace adc_rssi
+{
+
+const char __name [] PROGMEM = "ADCRSSI";
+
+void reset ();
 void init ();
-uint16_t read (uint8_t channel);
-float value (uint8_t channel, float multiplier);
+bool update ();
 
-namespace settings
-{
+}  // namespace adc_rssi
 
-	void reset ();
+}  // namespace modules
 
-}  // namespace settings
+}  // namespace telemetry
 
-}
-
-#endif /* LIB_ADC_ADC_H_ */
+#endif /* TELEMETRY_ADC_RSSI_ADC_RSSI_H_ */
