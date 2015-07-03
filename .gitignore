@@ -27,6 +27,7 @@
 *.out
 *.app
 
+*.pyc
 *.lss
 *.map
 *.elf
@@ -34,14 +35,5 @@
 *.d
 /Debug/
 /Release/
-/Debug/
-/Release/
-/Debug/
-/Release/
-/Debug/
-/Release/
-/Debug/
-/Release/
-/Debug/
-/Release/
 /build/
+
