@@ -34,10 +34,26 @@ namespace modules
 namespace uavtalk
 {
 
+static uint8_t board;
+static bool internal_home_calc;
+static uint8_t release;
+
 const uint32_t _ut_releases [][_UT_OBJ_CNT] PROGMEM = {
 	{ 0xC5FF2D54, 0x40BFFEFC, 0xBA9B00A4, 0x6737BB5A, 0xCAD1DC0A, 0xD7E0D964, 0x161A2C98, 0x7D26A6E6, 0xD4478084, 0x0BC57454, 0x26962352, 0x48120EA6, 0x6185DC6E, 0x4AFDB658 },
 	{ 0x8A80EA52, 0x40BFFEFC, 0x6B7639EC, 0x6737BB5A, 0xCAD1DC0A, 0xD7E0D964, 0x161A2C98, 0x7D26A6E6, 0xD4478084, 0x0BC57454, 0x26962352, 0x48120EA6, 0x6185DC6E, 0x4AFDB658 },
 };
+
+uint8_t get_obj (uint32_t objid)
+{
+	for (register uint8_t i = 0; i < _UT_OBJ_CNT; i ++)
+		if (pgm_read_dword (&_ut_releases [release][i]) == objid) return i;
+	return 0xff;
+}
+
+uint32_t get_objid (uint8_t obj)
+{
+	return pgm_read_dword (&_ut_releases [release][obj]);
+}
 
 const char _fm_man [] PROGMEM = "MANU";
 const char _fm_stab1 [] PROGMEM = "STB1";
@@ -115,10 +131,6 @@ static const uint8_t crc_table [256] PROGMEM =
 #define UAVTALK_EEPROM_VERSION_RELEASE _eeprom_byte (UAVTALK_EEPROM_OFFSET + 1)
 #define UAVTALK_EEPROM_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 2)
 
-static uint8_t board;
-static bool internal_home_calc;
-static uint8_t release;
-
 //static uint32_t obj_ids [_UT_OBJ_CNT];
 
 static uint8_t __attribute__ ((noinline)) _get_crc (uint8_t b)
@@ -152,7 +164,7 @@ void send_gcs_telemetry_stats (uint8_t status)
 	data [_UT_OFFS_FTS_STATUS] = status;
 	h.msg_type = _UT_TYPE_OBJ_ACK;
 	h.length = UAVTALK_HEADER_LEN + _UT_GCSTELEMETRYSTATS_LENGTH;
-	h.obj_id = _ut_releases [release][UAVTALK_GCSTELEMETRYSTATS_OBJ];
+	h.obj_id = get_objid (UAVTALK_GCSTELEMETRYSTATS_OBJ);
 	send (h, data, _UT_GCSTELEMETRYSTATS_LENGTH);
 }
 
@@ -289,7 +301,7 @@ inline uint8_t fts_respond (uint8_t state)
 	if (state == _UT_TELEMETRY_STATE_HANDSHAKE_ACK)
 		send_gcs_telemetry_stats (_UT_TELEMETRY_STATE_CONNECTED);
 
-	request_object (_ut_releases [release][UAVTALK_FLIGHTSTATUS_OBJ]);
+	request_object (get_objid (UAVTALK_FLIGHTSTATUS_OBJ));
 
 	return CONNECTION_STATE_CONNECTED;
 }
@@ -309,13 +321,6 @@ static const _gps_data_t _fake_gps_data [] PROGMEM = {
 static uint8_t _fake_idx = 0;
 static uint32_t _fake_gps_update_timeout;
 #endif
-
-uint8_t get_obj (uint32_t objid)
-{
-	for (register uint8_t i = 0; i < _UT_OBJ_CNT; i ++)
-		if (pgm_read_dword (&_ut_releases [release][i]) == objid) return i;
-	return 0xff;
-}
 
 bool update ()
 {
