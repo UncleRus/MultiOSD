@@ -1,5 +1,8 @@
 BUILD_DIR = ../build
 
+TAG = mavlink
+DEFS = -DTELEMETRY_MODULES_MAVLINK
+
 -include $(BUILD_DIR)/config.mk
 
 TARGET = MultiOSD_$(TAG)
@@ -10,7 +13,7 @@ F_CPU = 16000000
 #DEFS = -DTELEMETRY_MODULES_UAVTALK -DTELEMETRY_MODULES_ADC_BATTERY
 #DEFS = -DTELEMETRY_MODULES_MAVLINK
 
-# It can be "float", "min", and empty
+# It can be "float", "min" or empty
 STDIO_VPRINTF = float
 LIBS =
 
@@ -53,30 +56,24 @@ AVRSIZE_FLAGS = --format=avr --mcu=$(TARGET_MCU)
 all: $(ELF) secondary-outputs
 
 $(BUILD_DIR)/%.o: %.cpp
-	@echo 'Building file: $<'
 	@mkdir -p $(dir $@)
 	$(CXX) -DF_CPU=$(F_CPU)UL $(DEFS) $(CXXFLAGS) -o "$@" $<
-	@echo ' '
 
-$(BUILD_DIR)/%.elf: $(OBJS)
+$(ELF): $(OBJS)
 	@echo 'Building target: $<'
 	$(LD) $(LDFLAGS) -o "$@" $(OBJS)
-	@echo ''
 
 $(LSS): $(ELF)
 	@echo 'AVR Extended Listing'
 	$(OBJDUMP) $(OBJDUMP_FLAGS) "$(ELF)" > "$(LSS)"
-	@echo ' '
 
 $(HEX): $(ELF)
 	@echo 'Create Flash image ($(OBJCOPY_FMT) format)'
 	$(OBJCOPY) $(OBJCOPY_FLAGS) -O $(OBJCOPY_FMT) "$(ELF)" "$(HEX)"
-	@echo ' '
 
 sizedummy: $(ELF)
 	@echo 'Print Size'
 	$(AVRSIZE) $(AVRSIZE_FLAGS) "$(ELF)"
-	@echo ' '
 
 secondary-outputs: $(LSS) $(HEX) sizedummy
 
