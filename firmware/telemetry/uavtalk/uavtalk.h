@@ -28,22 +28,9 @@
 #define UAVTALK_BOARD_CC3D 0
 #define UAVTALK_BOARD_REVO 1
 
+#include "releases.h"
+
 #include "../../config.h"
-
-#ifndef UAVTALK_VERSION
-#	define UAVTALK_VERSION 0x20
-#endif
-#ifndef UAVTALK_VERSION_RELEASE
-#	define UAVTALK_VERSION_RELEASE 141001
-#endif
-#ifndef UAVTALK_DEFAULT_BOARD
-#	define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
-#endif
-#ifndef UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL
-#	define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500
-#endif
-
-#include "versions.h"
 
 #define UAVTALK_SYNC 0x3c
 #define UAVTALK_HEADER_LEN 0x0a

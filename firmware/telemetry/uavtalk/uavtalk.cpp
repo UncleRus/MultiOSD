@@ -24,6 +24,7 @@
 #include "../../lib/max7456/max7456.h"
 #endif
 
+
 namespace telemetry
 {
 
@@ -32,6 +33,10 @@ namespace modules
 
 namespace uavtalk
 {
+
+static uint8_t board;
+static bool internal_home_calc;
+static uint8_t release;
 
 const char _fm_man [] PROGMEM = "MANU";
 const char _fm_stab1 [] PROGMEM = "STB1";
@@ -100,17 +105,32 @@ static const uint8_t crc_table [256] PROGMEM =
 #define _UT_TELEMETRY_STATE_HANDSHAKE_ACK 2
 #define _UT_TELEMETRY_STATE_CONNECTED     3
 
-#define UAVTALK_EEPROM_BOARD _eeprom_byte (UAVTALK_EEPROM_OFFSET)
-#define UAVTALK_EEPROM_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 1)
+#define _UT_OFFS_FTS_STATUS 36
+#define _UT_OFFS_MCC_CHANNELS 24
+#define _UT_OFFS_MCC_CONN 42
+#define _UT_OFFS_MCC_FMS 43
 
-static uint8_t board;
-static bool internal_home_calc;
+#define UAVTALK_EEPROM_BOARD _eeprom_byte (UAVTALK_EEPROM_OFFSET)
+#define UAVTALK_EEPROM_VERSION_RELEASE _eeprom_byte (UAVTALK_EEPROM_OFFSET + 1)
+#define UAVTALK_EEPROM_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 2)
 
 static uint8_t __attribute__ ((noinline)) _get_crc (uint8_t b)
 {
 	return pgm_read_byte (&crc_table [b]);
 }
 //#define _get_crc(b) (pgm_read_byte (&crc_table [b]))
+
+uint8_t get_obj (uint32_t objid)
+{
+	for (register uint8_t i = 0; i < _UT_OBJ_CNT; i ++)
+		if (pgm_read_dword (&_ut_releases [release][i]) == objid) return i;
+	return 0xff;
+}
+
+uint32_t get_objid (uint8_t obj)
+{
+	return pgm_read_dword (&_ut_releases [release][obj]);
+}
 
 void send (const header_t &head, uint8_t *data = NULL, uint8_t size = 0)
 {
@@ -137,7 +157,7 @@ void send_gcs_telemetry_stats (uint8_t status)
 	data [_UT_OFFS_FTS_STATUS] = status;
 	h.msg_type = _UT_TYPE_OBJ_ACK;
 	h.length = UAVTALK_HEADER_LEN + _UT_GCSTELEMETRYSTATS_LENGTH;
-	h.obj_id = UAVTALK_GCSTELEMETRYSTATS_OBJID;
+	h.obj_id = get_objid (UAVTALK_GCSTELEMETRYSTATS_OBJ);
 	send (h, data, _UT_GCSTELEMETRYSTATS_LENGTH);
 }
 
@@ -274,7 +294,7 @@ inline uint8_t fts_respond (uint8_t state)
 	if (state == _UT_TELEMETRY_STATE_HANDSHAKE_ACK)
 		send_gcs_telemetry_stats (_UT_TELEMETRY_STATE_CONNECTED);
 
-	request_object (UAVTALK_FLIGHTSTATUS_OBJID);
+	request_object (get_objid (UAVTALK_FLIGHTSTATUS_OBJ));
 
 	return CONNECTION_STATE_CONNECTED;
 }
@@ -305,22 +325,22 @@ bool update ()
 		bool changed = true;
 		bool was_armed;
 
-		switch (buffer.head.obj_id)
+		switch (get_obj (buffer.head.obj_id))
 		{
 			// connection
-			case UAVTALK_FLIGHTTELEMETRYSTATS_OBJID:
+			case UAVTALK_FLIGHTTELEMETRYSTATS_OBJ:
 				telemetry::status::connection = fts_respond (buffer.data [_UT_OFFS_FTS_STATUS]);
 				connection_timeout = telemetry::ticks + UAVTALK_CONNECTION_TIMEOUT;
 				break;
-			case UAVTALK_SYSTEMSTATS_OBJID:
+			case UAVTALK_SYSTEMSTATS_OBJ:
 				telemetry::status::flight_time = buffer.get<uint32_t> (0) / 1000;
 				break;
-			case UAVTALK_ATTITUDESTATE_OBJID:
+			case UAVTALK_ATTITUDESTATE_OBJ:
 				telemetry::attitude::roll 	= buffer.get<float> (16);
 				telemetry::attitude::pitch 	= buffer.get<float> (20);
 				telemetry::attitude::yaw 	= buffer.get<float> (24);
 				break;
-			case UAVTALK_FLIGHTSTATUS_OBJID:
+			case UAVTALK_FLIGHTSTATUS_OBJ:
 				was_armed = telemetry::status::armed;
 				telemetry::status::armed = buffer.data [0] > 1;
 				telemetry::status::flight_mode = buffer.data [1];
@@ -329,7 +349,7 @@ bool update ()
 				if ((board == UAVTALK_BOARD_CC3D || internal_home_calc) && !was_armed && telemetry::status::armed)
 					telemetry::home::fix ();
 				break;
-			case UAVTALK_MANUALCONTROLCOMMAND_OBJID:
+			case UAVTALK_MANUALCONTROLCOMMAND_OBJ:
 				telemetry::input::throttle 	= (int8_t) (buffer.get<float> (0) * 100);
 				telemetry::input::roll 		= (int8_t) (buffer.get<float> (4) * 100);
 				telemetry::input::pitch 	= (int8_t) (buffer.get<float> (8) * 100);
@@ -342,13 +362,13 @@ bool update ()
 #if UAVTALK_VERSION_RELEASE >= 141001
 				telemetry::input::thrust 	= (int8_t) (buffer.get<float> (20) * 100);
 #endif
-#if !defined (TELEMETRY_MODULES_RSSI)
+#if !defined (TELEMETRY_MODULES_ADC_RSSI)
 				telemetry::messages::rssi_low = !telemetry::input::connected;
 				telemetry::input::rssi = telemetry::input::connected ? 100 : 0;
 #endif
 				memcpy (telemetry::input::channels, buffer.data + _UT_OFFS_MCC_CHANNELS, INPUT_CHANNELS * sizeof (uint16_t));
 				break;
-			case UAVTALK_GPSPOSITIONSENSOR_OBJID:
+			case UAVTALK_GPSPOSITIONSENSOR_OBJ:
 #ifdef UAVTALK_FAKE_GPS
 				if (telemetry::ticks < _fake_gps_update_timeout) break;
 
@@ -383,7 +403,7 @@ bool update ()
 				if (board == UAVTALK_BOARD_CC3D || internal_home_calc)
 					telemetry::home::update ();
 				break;
-			case UAVTALK_GPSVELOCITYSENSOR_OBJID:
+			case UAVTALK_GPSVELOCITYSENSOR_OBJ:
 				telemetry::gps::climb = -buffer.get<float> (8);
 				// TODO: north/east
 				break;
@@ -395,7 +415,7 @@ bool update ()
 			switch (buffer.head.obj_id)
 			{
 #if !defined (TELEMETRY_MODULES_ADC_BATTERY)
-				case UAVTALK_FLIGHTBATTERYSTATE_OBJID:
+				case UAVTALK_FLIGHTBATTERYSTATE_OBJ:
 					telemetry::battery::voltage = buffer.get<float> (0);
 					telemetry::battery::cells = buffer.data [28];
 					telemetry::battery::update_voltage ();
@@ -404,12 +424,12 @@ bool update ()
 					break;
 #endif
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
-				case UAVTALK_BAROSENSOR_OBJID:
+				case UAVTALK_BAROSENSOR_OBJ:
 					telemetry::barometer::altitude = buffer.get<float> (0);
 					telemetry::stable::update_alt_climb (telemetry::barometer::altitude);
 					break;
 #endif
-				case UAVTALK_POSITIONSTATE_OBJID:
+				case UAVTALK_POSITIONSTATE_OBJ:
 					if (internal_home_calc)
 					{
 						changed = false;
@@ -443,12 +463,14 @@ bool update ()
 void init ()
 {
 	board = eeprom_read_byte (UAVTALK_EEPROM_BOARD);
+	release = eeprom_read_byte (UAVTALK_EEPROM_VERSION_RELEASE);
 	internal_home_calc = eeprom_read_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC);
 }
 
 void reset ()
 {
 	eeprom_update_byte (UAVTALK_EEPROM_BOARD, UAVTALK_DEFAULT_BOARD);
+	eeprom_update_byte (UAVTALK_EEPROM_VERSION_RELEASE, UAVTALK_DEFAULT_VERSION_RELEASE);
 	eeprom_update_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC, UAVTALK_DEFAULT_INTERNAL_HOME_CALC);
 }
 

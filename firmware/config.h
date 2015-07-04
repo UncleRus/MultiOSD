@@ -43,11 +43,9 @@
  */
 #define UAVTALK_UART uart0
 #define UAVTALK_VERSION 0x20
-#ifndef UAVTALK_VERSION_RELEASE
-#	define UAVTALK_VERSION_RELEASE 150202
-#endif
-#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D		// default board
-#define UAVTALK_CONNECTION_TIMEOUT 10000				// ms
+#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
+#define UAVTALK_DEFAULT_VERSION_RELEASE UAVTALK_REL_150202
+#define UAVTALK_CONNECTION_TIMEOUT 5000					// ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500	// ms
 // Home distance/direction calculation: 0 - flight controller (REVO only), 1 - MultiOSD by GPS
 // Overrided by board setting
