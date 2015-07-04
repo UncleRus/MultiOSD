@@ -48,7 +48,10 @@ namespace telemetry {
 namespace modules {
 namespace uavtalk {
 
-const uint32_t _ut_releases [][_UT_OBJ_CNT] PROGMEM = {_UT_REL_141001, _UT_REL_150202};
+const uint32_t _ut_releases [2][_UT_OBJ_CNT] PROGMEM = {
+	_UT_REL_141001,
+	_UT_REL_150202
+};
 
 }}}
 

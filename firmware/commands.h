@@ -15,7 +15,7 @@
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
 
-#include <avr/pgmspace.h>
+#include "lib/pgmspace.h"
 
 namespace console
 {

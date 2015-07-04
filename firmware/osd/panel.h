@@ -16,7 +16,7 @@
 #define OSD_PANEL_H_
 
 #include <stdint.h>
-#include <avr/pgmspace.h>
+#include "../lib/pgmspace.h"
 
 #define OSD_PANEL_ALT                 0
 #define OSD_PANEL_CLIMB               1

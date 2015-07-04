@@ -17,7 +17,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <avr/pgmspace.h>
+#include "../lib/pgmspace.h"
 
 #define GPS_STATE_NO_FIX	0
 #define GPS_STATE_FIXING	1
