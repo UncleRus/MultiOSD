@@ -415,7 +415,7 @@ bool update ()
 			switch (buffer.head.obj_id)
 			{
 #if !defined (TELEMETRY_MODULES_ADC_BATTERY)
-				case UAVTALK_FLIGHTBATTERYSTATE_OBJID:
+				case UAVTALK_FLIGHTBATTERYSTATE_OBJ:
 					telemetry::battery::voltage = buffer.get<float> (0);
 					telemetry::battery::cells = buffer.data [28];
 					telemetry::battery::update_voltage ();
