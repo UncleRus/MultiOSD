@@ -157,6 +157,7 @@ namespace rates
 		{MAV_DATA_STREAM_POSITION, 15},
 		{MAV_DATA_STREAM_EXTRA1, 20},
 		{MAV_DATA_STREAM_EXTRA2, 5},
+		{MAV_DATA_STREAM_EXTRA3, 5},
 	};
 
 	const uint8_t count = sizeof (values) / sizeof (stream_rate_t);
@@ -271,6 +272,7 @@ bool update ()
             	telemetry::input::channels [5] = mavlink_msg_rc_channels_raw_get_chan6_raw (msg);
             	telemetry::input::channels [6] = mavlink_msg_rc_channels_raw_get_chan7_raw (msg);
             	telemetry::input::channels [7] = mavlink_msg_rc_channels_raw_get_chan8_raw (msg);
+#ifndef TELEMETRY_MODULES_ADC_RSSI
             	if (!emulate_rssi)
             	{
             		telemetry::input::rssi = mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
@@ -281,6 +283,7 @@ bool update ()
             		telemetry::messages::rssi_low = telemetry::input::channels [emulate_rssi_channel] < emulate_rssi_threshold;
             		telemetry::input::rssi = telemetry::messages::rssi_low ? 100 : 0;
             	}
+#endif
             	break;
             case MAVLINK_MSG_ID_SCALED_PRESSURE:
             	telemetry::barometer::temperature = mavlink_msg_scaled_pressure_get_temperature (msg) / 100.0;
