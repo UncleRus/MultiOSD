@@ -22,7 +22,7 @@
 
 #include <avr/pgmspace.h>
 
-#define MAVLINK_BOARD_APM 0
+//#define MAVLINK_BOARD_APM 0
 
 #include "../../config.h"
 

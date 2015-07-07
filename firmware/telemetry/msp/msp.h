@@ -15,6 +15,11 @@
 #ifndef TELEMETRY_MSP_MSP_H_
 #define TELEMETRY_MSP_MSP_H_
 
+#ifdef TELEMETRY_MAIN_MODULE_ID
+#	error Conflicting modules
+#endif
+#define TELEMETRY_MAIN_MODULE_ID 'W'
+
 #include <avr/pgmspace.h>
 #include "../../config.h"
 

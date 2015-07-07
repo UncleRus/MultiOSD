@@ -42,6 +42,12 @@ $(call fw_tgt,mavlink):
 	$(MAKE) -C $(FW_DIR)
 	$(clear)
 
+$(call fw_tgt,msp):
+	$(call set_tag,mavlink)
+	$(call set_defs,-DTELEMETRY_MODULES_MSP)
+	$(MAKE) -C $(FW_DIR)
+	$(clear)
+
 clean:
 	@rm -rf $(BUILD_DIR)/*
 
