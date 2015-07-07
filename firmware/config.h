@@ -21,9 +21,9 @@
  * Telemetry modules config
  */
 
-//#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from ADC
-//#define TELEMETRY_MODULES_ADC_RSSI					// read RSSI level from ADC
-//#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
+#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from ADC
+#define TELEMETRY_MODULES_ADC_RSSI					// read RSSI level from ADC
+#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
 #if !defined (TELEMETRY_MODULES_UAVTALK) && !defined (TELEMETRY_MODULES_MAVLINK)
 #define TELEMETRY_MODULES_MAVLINK					// main telemetry module
 #endif
@@ -63,6 +63,13 @@
 #define MAVLINK_DEFAULT_EMULATE_RSSI 0					// bool
 #define MAVLINK_DEFAULT_EMULATE_RSSI_CHANNEL 2			// 0 - roll, 1 - pitch, 2 - throttle and so on
 #define MAVLINK_DEFAULT_EMULATE_RSSI_THRESHOLD 920		// rssi_low
+
+/*
+ * MSP config
+ */
+#define MSP_BUFFER_SIZE 128
+#define MSP_UART uart0
+#define MSP_CONNECTION_TIMEOUT 2000						// ms
 
 /*
  * OSD config
