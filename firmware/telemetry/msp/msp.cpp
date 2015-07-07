@@ -112,21 +112,40 @@ bool update ()
 				break;
 			case MSP_RC:
 				memcpy (telemetry::input::channels, buffer, 16);
+				telemetry::input::roll = (telemetry::input::channels [0] - 1500) / 10;
+				telemetry::input::pitch = (telemetry::input::channels [1] - 1500) / 10;
+				telemetry::input::yaw = (telemetry::input::channels [2] - 1500) / 10;
+				telemetry::input::throttle = (telemetry::input::channels [3] - 1000) / 10;
 				break;
 			case MSP_RAW_GPS:
 				telemetry::gps::satellites = buffer [1];
 				if (buffer [0]) telemetry::gps::state = telemetry::gps::satellites > 4 ? GPS_STATE_3D : GPS_STATE_2D;
 				else telemetry::gps::state = telemetry::gps::satellites > 0 ? GPS_STATE_FIXING : GPS_STATE_NO_FIX;
-				telemetry::gps::latitude = get<uint32_t> (2) / 1000000.0;
-				telemetry::gps::longitude = get<uint32_t> (6) / 1000000.0;
+				telemetry::gps::latitude = get<uint32_t> (2) / 10000000.0;
+				telemetry::gps::longitude = get<uint32_t> (6) / 10000000.0;
 				telemetry::gps::altitude = get<int16_t> (10);
 				telemetry::gps::speed = get<uint16_t> (12) / 100.0;
 				telemetry::gps::heading = round (get<uint16_t> (12) / 10.0);
 				break;
+			case MSP_COMP_GPS:
+				telemetry::home::distance = get<uint16_t> (0);
+				telemetry::home::direction = get<int16_t> (2) + 180;
+				break;
 			case MSP_ATTITUDE:
 				telemetry::attitude::roll = get<int16_t> (0) / 10.0;
 				telemetry::attitude::pitch = -get<int16_t> (2) / 10.0;
-				// FIXME: heading?
+				telemetry::attitude::yaw = get<uint16_t> (4);
+				break;
+			case MSP_ALTITUDE:
+				telemetry::stable::altitude = get<int32_t> (0) / 100.0;
+				telemetry::stable::climb = get<int16_t> (4) / 100.0;
+				break;
+			case MSP_ANALOG:
+				telemetry::battery::voltage = buffer [0] / 10.0;
+				telemetry::battery::update_voltage ();
+				telemetry::input::rssi = get<uint16_t> (3) / 1023 * 100;
+				telemetry::battery::current = get<uint16_t> (5) / 10.0;
+				telemetry::battery::update_consumed ();
 				break;
 			default:
 				changed = false;
