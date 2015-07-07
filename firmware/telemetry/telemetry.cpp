@@ -293,6 +293,9 @@ namespace waypoint
 #ifdef TELEMETRY_MODULES_MAVLINK
 #	include "mavlink/mavlink.h"
 #endif
+#ifdef TELEMETRY_MODULES_MSP
+#	include "msp/msp.h"
+#endif
 
 #ifndef TELEMETRY_MAIN_MODULE_ID
 #	error No main telemetry module defined
@@ -325,6 +328,9 @@ namespace modules
 #endif
 #ifdef TELEMETRY_MODULES_MAVLINK
 		declare_module (mavlink),
+#endif
+#ifdef TELEMETRY_MODULES_MSP
+		declare_module (msp),
 #endif
 	};
 
