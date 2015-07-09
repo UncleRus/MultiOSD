@@ -28,10 +28,6 @@
 #include "boot.h"
 #include "osd/osd.h"
 
-#if defined (TELEMETRY_MODULES_ADC_BATTERY) || defined (TELEMETRY_MODULES_ADC_RSSI)
-#	include "lib/adc/adc.h"
-#endif
-
 inline void init ()
 {
 	// let's check EEPROM state
@@ -57,10 +53,6 @@ inline void init ()
 	}
 	// boot to OSD
 	CONSOLE_UART::send_string_p (PSTR ("BOOT\r\n"));
-#if defined (TELEMETRY_MODULES_ADC_BATTERY) || defined (TELEMETRY_MODULES_ADC_RSSI)
-	// ADC init.
-	adc::init ();
-#endif
 	// load telemetry settings
 	telemetry::init ();
 	// load OSD settings

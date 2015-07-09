@@ -47,38 +47,40 @@ void reset ()
 	eeprom_update_byte (ADC_BATTERY_EEPROM_CURRENT_CHANNEL, ADC_BATTERY_DEFAULT_CURRENT_CHANNEL);
 }
 
-static uint32_t _last_update_time = 0;
-static bool _current_sensor;
-static float _voltage_multiplier;
-static float _current_multiplier;
-static uint16_t _interval;
-static uint8_t _voltage_channel, _current_channel;
+static uint32_t last_update_time = 0;
+static bool current_sensor;
+static float voltage_multiplier;
+static float current_multiplier;
+static uint16_t update_interval;
+static uint8_t voltage_channel, current_channel;
 
 void init ()
 {
-	_current_sensor = eeprom_read_byte (ADC_BATTERY_EEPROM_CURRENT_SENSOR);
-	_voltage_multiplier = eeprom_read_float (ADC_BATTERY_EEPROM_VOLTAGE_MULTIPLIER);
-	if (_current_sensor)
-		_current_multiplier = eeprom_read_float (ADC_BATTERY_EEPROM_CURRENT_MULTIPLIER);
-	_interval = eeprom_read_word (ADC_BATTERY_EEPROM_UPDATE_INTERVAL);
-	_voltage_channel = eeprom_read_byte (ADC_BATTERY_EEPROM_VOLTAGE_CHANNEL);
-	_current_channel = eeprom_read_byte (ADC_BATTERY_EEPROM_CURRENT_CHANNEL);
+	adc::init ();
+
+	current_sensor = eeprom_read_byte (ADC_BATTERY_EEPROM_CURRENT_SENSOR);
+	voltage_multiplier = eeprom_read_float (ADC_BATTERY_EEPROM_VOLTAGE_MULTIPLIER);
+	if (current_sensor)
+		current_multiplier = eeprom_read_float (ADC_BATTERY_EEPROM_CURRENT_MULTIPLIER);
+	update_interval = eeprom_read_word (ADC_BATTERY_EEPROM_UPDATE_INTERVAL);
+	voltage_channel = eeprom_read_byte (ADC_BATTERY_EEPROM_VOLTAGE_CHANNEL);
+	current_channel = eeprom_read_byte (ADC_BATTERY_EEPROM_CURRENT_CHANNEL);
 }
 
 bool update ()
 {
-	uint16_t interval = telemetry::ticks - _last_update_time;
+	uint16_t interval = telemetry::ticks - last_update_time;
 
-	if (interval < _interval) return false;
+	if (interval < update_interval) return false;
 
-	_last_update_time = telemetry::ticks;
+	last_update_time = telemetry::ticks;
 
-	telemetry::battery::voltage = adc::value (_voltage_channel, _voltage_multiplier);
+	telemetry::battery::voltage = adc::value (voltage_channel, voltage_multiplier);
 	telemetry::battery::update_voltage ();
 
-	if (_current_sensor)
+	if (current_sensor)
 	{
-		telemetry::battery::current = adc::value (_current_channel, _current_multiplier);
+		telemetry::battery::current = adc::value (current_channel, current_multiplier);
 		telemetry::battery::update_consumed ();
 	}
 	return true;
