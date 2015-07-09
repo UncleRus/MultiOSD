@@ -51,6 +51,8 @@ float multiplier;
 
 void init ()
 {
+	adc::init ();
+
 	channel = eeprom_read_byte (ADC_RSSI_EEPROM_CHANNEL);
 	update_interval = eeprom_read_word (ADC_RSSI_EEPROM_UPDATE_INTERVAL);
 	low_threshold = eeprom_read_byte (ADC_RSSI_EEPROM_LOW_THRESHOLD);

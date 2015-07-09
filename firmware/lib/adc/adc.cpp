@@ -25,14 +25,19 @@ namespace adc
 
 uint8_t s_ref;
 float s_ref_voltage;
+bool initialized = false;
 
 void init ()
 {
+	if (initialized) return;
+
 	s_ref = eeprom_read_byte (ADC_EEPROM_REF) << 6;
 	s_ref_voltage = eeprom_read_float (ADC_EEPROM_REF_VOLTAGE);
 
 	ADMUX = s_ref;
 	ADCSRA |= _BV (ADEN) | _BV (ADPS0) | _BV (ADPS1) | _BV (ADPS2);
+
+	initialized = true;
 }
 
 // TODO: Interrupt-based conversions, filters
