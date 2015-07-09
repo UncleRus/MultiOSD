@@ -58,20 +58,19 @@ namespace flight_modes
 		const char fm_2 [] PROGMEM  = "STAB";
 		const char fm_3 [] PROGMEM  = "TRN ";
 		const char fm_4 [] PROGMEM  = "ACRO";
-		const char fm_5 [] PROGMEM  = "FWBA";
-		const char fm_6 [] PROGMEM  = "FWBB";
+		const char fm_5 [] PROGMEM  = "FBWA";
+		const char fm_6 [] PROGMEM  = "FBWB";
 		const char fm_7 [] PROGMEM  = "CRUI";
 		const char fm_8 [] PROGMEM  = "ATUN";
 		const char fm_10 [] PROGMEM = "AUTO";
 		const char fm_11 [] PROGMEM = "RTL ";
 		const char fm_12 [] PROGMEM = "LOIT";
-		const char fm_14 [] PROGMEM = "LAND";
 		const char fm_15 [] PROGMEM = "GUID";
 		const char fm_16 [] PROGMEM = "INIT";
 
 		const char * const values [] PROGMEM = {
 			fm_0, fm_1, fm_2, fm_3, fm_4, fm_5, fm_6, fm_7,
-			fm_8, NULL, fm_10, fm_11, fm_12, NULL, fm_14, fm_15,
+			fm_8, NULL, fm_10, fm_11, fm_12, NULL, NULL, fm_15,
 			fm_16
 		};
 
@@ -90,7 +89,6 @@ namespace flight_modes
 		const char fm_5 [] PROGMEM  = "LOIT";
 		const char fm_6 [] PROGMEM  = "RTL ";
 		const char fm_7 [] PROGMEM  = "CRCL";
-		const char fm_8 [] PROGMEM  = "POS ";
 		const char fm_9 [] PROGMEM  = "LAND";
 		const char fm_10 [] PROGMEM = "OFLT";
 		const char fm_11 [] PROGMEM = "DRFT";
@@ -98,11 +96,12 @@ namespace flight_modes
 		const char fm_14 [] PROGMEM = "FLIP";
 		const char fm_15 [] PROGMEM = "ATUN";
 		const char fm_16 [] PROGMEM = "PHLD";
+		const char fm_17 [] PROGMEM = "BRK ";
 
 		const char * const values [] PROGMEM = {
 			fm_0, fm_1, fm_2, fm_3, fm_4, fm_5, fm_6, fm_7,
-			fm_8, fm_9, fm_10, fm_11, NULL, fm_13, fm_14, fm_15,
-			fm_16
+			NULL, fm_9, fm_10, fm_11, NULL, fm_13, fm_14, fm_15,
+			fm_16, fm_17
 		};
 
 		const uint8_t size = sizeof (values) / sizeof (char *);
