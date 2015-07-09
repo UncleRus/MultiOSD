@@ -22,12 +22,15 @@
 #include "lib/uart/uart.h"
 #include "lib/spi/spi.h"
 #include "lib/max7456/max7456.h"
-#include "lib/adc/adc.h"
 #include "telemetry/telemetry.h"
 #include "lib/console/console.h"
 #include "commands.h"
 #include "boot.h"
 #include "osd/osd.h"
+
+#if defined (TELEMETRY_MODULES_ADC_BATTERY) || defined (TELEMETRY_MODULES_ADC_RSSI)
+#	include "lib/adc/adc.h"
+#endif
 
 inline void init ()
 {
@@ -54,8 +57,10 @@ inline void init ()
 	}
 	// boot to OSD
 	CONSOLE_UART::send_string_p (PSTR ("BOOT\r\n"));
-	// ADC init. FIXME: exclude ADC when no ADC modules included (ADCBattery, ADCRSSI and so on)
+#if defined (TELEMETRY_MODULES_ADC_BATTERY) || defined (TELEMETRY_MODULES_ADC_RSSI)
+	// ADC init.
 	adc::init ();
+#endif
 	// load telemetry settings
 	telemetry::init ();
 	// load OSD settings
