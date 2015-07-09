@@ -35,6 +35,8 @@ inline void init ()
 	settings::init ();
 	// setup timer
 	timer::init ();
+	// wait 1 sec
+	_delay_ms (1000);
 	// setup UART
 	CONSOLE_UART::init (UART_BAUD_SELECT (UART_BAUD_RATE));
 	// setup SPI...
