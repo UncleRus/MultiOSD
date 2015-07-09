@@ -164,8 +164,8 @@ namespace rates
 	void setup ()
 	{
 		for (uint8_t i = 0; i < rates::count; i ++)
-	        mavlink_msg_request_data_stream_send (MAVLINK_COMM_0, message.sysid, message.compid,
-	        	pgm_read_byte (&rates::values [i].stream), pgm_read_byte (&rates::values [i].rate), 1);
+			mavlink_msg_request_data_stream_send (MAVLINK_COMM_0, message.sysid, message.compid,
+				pgm_read_byte (&rates::values [i].stream), pgm_read_byte (&rates::values [i].rate), 1);
 	}
 
 }  // namespace rates
@@ -233,11 +233,11 @@ bool update ()
 					telemetry::battery::update_consumed ();
 				}
 				break;
-            case MAVLINK_MSG_ID_ATTITUDE:
-            	attitude::roll = rad_to_deg (mavlink_msg_attitude_get_roll (msg));
-            	attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (msg));
-            	attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
-                break;
+			case MAVLINK_MSG_ID_ATTITUDE:
+				attitude::roll = rad_to_deg (mavlink_msg_attitude_get_roll (msg));
+				attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (msg));
+				attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
+				break;
 			case MAVLINK_MSG_ID_GPS_RAW_INT:
 				telemetry::gps::state = mavlink_msg_gps_raw_int_get_fix_type (msg);
 				telemetry::gps::satellites = mavlink_msg_gps_raw_int_get_satellites_visible (msg);
@@ -260,48 +260,48 @@ bool update ()
 				telemetry::input::pitch = mavlink_msg_hil_controls_get_pitch_elevator (msg) * 100;
 				telemetry::input::yaw = mavlink_msg_hil_controls_get_yaw_rudder (msg) * 100;
 				break;
-            case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
-            	telemetry::input::connected = true;		// enable switching between screens
-            	// memcpy?
-            	telemetry::input::channels [0] = mavlink_msg_rc_channels_raw_get_chan1_raw (msg);
-            	telemetry::input::channels [1] = mavlink_msg_rc_channels_raw_get_chan2_raw (msg);
-            	telemetry::input::channels [2] = mavlink_msg_rc_channels_raw_get_chan3_raw (msg);
-            	telemetry::input::channels [3] = mavlink_msg_rc_channels_raw_get_chan4_raw (msg);
-            	telemetry::input::channels [4] = mavlink_msg_rc_channels_raw_get_chan5_raw (msg);
-            	telemetry::input::channels [5] = mavlink_msg_rc_channels_raw_get_chan6_raw (msg);
-            	telemetry::input::channels [6] = mavlink_msg_rc_channels_raw_get_chan7_raw (msg);
-            	telemetry::input::channels [7] = mavlink_msg_rc_channels_raw_get_chan8_raw (msg);
+			case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
+				telemetry::input::connected = true;		// enable switching between screens
+				// memcpy?
+				telemetry::input::channels [0] = mavlink_msg_rc_channels_raw_get_chan1_raw (msg);
+				telemetry::input::channels [1] = mavlink_msg_rc_channels_raw_get_chan2_raw (msg);
+				telemetry::input::channels [2] = mavlink_msg_rc_channels_raw_get_chan3_raw (msg);
+				telemetry::input::channels [3] = mavlink_msg_rc_channels_raw_get_chan4_raw (msg);
+				telemetry::input::channels [4] = mavlink_msg_rc_channels_raw_get_chan5_raw (msg);
+				telemetry::input::channels [5] = mavlink_msg_rc_channels_raw_get_chan6_raw (msg);
+				telemetry::input::channels [6] = mavlink_msg_rc_channels_raw_get_chan7_raw (msg);
+				telemetry::input::channels [7] = mavlink_msg_rc_channels_raw_get_chan8_raw (msg);
 #ifndef TELEMETRY_MODULES_ADC_RSSI
-            	if (!emulate_rssi)
-            	{
-            		telemetry::input::rssi = mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
-            		telemetry::messages::rssi_low = telemetry::input::rssi < rssi_low_threshold;
-            	}
-            	else
-            	{
-            		telemetry::messages::rssi_low = telemetry::input::channels [emulate_rssi_channel] < emulate_rssi_threshold;
-            		telemetry::input::rssi = telemetry::messages::rssi_low ? 100 : 0;
-            	}
+				if (!emulate_rssi)
+				{
+					telemetry::input::rssi = mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
+					telemetry::messages::rssi_low = telemetry::input::rssi < rssi_low_threshold;
+				}
+				else
+				{
+					telemetry::messages::rssi_low = telemetry::input::channels [emulate_rssi_channel] < emulate_rssi_threshold;
+					telemetry::input::rssi = telemetry::messages::rssi_low ? 100 : 0;
+				}
 #endif
-            	break;
-            case MAVLINK_MSG_ID_SCALED_PRESSURE:
-            	telemetry::barometer::temperature = mavlink_msg_scaled_pressure_get_temperature (msg) / 100.0;
-            	telemetry::stable::temperature = round (telemetry::barometer::temperature);
-            	telemetry::barometer::pressure = mavlink_msg_scaled_pressure_get_press_abs (msg) * 100;
-            	break;
-            case MAVLINK_MSG_ID_WIND:
-            	telemetry::wind::direction = mavlink_msg_wind_get_direction (msg);
-            	telemetry::wind::speed = mavlink_msg_wind_get_speed (msg);
-            	break;
-            case MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT:
-            	telemetry::waypoint::bearing = mavlink_msg_nav_controller_output_get_target_bearing (msg);
-            	telemetry::waypoint::distance = mavlink_msg_nav_controller_output_get_wp_dist (msg);
-            	break;
-            case MAVLINK_MSG_ID_MISSION_CURRENT:
-            	telemetry::waypoint::num = mavlink_msg_mission_current_get_seq (msg);
-            	break;
-            default:
-            	changed = false;
+				break;
+			case MAVLINK_MSG_ID_SCALED_PRESSURE:
+				telemetry::barometer::temperature = mavlink_msg_scaled_pressure_get_temperature (msg) / 100.0;
+				telemetry::stable::temperature = round (telemetry::barometer::temperature);
+				telemetry::barometer::pressure = mavlink_msg_scaled_pressure_get_press_abs (msg) * 100;
+				break;
+			case MAVLINK_MSG_ID_WIND:
+				telemetry::wind::direction = mavlink_msg_wind_get_direction (msg);
+				telemetry::wind::speed = mavlink_msg_wind_get_speed (msg);
+				break;
+			case MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT:
+				telemetry::waypoint::bearing = mavlink_msg_nav_controller_output_get_target_bearing (msg);
+				telemetry::waypoint::distance = mavlink_msg_nav_controller_output_get_wp_dist (msg);
+				break;
+			case MAVLINK_MSG_ID_MISSION_CURRENT:
+				telemetry::waypoint::num = mavlink_msg_mission_current_get_seq (msg);
+				break;
+			default:
+				changed = false;
 		}
 		updated |= changed;
 	}
