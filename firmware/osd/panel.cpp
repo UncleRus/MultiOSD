@@ -416,7 +416,7 @@ namespace home_direction
 	void update ()
 	{
 		if (telemetry::home::state != HOME_STATE_FIXED) return;
-		arrow = _PAN_HD_ARROWS + round (telemetry::home::direction / 360.0) * 32;
+		arrow = _PAN_HD_ARROWS + ((uint8_t) (telemetry::home::direction / 360.0 * 16)) * 2;
 	}
 
 	void draw (uint8_t x, uint8_t y)

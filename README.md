@@ -1,9 +1,9 @@
 MultiOSD
 ========
 
-![Screenshot](res/screenshot.png)
-
 Yet another MinimOSD firmware with configurable screens.
+
+![Screenshot](res/screenshot.png)
 
 **Warning: this software in early alpha stage!**
 
@@ -11,13 +11,14 @@ Capabilities:
    * switching between screens
    * config console
    * no image "snow"
+   * ADC RSSI and battery stats - useful with simple FC, such as CC3D
 
 
 Supported flight controllers
 ----------------------------
 
-* All of the OpenPilot boards: CC, CC3D/CC3D ATOM/CC3D EVO (tested), CC3D REVO
-* Many MAVLink boards:
+* All OpenPilot boards: CC, CC3D/CC3D ATOM/CC3D EVO (tested), CC3D REVO
+* Many of MAVLink boards:
    * APM 2.x (tested)
    * Pixhawk PX4
    * Paparazzi
@@ -53,14 +54,14 @@ Already available indicators
 - RSSI level
 - Compass
 
-Much more to come.
+More to come.
 
 Known bugs and problems
 -----------------------
 
-- Home direction calculation and arrow panel bug
+- Home direction bug
+- CC3D Revolution home distance/direction bug
 - No configurator software
-- CC3D Revolution home distnce/direction bug
 - Empty screen when cold started. Workaround: just press reset button on MinimOSD
 - No documentation!
 
