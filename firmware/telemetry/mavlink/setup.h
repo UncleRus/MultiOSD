@@ -20,15 +20,15 @@
 
 #define comm_send_ch(chan, b) { MAVLINK_UART::send (b); }
 
-#include "lib/include/mavlink/v1.0/mavlink_types.h"
+#include "lib/mavlink_types.h"
 
-const mavlink_system_t mavlink_system = { MAVLINK_SYSID, MAVLINK_COMPID, 0, 0 };
+const mavlink_system_t mavlink_system = { MAVLINK_SYSID, MAVLINK_COMPID };
 
 #define MAVLINK_EXTERNAL_RX_BUFFER 1
 #define m_mavlink_message
 namespace telemetry { namespace modules { namespace mavlink { mavlink_message_t message; } } }
 mavlink_message_t *m_mavlink_buffer = &telemetry::modules::mavlink::message;
 
-#include "lib/include/mavlink/v1.0/ardupilotmega/mavlink.h"
+#include "lib/ardupilotmega/mavlink.h"
 
 #endif /* TELEMETRY_MAVLINK_SETUP_H_ */
