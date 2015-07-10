@@ -61,6 +61,7 @@ Known bugs and problems
 - Home direction calculation and arrow panel bug
 - No configurator software
 - CC3D Revolution home distnce/direction bug
+- Empty screen when cold started. Workaround: just press reset button on MinimOSD
 - No documentation!
 
 
