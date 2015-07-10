@@ -27,6 +27,8 @@
 #define MAVLINK_EEPROM_EMULATE_RSSI_CHANNEL _eeprom_byte (MAVLINK_EEPROM_OFFSET + 3)
 #define MAVLINK_EEPROM_EMULATE_RSSI_THRESHOLD _eeprom_word (MAVLINK_EEPROM_OFFSET + 4)
 
+#define _MAVLINK_PX4_MODE_AUTO 4
+
 namespace telemetry
 {
 
@@ -42,6 +44,11 @@ bool emulate_rssi;
 uint8_t emulate_rssi_channel;
 uint16_t emulate_rssi_threshold;
 
+mavlink_message_t *msg = &message;
+mavlink_status_t status;
+
+uint32_t connection_timeout = 0;
+
 float __attribute__ ((noinline)) rad_to_deg (float rad)
 {
 	return rad * 57.2957795131;
@@ -50,94 +57,241 @@ float __attribute__ ((noinline)) rad_to_deg (float rad)
 namespace flight_modes
 {
 
+	namespace generic
+	{
+		// TODO: more realistic modes
+		const char fm_0 [] PROGMEM  = "CUST";
+		const char fm_1 [] PROGMEM  = "TEST";
+		const char fm_2 [] PROGMEM  = "AUTO";
+		const char fm_3 [] PROGMEM  = "GUID";
+		const char fm_4 [] PROGMEM  = "STAB";
+		const char fm_5 [] PROGMEM  = "HIL ";
+		const char fm_6 [] PROGMEM  = "MANU";
+		const char * const values [] PROGMEM = {
+			fm_0, fm_1, fm_2, fm_3, fm_4, fm_5, fm_6
+		};
+
+		void update ()
+		{
+			uint8_t mode = mavlink_msg_heartbeat_get_base_mode (msg);
+			if (mode && MAV_MODE_FLAG_TEST_ENABLED) telemetry::status::flight_mode = 1;
+			else if (mode && MAV_MODE_FLAG_AUTO_ENABLED) telemetry::status::flight_mode = 2;
+			else if (mode && MAV_MODE_FLAG_GUIDED_ENABLED) telemetry::status::flight_mode = 3;
+			else if (mode && MAV_MODE_FLAG_STABILIZE_ENABLED) telemetry::status::flight_mode = 4;
+			else if (mode && MAV_MODE_FLAG_HIL_ENABLED) telemetry::status::flight_mode = 5;
+			else if (mode && MAV_MODE_FLAG_MANUAL_INPUT_ENABLED) telemetry::status::flight_mode = 6;
+			else telemetry::status::flight_mode = 0;
+
+			telemetry::status::flight_mode_name_p = (const char *) pgm_read_ptr (&values [telemetry::status::flight_mode]);
+		}
+
+	}  // namespace generic
+
 	namespace apm
 	{
 
-		const char fm_0 [] PROGMEM  = "MANU";
-		const char fm_1 [] PROGMEM  = "CRCL";
-		const char fm_2 [] PROGMEM  = "STAB";
-		const char fm_3 [] PROGMEM  = "TRN ";
-		const char fm_4 [] PROGMEM  = "ACRO";
-		const char fm_5 [] PROGMEM  = "FBWA";
-		const char fm_6 [] PROGMEM  = "FBWB";
-		const char fm_7 [] PROGMEM  = "CRUI";
-		const char fm_8 [] PROGMEM  = "ATUN";
-		const char fm_10 [] PROGMEM = "AUTO";
-		const char fm_11 [] PROGMEM = "RTL ";
-		const char fm_12 [] PROGMEM = "LOIT";
-		const char fm_15 [] PROGMEM = "GUID";
-		const char fm_16 [] PROGMEM = "INIT";
-
-		const char * const values [] PROGMEM = {
-			fm_0, fm_1, fm_2, fm_3, fm_4, fm_5, fm_6, fm_7,
-			fm_8, NULL, fm_10, fm_11, fm_12, NULL, NULL, fm_15,
-			fm_16
+		const char apm_0 [] PROGMEM  = "MANU";
+		const char apm_1 [] PROGMEM  = "CRCL";
+		const char apm_2 [] PROGMEM  = "STAB";
+		const char apm_3 [] PROGMEM  = "TRN ";
+		const char apm_4 [] PROGMEM  = "ACRO";
+		const char apm_5 [] PROGMEM  = "FBWA";
+		const char apm_6 [] PROGMEM  = "FBWB";
+		const char apm_7 [] PROGMEM  = "CRUI";
+		const char apm_8 [] PROGMEM  = "ATUN";
+		const char apm_10 [] PROGMEM = "AUTO";
+		const char apm_11 [] PROGMEM = "RTL ";
+		const char apm_12 [] PROGMEM = "LOIT";
+		const char apm_15 [] PROGMEM = "GUID";
+		const char apm_16 [] PROGMEM = "INIT";
+		const char * const apm_values [] PROGMEM = {
+			apm_0, apm_1, apm_2, apm_3, apm_4, apm_5, apm_6, apm_7,
+			apm_8, NULL, apm_10, apm_11, apm_12, NULL, NULL, apm_15,
+			apm_16
 		};
+		const uint8_t apm_size = sizeof (apm_values) / sizeof (char *);
 
-		const uint8_t size = sizeof (values) / sizeof (char *);
+		const char acm_0 [] PROGMEM  = "STAB";
+		const char acm_1 [] PROGMEM  = "ACRO";
+		const char acm_2 [] PROGMEM  = "AHLD";
+		const char acm_3 [] PROGMEM  = "AUTO";
+		const char acm_4 [] PROGMEM  = "GUID";
+		const char acm_5 [] PROGMEM  = "LOIT";
+		const char acm_6 [] PROGMEM  = "RTL ";
+		const char acm_7 [] PROGMEM  = "CRCL";
+		const char acm_9 [] PROGMEM  = "LAND";
+		const char acm_10 [] PROGMEM = "OFLT";
+		const char acm_11 [] PROGMEM = "DRFT";
+		const char acm_13 [] PROGMEM = "SPRT";
+		const char acm_14 [] PROGMEM = "FLIP";
+		const char acm_15 [] PROGMEM = "ATUN";
+		const char acm_16 [] PROGMEM = "PHLD";
+		const char acm_17 [] PROGMEM = "BRK ";
+		const char * const acm_values [] PROGMEM = {
+			acm_0, acm_1, acm_2, acm_3, acm_4, acm_5, acm_6, acm_7,
+			NULL, acm_9, acm_10, acm_11, NULL, acm_13, acm_14, acm_15,
+			acm_16, acm_17
+		};
+		const uint8_t acm_size = sizeof (acm_values) / sizeof (char *);
+
+		void update ()
+		{
+			telemetry::status::flight_mode = mavlink_msg_heartbeat_get_custom_mode (msg);
+
+			const char * const *values = NULL;
+			uint8_t size = 0;
+			switch (mavlink_msg_heartbeat_get_type (msg))
+			{
+				case MAV_TYPE_QUADROTOR:
+				case MAV_TYPE_HELICOPTER:
+				case MAV_TYPE_HEXAROTOR:
+				case MAV_TYPE_OCTOROTOR:
+				case MAV_TYPE_TRICOPTER:
+					values = acm_values;
+					size = acm_size;
+					break;
+				case MAV_TYPE_FIXED_WING:
+					values = apm_values;
+					size = apm_size;
+					break;
+			}
+			telemetry::status::flight_mode_name_p = values && telemetry::status::flight_mode < size
+				? (const char *) pgm_read_ptr (&values [telemetry::status::flight_mode])
+				: NULL;
+		}
 
 	}  // namespace apm
 
-	namespace acm
+	namespace ppz
 	{
 
-		const char fm_0 [] PROGMEM  = "STAB";
-		const char fm_1 [] PROGMEM  = "ACRO";
-		const char fm_2 [] PROGMEM  = "AHLD";
-		const char fm_3 [] PROGMEM  = "AUTO";
-		const char fm_4 [] PROGMEM  = "GUID";
-		const char fm_5 [] PROGMEM  = "LOIT";
-		const char fm_6 [] PROGMEM  = "RTL ";
-		const char fm_7 [] PROGMEM  = "CRCL";
-		const char fm_9 [] PROGMEM  = "LAND";
-		const char fm_10 [] PROGMEM = "OFLT";
-		const char fm_11 [] PROGMEM = "DRFT";
-		const char fm_13 [] PROGMEM = "SPRT";
-		const char fm_14 [] PROGMEM = "FLIP";
-		const char fm_15 [] PROGMEM = "ATUN";
-		const char fm_16 [] PROGMEM = "PHLD";
-		const char fm_17 [] PROGMEM = "BRK ";
+		// PAPARAZZI
 
-		const char * const values [] PROGMEM = {
-			fm_0, fm_1, fm_2, fm_3, fm_4, fm_5, fm_6, fm_7,
-			NULL, fm_9, fm_10, fm_11, NULL, fm_13, fm_14, fm_15,
-			fm_16, fm_17
+		const char fw_0 [] PROGMEM = "MANU";
+		const char fw_1 [] PROGMEM = "AUT1";
+		const char fw_2 [] PROGMEM = "AUT2";
+		const char fw_3 [] PROGMEM = "HOME";
+		const char * const fw_values [] PROGMEM = {
+			fw_0, fw_1, fw_2, fw_3
+		};
+		const uint8_t fw_size = sizeof (fw_values) / sizeof (char *);
+
+		const char q_0 [] PROGMEM = "MANU";
+		const char q_1 [] PROGMEM = "STAB";
+		const char q_2 [] PROGMEM = "NAV ";
+		const char q_3 [] PROGMEM = "HOME";
+		const char * const q_values [] PROGMEM = {
+			q_0, q_1, q_2, q_3
+		};
+		const uint8_t q_size = sizeof (q_values) / sizeof (char *);
+
+		void update ()
+		{
+			uint8_t size = 0;
+			const char * const *values = NULL;
+			uint8_t mode = mavlink_msg_heartbeat_get_base_mode (msg);
+
+			if (mavlink_msg_heartbeat_get_type (msg) == MAV_TYPE_FIXED_WING)
+			{
+				size = fw_size;
+				values = fw_values;
+			}
+			else
+			{
+				size = q_size;
+				values = q_values;
+			}
+
+			if (mode & MAV_MODE_FLAG_STABILIZE_ENABLED)
+				telemetry::status::flight_mode = 1;
+			else if (mode & MAV_MODE_FLAG_MANUAL_INPUT_ENABLED)
+				telemetry::status::flight_mode = 0;
+			else if (mode & MAV_MODE_FLAG_GUIDED_ENABLED)
+				telemetry::status::flight_mode = 2;
+			else if (mode & MAV_MODE_FLAG_AUTO_ENABLED)
+				telemetry::status::flight_mode = 3;
+			else telemetry::status::flight_mode = 0xff;
+
+			telemetry::status::flight_mode_name_p = values && telemetry::status::flight_mode < size
+				? (const char *) pgm_read_ptr (&values [telemetry::status::flight_mode])
+				: NULL;
+		}
+
+	}  // namespace ppz
+
+	namespace px4
+	{
+
+		const char mm_1 [] PROGMEM = "MANU";
+		const char mm_2 [] PROGMEM = "ALTC";
+		const char mm_3 [] PROGMEM = "POSC";
+		const char mm_5 [] PROGMEM = "ACRO";
+		const char mm_6 [] PROGMEM = "OFFB";
+		const char mm_7 [] PROGMEM = "STAB";
+
+		const char * const mm [] PROGMEM = {
+			NULL, mm_1, mm_2, mm_3, NULL, mm_5, mm_6, mm_7
 		};
 
-		const uint8_t size = sizeof (values) / sizeof (char *);
+		const uint8_t mm_size = sizeof (mm) / sizeof (char *);
 
-	}  // namespace acm
+		const char sm_1 [] PROGMEM = "RDY ";
+		const char sm_2 [] PROGMEM = "TKOF";
+		const char sm_3 [] PROGMEM = "LOIT";
+		const char sm_4 [] PROGMEM = "MISN";
+		const char sm_5 [] PROGMEM = "RTL ";
+		const char sm_6 [] PROGMEM = "LAND";
+		const char sm_7 [] PROGMEM = "RTGS";
 
-	const char *get (uint8_t v_type)
-	{
-		const char * const *values = NULL;
-		uint8_t size = 0;
-		switch (v_type)
+		const char * const sm [] PROGMEM = {
+			NULL, sm_1, sm_2, sm_3, sm_4, sm_5, sm_6, sm_7
+		};
+
+		const uint8_t sm_size = sizeof (sm) / sizeof (char *);
+
+		void update ()
 		{
-			case MAV_TYPE_QUADROTOR:
-			case MAV_TYPE_HELICOPTER:
-			case MAV_TYPE_HEXAROTOR:
-			case MAV_TYPE_OCTOROTOR:
-			case MAV_TYPE_TRICOPTER:
-				values = acm::values;
-				size = acm::size;
+			uint16_t mode = mavlink_msg_heartbeat_get_custom_mode (msg);
+			// uh-oh let's sqeeze it into byte
+			telemetry::status::flight_mode = ((mode >> 4) & 0xf0) | (mode & 0x0f);
+
+			// FIXME: rewrite
+			uint8_t main_mode = mode >> 8;
+			uint8_t sub_mode = mode & 0xff;
+
+			if (main_mode >= px4::mm_size)
+				telemetry::status::flight_mode_name_p = NULL;
+			else if (main_mode != _MAVLINK_PX4_MODE_AUTO)
+				telemetry::status::flight_mode_name_p = (const char *) pgm_read_ptr (&px4::mm [main_mode]);
+			else if (sub_mode >= px4::sm_size)
+				telemetry::status::flight_mode_name_p = NULL;
+			else
+				telemetry::status::flight_mode_name_p = (const char *) pgm_read_ptr (&px4::sm [sub_mode]);
+		}
+
+	}  // namespace px4
+
+	void update ()
+	{
+		uint8_t autopilot = mavlink_msg_heartbeat_get_autopilot (msg);
+
+		switch (autopilot)
+		{
+			case MAV_AUTOPILOT_ARDUPILOTMEGA:
+				apm::update ();
 				break;
-			case MAV_TYPE_FIXED_WING:
-				values = apm::values;
-				size = apm::size;
+			case MAV_AUTOPILOT_PPZ:
+				ppz::update ();
+				break;
+			case MAV_AUTOPILOT_PX4:
+				px4::update ();
+				break;
+			default:
+				generic::update ();
 				break;
 		}
-		if (!values || telemetry::status::flight_mode >= size) return NULL;
-		return (const char *) pgm_read_ptr (&values [telemetry::status::flight_mode]);
 	}
-
 }  // namespace flight_modes
-
-mavlink_status_t status;
-
-uint32_t connection_timeout = 0;
-
-mavlink_message_t *msg = &message;
 
 namespace rates
 {
@@ -202,8 +356,7 @@ bool update ()
 				if (!was_armed && telemetry::status::armed)
 					telemetry::home::fix ();
 
-				telemetry::status::flight_mode = mavlink_msg_heartbeat_get_custom_mode (msg);
-				telemetry::status::flight_mode_name_p = flight_modes::get (mavlink_msg_heartbeat_get_type (msg));
+				flight_modes::update ();
 
 				connection_timeout = telemetry::ticks + MAVLINK_CONNECTION_TIMEOUT;
 				if (telemetry::status::connection != CONNECTION_STATE_CONNECTED)
@@ -320,7 +473,7 @@ void init ()
 	internal_battery_level = eeprom_read_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL);
 	rssi_low_threshold = eeprom_read_byte (MAVLINK_EEPROM_RSSI_LOW_THRESHOLD);
 	emulate_rssi = eeprom_read_byte (MAVLINK_EEPROM_EMULATE_RSSI);
-	emulate_rssi_channel = eeprom_read_byte (MAVLINK_EEPROM_EMULATE_RSSI_CHANNEL);;
+	emulate_rssi_channel = eeprom_read_byte (MAVLINK_EEPROM_EMULATE_RSSI_CHANNEL);
 	emulate_rssi_threshold = eeprom_read_word (MAVLINK_EEPROM_EMULATE_RSSI_THRESHOLD);
 }
 

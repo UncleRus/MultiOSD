@@ -47,7 +47,8 @@ enum MAV_AUTOPILOT
 	MAV_AUTOPILOT_PPZ=9, /* PPZ UAV - http://nongnu.org/paparazzi | */
 	MAV_AUTOPILOT_UDB=10, /* UAV Dev Board | */
 	MAV_AUTOPILOT_FP=11, /* FlexiPilot | */
-	MAV_AUTOPILOT_ENUM_END=12, /*  | */
+	MAV_AUTOPILOT_PX4=12, /* Pixhawk PX4 | */
+	MAV_AUTOPILOT_ENUM_END=13, /*  | */
 };
 #endif
 
