@@ -86,11 +86,12 @@ namespace barometer
 
 }  // namespace barometer
 
-namespace wind
+namespace environment
 {
 
-	uint16_t direction = 0;
-	float speed = 0.0;
+	uint16_t wind_direction = 0;
+	float wind_speed = 0.0;
+	float temperature = 0.0;
 
 }  // namespace wind
 
@@ -101,7 +102,6 @@ namespace stable
 	float altitude = 0.0;
 	float ground_speed = 0.0;
 	float air_speed = 0.0;
-	int16_t temperature = 0;
 	uint16_t heading = 0;
 
 	static uint32_t _alt_update_time = 0;
@@ -269,7 +269,13 @@ namespace waypoint
 
 	uint8_t num = 0;
 	uint16_t distance = 0;
-	int16_t bearing = 0;
+	uint16_t bearing = 0;
+
+	void set_bearing (int16_t value)
+	{
+		bearing = value < 0 ? value + 360 : value;
+		if (bearing >= 360) bearing -= 360;
+	}
 
 }  // namespace waypoint
 

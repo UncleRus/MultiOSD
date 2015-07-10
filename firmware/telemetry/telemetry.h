@@ -89,10 +89,11 @@ namespace barometer
 	extern uint32_t pressure;		// Pa
 }
 
-namespace wind
+namespace environment
 {
-	extern uint16_t direction;		// degress
-	extern float speed;				// m/s in ground plane
+	extern uint16_t wind_direction;	// degress
+	extern float wind_speed;		// m/s in ground plane
+	extern float temperature;		// Celsius
 }
 
 namespace stable
@@ -101,7 +102,6 @@ namespace stable
 	extern float altitude;			// meters
 	extern float ground_speed;		// m/s
 	extern float air_speed;			// m/s
-	extern int16_t temperature;		// Celsius
 	extern uint16_t heading;		// degrees, 0..360
 
 	void update_alt_climb (float altitude);
@@ -150,8 +150,9 @@ namespace waypoint
 
 	extern uint8_t num;				// current waypoint number
 	extern uint16_t distance;		// meters, distance to active waypoint
-	extern int16_t bearing;			// degrees
+	extern uint16_t bearing;		// degrees, 0..360
 
+	void set_bearing (int16_t value);
 }
 
 void init ();
