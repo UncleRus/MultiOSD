@@ -1,6 +1,8 @@
 MultiOSD
 ========
 
+![Screenshot](res/screenshot.png)
+
 Yet another MinimOSD firmware with configurable screens.
 
 **Warning: this software in early alpha stage!**
