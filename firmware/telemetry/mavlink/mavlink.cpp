@@ -355,7 +355,6 @@ bool update ()
 	{
 		bool changed = true;
 		bool was_armed;
-		int16_t current;
 
 		switch (msg->msgid)
 		{
@@ -382,20 +381,23 @@ bool update ()
 				break;
 #ifndef TELEMETRY_MODULES_ADC_BATTERY
 			case MAVLINK_MSG_ID_SYS_STATUS:
-				telemetry::battery::voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
-				if (!internal_battery_level)
 				{
-					telemetry::battery::level = mavlink_msg_sys_status_get_battery_remaining (msg);
-					if (telemetry::battery::level == 0xff) // -1 (0xff) means "unknown"
-						telemetry::battery::level = 0;
-				}
-				else
-					telemetry::battery::update_voltage ();
-				current = mavlink_msg_sys_status_get_current_battery (msg);
-				if (current >= 0)
-				{
-					telemetry::battery::current = current / 100.0;
-					telemetry::battery::update_consumed ();
+					int16_t current;
+					telemetry::battery::voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
+					if (!internal_battery_level)
+					{
+						telemetry::battery::level = mavlink_msg_sys_status_get_battery_remaining (msg);
+						if (telemetry::battery::level == 0xff) // -1 (0xff) means "unknown"
+							telemetry::battery::level = 0;
+					}
+					else
+						telemetry::battery::update_voltage ();
+					current = mavlink_msg_sys_status_get_current_battery (msg);
+					if (current >= 0)
+					{
+						telemetry::battery::current = current / 100.0;
+						telemetry::battery::update_consumed ();
+					}
 				}
 				break;
 #endif

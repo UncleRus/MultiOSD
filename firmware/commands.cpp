@@ -16,6 +16,7 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 #include <stdlib.h>
+#include <avr/wdt.h>
 #include "config.h"
 #include "lib/console/console.h"
 #include "lib/uart/uart.h"
@@ -345,6 +346,22 @@ namespace exit
 }  // namespace exit
 
 
+namespace reboot
+{
+
+	const char command [] PROGMEM = "reboot";
+	const char help [] PROGMEM = "Reboot OSD";
+
+	void exec ()
+	{
+		wdt_enable (WDTO_250MS);
+		while (true)
+			;
+	}
+
+}  // namespace reboot
+
+
 #define declare_cmd(NS) { NS :: command, NS :: help, NS :: exec }
 
 const command_t values [] PROGMEM = {
@@ -354,6 +371,7 @@ const command_t values [] PROGMEM = {
 	declare_cmd (info),
 	declare_cmd (help),
 	declare_cmd (exit),
+	declare_cmd (reboot),
 };
 
 const uint8_t count = sizeof (values) / sizeof (command_t);
