@@ -412,7 +412,7 @@ bool update ()
 		}
 		if (board == UAVTALK_BOARD_REVO)
 		{
-			switch (buffer.head.obj_id)
+			switch (get_obj (buffer.head.obj_id))
 			{
 #if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 				case UAVTALK_FLIGHTBATTERYSTATE_OBJ:

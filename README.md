@@ -9,8 +9,8 @@ Yet another MinimOSD firmware with configurable screens.
 
 Capabilities:
    * switching between screens
-   * config console
-   * no image "snow"
+   * configuration console
+   * no image snow
    * ADC RSSI and battery stats - useful with simple FC, such as CC3D
 
 
@@ -59,11 +59,11 @@ More to come.
 Known bugs and problems
 -----------------------
 
+- No configuration software!
+- No documentation!
 - Home direction bug
 - CC3D Revolution home distance/direction bug
-- No configurator software
 - Empty screen when cold started. Workaround: just press reset button on MinimOSD
-- No documentation!
 
 
 
