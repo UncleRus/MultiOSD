@@ -24,11 +24,9 @@
 #include <stddef.h>
 #include <avr/pgmspace.h>
 
-// FIXME: real openpilot fw targets
+// TODO: More OpenPilot boards
 #define UAVTALK_BOARD_CC3D 0
 #define UAVTALK_BOARD_REVO 1
-
-#include "releases.h"
 
 #include "../../config.h"
 
@@ -64,13 +62,6 @@ struct message_t
 	header_t head;
 	uint8_t data [255];
 	uint8_t crc;
-
-	template <typename T>
-	T __attribute__ ((noinline)) get (uint8_t offset)
-	{
-		T *res = reinterpret_cast<T *> (data + offset);
-		return *res;
-	}
 };
 
 extern message_t buffer;

@@ -15,7 +15,7 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define VERSION 7
+#define VERSION 8
 
 /*
  * Telemetry modules config
@@ -23,7 +23,7 @@
 
 //#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from ADC
 //#define TELEMETRY_MODULES_ADC_RSSI					// read RSSI level from ADC
-//#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
+#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
 #if !defined (TELEMETRY_MODULES_UAVTALK) && !defined (TELEMETRY_MODULES_MAVLINK)
 #define TELEMETRY_MODULES_MAVLINK					// main telemetry module
 #endif
@@ -43,8 +43,8 @@
  */
 #define UAVTALK_UART uart0
 #define UAVTALK_VERSION 0x20
-#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
-#define UAVTALK_DEFAULT_VERSION_RELEASE UAVTALK_REL_150202
+//#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
+#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_REVO
 #define UAVTALK_CONNECTION_TIMEOUT 5000					// ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500	// ms
 // Home distance/direction calculation: 0 - flight controller (REVO only), 1 - MultiOSD by GPS

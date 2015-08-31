@@ -148,6 +148,8 @@ namespace flight_mode
 	{
 		osd::draw::rect (x, y, 6, 3);
 		max7456::puts_p (x + 1, y + 1, telemetry::status::flight_mode_name_p ? telemetry::status::flight_mode_name_p : PSTR ("\x09\x09\x09\x09"));
+		//max7456::open (x + 1, y + 1);
+		//fprintf_P (&max7456::stream, PSTR ("%u"), telemetry::status::flight_mode);
 	}
 
 }  // namespace flight_mode
