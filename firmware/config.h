@@ -45,7 +45,7 @@
 //#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
 #define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_150502
 #define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_REVO
-#define UAVTALK_CONNECTION_TIMEOUT 5000					// ms
+#define UAVTALK_CONNECTION_TIMEOUT 5500					// ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500	// ms
 // Home distance/direction calculation: 0 - flight controller (REVO only), 1 - MultiOSD by GPS
 // Overrided by board setting
@@ -71,8 +71,8 @@
 #define OSD_SCREEN_PANELS 24		// (OSD_SCREEN_PANELS * 3) bytes in SRAM
 //#define OSD_CHANNEL_MIN 1000		// us
 //#define OSD_CHANNEL_MAX 2000		// us
-#define OSD_CHANNEL_MIN 300		// us
-#define OSD_CHANNEL_MAX 1700	// us
+#define OSD_CHANNEL_MIN 300			// us 300..1700 with my S.BUS Rx
+#define OSD_CHANNEL_MAX 1700		// us 300..1700 with my S.BUS Rx
 // when to switch between screens
 //#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_FLIGHT_MODE // flight mode switch
 // or

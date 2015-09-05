@@ -29,10 +29,10 @@ namespace r150502
 #define UAVTALK_R150502 telemetry::modules::uavtalk::r150502
 
 const obj_handler_t handlers [] PROGMEM = {
+	{UAVTALK_R150502_FLIGHTSTATUS_OBJID, UAVTALK_R150202::handle_flightstatus}, // new obj_id
 	{UAVTALK_R150202_ATTITUDESTATE_OBJID, UAVTALK_R150202::handle_attitudestate},
 	{UAVTALK_R150202_BAROSENSOR_OBJID, UAVTALK_R150202::handle_barosensor},
 	{UAVTALK_R150202_FLIGHTBATTERYSTATE_OBJID, UAVTALK_R150202::handle_flightbatterystate},
-	{UAVTALK_R150502_FLIGHTSTATUS_OBJID, UAVTALK_R150202::handle_flightstatus},				// new obj_id
 	{UAVTALK_R150202_FLIGHTTELEMETRYSTATS_OBJID, UAVTALK_R150202::handle_flighttelemetrystats},
 	{UAVTALK_R150202_GPSPOSITIONSENSOR_OBJID, UAVTALK_R150202::handle_gpspositionsensor},
 	{UAVTALK_R150202_GPSVELOCITYSENSOR_OBJID, UAVTALK_R150202::handle_gpsvelocitysensor},

@@ -92,8 +92,6 @@ namespace fm
 		rtb, land, plan, poi, acruise, atakeoff
 	};
 
-	const uint8_t len = sizeof (names) / sizeof (char *);
-
 }  // namespace fm
 
 struct obj_handler_t
@@ -104,17 +102,12 @@ struct obj_handler_t
 	callable_t handler;
 };
 
-struct release_t
-{
-	obj_handler_t *handlers;
-	uint32_t len;
-};
-
 extern uint8_t board;
 extern bool internal_home_calc;
 extern uint8_t release;
 extern uint32_t telemetry_request_timeout;
 extern uint32_t connection_timeout;
+extern uint32_t fts_objid;
 
 extern message_t buffer;
 
@@ -124,6 +117,7 @@ void request_object (uint32_t obj_id);
 
 bool handle ();
 void update_connection ();
+void set_release ();
 
 UT_NAMESPACE_CLOSE
 

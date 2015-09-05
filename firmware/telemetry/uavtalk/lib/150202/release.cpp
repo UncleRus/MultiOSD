@@ -25,6 +25,20 @@ UT_NAMESPACE_OPEN
 namespace r150202
 {
 
+void handle_flightstatus ()
+{
+	FlightStatus *obj = (FlightStatus *) &buffer.data;
+	bool was_armed = telemetry::status::armed;
+	telemetry::status::armed = obj->Armed == FLIGHTSTATUS_ARMED_ARMED;
+	telemetry::status::flight_mode = obj->FlightMode;
+	telemetry::status::flight_mode_name_p = telemetry::status::flight_mode < sizeof (fm::names) / sizeof (char *)
+		? (const char *) pgm_read_ptr (&fm::names [telemetry::status::flight_mode])
+		: NULL;
+	// fix home if armed on CC3D
+	if ((board == UAVTALK_BOARD_CC3D || internal_home_calc) && !was_armed && telemetry::status::armed)
+		telemetry::home::fix ();
+}
+
 void handle_attitudestate ()
 {
 	AttitudeState *obj = (AttitudeState *) &buffer.data;
@@ -56,20 +70,6 @@ void handle_flightbatterystate ()
 #endif
 }
 
-void handle_flightstatus ()
-{
-	FlightStatus *obj = (FlightStatus *) &buffer.data;
-	bool was_armed = telemetry::status::armed;
-	telemetry::status::armed = obj->Armed == FLIGHTSTATUS_ARMED_ARMED;
-	telemetry::status::flight_mode = obj->FlightMode;
-	telemetry::status::flight_mode_name_p = telemetry::status::flight_mode < fm::len
-		? (const char *) pgm_read_ptr (&fm::names [telemetry::status::flight_mode])
-		: NULL;
-	// fix home if armed on CC3D
-	if ((board == UAVTALK_BOARD_CC3D || internal_home_calc) && !was_armed && telemetry::status::armed)
-		telemetry::home::fix ();
-}
-
 void send_gcs_telemetry_stats (GCSTelemetryStatsStatus status)
 {
 	header_t h;
@@ -92,7 +92,7 @@ inline uint8_t fts_respond (uint8_t state)
 	if (state == FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEACK)
 	{
 		send_gcs_telemetry_stats (GCSTELEMETRYSTATS_STATUS_CONNECTED);
-		request_object (UAVTALK_R150202_FLIGHTSTATUS_OBJID);
+		request_object (fts_objid);
 	}
 
 	return CONNECTION_STATE_CONNECTED;

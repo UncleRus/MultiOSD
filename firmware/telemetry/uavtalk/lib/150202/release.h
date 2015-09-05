@@ -50,10 +50,10 @@ void handle_positionstate ();
 void handle_systemstats ();
 
 const obj_handler_t handlers [] PROGMEM = {
+	{UAVTALK_R150202_FLIGHTSTATUS_OBJID, handle_flightstatus},
 	{UAVTALK_R150202_ATTITUDESTATE_OBJID, handle_attitudestate},
 	{UAVTALK_R150202_BAROSENSOR_OBJID, handle_barosensor},
 	{UAVTALK_R150202_FLIGHTBATTERYSTATE_OBJID, handle_flightbatterystate},
-	{UAVTALK_R150202_FLIGHTSTATUS_OBJID, handle_flightstatus},
 	{UAVTALK_R150202_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
 	{UAVTALK_R150202_GPSPOSITIONSENSOR_OBJID, handle_gpspositionsensor},
 	{UAVTALK_R150202_GPSVELOCITYSENSOR_OBJID, handle_gpsvelocitysensor},

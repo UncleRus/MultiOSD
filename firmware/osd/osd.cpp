@@ -82,8 +82,8 @@ ISR (INT0_vect, ISR_NOBLOCK)
 
 	screen::draw ();
 
-	max7456::open (1, 1);
-	fprintf_P (&max7456::stream, PSTR (" %u "), cur_screen);
+	//max7456::open (1, 1);
+	//fprintf_P (&max7456::stream, PSTR (" %u "), cur_screen);
 
 	mutex = false;
 }

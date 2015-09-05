@@ -25,6 +25,7 @@ bool internal_home_calc;
 uint8_t release = 0;
 uint32_t telemetry_request_timeout = 0;
 uint32_t connection_timeout = 0;
+uint32_t fts_objid;
 
 message_t buffer;
 
@@ -90,7 +91,7 @@ const obj_handler_t * const releases [] PROGMEM = {
 bool handle ()
 {
 	const obj_handler_t *rel = (const obj_handler_t *) pgm_read_ptr (&releases [release]);
-	while ((rel ++)->objid)
+	while (true)
 	{
 		uint32_t objid = pgm_read_dword (&rel->objid);
 		if (objid == buffer.head.obj_id)
@@ -99,6 +100,7 @@ bool handle ()
 			return true;
 		}
 		if (!objid) break;
+		rel ++;
 	}
 	return false;
 }
@@ -107,6 +109,7 @@ void set_release ()
 {
 	if (release >= sizeof (releases) / sizeof (obj_handler_t *))
 		release = UAVTALK_DEFAULT_RELEASE;
+	fts_objid = pgm_read_dword (&((const obj_handler_t *) pgm_read_ptr (&releases [release]))->objid);
 }
 
 void update_connection ()

@@ -145,8 +145,6 @@ bool receive ()
 	return false;
 }
 
-
-
 bool update ()
 {
 	bool updated = false;
@@ -178,6 +176,7 @@ void init ()
 	board = eeprom_read_byte (UAVTALK_EEPROM_BOARD);
 	release = eeprom_read_byte (UAVTALK_EEPROM_RELEASE);
 	internal_home_calc = eeprom_read_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC);
+	set_release ();
 }
 
 void reset ()
