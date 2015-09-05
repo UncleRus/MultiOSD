@@ -1,33 +1,37 @@
 /*
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef UAVTALK_150502_FLIGHTSTATUS_H
+#define UAVTALK_150502_FLIGHTSTATUS_H
 
-#ifndef UAVTALK_FLIGHTSTATUS_H
-#define UAVTALK_FLIGHTSTATUS_H
+#include "../common.h"
 
-#define UAVTALK_FLIGHTSTATUS_OBJID 0x8A80EA52
-#define UAVTALK_FLIGHTSTATUS_NUMBYTES sizeof (FlightStatusData)
+UT_NAMESPACE_OPEN
 
-enum FlightStatusDataArmedOptions
+namespace r150502
+{
+
+#define UAVTALK_R150502_FLIGHTSTATUS_OBJID 0xE33E5D4E
+
+enum FlightStatusArmed
 {
     FLIGHTSTATUS_ARMED_DISARMED = 0,
     FLIGHTSTATUS_ARMED_ARMING = 1,
     FLIGHTSTATUS_ARMED_ARMED = 2
 };
 
-enum FlightStatusFlightModeOptions
+enum FlightStatusFlightMode
 {
     FLIGHTSTATUS_FLIGHTMODE_MANUAL = 0,
     FLIGHTSTATUS_FLIGHTMODE_STABILIZED1 = 1,
@@ -45,45 +49,50 @@ enum FlightStatusFlightModeOptions
     FLIGHTSTATUS_FLIGHTMODE_LAND = 13,
     FLIGHTSTATUS_FLIGHTMODE_PATHPLANNER = 14,
     FLIGHTSTATUS_FLIGHTMODE_POI = 15,
-    FLIGHTSTATUS_FLIGHTMODE_AUTOCRUISE = 16
+    FLIGHTSTATUS_FLIGHTMODE_AUTOCRUISE = 16,
+    FLIGHTSTATUS_FLIGHTMODE_AUTOTAKEOFF = 17
 };
 
-enum FlightStatusFlightModeAssistOptions
+enum FlightStatusFlightModeAssist
 {
     FLIGHTSTATUS_FLIGHTMODEASSIST_NONE = 0,
     FLIGHTSTATUS_FLIGHTMODEASSIST_GPSASSIST_PRIMARYTHRUST = 1,
     FLIGHTSTATUS_FLIGHTMODEASSIST_GPSASSIST = 2
 };
 
-enum FlightStatusAssistedControlStateOptions
+enum FlightStatusAssistedControlState
 {
     FLIGHTSTATUS_ASSISTEDCONTROLSTATE_PRIMARY = 0,
     FLIGHTSTATUS_ASSISTEDCONTROLSTATE_BRAKE = 1,
     FLIGHTSTATUS_ASSISTEDCONTROLSTATE_HOLD = 2
 };
 
-enum FlightStatusAssistedThrottleStateOptions
+enum FlightStatusAssistedThrottleState
 {
     FLIGHTSTATUS_ASSISTEDTHROTTLESTATE_MANUAL = 0,
     FLIGHTSTATUS_ASSISTEDTHROTTLESTATE_AUTO = 1,
     FLIGHTSTATUS_ASSISTEDTHROTTLESTATE_AUTOOVERRIDE = 2
 };
 
-struct FlightStatusControlChainData
+struct FlightStatusControlChain
 {
     bool Stabilization;
     bool PathFollower;
     bool PathPlanner;
 };
 
-struct FlightStatusData
+struct FlightStatus
 {
-	FlightStatusDataArmedOptions Armed;
-	FlightStatusFlightModeOptions FlightMode;
-	FlightStatusFlightModeAssistOptions FlightModeAssist;
-	FlightStatusAssistedControlStateOptions AssistedControlState;
-	FlightStatusAssistedThrottleStateOptions AssistedThrottleState;
-    FlightStatusControlChainData ControlChain;
+    FlightStatusArmed Armed;
+    FlightStatusFlightMode FlightMode;
+    FlightStatusFlightModeAssist FlightModeAssist;
+    FlightStatusAssistedControlState AssistedControlState;
+    FlightStatusAssistedThrottleState AssistedThrottleState;
+    FlightStatusControlChain ControlChain;
 };
 
-#endif // UAVTALK_FLIGHTSTATUS_H
+}  // namespace r150502
+
+UT_NAMESPACE_CLOSE
+
+#endif // UAVTALK_150502_FLIGHTSTATUS_H

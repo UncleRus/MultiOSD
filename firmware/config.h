@@ -42,8 +42,8 @@
  * UAVTalk config
  */
 #define UAVTALK_UART uart0
-#define UAVTALK_VERSION 0x20
 //#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
+#define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_150502
 #define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_REVO
 #define UAVTALK_CONNECTION_TIMEOUT 5000					// ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500	// ms
@@ -69,15 +69,17 @@
  */
 #define OSD_MAX_SCREENS 8			// each screen will consume (OSD_SCREEN_PANELS * 3) bytes in EEPROM
 #define OSD_SCREEN_PANELS 24		// (OSD_SCREEN_PANELS * 3) bytes in SRAM
-#define OSD_CHANNEL_MIN 1000		// us
-#define OSD_CHANNEL_MAX 2000		// us
+//#define OSD_CHANNEL_MIN 1000		// us
+//#define OSD_CHANNEL_MAX 2000		// us
+#define OSD_CHANNEL_MIN 300		// us
+#define OSD_CHANNEL_MAX 1700	// us
 // when to switch between screens
 //#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_FLIGHT_MODE // flight mode switch
 // or
 ///*
 #define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_RAW_CHANNEL // raw channel value
-//#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6 // it's ACCESSORY1 on my Tx in UAVTalk
-#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 5 // it's ACCESSORY1 on my Tx in MAVLink
+#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 8 // it's ACCESSORY1 on my Tx in UAVTalk
+//#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 5 // it's ACCESSORY1 on my Tx in MAVLink
 //*/
 // or
 /*

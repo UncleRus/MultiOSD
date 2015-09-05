@@ -12,19 +12,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef TELEMETRY_UAVTALK_UAVOBJECTS_H_
-#define TELEMETRY_UAVTALK_UAVOBJECTS_H_
+#ifndef UAVTALK_150202_MANUALCONTROLCOMMAND_H
+#define UAVTALK_150202_MANUALCONTROLCOMMAND_H
 
-#include "uavobjects/attitudestate.h"
-#include "uavobjects/barosensor.h"
-#include "uavobjects/flightbatterystate.h"
-#include "uavobjects/flightstatus.h"
-#include "uavobjects/flighttelemetrystats.h"
-#include "uavobjects/gcstelemetrystats.h"
-#include "uavobjects/gpspositionsensor.h"
-#include "uavobjects/gpsvelocitysensor.h"
-#include "uavobjects/manualcontrolcommand.h"
-#include "uavobjects/positionstate.h"
-#include "uavobjects/systemstats.h"
+#include "../common.h"
 
-#endif /* TELEMETRY_UAVTALK_UAVOBJECTS_H_ */
+UT_NAMESPACE_OPEN
+
+namespace r150202
+{
+
+#define UAVTALK_R150202_MANUALCONTROLCOMMAND_OBJID 0x161A2C98
+
+struct ManualControlCommand
+{
+    float Throttle;
+    float Roll;
+    float Pitch;
+    float Yaw;
+    float Collective;
+    float Thrust;
+    uint16_t Channel [9];
+    bool Connected;
+    uint8_t FlightModeSwitchPosition;
+};
+
+}  // namespace r150202
+
+UT_NAMESPACE_CLOSE
+
+#endif // UAVTALK_150202_MANUALCONTROLCOMMAND_H

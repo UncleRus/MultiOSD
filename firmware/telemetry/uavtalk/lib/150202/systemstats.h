@@ -12,29 +12,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef TELEMETRY_UAVTALK_UAVTALK_H_
-#define TELEMETRY_UAVTALK_UAVTALK_H_
+#ifndef UAVTALK_150202_SYSTEMSTATS_H
+#define UAVTALK_150202_SYSTEMSTATS_H
 
-#ifdef TELEMETRY_MAIN_MODULE_ID
-#	error Conflicting modules
-#endif
-#define TELEMETRY_MAIN_MODULE_ID 'U'
-
-#include "lib/common.h"
+#include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-const char __name [] PROGMEM = "UAVTalk";
+namespace r150202
+{
 
-// load settings
-void init ();
+#define UAVTALK_R150202_SYSTEMSTATS_OBJID 0x40BFFEFC
 
-// parse messages and update the telemetry
-bool update ();
+struct SystemStats
+{
+    uint32_t FlightTime;
+    uint32_t HeapRemaining;
+    uint32_t EventSystemWarningID;
+    uint32_t ObjectManagerCallbackID;
+    uint32_t ObjectManagerQueueID;
+    uint16_t IRQStackRemaining;
+    uint16_t SystemModStackRemaining;
+    uint16_t SysSlotsFree;
+    uint16_t SysSlotsActive;
+    uint16_t UsrSlotsFree;
+    uint16_t UsrSlotsActive;
+    uint8_t CPULoad;
+    int8_t CPUTemp;
+};
 
-// write default settings to EEPROM
-void reset ();
+}  // namespace r150202
 
 UT_NAMESPACE_CLOSE
 
-#endif /* TELEMETRY_UAVTALK_UAVTALK_H_ */
+#endif // UAVTALK_150202_SYSTEMSTATS_H

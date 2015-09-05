@@ -82,7 +82,7 @@ namespace panels
 
 #define DECLARE_BUF(n) char buffer [n];
 
-#define SET_NAME(__name) const char name [] PROGMEM = __name;
+#define PANEL_NAME(__name) const char name [] PROGMEM = __name;
 
 #define STD_DRAW void draw (uint8_t x, uint8_t y) \
 { \
@@ -96,7 +96,7 @@ namespace panels
 }
 
 #define STD_PANEL(__name, bs, fmt, ...) \
-	SET_NAME (__name); \
+	PANEL_NAME (__name); \
 	DECLARE_BUF (bs); \
 	STD_UPDATE (fmt, __VA_ARGS__); \
 	STD_DRAW;
@@ -115,7 +115,7 @@ namespace climb
 #define _PAN_CLIMB_SYMB 0x03
 
 
-	SET_NAME ("Climb");
+	PANEL_NAME ("Climb");
 
 	DECLARE_BUF (8);
 
@@ -140,7 +140,7 @@ namespace climb
 namespace flight_mode
 {
 
-	SET_NAME ("FlightMode");
+	PANEL_NAME ("FlightMode");
 
 	void update () {}
 
@@ -148,8 +148,8 @@ namespace flight_mode
 	{
 		osd::draw::rect (x, y, 6, 3);
 		max7456::puts_p (x + 1, y + 1, telemetry::status::flight_mode_name_p ? telemetry::status::flight_mode_name_p : PSTR ("\x09\x09\x09\x09"));
-		//max7456::open (x + 1, y + 1);
-		//fprintf_P (&max7456::stream, PSTR ("%u"), telemetry::status::flight_mode);
+//		max7456::open (x + 1, y + 1);
+//		fprintf_P (&max7456::stream, PSTR ("%u"), telemetry::status::flight_mode);
 	}
 
 }  // namespace flight_mode
@@ -157,7 +157,7 @@ namespace flight_mode
 namespace armed_flag
 {
 
-	SET_NAME ("ArmedFlag");
+	PANEL_NAME ("ArmedFlag");
 
 	void update () {}
 
@@ -173,7 +173,7 @@ namespace armed_flag
 namespace connection_state
 {
 
-	SET_NAME ("ConState");
+	PANEL_NAME ("ConState");
 
 	void update () {}
 
@@ -211,7 +211,7 @@ namespace pitch
 namespace gps_state
 {
 
-	SET_NAME ("GPS");
+	PANEL_NAME ("GPS");
 
 #define _PAN_GPS_2D 0x01
 #define _PAN_GPS_3D 0x02
@@ -261,7 +261,7 @@ namespace horizon
 #define _PAN_HORZ_LINES (PANEL_HORIZON_HEIGHT * _PAN_HORZ_VRES)
 #define _PAN_HORZ_TOTAL_LINES (PANEL_HORIZON_HEIGHT * _PAN_HORZ_CHAR_LINES)
 
-	SET_NAME ("Horizon");
+	PANEL_NAME ("Horizon");
 
 	const char _line [PANEL_HORIZON_WIDTH + 1] PROGMEM   = "\xb8            \xb9";
 	const char _center [PANEL_HORIZON_WIDTH + 1] PROGMEM = "\xc8            \xc9";
@@ -325,7 +325,7 @@ namespace ground_speed
 namespace battery_voltage
 {
 
-	SET_NAME ("BatVoltage");
+	PANEL_NAME ("BatVoltage");
 
 	DECLARE_BUF (7);
 	char symbol;
@@ -365,7 +365,7 @@ namespace battery_consumed
 namespace rssi_flag
 {
 
-	SET_NAME ("RSSIFlag");
+	PANEL_NAME ("RSSIFlag");
 
 	void update () {}
 
@@ -379,7 +379,7 @@ namespace rssi_flag
 namespace home_distance
 {
 
-	SET_NAME ("HomeDistance");
+	PANEL_NAME ("HomeDistance");
 
 	DECLARE_BUF (8);
 	uint8_t attr, i_attr;
@@ -411,7 +411,7 @@ namespace home_direction
 
 #define _PAN_HD_ARROWS 0x90
 
-	SET_NAME ("HomeDirection");
+	PANEL_NAME ("HomeDirection");
 
 	uint8_t arrow;
 
@@ -433,7 +433,7 @@ namespace home_direction
 namespace callsign
 {
 
-	SET_NAME ("CallSign");
+	PANEL_NAME ("CallSign");
 
 	void update () {}
 
@@ -455,7 +455,7 @@ namespace temperature
 namespace rssi
 {
 
-	SET_NAME ("RSSI");
+	PANEL_NAME ("RSSI");
 
 	const char _l0 [] PROGMEM = "\xe5\xe8\xe8";
 	const char _l1 [] PROGMEM = "\xe2\xe8\xe8";
@@ -486,7 +486,7 @@ namespace rssi
 namespace compass
 {
 
-	SET_NAME ("Compass");
+	PANEL_NAME ("Compass");
 
 	// Code from MinOpOSD
 	const uint8_t ruler [] PROGMEM = {

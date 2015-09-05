@@ -12,18 +12,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef UAVTALK_150202_BAROSENSOR_H
+#define UAVTALK_150202_BAROSENSOR_H
 
-#ifndef UAVTALK_BAROSENSOR_H
-#define UAVTALK_BAROSENSOR_H
+#include "../common.h"
 
-#define UAVTALK_BAROSENSOR_OBJID 0x48120EA6
-#define UAVTALK_BAROSENSOR_NUMBYTES sizeof (BaroSensorData)
+UT_NAMESPACE_OPEN
 
-struct BaroSensorData
+namespace r150202
+{
+
+#define UAVTALK_R150202_BAROSENSOR_OBJID 0x48120EA6
+
+struct BaroSensor
 {
     float Altitude;
     float Temperature;
     float Pressure;
 };
 
-#endif // UAVTALK_BAROSENSOR_H
+}  // namespace r150202
+
+UT_NAMESPACE_CLOSE
+
+#endif // UAVTALK_150202_BAROSENSOR_H

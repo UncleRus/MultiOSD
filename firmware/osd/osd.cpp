@@ -20,6 +20,8 @@
 #include <avr/io.h>
 #include <avr/wdt.h>
 
+#include "../lib/max7456/max7456.h"
+
 namespace osd
 {
 
@@ -79,6 +81,9 @@ ISR (INT0_vect, ISR_NOBLOCK)
 	mutex = true;
 
 	screen::draw ();
+
+	max7456::open (1, 1);
+	fprintf_P (&max7456::stream, PSTR (" %u "), cur_screen);
 
 	mutex = false;
 }
