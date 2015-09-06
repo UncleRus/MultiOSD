@@ -155,9 +155,6 @@ bool update ()
 	if (telemetry::ticks >= connection_timeout && telemetry::status::connection != CONNECTION_STATE_DISCONNECTED)
 	{
 		telemetry::status::connection = CONNECTION_STATE_DISCONNECTED;
-		telemetry::status::armed = false;
-		telemetry::status::flight_mode = 0;
-		telemetry::status::flight_mode_name_p = NULL;
 		updated = true;
 	}
 
