@@ -61,15 +61,15 @@ void send (const header_t &head, uint8_t *data, uint8_t size)
 	for (uint8_t i = 0; i < sizeof (header_t); i ++, offset ++)
 	{
 		crc = get_crc (crc ^ *offset);
-		UAVTALK_UART::send (*offset);
+		TELEMETRY_UART::send (*offset);
 	}
 	for (uint8_t i = 0; i < size; i ++)
 	{
 		uint8_t value = data ? *(data + i) : 0;
 		crc = get_crc (crc ^ value);
-		UAVTALK_UART::send (value);
+		TELEMETRY_UART::send (value);
 	}
-	UAVTALK_UART::send (crc);
+	TELEMETRY_UART::send (crc);
 }
 
 void request_object (uint32_t obj_id)
@@ -77,7 +77,7 @@ void request_object (uint32_t obj_id)
 	header_t h;
 	h.msg_type = _UT_TYPE_OBJ_REQ;
 	h.length = UAVTALK_HEADER_LEN;
-	h.obj_id = obj_id;
+	h.objid = obj_id;
 	send (h, NULL, 0);
 }
 
@@ -94,7 +94,7 @@ bool handle ()
 	while (true)
 	{
 		uint32_t objid = pgm_read_dword (&rel->objid);
-		if (objid == buffer.head.obj_id)
+		if (objid == buffer.head.objid)
 		{
 			((obj_handler_t::callable_t) pgm_read_ptr (&rel->handler)) ();
 			return true;
@@ -114,7 +114,7 @@ void set_release ()
 
 void update_connection ()
 {
-	buffer.head.obj_id = 0;
+	buffer.head.objid = 0;
 	handle ();
 }
 

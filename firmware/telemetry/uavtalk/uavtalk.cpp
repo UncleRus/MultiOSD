@@ -41,8 +41,10 @@ namespace uavtalk
 #define UAVTALK_EEPROM_RELEASE _eeprom_byte (UAVTALK_EEPROM_OFFSET + 1)
 #define UAVTALK_EEPROM_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 2)
 
+// internal parser state
 static uint8_t _state = _UTPS_WAIT;
 static uint8_t _crc = 0;
+// current byte in every state
 static uint8_t _step = 0;
 
 #define _update_crc(b) { _crc = get_crc (_crc ^ b); }
@@ -57,8 +59,8 @@ bool parse (uint8_t b)
 			_crc = get_crc (b);
 			buffer.head.sync = b;
 			buffer.head.length = 0;
-			buffer.head.obj_id = 0;
-			buffer.head.inst_id = 0;
+			buffer.head.objid = 0;
+			buffer.head.instid = 0;
 			_state = _UTPS_SYNC;
 			break;
 		case _UTPS_SYNC:
@@ -87,7 +89,7 @@ bool parse (uint8_t b)
 			}
 			break;
 		case _UTPS_LENGTH:
-			_receive_byte (buffer.head.obj_id, b);
+			_receive_byte (buffer.head.objid, b);
 			_update_crc (b);
 			if (_step == 4)
 			{
@@ -96,7 +98,7 @@ bool parse (uint8_t b)
 			}
 			break;
 		case _UTPS_OBJID:
-			_receive_byte (buffer.head.inst_id, b);
+			_receive_byte (buffer.head.instid, b);
 			_update_crc (b);
 			if (_step == 2)
 			{
@@ -122,7 +124,7 @@ bool parse (uint8_t b)
 		if (res && buffer.head.msg_type == _UT_TYPE_OBJ_ACK)
 		{
 			header_t head;
-			head.obj_id = buffer.head.obj_id;
+			head.objid = buffer.head.objid;
 			head.msg_type = _UT_TYPE_ACK;
 			send (head);
 		}
@@ -137,7 +139,7 @@ bool receive ()
 	uint16_t err = 0;
 	do
 	{
-		uint16_t raw = UAVTALK_UART::receive ();
+		uint16_t raw = TELEMETRY_UART::receive ();
 		err = raw & 0xff00;
 		if (!err && parse (raw)) return true;
 	}
@@ -149,6 +151,7 @@ bool update ()
 {
 	bool updated = false;
 
+	// handle all received messages
 	while (uavtalk::receive ())
 		updated |= handle ();
 
@@ -160,6 +163,7 @@ bool update ()
 
 	if (telemetry::ticks >= telemetry_request_timeout && telemetry::status::connection == CONNECTION_STATE_CONNECTED)
 	{
+		// time to send GCSTelemetryStats to FC
 		update_connection ();
 		telemetry_request_timeout = telemetry::ticks + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL;
 	}

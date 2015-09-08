@@ -49,11 +49,11 @@ struct header_t
 	uint8_t sync;
 	uint8_t msg_type;
 	uint16_t length;
-	uint32_t obj_id;
-	uint16_t inst_id;
+	uint32_t objid;
+	uint16_t instid;
 
 	header_t () :
-		sync (UAVTALK_SYNC), msg_type (0), length (UAVTALK_HEADER_LEN), obj_id (0), inst_id (0)
+		sync (UAVTALK_SYNC), msg_type (0), length (UAVTALK_HEADER_LEN), objid (0), instid (0)
 	{}
 };
 
@@ -115,8 +115,11 @@ uint8_t __attribute__ ((noinline)) get_crc (uint8_t b);
 void send (const header_t &head, uint8_t *data = NULL, uint8_t size = 0);
 void request_object (uint32_t obj_id);
 
+// handle current UAVObject
 bool handle ();
+// timeout, resend GCSTelemetryStats
 void update_connection ();
+// init
 void set_release ();
 
 UT_NAMESPACE_CLOSE

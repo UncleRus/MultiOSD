@@ -18,7 +18,7 @@
 #define MAVLINK_USE_CONVENIENCE_FUNCTIONS
 #define MAVLINK_COMM_NUM_BUFFERS 1
 
-#define comm_send_ch(chan, b) { MAVLINK_UART::send (b); }
+#define comm_send_ch(chan, b) { TELEMETRY_UART::send (b); }
 
 #include "lib/mavlink_types.h"
 

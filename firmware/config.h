@@ -31,6 +31,7 @@
 /*
  * Telemetry config
  */
+#define TELEMETRY_UART uart0
 #define TELEMETRY_DEFAULT_BATTERY_CONSUMED_INTERVAL 500	// ms
 #define TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE 4.2	// Maximal cell voltage, 4.2 for LiPo
 #define TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE 3.7	// Nominal cell voltage, 3.7 for LiPo
@@ -41,7 +42,6 @@
 /*
  * UAVTalk config
  */
-#define UAVTALK_UART uart0
 //#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
 #define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_150502
 #define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_REVO
@@ -56,7 +56,6 @@
  */
 #define MAVLINK_SYSID 'R'								// our system id
 #define MAVLINK_COMPID 1
-#define MAVLINK_UART uart0
 #define MAVLINK_CONNECTION_TIMEOUT 2000					// ms
 #define MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL 1			// Internal battery level calculation (may be better)
 #define MAVLINK_DEFAULT_RSSI_LOW_THRESHOLD 10			// percentes

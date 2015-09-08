@@ -77,7 +77,7 @@ void send_gcs_telemetry_stats (GCSTelemetryStatsStatus status)
 	data.Status = status;
 	h.msg_type = _UT_TYPE_OBJ_ACK;
 	h.length = UAVTALK_HEADER_LEN + sizeof (GCSTelemetryStats);
-	h.obj_id = UAVTALK_R150202_GCSTELEMETRYSTATS_OBJID;
+	h.objid = UAVTALK_R150202_GCSTELEMETRYSTATS_OBJID;
 	send (h, (uint8_t *) &data, sizeof (GCSTelemetryStats));
 }
 

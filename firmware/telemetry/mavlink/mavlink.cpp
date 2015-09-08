@@ -339,7 +339,7 @@ bool receive ()
 	uint16_t err = 0;
 	do
 	{
-		uint16_t raw = MAVLINK_UART::receive ();
+		uint16_t raw = TELEMETRY_UART::receive ();
 		err = raw & 0xff00;
 		if (!err && mavlink_parse_char (MAVLINK_COMM_0, raw, msg, &status)) return true;
 	}
