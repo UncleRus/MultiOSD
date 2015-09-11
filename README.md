@@ -8,6 +8,7 @@ Yet another MinimOSD firmware with configurable screens.
 **Warning: this software in early alpha stage!**
 
 Capabilities:
+
    * switching between screens
    * configuration console
    * no image snow
@@ -17,14 +18,22 @@ Capabilities:
 Supported flight controllers
 ----------------------------
 
-* All OpenPilot boards: CC, CC3D/CC3D ATOM/CC3D EVO (tested), CC3D REVO
+* All OpenPilot boards: CC, CC3D/CC3D Atom (tested), Revoluition (tested)
+  Currently two releases:
+  
+  * Release 15.02.02 (latest CC/CC3D release)
+  * Release 15.05.02 (latest Revolution release)
+  
+  *(in development) LibrePilot*
+
 * Many of MAVLink boards:
+  
    * APM 2.x (tested)
    * Pixhawk PX4
    * Paparazzi
    * Generic MAVLink boards
 
-*Testers are needed!*
+**Testers are needed!**
 
 Already available indicators
 ----------------------------
@@ -59,11 +68,11 @@ More to come.
 Known bugs and problems
 -----------------------
 
-- No configuration software!
+- No configuration software (https://github.com/UncleRus/MultiConf)
+  currently in development
 - No documentation!
 - Home direction bug
 - CC3D Revolution home distance/direction bug
-- Empty screen when cold started. Workaround: just press reset button on MinimOSD
 
 
 

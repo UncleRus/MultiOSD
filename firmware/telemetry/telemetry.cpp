@@ -164,11 +164,15 @@ namespace battery
 		// FIXME: other way to calc battery cells
 		if (!cells) cells = round (voltage / nom_cell_voltage);
 		//cells = (uint8_t)(voltage / max_cell_voltage) + 1;
-		if (cells)
+		if (!cells)
 		{
-			cell_voltage = voltage / cells;
-			messages::battery_low = cell_voltage <= low_cell_voltage;
+			cell_voltage = 0;
+			level = 0;
+			messages::battery_low = true;
+			return;
 		}
+		cell_voltage = voltage / cells;
+		messages::battery_low = cell_voltage <= low_cell_voltage;
 		level = cell_voltage > min_cell_voltage
 			? (cell_voltage - min_cell_voltage) / _cell_range * 100
 			: 0;
