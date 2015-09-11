@@ -24,7 +24,7 @@ Supported flight controllers
   * Release 15.02.02 (latest CC/CC3D release)
   * Release 15.05.02 (latest Revolution release)
   
-  *(in development) LibrePilot*
+  Current HEAD of LibrePilot is also supported
 
 * Many of MAVLink boards:
   
