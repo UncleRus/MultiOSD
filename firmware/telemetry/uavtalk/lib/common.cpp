@@ -15,8 +15,9 @@
 
 #include "../lib/common.h"
 
-#include "150202/release.h"
-#include "150502/release.h"
+#include "op150202/release.h"
+#include "op150502/release.h"
+#include "lp150900/release.h"
 
 UT_NAMESPACE_OPEN
 
@@ -84,8 +85,9 @@ void request_object (uint32_t obj_id)
 ///////////////////////////////////////////////////////////////////////////
 
 const obj_handler_t * const releases [] PROGMEM = {
-	r150202::handlers,
-	r150502::handlers,
+	op150202::handlers,
+	op150502::handlers,
+	lp150900::handlers,
 };
 
 bool handle ()

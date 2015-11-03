@@ -12,17 +12,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_150502_FLIGHTSTATUS_H
-#define UAVTALK_150502_FLIGHTSTATUS_H
+#ifndef UAVTALK_150202_FLIGHTSTATUS_H
+#define UAVTALK_150202_FLIGHTSTATUS_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace r150502
+namespace op150202
 {
 
-#define UAVTALK_R150502_FLIGHTSTATUS_OBJID 0xE33E5D4E
+#define UAVTALK_OP150202_FLIGHTSTATUS_OBJID 0x8A80EA52
 
 enum FlightStatusArmed
 {
@@ -49,8 +49,7 @@ enum FlightStatusFlightMode
     FLIGHTSTATUS_FLIGHTMODE_LAND = 13,
     FLIGHTSTATUS_FLIGHTMODE_PATHPLANNER = 14,
     FLIGHTSTATUS_FLIGHTMODE_POI = 15,
-    FLIGHTSTATUS_FLIGHTMODE_AUTOCRUISE = 16,
-    FLIGHTSTATUS_FLIGHTMODE_AUTOTAKEOFF = 17
+    FLIGHTSTATUS_FLIGHTMODE_AUTOCRUISE = 16
 };
 
 enum FlightStatusFlightModeAssist
@@ -83,16 +82,16 @@ struct FlightStatusControlChain
 
 struct FlightStatus
 {
-    FlightStatusArmed Armed;
-    FlightStatusFlightMode FlightMode;
-    FlightStatusFlightModeAssist FlightModeAssist;
-    FlightStatusAssistedControlState AssistedControlState;
-    FlightStatusAssistedThrottleState AssistedThrottleState;
+	FlightStatusArmed Armed;
+	FlightStatusFlightMode FlightMode;
+	FlightStatusFlightModeAssist FlightModeAssist;
+	FlightStatusAssistedControlState AssistedControlState;
+	FlightStatusAssistedThrottleState AssistedThrottleState;
     FlightStatusControlChain ControlChain;
 };
 
-}  // namespace r150502
+}  // namespace op150202
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_150502_FLIGHTSTATUS_H
+#endif // UAVTALK_150202_FLIGHTSTATUS_H

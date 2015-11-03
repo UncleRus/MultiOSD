@@ -12,42 +12,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_150202_GCSTELEMETRYSTATS_H
-#define UAVTALK_150202_GCSTELEMETRYSTATS_H
+#ifndef UAVTALK_150202_POSITIONSTATE_H
+#define UAVTALK_150202_POSITIONSTATE_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace r150202
+namespace op150202
 {
 
-#define UAVTALK_R150202_GCSTELEMETRYSTATS_OBJID 0xCAD1DC0A
+#define UAVTALK_OP150202_POSITIONSTATE_OBJID 0x4AFDB658
 
-enum GCSTelemetryStatsStatus
+struct PositionState
 {
-    GCSTELEMETRYSTATS_STATUS_DISCONNECTED = 0,
-    GCSTELEMETRYSTATS_STATUS_HANDSHAKEREQ = 1,
-    GCSTELEMETRYSTATS_STATUS_HANDSHAKEACK = 2,
-    GCSTELEMETRYSTATS_STATUS_CONNECTED = 3
+    float North;
+    float East;
+    float Down;
 };
 
-struct GCSTelemetryStats
-{
-    float TxDataRate;
-    uint32_t TxBytes;
-    uint32_t TxFailures;
-    uint32_t TxRetries;
-    float RxDataRate;
-    uint32_t RxBytes;
-    uint32_t RxFailures;
-    uint32_t RxSyncErrors;
-    uint32_t RxCrcErrors;
-    GCSTelemetryStatsStatus Status;
-};
-
-}  // namespace r150202
+}  // namespace op150202
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_150202_GCSTELEMETRYSTATS_H
+#endif // UAVTALK_150202_POSITIONSTATE_H

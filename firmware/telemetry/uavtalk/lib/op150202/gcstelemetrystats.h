@@ -12,27 +12,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_150202_FLIGHTTELEMETRYSTATS_H
-#define UAVTALK_150202_FLIGHTTELEMETRYSTATS_H
+#ifndef UAVTALK_150202_GCSTELEMETRYSTATS_H
+#define UAVTALK_150202_GCSTELEMETRYSTATS_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace r150202
+namespace op150202
 {
 
-#define UAVTALK_R150202_FLIGHTTELEMETRYSTATS_OBJID 0x6737BB5A
+#define UAVTALK_OP150202_GCSTELEMETRYSTATS_OBJID 0xCAD1DC0A
 
-enum FlightTelemetryStatsStatus
+enum GCSTelemetryStatsStatus
 {
-    FLIGHTTELEMETRYSTATS_STATUS_DISCONNECTED = 0,
-    FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEREQ = 1,
-    FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEACK = 2,
-    FLIGHTTELEMETRYSTATS_STATUS_CONNECTED = 3
+    GCSTELEMETRYSTATS_STATUS_DISCONNECTED = 0,
+    GCSTELEMETRYSTATS_STATUS_HANDSHAKEREQ = 1,
+    GCSTELEMETRYSTATS_STATUS_HANDSHAKEACK = 2,
+    GCSTELEMETRYSTATS_STATUS_CONNECTED = 3
 };
 
-struct FlightTelemetryStats
+struct GCSTelemetryStats
 {
     float TxDataRate;
     uint32_t TxBytes;
@@ -43,11 +43,11 @@ struct FlightTelemetryStats
     uint32_t RxFailures;
     uint32_t RxSyncErrors;
     uint32_t RxCrcErrors;
-    FlightTelemetryStatsStatus Status;
+    GCSTelemetryStatsStatus Status;
 };
 
-}  // namespace r150202
+}  // namespace op150202
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_150202_FLIGHTTELEMETRYSTATS_H
+#endif // UAVTALK_150202_GCSTELEMETRYSTATS_H

@@ -32,7 +32,7 @@
 #define HOME_STATE_FIXING	1
 #define HOME_STATE_FIXED	2
 
-#define INPUT_CHANNELS 9
+#define INPUT_CHANNELS 10
 
 namespace telemetry
 {

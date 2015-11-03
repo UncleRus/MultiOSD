@@ -19,10 +19,10 @@
 
 UT_NAMESPACE_OPEN
 
-namespace r150202
+namespace op150202
 {
 
-#define UAVTALK_R150202_GPSPOSITIONSENSOR_OBJID 0x7D26A6E6
+#define UAVTALK_OP150202_GPSPOSITIONSENSOR_OBJID 0x7D26A6E6
 
 enum GPSPositionSensorStatus
 {
@@ -66,7 +66,7 @@ struct GPSPositionSensor
     GPSPositionSensorAutoConfigStatus AutoConfigStatus;
 };
 
-}  // namespace r150202
+}  // namespace op150202
 
 UT_NAMESPACE_CLOSE
 

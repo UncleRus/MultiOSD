@@ -12,33 +12,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_150202_MANUALCONTROLCOMMAND_H
-#define UAVTALK_150202_MANUALCONTROLCOMMAND_H
+#ifndef UAVTALK_150202_BAROSENSOR_H
+#define UAVTALK_150202_BAROSENSOR_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace r150202
+namespace op150202
 {
 
-#define UAVTALK_R150202_MANUALCONTROLCOMMAND_OBJID 0x161A2C98
+#define UAVTALK_OP150202_BAROSENSOR_OBJID 0x48120EA6
 
-struct ManualControlCommand
+struct BaroSensor
 {
-    float Throttle;
-    float Roll;
-    float Pitch;
-    float Yaw;
-    float Collective;
-    float Thrust;
-    uint16_t Channel [9];
-    bool Connected;
-    uint8_t FlightModeSwitchPosition;
+    float Altitude;
+    float Temperature;
+    float Pressure;
 };
 
-}  // namespace r150202
+}  // namespace op150202
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_150202_MANUALCONTROLCOMMAND_H
+#endif // UAVTALK_150202_BAROSENSOR_H

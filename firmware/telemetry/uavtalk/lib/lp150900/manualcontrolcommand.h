@@ -12,31 +12,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_150202_ATTITUDESTATE_H
-#define UAVTALK_150202_ATTITUDESTATE_H
+#ifndef UAVTALK_LP150900_MANUALCONTROLCOMMAND_H
+#define UAVTALK_LP150900_MANUALCONTROLCOMMAND_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace r150202
+namespace lp150900
 {
 
-#define UAVTALK_R150202_ATTITUDESTATE_OBJID 0xD7E0D964
+#define UAVTALK_LP150900_MANUALCONTROLCOMMAND_OBJID 0xC4107480
 
-struct AttitudeState
+struct ManualControlCommand
 {
-    float q1;
-    float q2;
-    float q3;
-    float q4;
+    float Throttle;
     float Roll;
     float Pitch;
     float Yaw;
+    float Collective;
+    float Thrust;
+    uint16_t Channel [10];
+    bool Connected;
+    uint8_t FlightModeSwitchPosition;
 };
 
-}  // namespace r150202
+}  // namespace lp150900
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_150202_ATTITUDESTATE_H
+#endif // UAVTALK_LP150900_MANUALCONTROLCOMMAND_H

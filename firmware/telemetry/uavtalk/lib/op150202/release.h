@@ -12,8 +12,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef TELEMETRY_UAVTALK_LIB_150202_RELEASE_H_
-#define TELEMETRY_UAVTALK_LIB_150202_RELEASE_H_
+#ifndef TELEMETRY_UAVTALK_LIB_OP150202_RELEASE_H_
+#define TELEMETRY_UAVTALK_LIB_OP150202_RELEASE_H_
 
 #include "../common.h"
 
@@ -31,10 +31,10 @@
 
 UT_NAMESPACE_OPEN
 
-namespace r150202
+namespace op150202
 {
 
-#define UAVTALK_R150202 telemetry::modules::uavtalk::r150202
+#define UAVTALK_OP150202 telemetry::modules::uavtalk::op150202
 
 void update_connection ();
 
@@ -50,21 +50,21 @@ void handle_positionstate ();
 void handle_systemstats ();
 
 const obj_handler_t handlers [] PROGMEM = {
-	{UAVTALK_R150202_FLIGHTSTATUS_OBJID, handle_flightstatus},
-	{UAVTALK_R150202_ATTITUDESTATE_OBJID, handle_attitudestate},
-	{UAVTALK_R150202_BAROSENSOR_OBJID, handle_barosensor},
-	{UAVTALK_R150202_FLIGHTBATTERYSTATE_OBJID, handle_flightbatterystate},
-	{UAVTALK_R150202_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
-	{UAVTALK_R150202_GPSPOSITIONSENSOR_OBJID, handle_gpspositionsensor},
-	{UAVTALK_R150202_GPSVELOCITYSENSOR_OBJID, handle_gpsvelocitysensor},
-	{UAVTALK_R150202_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
-	{UAVTALK_R150202_POSITIONSTATE_OBJID, handle_positionstate},
-	{UAVTALK_R150202_SYSTEMSTATS_OBJID, handle_systemstats},
+	{UAVTALK_OP150202_FLIGHTSTATUS_OBJID, handle_flightstatus},
+	{UAVTALK_OP150202_ATTITUDESTATE_OBJID, handle_attitudestate},
+	{UAVTALK_OP150202_BAROSENSOR_OBJID, handle_barosensor},
+	{UAVTALK_OP150202_FLIGHTBATTERYSTATE_OBJID, handle_flightbatterystate},
+	{UAVTALK_OP150202_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
+	{UAVTALK_OP150202_GPSPOSITIONSENSOR_OBJID, handle_gpspositionsensor},
+	{UAVTALK_OP150202_GPSVELOCITYSENSOR_OBJID, handle_gpsvelocitysensor},
+	{UAVTALK_OP150202_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
+	{UAVTALK_OP150202_POSITIONSTATE_OBJID, handle_positionstate},
+	{UAVTALK_OP150202_SYSTEMSTATS_OBJID, handle_systemstats},
 	{_UT_TIMEOUT_OBJID, update_connection}
 };
 
-}  // namespace r150202
+}  // namespace op150202
 
 UT_NAMESPACE_CLOSE
 
-#endif /* TELEMETRY_UAVTALK_LIB_150202_RELEASE_H_ */
+#endif /* TELEMETRY_UAVTALK_LIB_OP150202_RELEASE_H_ */

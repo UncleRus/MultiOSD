@@ -12,37 +12,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_150202_SYSTEMSTATS_H
-#define UAVTALK_150202_SYSTEMSTATS_H
+#ifndef UAVTALK_150202_MANUALCONTROLCOMMAND_H
+#define UAVTALK_150202_MANUALCONTROLCOMMAND_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace r150202
+namespace op150202
 {
 
-#define UAVTALK_R150202_SYSTEMSTATS_OBJID 0x40BFFEFC
+#define UAVTALK_OP150202_MANUALCONTROLCOMMAND_OBJID 0x161A2C98
 
-struct SystemStats
+struct ManualControlCommand
 {
-    uint32_t FlightTime;
-    uint32_t HeapRemaining;
-    uint32_t EventSystemWarningID;
-    uint32_t ObjectManagerCallbackID;
-    uint32_t ObjectManagerQueueID;
-    uint16_t IRQStackRemaining;
-    uint16_t SystemModStackRemaining;
-    uint16_t SysSlotsFree;
-    uint16_t SysSlotsActive;
-    uint16_t UsrSlotsFree;
-    uint16_t UsrSlotsActive;
-    uint8_t CPULoad;
-    int8_t CPUTemp;
+    float Throttle;
+    float Roll;
+    float Pitch;
+    float Yaw;
+    float Collective;
+    float Thrust;
+    uint16_t Channel [9];
+    bool Connected;
+    uint8_t FlightModeSwitchPosition;
 };
 
-}  // namespace r150202
+}  // namespace op150202
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_150202_SYSTEMSTATS_H
+#endif // UAVTALK_150202_MANUALCONTROLCOMMAND_H

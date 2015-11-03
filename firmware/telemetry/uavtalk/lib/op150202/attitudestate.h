@@ -12,33 +12,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_150202_FLIGHTBATTERYSTATE_H
-#define UAVTALK_150202_FLIGHTBATTERYSTATE_H
+#ifndef UAVTALK_150202_ATTITUDESTATE_H
+#define UAVTALK_150202_ATTITUDESTATE_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace r150202
+namespace op150202
 {
 
-#define UAVTALK_R150202_FLIGHTBATTERYSTATE_OBJID 0x26962352
+#define UAVTALK_OP150202_ATTITUDESTATE_OBJID 0xD7E0D964
 
-struct FlightBatteryState
+struct AttitudeState
 {
-    float Voltage;
-    float Current;
-    float BoardSupplyVoltage;
-    float PeakCurrent;
-    float AvgCurrent;
-    float ConsumedEnergy;
-    float EstimatedFlightTime;
-    uint8_t NbCells;
-    bool NbCellsAutodetected;
+    float q1;
+    float q2;
+    float q3;
+    float q4;
+    float Roll;
+    float Pitch;
+    float Yaw;
 };
 
-}  // namespace r150202
+}  // namespace op150202
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_150202_FLIGHTBATTERYSTATE_H
+#endif // UAVTALK_150202_ATTITUDESTATE_H
