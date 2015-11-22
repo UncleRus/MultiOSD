@@ -19,17 +19,54 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <avr/wdt.h>
+#include "../eeprom.h"
 
-#include "../lib/max7456/max7456.h"
+//#include "../lib/max7456/max7456.h"
 
 namespace osd
 {
 
-#define OSD_EEPROM_SWITCH             _eeprom_byte (OSD_EEPROM_OFFSET)
-#define OSD_EEPROM_SWITCH_RAW_CHANNEL _eeprom_byte (OSD_EEPROM_OFFSET + 1)
-#define OSD_EEPROM_SCREENS            _eeprom_byte (OSD_EEPROM_OFFSET + 2)
-#define OSD_EEPROM_CHANNEL_MIN        _eeprom_word (OSD_EEPROM_OFFSET + 3)
-#define OSD_EEPROM_CHANNEL_MAX        _eeprom_word (OSD_EEPROM_OFFSET + 5)
+namespace settings
+{
+
+#define EEPROM_ADDR_SWITCH             _eeprom_byte (OSD_EEPROM_OFFSET)
+#define EEPROM_ADDR_SWITCH_RAW_CHANNEL _eeprom_byte (OSD_EEPROM_OFFSET + 1)
+#define EEPROM_ADDR_SCREENS            _eeprom_byte (OSD_EEPROM_OFFSET + 2)
+#define EEPROM_ADDR_CHANNEL_MIN        _eeprom_word (OSD_EEPROM_OFFSET + 3)
+#define EEPROM_ADDR_CHANNEL_MAX        _eeprom_word (OSD_EEPROM_OFFSET + 5)
+
+const char __opt_switch [] PROGMEM = "SWITCH";
+const char __opt_swch [] PROGMEM = "SWCH";
+const char __opt_screens [] PROGMEM = "SCREENS";
+const char __opt_swchmin [] PROGMEM = "SWCHMIN";
+const char __opt_swchmax [] PROGMEM = "SWCHMAX";
+
+const ::settings::option_t __settings [] PROGMEM = {
+	declare_uint8_option (__opt_switch, EEPROM_ADDR_SWITCH),
+	declare_uint8_option (__opt_swch, EEPROM_ADDR_SWITCH_RAW_CHANNEL),
+	declare_uint8_option (__opt_screens, EEPROM_ADDR_SCREENS),
+	declare_uint16_option (__opt_swchmin, EEPROM_ADDR_CHANNEL_MIN),
+	declare_uint16_option (__opt_swchmax, EEPROM_ADDR_CHANNEL_MAX),
+};
+
+void init ()
+{
+	::settings::append_section (__settings, sizeof (__settings) / sizeof (::settings::option_t));
+}
+
+void reset ()
+{
+	eeprom_update_byte (EEPROM_ADDR_SWITCH, OSD_EEPROM_SWITCH_DEFAULT);
+	eeprom_update_byte (EEPROM_ADDR_SWITCH_RAW_CHANNEL, OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT);
+	eeprom_update_byte (EEPROM_ADDR_SCREENS, OSD_MAX_SCREENS);
+	eeprom_update_word (EEPROM_ADDR_CHANNEL_MIN, OSD_CHANNEL_MIN);
+	eeprom_update_word (EEPROM_ADDR_CHANNEL_MAX, OSD_CHANNEL_MAX);
+	screen::settings::reset ();
+}
+
+}  // namespace settings
+
+///////////////////////////////////////////////////////////////////////////////
 
 #ifndef OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT
 #	define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6
@@ -130,28 +167,13 @@ void main ()
 
 void init ()
 {
-	_switch = eeprom_read_byte (OSD_EEPROM_SWITCH);
-	_channel = eeprom_read_byte (OSD_EEPROM_SWITCH_RAW_CHANNEL);
-	_screens_enabled = eeprom_read_byte (OSD_EEPROM_SCREENS);
-	_chan_min = eeprom_read_word (OSD_EEPROM_CHANNEL_MIN);
-	_chan_max = eeprom_read_word (OSD_EEPROM_CHANNEL_MAX);
+	_switch = eeprom_read_byte (EEPROM_ADDR_SWITCH);
+	_channel = eeprom_read_byte (EEPROM_ADDR_SWITCH_RAW_CHANNEL);
+	_screens_enabled = eeprom_read_byte (EEPROM_ADDR_SCREENS);
+	_chan_min = eeprom_read_word (EEPROM_ADDR_CHANNEL_MIN);
+	_chan_max = eeprom_read_word (EEPROM_ADDR_CHANNEL_MAX);
 	if (_screens_enabled > OSD_MAX_SCREENS) _screens_enabled = OSD_MAX_SCREENS;
 	_raw_lvl_size = (_chan_max - _chan_min) / _screens_enabled;
 }
-
-namespace settings
-{
-
-	void reset ()
-	{
-		eeprom_update_byte (OSD_EEPROM_SWITCH, OSD_EEPROM_SWITCH_DEFAULT);
-		eeprom_update_byte (OSD_EEPROM_SWITCH_RAW_CHANNEL, OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT);
-		eeprom_update_byte (OSD_EEPROM_SCREENS, OSD_MAX_SCREENS);
-		eeprom_update_word (OSD_EEPROM_CHANNEL_MIN, OSD_CHANNEL_MIN);
-		eeprom_update_word (OSD_EEPROM_CHANNEL_MAX, OSD_CHANNEL_MAX);
-		screen::settings::reset ();
-	}
-
-}  // namespace settings
 
 }  // namespace osd

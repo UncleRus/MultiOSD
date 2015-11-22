@@ -51,6 +51,18 @@ const char *argument (uint8_t position, const char *def)
 	return _command [offs] ? &_command [offs] : def;
 }
 
+void read_argument (const char *start, char *dest)
+{
+	uint8_t c;
+	while ((c = *start))
+	{
+		if (c != ' ') *(dest ++) = c;
+		else break;
+		start ++;
+	}
+	*(dest ++) = 0;
+}
+
 void _process_byte ()
 {
 	uint16_t data = CONSOLE_UART::receive ();

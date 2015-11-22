@@ -20,16 +20,64 @@
 #include <string.h>
 #include "../lib/timer/timer.h"
 #include "../settings.h"
+#include "../eeprom.h"
 
 namespace telemetry
 {
+
+namespace settings
+{
+
+#define EEPROM_ADDR_MIN_CELL_VOLTAGE _eeprom_float (TELEMETRY_EEPROM_OFFSET)
+#define EEPROM_ADDR_NOM_CELL_VOLTAGE _eeprom_float (TELEMETRY_EEPROM_OFFSET + 4)
+#define EEPROM_ADDR_MAX_CELL_VOLTAGE _eeprom_float (TELEMETRY_EEPROM_OFFSET + 8)
+#define EEPROM_ADDR_LOW_VOLTAGE      _eeprom_float (TELEMETRY_EEPROM_OFFSET + 12)
+#define EEPROM_ADDR_CALLSIGN         _eeprom_str (TELEMETRY_EEPROM_OFFSET + 16)
+
+const char __opt_mincv [] PROGMEM = "MINCV";
+const char __opt_nomcv [] PROGMEM = "NOMCV";
+const char __opt_maxcv [] PROGMEM = "MAXCV";
+const char __opt_lowcv [] PROGMEM = "LOWCV";
+const char __opt_csign [] PROGMEM = "CSIGN";
+
+const ::settings::option_t __settings [] PROGMEM = {
+	declare_float_option (__opt_mincv, EEPROM_ADDR_MIN_CELL_VOLTAGE),
+	declare_float_option (__opt_nomcv, EEPROM_ADDR_NOM_CELL_VOLTAGE),
+	declare_float_option (__opt_maxcv, EEPROM_ADDR_MAX_CELL_VOLTAGE),
+	declare_float_option (__opt_lowcv, EEPROM_ADDR_LOW_VOLTAGE),
+	declare_str_option (__opt_csign, EEPROM_ADDR_CALLSIGN, 5),
+};
+
+void init ()
+{
+	::settings::append_section (__settings, sizeof (__settings) / sizeof (::settings::option_t));
+
+	for (uint8_t i = 0; i < modules::count; i ++)
+		modules::init_settings (i);
+}
+
+void reset ()
+{
+	eeprom_update_float (EEPROM_ADDR_MIN_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE);
+	eeprom_update_float (EEPROM_ADDR_NOM_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE);
+	eeprom_update_float (EEPROM_ADDR_MAX_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE);
+	eeprom_update_float (EEPROM_ADDR_LOW_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE);
+	eeprom_update_block (TELEMETRY_DEFAULT_CALLSIGN, EEPROM_ADDR_CALLSIGN, CALLSIGN_LENGTH);
+
+	for (uint8_t i = 0; i < modules::count; i ++)
+		modules::reset_settings (i);
+}
+
+}  // namespace settings
+
+///////////////////////////////////////////////////////////////////////////////
 
 uint32_t ticks = 0;
 
 namespace status
 {
 
-	char callsign [6];
+	char callsign [CALLSIGN_LENGTH + 1];
 	uint8_t connection = CONNECTION_STATE_DISCONNECTED;
 	uint16_t flight_time = 0;
 	uint8_t flight_mode = 0;
@@ -115,13 +163,6 @@ namespace stable
 
 }  // namespace stable
 
-#define TELEMETRY_EEPROM_MAIN_MODULE_ID		_eeprom_byte (TELEMETRY_EEPROM_OFFSET)
-#define TELEMETRY_EEPROM_MIN_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 1)
-#define TELEMETRY_EEPROM_NOM_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 5)
-#define TELEMETRY_EEPROM_MAX_CELL_VOLTAGE	_eeprom_float (TELEMETRY_EEPROM_OFFSET + 9)
-#define TELEMETRY_EEPROM_LOW_VOLTAGE		_eeprom_float (TELEMETRY_EEPROM_OFFSET + 13)
-#define TELEMETRY_EEPROM_CALLSIGN			_eeprom_str (TELEMETRY_EEPROM_OFFSET + 17)
-
 namespace battery
 {
 
@@ -142,20 +183,12 @@ namespace battery
 	uint8_t _current_iter = 0;
 	uint32_t _consumed_last = 0;
 
-	void reset ()
-	{
-		eeprom_update_float (TELEMETRY_EEPROM_MIN_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE);
-		eeprom_update_float (TELEMETRY_EEPROM_NOM_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE);
-		eeprom_update_float (TELEMETRY_EEPROM_MAX_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE);
-		eeprom_update_float (TELEMETRY_EEPROM_LOW_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE);
-	}
-
 	void init ()
 	{
-		min_cell_voltage = eeprom_read_float (TELEMETRY_EEPROM_MIN_CELL_VOLTAGE);
-		nom_cell_voltage = eeprom_read_float (TELEMETRY_EEPROM_NOM_CELL_VOLTAGE);
-		max_cell_voltage = eeprom_read_float (TELEMETRY_EEPROM_MAX_CELL_VOLTAGE);
-		low_cell_voltage = eeprom_read_float (TELEMETRY_EEPROM_LOW_VOLTAGE);
+		min_cell_voltage = eeprom_read_float (EEPROM_ADDR_MIN_CELL_VOLTAGE);
+		nom_cell_voltage = eeprom_read_float (EEPROM_ADDR_NOM_CELL_VOLTAGE);
+		max_cell_voltage = eeprom_read_float (EEPROM_ADDR_MAX_CELL_VOLTAGE);
+		low_cell_voltage = eeprom_read_float (EEPROM_ADDR_LOW_VOLTAGE);
 		_cell_range = max_cell_voltage - min_cell_voltage;
 	}
 
@@ -304,12 +337,8 @@ namespace waypoint
 #	include "mavlink/mavlink.h"
 #endif
 
-#ifndef TELEMETRY_MAIN_MODULE_ID
-#	error No main telemetry module defined
-#endif
-
-#define declare_module(NS) { telemetry::modules:: NS ::__name, telemetry::modules:: NS ::reset, \
-	telemetry::modules:: NS ::init, telemetry::modules:: NS ::update }
+#define declare_module(NS) { telemetry::modules:: NS ::__name, telemetry::modules:: NS ::settings::init, \
+	telemetry::modules:: NS ::settings::reset, telemetry::modules:: NS ::init, telemetry::modules:: NS ::update }
 
 namespace telemetry
 {
@@ -345,9 +374,7 @@ namespace modules
 
 void init ()
 {
-	if (eeprom_read_byte (TELEMETRY_EEPROM_MAIN_MODULE_ID) != TELEMETRY_MAIN_MODULE_ID)
-		::settings::reset ();
-	eeprom_read_block (status::callsign, TELEMETRY_EEPROM_CALLSIGN, sizeof (status::callsign) - 1);
+	eeprom_read_block (status::callsign, EEPROM_ADDR_CALLSIGN, sizeof (status::callsign) - 1);
 	status::callsign [sizeof (status::callsign) - 1] = 0;
 
 	battery::init ();
@@ -364,20 +391,5 @@ bool update ()
 		res |= modules::update (i);
 	return res;
 }
-
-namespace settings
-{
-	void reset ()
-	{
-		eeprom_update_byte (TELEMETRY_EEPROM_MAIN_MODULE_ID, TELEMETRY_MAIN_MODULE_ID);
-		eeprom_update_block (TELEMETRY_DEFAULT_CALLSIGN, TELEMETRY_EEPROM_CALLSIGN, sizeof (status::callsign) - 1);
-
-		battery::reset ();
-		for (uint8_t i = 0; i < modules::count; i ++)
-			modules::reset (i);
-	}
-
-}  // namespace settings
-
 
 }  // namespace telemetry

@@ -14,10 +14,11 @@
  */
 #include "uavtalk.h"
 #include <avr/pgmspace.h>
-#include "../../settings.h"
 #include "../../lib/uart/uart.h"
 #include "../telemetry.h"
 #include "lib/common.h"
+#include "../../settings.h"
+#include "../../eeprom.h"
 
 namespace telemetry
 {
@@ -28,6 +29,39 @@ namespace modules
 namespace uavtalk
 {
 
+namespace settings
+{
+
+#define EEPROM_ADDR_BOARD              _eeprom_byte (UAVTALK_EEPROM_OFFSET)
+#define EEPROM_ADDR_RELEASE            _eeprom_byte (UAVTALK_EEPROM_OFFSET + 1)
+#define EEPROM_ADDR_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 2)
+
+const char __opt_board [] PROGMEM = "UTBRD";
+const char __opt_utrel [] PROGMEM = "UTREL";
+const char __opt_utihc [] PROGMEM = "UTIHC";
+
+const ::settings::option_t __settings [] PROGMEM = {
+	declare_uint8_option (__opt_board, EEPROM_ADDR_BOARD),
+	declare_uint8_option (__opt_utrel, EEPROM_ADDR_RELEASE),
+	declare_uint8_option (__opt_utihc, EEPROM_ADDR_INTERNAL_HOME_CALC),
+};
+
+void init ()
+{
+	::settings::append_section (__settings, sizeof (__settings) / sizeof (::settings::option_t));
+}
+
+void reset ()
+{
+	eeprom_update_byte (EEPROM_ADDR_BOARD, UAVTALK_DEFAULT_BOARD);
+	eeprom_update_byte (EEPROM_ADDR_RELEASE, UAVTALK_DEFAULT_RELEASE);
+	eeprom_update_byte (EEPROM_ADDR_INTERNAL_HOME_CALC, UAVTALK_DEFAULT_INTERNAL_HOME_CALC);
+}
+
+}  // namespace settings
+
+///////////////////////////////////////////////////////////////////////////////
+
 #define _UTPS_WAIT		0
 #define _UTPS_SYNC		1
 #define _UTPS_MSG_TYPE	2
@@ -36,10 +70,6 @@ namespace uavtalk
 #define _UTPS_INSTID	5
 #define _UTPS_DATA		6
 #define _UTPS_READY		7
-
-#define UAVTALK_EEPROM_BOARD _eeprom_byte (UAVTALK_EEPROM_OFFSET)
-#define UAVTALK_EEPROM_RELEASE _eeprom_byte (UAVTALK_EEPROM_OFFSET + 1)
-#define UAVTALK_EEPROM_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 2)
 
 // internal parser state
 static uint8_t _state = _UTPS_WAIT;
@@ -174,17 +204,17 @@ bool update ()
 
 void init ()
 {
-	board = eeprom_read_byte (UAVTALK_EEPROM_BOARD);
-	release = eeprom_read_byte (UAVTALK_EEPROM_RELEASE);
-	internal_home_calc = eeprom_read_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC);
+	board = eeprom_read_byte (EEPROM_ADDR_BOARD);
+	release = eeprom_read_byte (EEPROM_ADDR_RELEASE);
+	internal_home_calc = eeprom_read_byte (EEPROM_ADDR_INTERNAL_HOME_CALC);
 	set_release ();
 }
 
 void reset ()
 {
-	eeprom_update_byte (UAVTALK_EEPROM_BOARD, UAVTALK_DEFAULT_BOARD);
-	eeprom_update_byte (UAVTALK_EEPROM_RELEASE, UAVTALK_DEFAULT_RELEASE);
-	eeprom_update_byte (UAVTALK_EEPROM_INTERNAL_HOME_CALC, UAVTALK_DEFAULT_INTERNAL_HOME_CALC);
+	eeprom_update_byte (EEPROM_ADDR_BOARD, UAVTALK_DEFAULT_BOARD);
+	eeprom_update_byte (EEPROM_ADDR_RELEASE, UAVTALK_DEFAULT_RELEASE);
+	eeprom_update_byte (EEPROM_ADDR_INTERNAL_HOME_CALC, UAVTALK_DEFAULT_INTERNAL_HOME_CALC);
 }
 
 }  // namespace uavtalk

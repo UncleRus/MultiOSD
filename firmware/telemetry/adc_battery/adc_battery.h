@@ -28,7 +28,12 @@ namespace adc_battery
 
 const char __name [] PROGMEM = "ADCBattery";
 
-void reset ();
+namespace settings
+{
+	void init ();
+	void reset ();
+}
+
 void init ();
 bool update ();
 

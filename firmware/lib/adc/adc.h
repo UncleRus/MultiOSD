@@ -15,6 +15,8 @@
 #ifndef LIB_ADC_ADC_H_
 #define LIB_ADC_ADC_H_
 
+#define ADC_MODULE
+
 #include <stdint.h>
 
 namespace adc
@@ -24,16 +26,17 @@ namespace adc
 #define ADC_REF_AVCC		1
 #define ADC_REF_INTERNAL	3
 
-void init ();
-uint16_t read (uint8_t channel);
-float value (uint8_t channel, float multiplier);
-
 namespace settings
 {
 
+	void init ();
 	void reset ();
 
 }  // namespace settings
+
+void init ();
+uint16_t read (uint8_t channel);
+float value (uint8_t channel, float multiplier);
 
 }
 

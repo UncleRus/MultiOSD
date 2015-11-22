@@ -16,12 +16,43 @@
 #include <avr/io.h>
 #include "../../config.h"
 #include "../../settings.h"
-
-#define ADC_EEPROM_REF     _eeprom_byte (ADC_EEPROM_OFFSET)
-#define ADC_EEPROM_REF_VOLTAGE _eeprom_float (ADC_EEPROM_OFFSET + 1)
+#include "../../eeprom.h"
 
 namespace adc
 {
+
+namespace settings
+{
+
+#define EEPROM_ADDR_REF     ((uint8_t *) ADC_EEPROM_OFFSET)
+#define EEPROM_ADDR_VOLTAGE ((float *) ADC_EEPROM_OFFSET + 1)
+
+const char __opt_ref [] PROGMEM = "ADCREF";
+const char __opt_ref_voltage [] PROGMEM = "ADCREFV";
+
+const ::settings::option_t __settings [] PROGMEM = {
+	declare_uint8_option (__opt_ref, EEPROM_ADDR_REF),
+	declare_float_option (__opt_ref_voltage, EEPROM_ADDR_VOLTAGE),
+};
+
+bool initialized = false;
+
+void init ()
+{
+	if (initialized) return;
+	::settings::append_section (__settings, sizeof (__settings) / sizeof (::settings::option_t));
+	initialized = true;
+}
+
+void reset ()
+{
+	eeprom_write_byte (EEPROM_ADDR_REF, ADC_DEFAULT_REF);
+	eeprom_write_float (EEPROM_ADDR_VOLTAGE, ADC_DEFAULT_REF_VOLTAGE);
+}
+
+}  // namespace settings
+
+///////////////////////////////////////////////////////////////////////////////
 
 uint8_t s_ref;
 float s_ref_voltage;
@@ -31,8 +62,8 @@ void init ()
 {
 	if (initialized) return;
 
-	s_ref = eeprom_read_byte (ADC_EEPROM_REF) << 6;
-	s_ref_voltage = eeprom_read_float (ADC_EEPROM_REF_VOLTAGE);
+	s_ref = eeprom_read_byte (EEPROM_ADDR_REF) << 6;
+	s_ref_voltage = eeprom_read_float (EEPROM_ADDR_VOLTAGE);
 
 	ADMUX = s_ref;
 	ADCSRA |= _BV (ADEN) | _BV (ADPS0) | _BV (ADPS1) | _BV (ADPS2);
@@ -55,16 +86,5 @@ float value (uint8_t channel, float multiplier)
 {
 	return (read (channel) / 1024.0 * s_ref_voltage) * multiplier;
 }
-
-namespace settings
-{
-
-	void reset ()
-	{
-		eeprom_update_byte (ADC_EEPROM_REF, ADC_DEFAULT_REF);
-		eeprom_update_float (ADC_EEPROM_REF_VOLTAGE, ADC_DEFAULT_REF_VOLTAGE);
-	}
-
-}  // namespace settings
 
 }  // namespace adc

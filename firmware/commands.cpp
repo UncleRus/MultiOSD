@@ -148,7 +148,7 @@ namespace eeprom
 {
 
 	const char command [] PROGMEM = "eeprom";
-	const char help [] PROGMEM = "Read/write EEPROM, get/set values";
+	const char help [] PROGMEM = "Read/write EEPROM";
 
 	void dump ()
 	{
@@ -173,85 +173,6 @@ namespace eeprom
 			eeprom_update_byte ((uint8_t *) addr, console::read ());
 	}
 
-	void set ()
-	{
-		const char *saddr = console::argument (3);
-		const char *value = console::argument (4);
-		if (saddr && value)
-		{
-			uint16_t addr = atoi (saddr);
-			if (addr >= EEPROM_SIZE)
-			{
-				fprintf_P (&CONSOLE_UART::stream, PSTR ("Max addr %u"), EEPROM_SIZE);
-				return;
-			}
-			switch (*argument (2))
-			{
-				case 'b':
-				case 'B':
-					eeprom_update_byte ((uint8_t *) addr, atoi (value));
-					return;
-				case 'i':
-				case 'I':
-					eeprom_update_word ((uint16_t *) addr, atoi (value));
-					return;
-				case 'w':
-				case 'W':
-					eeprom_update_word ((uint16_t *) addr, atol (value));
-					return;
-				case 'l':
-				case 'L':
-					eeprom_update_dword ((uint32_t *) addr, atol (value));
-					return;
-				case 'f':
-				case 'F':
-					eeprom_update_float ((float *) addr, atof (value));
-					return;
-			}
-		}
-		CONSOLE_UART::send_string_p (PSTR ("Args: <b|i|w|l|f> <addr> <value>"));
-	}
-
-	void get ()
-	{
-		const char *saddr = console::argument (3);
-		if (saddr)
-		{
-			uint16_t addr = atoi (saddr);
-			if (addr >= EEPROM_SIZE)
-			{
-				fprintf_P (&CONSOLE_UART::stream, PSTR ("Max addr %u"), EEPROM_SIZE);
-				return;
-			}
-			switch (*argument (2))
-			{
-				case 'b':
-				case 'B':
-					fprintf_P (&CONSOLE_UART::stream, PSTR ("%u"), eeprom_read_byte ((uint8_t *) addr));
-					return;
-				case 'i':
-				case 'I':
-					fprintf_P (&CONSOLE_UART::stream, PSTR ("%i"), eeprom_read_word ((uint16_t *) addr));
-					return;
-				case 'w':
-				case 'W':
-					fprintf_P (&CONSOLE_UART::stream, PSTR ("%u"), eeprom_read_word ((uint16_t *) addr));
-					return;
-				case 'l':
-				case 'L':
-					char buf [13];
-					ltoa (eeprom_read_dword ((uint32_t *) addr), buf, 10);
-					CONSOLE_UART::send_string (buf);
-					return;
-				case 'f':
-				case 'F':
-					fprintf_P (&CONSOLE_UART::stream, PSTR ("%f"), eeprom_read_float ((float *) addr));
-					return;
-			}
-		}
-		CONSOLE_UART::send_string_p (PSTR ("Args: <b|i|w|l|f> <addr>"));
-	}
-
 	void exec ()
 	{
 		const char *arg = console::argument (1);
@@ -271,20 +192,178 @@ namespace eeprom
 				case 'W':
 					write ();
 					return;
-				case 's':
-				case 'S':
-					set ();
+			}
+		}
+		CONSOLE_UART::send_string_p (PSTR ("Args: d - dump, r - read, w - write"));
+	}
+
+}  // namespace eeprom
+
+
+namespace opt
+{
+
+	const char command [] PROGMEM = "opt";
+	const char help [] PROGMEM = "Read/write OSD options";
+
+	const char __unknown [] PROGMEM = "Unknown option";
+
+	const char __uint [] PROGMEM = "%u";
+	const char __float [] PROGMEM = "%0.4f";
+
+	const char __t_bool [] PROGMEM = "bool";
+	const char __t_byte [] PROGMEM = "byte";
+	const char __t_word [] PROGMEM = "word";
+	const char __t_dword [] PROGMEM = "dword";
+	const char __t_float [] PROGMEM = "float";
+	const char __t_str [] PROGMEM = "str";
+
+	const char * const types [] PROGMEM = {
+		__t_bool, __t_byte, __t_word, __t_dword, __t_float, __t_str
+	};
+
+	void display (const settings::option_t *option)
+	{
+		if (!option)
+		{
+			CONSOLE_UART::send_string_p (__unknown);
+			return;
+		}
+
+		const char *name_p = (const char *) pgm_read_ptr (&option->name_p);
+		void *addr = pgm_read_ptr (&option->addr);
+		uint8_t type = pgm_read_byte (&option->type);
+		uint8_t size = pgm_read_byte (&option->size);
+
+		fprintf_P (&CONSOLE_UART::stream, PSTR ("%03p\t(%S:%u@)\t%S\t= "), addr, (const char *) pgm_read_ptr (&types [type]), size, name_p);
+
+		char buf [16];
+
+		switch (type)
+		{
+			case settings::ot_bool:
+				fprintf_P (&CONSOLE_UART::stream, __uint, settings::read_bool_option (option));
+				break;
+			case settings::ot_uint8:
+				fprintf_P (&CONSOLE_UART::stream, __uint, settings::read_uint8_option (option));
+				break;
+			case settings::ot_uint16:
+				fprintf_P (&CONSOLE_UART::stream, __uint, settings::read_uint16_option (option));
+				break;
+			case settings::ot_uint32:
+				ltoa (settings::read_uint32_option (option), buf, 10);
+				CONSOLE_UART::send_string (buf);
+				break;
+			case settings::ot_float:
+				fprintf_P (&CONSOLE_UART::stream, __float, settings::read_float_option (option));
+				break;
+			case settings::ot_str:
+				settings::read_str_option (option, buf);
+				CONSOLE_UART::send_string (buf);
+				break;
+		}
+	}
+
+	void list ()
+	{
+		for (uint8_t s = 0; s < settings::sections_count; s ++)
+		{
+			const settings::option_t *opts = settings::sections [s].options;
+			for (uint8_t i  = 0; i < settings::sections [s].size; i ++)
+			{
+				display (opts + i);
+				console::eol ();
+			}
+		}
+	}
+
+	void get ()
+	{
+		const char *name = console::argument (2);
+
+		if (!name)
+		{
+			CONSOLE_UART::send_string_p (PSTR ("Args: <name>"));
+			return;
+		}
+
+		display (settings::get_option (name));
+	}
+
+	void set ()
+	{
+		const char *name_arg = console::argument (2);
+		const char *value = console::argument (3);
+
+		if (!name_arg || !value)
+		{
+			CONSOLE_UART::send_string_p (PSTR ("Args: <name> <value>"));
+			return;
+		}
+
+		char name [SETTINGS_MAX_NAME_LEN];
+		console::read_argument (name_arg, name);
+
+		const settings::option_t *option = settings::get_option (name);
+
+		if (!option)
+		{
+			CONSOLE_UART::send_string_p (__unknown);
+			return;
+		}
+
+		uint8_t type = pgm_read_byte (&option->type);
+
+		switch (type)
+		{
+			case settings::ot_bool:
+				settings::write_bool_option (name, atoi (value));
+				break;
+			case settings::ot_uint8:
+				settings::write_uint8_option (name, atoi (value));
+				break;
+			case settings::ot_uint16:
+				settings::write_uint16_option (name, atol (value));
+				break;
+			case settings::ot_uint32:
+				settings::write_uint32_option (name, atol (value));
+				break;
+			case settings::ot_float:
+				settings::write_float_option (name, atof (value));
+				break;
+			case settings::ot_str:
+				settings::write_str_option (name, value);
+				break;
+		}
+
+		display (option);
+	}
+
+	void exec ()
+	{
+		const char *arg = console::argument (1);
+		if (arg)
+		{
+			switch (*arg)
+			{
+				case 'l':
+				case 'L':
+					list ();
 					return;
 				case 'g':
 				case 'G':
 					get ();
 					return;
+				case 's':
+				case 'S':
+					set ();
+					return;
 			}
 		}
-		CONSOLE_UART::send_string_p (PSTR ("Args: d - dump, r - read, w - write, s - set, g - get"));
+		CONSOLE_UART::send_string_p (PSTR ("Args: l - list, g - get, s - set"));
 	}
 
-}  // namespace eeprom
+}  // namespace opt
 
 namespace info
 {
@@ -368,6 +447,7 @@ const command_t values [] PROGMEM = {
 	declare_cmd (font),
 	declare_cmd (reset),
 	declare_cmd (eeprom),
+	declare_cmd (opt),
 	declare_cmd (info),
 	declare_cmd (help),
 	declare_cmd (exit),

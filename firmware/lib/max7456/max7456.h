@@ -38,6 +38,12 @@
 namespace max7456
 {
 
+namespace settings
+{
+	void init ();
+	void reset ();
+}
+
 void wait_vsync ();
 
 void init ();
@@ -57,11 +63,6 @@ void __attribute__ ((noinline)) close ();
 
 extern FILE stream;
 extern uint8_t mode, right, bottom, hcenter, vcenter;
-
-namespace settings
-{
-	void reset ();
-}
 
 };
 
