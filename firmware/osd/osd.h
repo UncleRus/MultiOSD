@@ -25,18 +25,17 @@
 namespace osd
 {
 
+namespace settings
+{
+	void init ();
+	void reset ();
+}
+
 // load settings
 void init ();
 
 // Main loop
 void main ();
-
-namespace settings
-{
-
-	void reset ();
-
-}  // namespace settings
 
 }
 

@@ -21,6 +21,7 @@
 #include "../spi/spi.h"
 #include "../../settings.h"
 #include "../../config.h"
+#include "../../eeprom.h"
 
 // MAX7456 reg read addresses
 #define MAX7456_REG_STAT  0x20 // 0xa0 Status
@@ -46,12 +47,41 @@
 #define MAX7456_MASK_PAL  0x40 // PAL mask 01000000
 #define MAX7456_MASK_NTCS 0x00 // NTSC mask 00000000
 
-// eeprom addresses
-#define MAX7456_EEPROM_VIDEO_MODE	_eeprom_byte (MAX7456_EEPROM_OFFSET)
-#define MAX7456_EEPROM_BRIGHTNESS	_eeprom_byte (MAX7456_EEPROM_OFFSET + 1)
-
 namespace max7456
 {
+
+namespace settings
+{
+
+#define EEPROM_ADDR_MODE       _eeprom_byte (MAX7456_EEPROM_OFFSET)
+#define EEPROM_ADDR_BRIGHTNESS _eeprom_byte (MAX7456_EEPROM_OFFSET + 1)
+
+const char __opt_mode [] PROGMEM = "VMODE";
+const char __opt_brightness [] PROGMEM = "VBRIGHT";
+
+const ::settings::option_t __settings [] PROGMEM = {
+	declare_uint8_option (__opt_mode, EEPROM_ADDR_MODE),
+	declare_uint8_option (__opt_brightness, EEPROM_ADDR_BRIGHTNESS),
+};
+
+bool initialized = false;
+
+void init ()
+{
+	if (initialized) return;
+	::settings::append_section (__settings, sizeof (__settings) / sizeof (::settings::option_t));
+	initialized = true;
+}
+
+void reset ()
+{
+	eeprom_write_byte (EEPROM_ADDR_MODE, MAX7456_DEFAULT_MODE);
+	eeprom_write_byte (EEPROM_ADDR_BRIGHTNESS, MAX7456_DEFAULT_BRIGHTNESS);
+}
+
+}  // namespace settings
+
+///////////////////////////////////////////////////////////////////////////////
 
 uint8_t mode, right, bottom, hcenter, vcenter;
 
@@ -127,7 +157,7 @@ inline void _detect_mode ()
 		return;
 	}
 
-	_set_mode (eeprom_read_byte (MAX7456_EEPROM_VIDEO_MODE));
+	_set_mode (eeprom_read_byte (EEPROM_ADDR_MODE));
 }
 
 FILE stream;
@@ -165,7 +195,7 @@ void init ()
 	_enable_osd ();
 
 	// set all rows to same character brightness black/white level
-	uint8_t brightness = eeprom_read_byte (MAX7456_EEPROM_BRIGHTNESS);
+	uint8_t brightness = eeprom_read_byte (EEPROM_ADDR_BRIGHTNESS);
 	for (uint8_t r = 0; r < 16; ++ r)
 		write_register (0x10 + r, brightness);
 
@@ -346,15 +376,4 @@ void clear (uint8_t x, uint8_t y, uint8_t w, uint8_t h)
 	}
 }
 
-namespace settings
-{
-
-void reset ()
-{
-	eeprom_write_byte (MAX7456_EEPROM_VIDEO_MODE, MAX7456_DEFAULT_MODE);
-	eeprom_write_byte (MAX7456_EEPROM_BRIGHTNESS, MAX7456_DEFAULT_BRIGHTNESS);
-}
-
-}
-
-}
+}  // namespace max7456

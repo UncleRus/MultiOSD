@@ -18,17 +18,12 @@
 #include "mavlink.h"
 
 #include <math.h>
-#include "../../settings.h"
 #include "../../lib/uart/uart.h"
 #include "../telemetry.h"
+#include "../../settings.h"
+#include "../../eeprom.h"
 
 #include "setup.h"
-
-#define MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL _eeprom_byte (MAVLINK_EEPROM_OFFSET)
-#define MAVLINK_EEPROM_RSSI_LOW_THRESHOLD _eeprom_byte (MAVLINK_EEPROM_OFFSET + 1)
-#define MAVLINK_EEPROM_EMULATE_RSSI	_eeprom_byte (MAVLINK_EEPROM_OFFSET + 2)
-#define MAVLINK_EEPROM_EMULATE_RSSI_CHANNEL _eeprom_byte (MAVLINK_EEPROM_OFFSET + 3)
-#define MAVLINK_EEPROM_EMULATE_RSSI_THRESHOLD _eeprom_word (MAVLINK_EEPROM_OFFSET + 4)
 
 #define _MAVLINK_PX4_MODE_AUTO 4
 
@@ -40,6 +35,47 @@ namespace modules
 
 namespace mavlink
 {
+
+namespace settings
+{
+
+#define EEPROM_ADDR_INTERNAL_BATTERY_LEVEL _eeprom_byte (MAVLINK_EEPROM_OFFSET)
+#define EEPROM_ADDR_RSSI_LOW_THRESHOLD     _eeprom_byte (MAVLINK_EEPROM_OFFSET + 1)
+#define EEPROM_ADDR_EMULATE_RSSI           _eeprom_byte (MAVLINK_EEPROM_OFFSET + 2)
+#define EEPROM_ADDR_EMULATE_RSSI_CHANNEL   _eeprom_byte (MAVLINK_EEPROM_OFFSET + 3)
+#define EEPROM_ADDR_EMULATE_RSSI_THRESHOLD _eeprom_word (MAVLINK_EEPROM_OFFSET + 4)
+
+const char __opt_mlibl [] PROGMEM = "MLIBL";
+const char __opt_mlrlt [] PROGMEM = "MLRLT";
+const char __opt_mler [] PROGMEM = "MLER";
+const char __opt_mlerc [] PROGMEM = "MLERC";
+const char __opt_mlert [] PROGMEM = "MLERT";
+
+const ::settings::option_t __settings [] PROGMEM = {
+	declare_uint8_option (__opt_mlibl, EEPROM_ADDR_INTERNAL_BATTERY_LEVEL),
+	declare_uint8_option (__opt_mlrlt, EEPROM_ADDR_RSSI_LOW_THRESHOLD),
+	declare_uint8_option (__opt_mler, EEPROM_ADDR_EMULATE_RSSI),
+	declare_uint8_option (__opt_mlerc, EEPROM_ADDR_EMULATE_RSSI_CHANNEL),
+	declare_uint16_option (__opt_mlert, EEPROM_ADDR_EMULATE_RSSI_THRESHOLD),
+};
+
+void init ()
+{
+	::settings::append_section (__settings, sizeof (__settings) / sizeof (::settings::option_t));
+}
+
+void reset ()
+{
+	eeprom_update_byte (EEPROM_ADDR_INTERNAL_BATTERY_LEVEL, MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL);
+	eeprom_update_byte (EEPROM_ADDR_RSSI_LOW_THRESHOLD, MAVLINK_DEFAULT_RSSI_LOW_THRESHOLD);
+	eeprom_update_byte (EEPROM_ADDR_EMULATE_RSSI, MAVLINK_DEFAULT_EMULATE_RSSI);
+	eeprom_update_byte (EEPROM_ADDR_EMULATE_RSSI_CHANNEL, MAVLINK_DEFAULT_EMULATE_RSSI_CHANNEL);
+	eeprom_update_word (EEPROM_ADDR_EMULATE_RSSI_THRESHOLD, MAVLINK_DEFAULT_EMULATE_RSSI_THRESHOLD);
+}
+
+}  // namespace settings
+
+///////////////////////////////////////////////////////////////////////////////
 
 uint8_t internal_battery_level;
 uint8_t rssi_low_threshold;
@@ -362,7 +398,7 @@ bool update ()
 				was_armed = telemetry::status::armed;
 
 				telemetry::status::armed = mavlink_msg_heartbeat_get_base_mode (msg) & MAV_MODE_FLAG_SAFETY_ARMED;
-				// FIXME: use FC home. Home in ArduXXX - 0 waypoint
+				// FIXME: use FC home. Home in ArduXXX is waypoint 0
 				if (!was_armed && telemetry::status::armed)
 					telemetry::home::fix ();
 
@@ -402,9 +438,9 @@ bool update ()
 				break;
 #endif
 			case MAVLINK_MSG_ID_ATTITUDE:
-				attitude::roll = rad_to_deg (mavlink_msg_attitude_get_roll (msg));
-				attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (msg));
-				attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
+				telemetry::attitude::roll = rad_to_deg (mavlink_msg_attitude_get_roll (msg));
+				telemetry::attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (msg));
+				telemetry::attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
 				break;
 			case MAVLINK_MSG_ID_GPS_RAW_INT:
 				telemetry::gps::state = mavlink_msg_gps_raw_int_get_fix_type (msg);
@@ -486,20 +522,11 @@ bool update ()
 
 void init ()
 {
-	internal_battery_level = eeprom_read_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL);
-	rssi_low_threshold = eeprom_read_byte (MAVLINK_EEPROM_RSSI_LOW_THRESHOLD);
-	emulate_rssi = eeprom_read_byte (MAVLINK_EEPROM_EMULATE_RSSI);
-	emulate_rssi_channel = eeprom_read_byte (MAVLINK_EEPROM_EMULATE_RSSI_CHANNEL);
-	emulate_rssi_threshold = eeprom_read_word (MAVLINK_EEPROM_EMULATE_RSSI_THRESHOLD);
-}
-
-void reset ()
-{
-	eeprom_update_byte (MAVLINK_EEPROM_INTERNAL_BATTERY_LEVEL, MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL);
-	eeprom_update_byte (MAVLINK_EEPROM_RSSI_LOW_THRESHOLD, MAVLINK_DEFAULT_RSSI_LOW_THRESHOLD);
-	eeprom_update_byte (MAVLINK_EEPROM_EMULATE_RSSI, MAVLINK_DEFAULT_EMULATE_RSSI);
-	eeprom_update_byte (MAVLINK_EEPROM_EMULATE_RSSI_CHANNEL, MAVLINK_DEFAULT_EMULATE_RSSI_CHANNEL);
-	eeprom_update_word (MAVLINK_EEPROM_EMULATE_RSSI_THRESHOLD, MAVLINK_DEFAULT_EMULATE_RSSI_THRESHOLD);
+	internal_battery_level = eeprom_read_byte (EEPROM_ADDR_INTERNAL_BATTERY_LEVEL);
+	rssi_low_threshold = eeprom_read_byte (EEPROM_ADDR_RSSI_LOW_THRESHOLD);
+	emulate_rssi = eeprom_read_byte (EEPROM_ADDR_EMULATE_RSSI);
+	emulate_rssi_channel = eeprom_read_byte (EEPROM_ADDR_EMULATE_RSSI_CHANNEL);
+	emulate_rssi_threshold = eeprom_read_word (EEPROM_ADDR_EMULATE_RSSI_THRESHOLD);
 }
 
 }  // namespace mavlink

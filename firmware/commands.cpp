@@ -286,6 +286,106 @@ namespace eeprom
 
 }  // namespace eeprom
 
+
+namespace opt
+{
+
+	const char command [] PROGMEM = "opt";
+	const char help [] PROGMEM = "Read/write OSD options";
+
+	const char __uint [] PROGMEM = "%u";
+	const char __float [] PROGMEM = "%0.4f";
+
+	const char __t_bool [] PROGMEM = "bool";
+	const char __t_byte [] PROGMEM = "byte";
+	const char __t_word [] PROGMEM = "word";
+	const char __t_dword [] PROGMEM = "dword";
+	const char __t_float [] PROGMEM = "float";
+	const char __t_str [] PROGMEM = "str";
+
+	const char * const types [] PROGMEM = {
+		__t_bool, __t_byte, __t_word, __t_dword, __t_float, __t_str
+	};
+
+	void list ()
+	{
+		for (uint8_t s = 0; s < settings::sections_count; s ++)
+		{
+			const settings::option_t *opts = settings::sections [s].options;
+			for (uint8_t i  = 0; i < settings::sections [s].size; i ++)
+			{
+				const char *name_p = (const char *) pgm_read_ptr (&opts [i].name_p);
+				void *addr = pgm_read_ptr (&opts [i].addr);
+				uint8_t type = pgm_read_byte (&opts [i].type);
+				uint8_t size = pgm_read_byte (&opts [i].size);
+
+				fprintf_P (&CONSOLE_UART::stream, PSTR ("(%S:%u)\t%S\t= "), (const char *) pgm_read_ptr (&types [type]), size, name_p);
+
+				char buf [16];
+
+				switch (type)
+				{
+					case settings::ot_bool:
+					case settings::ot_uint8:
+						fprintf_P (&CONSOLE_UART::stream, __uint, eeprom_read_byte ((uint8_t *) addr));
+						break;
+					case settings::ot_uint16:
+						fprintf_P (&CONSOLE_UART::stream, __uint, eeprom_read_word ((uint16_t *) addr));
+						break;
+					case settings::ot_uint32:
+						ltoa (eeprom_read_dword ((uint32_t *) addr), buf, 10);
+						CONSOLE_UART::send_string (buf);
+						break;
+					case settings::ot_float:
+						fprintf_P (&CONSOLE_UART::stream, __float, eeprom_read_float ((float *) addr));
+						break;
+					case settings::ot_str:
+						eeprom_read_block (buf, (const void *) pgm_read_ptr ((char *) addr), size);
+						buf [size] = 0;
+						CONSOLE_UART::send_string (buf);
+						break;
+				}
+				console::eol ();
+			}
+		}
+	}
+
+	void get ()
+	{
+
+	}
+
+	void set ()
+	{
+
+	}
+
+	void exec ()
+	{
+		const char *arg = console::argument (1);
+		if (arg)
+		{
+			switch (*arg)
+			{
+				case 'l':
+				case 'L':
+					list ();
+					return;
+				case 'g':
+				case 'G':
+					get ();
+					return;
+				case 's':
+				case 'S':
+					set ();
+					return;
+			}
+		}
+		CONSOLE_UART::send_string_p (PSTR ("Args: l - list, g - get, s - set"));
+	}
+
+}  // namespace opt
+
 namespace info
 {
 
@@ -368,6 +468,7 @@ const command_t values [] PROGMEM = {
 	declare_cmd (font),
 	declare_cmd (reset),
 	declare_cmd (eeprom),
+	declare_cmd (opt),
 	declare_cmd (info),
 	declare_cmd (help),
 	declare_cmd (exit),

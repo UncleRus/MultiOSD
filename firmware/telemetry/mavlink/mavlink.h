@@ -35,9 +35,14 @@ namespace mavlink
 
 const char __name [] PROGMEM = "MAVLink";
 
+namespace settings
+{
+	void init ();
+	void reset ();
+}
+
 void init ();
 bool update ();
-void reset ();
 
 }  // namespace mavlink
 

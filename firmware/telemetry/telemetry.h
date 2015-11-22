@@ -33,15 +33,24 @@
 #define HOME_STATE_FIXED	2
 
 #define INPUT_CHANNELS 10
+#define CALLSIGN_LENGTH 5
 
 namespace telemetry
 {
+
+namespace settings
+{
+
+	void init ();
+	void reset ();
+
+}  // namespace settings
 
 extern uint32_t ticks;		// update time
 
 namespace status
 {
-	extern char callsign [];	// 5 chars max
+	extern char callsign [CALLSIGN_LENGTH + 1];	// 5 chars max
 	extern uint8_t connection;		// CONNECTION_STATE_xxx enum
 	extern uint16_t flight_time;	// seconds
 	extern uint8_t flight_mode;		//
@@ -167,7 +176,8 @@ namespace modules
 		typedef bool (* update_t) ();
 
 		const char *name_p;
-		proc_t reset;
+		proc_t init_settings;
+		proc_t reset_settings;
 		proc_t init;
 		update_t update;
 	};
@@ -181,9 +191,14 @@ namespace modules
 		return (const char *) pgm_read_ptr (&modules [module].name_p);
 	}
 
-	inline void reset (uint8_t module)
+	inline void init_settings (uint8_t module)
 	{
-		((module_t::proc_t) pgm_read_ptr (&modules [module].reset)) ();
+		((module_t::proc_t) pgm_read_ptr (&modules [module].init_settings)) ();
+	}
+
+	inline void reset_settings (uint8_t module)
+	{
+		((module_t::proc_t) pgm_read_ptr (&modules [module].reset_settings)) ();
 	}
 
 	inline void init (uint8_t module)
@@ -197,13 +212,6 @@ namespace modules
 	}
 
 }
-
-namespace settings
-{
-
-	void reset ();
-
-}  // namespace settings
 
 }  // namespace telemetry
 

@@ -14,10 +14,12 @@
  */
 
 #include "screen.h"
-#include "../settings.h"
+#include <avr/eeprom.h>
+#include <avr/pgmspace.h>
 #include "../config.h"
 #include "../lib/max7456/max7456.h"
 #include "panel.h"
+#include "../eeprom.h"
 
 namespace osd
 {
@@ -178,4 +180,3 @@ void reset ()
 }  // namespace screen
 
 }  // namespace osd
-

@@ -18,7 +18,6 @@
 #ifdef TELEMETRY_MAIN_MODULE_ID
 #	error Conflicting modules
 #endif
-#define TELEMETRY_MAIN_MODULE_ID 'U'
 
 #include "lib/common.h"
 
@@ -26,14 +25,17 @@ UT_NAMESPACE_OPEN
 
 const char __name [] PROGMEM = "UAVTalk";
 
+namespace settings
+{
+	void init ();
+	void reset ();
+}
+
 // load settings
 void init ();
 
 // parse messages and update the telemetry
 bool update ();
-
-// write default settings to EEPROM
-void reset ();
 
 UT_NAMESPACE_CLOSE
 

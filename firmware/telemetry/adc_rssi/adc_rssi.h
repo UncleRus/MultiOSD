@@ -28,6 +28,12 @@ namespace adc_rssi
 
 const char __name [] PROGMEM = "ADCRSSI";
 
+namespace settings
+{
+	void init ();
+	void reset ();
+}
+
 void reset ();
 void init ();
 bool update ();
