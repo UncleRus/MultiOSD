@@ -15,7 +15,7 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define VERSION 9
+#define VERSION 10
 
 /*
  * Telemetry modules config
