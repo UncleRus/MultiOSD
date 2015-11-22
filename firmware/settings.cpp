@@ -53,32 +53,30 @@ void *get_addr (const char *name)
 	return opt ? pgm_read_ptr (&opt->addr) : NULL;
 }
 
-uint8_t read_uint8_option (const char *name)
+uint8_t read_uint8_option (const option_t *option)
 {
-	return eeprom_read_byte ((const uint8_t *) get_addr (name));
+	return eeprom_read_byte ((const uint8_t *) pgm_read_ptr (&option->addr));
 }
 
-uint16_t read_uint16_option (const char *name)
+uint16_t read_uint16_option (const option_t *option)
 {
-	return eeprom_read_word ((const uint16_t *) get_addr (name));
+	return eeprom_read_word ((const uint16_t *) pgm_read_ptr (&option->addr));
 }
 
-uint32_t read_uint32_option (const char *name)
+uint32_t read_uint32_option (const option_t *option)
 {
-	return eeprom_read_dword ((const uint32_t *) get_addr (name));
+	return eeprom_read_dword ((const uint32_t *) pgm_read_ptr (&option->addr));
 }
 
-float read_float_option (const char *name)
+float read_float_option (const option_t *option)
 {
-	return eeprom_read_float ((const float *) get_addr (name));
+	return eeprom_read_float ((const float *) pgm_read_ptr (&option->addr));
 }
 
-void read_str_option (const char *name, char *dest)
+void read_str_option (const option_t *option, char *dest)
 {
-	const option_t *opt = get_option (name);
-	if (!opt) return;
-	uint8_t size = pgm_read_byte (&opt->size);
-	eeprom_read_block (dest, (const void *) pgm_read_ptr (&opt->addr), size);
+	uint8_t size = pgm_read_byte (&option->size);
+	eeprom_read_block (dest, pgm_read_ptr (&option->addr), size);
 	dest [size] = 0;
 }
 

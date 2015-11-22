@@ -35,7 +35,7 @@ inline void init ()
 	// setup timer
 	timer::init ();
 	// wait 1 sec
-	_delay_ms (1000);
+	// _delay_ms (1000);
 	// setup UART
 	CONSOLE_UART::init (UART_BAUD_SELECT (UART_BAUD_RATE));
 	// setup SPI...
@@ -45,7 +45,7 @@ inline void init ()
 	// Show boot screen
 	if (boot::show ())
 	{
-		// magic word has been entered so let's run console
+		// magic word typed so let's run console
 		max7456::clear ();
 		max7456::puts_p (max7456::hcenter - 4, max7456::vcenter, PSTR ("\xfc CONFIG"));
 		fprintf_P (&CONSOLE_UART::stream, PSTR ("MultiOSD v.%04u\r\n"), VERSION);
