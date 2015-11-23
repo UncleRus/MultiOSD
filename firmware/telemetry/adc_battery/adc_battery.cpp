@@ -58,6 +58,7 @@ const ::settings::option_t __settings [] PROGMEM = {
 
 void init ()
 {
+	adc::settings::init ();
 	::settings::append_section (__settings, sizeof (__settings) / sizeof (::settings::option_t));
 }
 
