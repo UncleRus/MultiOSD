@@ -46,6 +46,7 @@ VMODE
 -----
 
 OSD composite video mode. Works only when jumper "PAL" on MinimOSD is not closed.
+Value will be applied after reboot.
 
 +------+--------+
 | Type | Size   |
@@ -65,6 +66,7 @@ VBRIGHT
 -------
 
 OSD character brithness in % of OSD white level.
+Value will be applied after reboot.
 
 +------+--------+
 | Type | Size   |
@@ -115,7 +117,7 @@ OSD
 SCREENS
 -------
 
-Usable screens count. 1..8
+Used screens count. 1..8
 
 +-------+--------+
 | Type  | Size   |
@@ -363,7 +365,7 @@ ADCRSSI
 ARMUL
 -----
 
-RSSI multiplier = 100 / Umax, where Umax < **ADCUREF**.
+RSSI multiplier = 100 / Umax, where Umax <= **ADCUREF**.
 
 For example, Umax = 5V, **ADCUREF** = 5.1, **ARMUL** = 100 / 5.0 = 20.0
 
