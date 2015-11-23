@@ -16,7 +16,7 @@
 #define TELEMETRY_UAVTALK_LIB_COMMON_H_
 
 #include <stddef.h>
-#include <avr/pgmspace.h>
+#include "../../../lib/pgmspace.h"
 #include "../../../lib/uart/uart.h"
 
 #define UAVTALK_BOARD_CC3D 0

@@ -16,7 +16,7 @@
 #define SETTINGS_H_
 
 #include <avr/eeprom.h>
-#include <avr/pgmspace.h>
+#include "lib/pgmspace.h"
 
 #define EEPROM_SIZE 0x400
 #define EEPROM_HEADER 0x5552

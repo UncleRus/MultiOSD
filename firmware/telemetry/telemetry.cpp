@@ -14,7 +14,6 @@
  */
 #include "telemetry.h"
 #include "../config.h"
-#include <avr/pgmspace.h>
 #include <avr/eeprom.h>
 #include <math.h>
 #include <string.h>
