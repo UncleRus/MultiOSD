@@ -36,7 +36,7 @@ namespace screen
 
 	extern volatile bool updated;
 
-	uint8_t *eeprom_offset (uint8_t num);
+	uint8_t *eeprom_offset (uint8_t num, uint8_t panel = 0)  __attribute__ ((noinline));
 
 	namespace settings
 	{

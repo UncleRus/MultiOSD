@@ -30,9 +30,9 @@ namespace screen
 static panel_pos_t records [OSD_SCREEN_PANELS];
 static uint8_t count = 0;
 
-uint8_t *eeprom_offset (uint8_t num)
+uint8_t *eeprom_offset (uint8_t num, uint8_t panel)
 {
-	return _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (panel_pos_t) * OSD_SCREEN_PANELS);
+	return _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (panel_pos_t) * OSD_SCREEN_PANELS  + panel * sizeof (panel_pos_t));
 }
 
 void load (uint8_t num)
@@ -105,9 +105,7 @@ const panel_pos_t _default_screen_0 [] PROGMEM = {
 
 	{OSD_PANEL_BATTERY_VOLTAGE, 22, 12},
 	{OSD_PANEL_BATTERY_CURRENT, 22, 13},
-	{OSD_PANEL_BATTERY_CONSUMED, 22, 14},
-
-	{0xff, 0xff, 0xff}
+	{OSD_PANEL_BATTERY_CONSUMED, 22, 14}
 };
 
 #if OSD_MAX_SCREENS > 1
@@ -124,9 +122,7 @@ const panel_pos_t _default_screen_1 [] PROGMEM = {
 	{OSD_PANEL_FLIGHT_TIME, 1, 13},
 	{OSD_PANEL_HOME_DISTANCE, 1, 14},
 
-	{OSD_PANEL_BATTERY_VOLTAGE, 22, 14},
-
-	{0xff, 0xff, 0xff}
+	{OSD_PANEL_BATTERY_VOLTAGE, 22, 14}
 };
 #endif
 
@@ -143,22 +139,28 @@ const panel_pos_t _default_screen_2 [] PROGMEM = {
 
 	{OSD_PANEL_FLIGHT_TIME, 1, 13},
 
-	{OSD_PANEL_BATTERY_VOLTAGE, 22, 14},
-
-	{0xff, 0xff, 0xff}
+	{OSD_PANEL_BATTERY_VOLTAGE, 22, 14}
 };
 #endif
 
 
 void reset_screen (uint8_t num, const panel_pos_t screen [], uint8_t len)
 {
-	uint8_t *offset = _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (panel_pos_t) * OSD_SCREEN_PANELS);
-	for (uint8_t i = 0; i < len; i ++)
+	uint8_t *offset = eeprom_offset (num);
+	for (uint8_t i = 0; i < OSD_SCREEN_PANELS; i ++, offset += sizeof (panel_pos_t))
 	{
-		eeprom_update_byte (offset, pgm_read_byte (&(screen [i].panel)));
-		eeprom_update_byte (offset + 1, pgm_read_byte (&(screen [i].x)));
-		eeprom_update_byte (offset + 2, pgm_read_byte (&(screen [i].y)));
-		offset += sizeof (panel_pos_t);
+		if (i < len)
+		{
+			eeprom_update_byte (offset, pgm_read_byte (&(screen [i].panel)));
+			eeprom_update_byte (offset + 1, pgm_read_byte (&(screen [i].x)));
+			eeprom_update_byte (offset + 2, pgm_read_byte (&(screen [i].y)));
+		}
+		else
+		{
+			eeprom_update_byte (offset, 0xff);
+			eeprom_update_byte (offset + 1, 0xff);
+			eeprom_update_byte (offset + 2, 0xff);
+		}
 	}
 }
 

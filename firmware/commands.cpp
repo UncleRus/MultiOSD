@@ -208,7 +208,7 @@ namespace opt
 	const char command [] PROGMEM = "opt";
 	const char help [] PROGMEM = "Read/write OSD options";
 
-	const char __unknown [] PROGMEM = "Unknown option";
+	const char __unknown [] PROGMEM = "ERR: Unknown option";
 
 	const char __uint [] PROGMEM = "%u";
 	const char __float [] PROGMEM = "%0.4f";
@@ -376,16 +376,22 @@ namespace screen
 	const char screens_opt [] PROGMEM = "SCREENS";
 	uint8_t screens_count;
 
-	void print (uint8_t num)
+	bool check_screen (uint8_t num)
 	{
 		if (num >= screens_count)
 		{
-			CONSOLE_UART::send_string_p (PSTR ("Invalid screen index"));
-			return;
+			CONSOLE_UART::send_string_p (PSTR ("ERR: Invalid screen #"));
+			return false;
 		}
+		return true;
+	}
+
+	void print (uint8_t num)
+	{
+		if (!check_screen (num)) return;
 
 		fprintf_P (&CONSOLE_UART::stream, PSTR ("Screen %u" CONSOLE_EOL), num);
-		CONSOLE_UART::send_string_p (PSTR ("x\ty\tpanel\tpanel name" CONSOLE_EOL "--\t--\t--\t--" CONSOLE_EOL));
+		CONSOLE_UART::send_string_p (PSTR ("#\tx\ty\tpanel\tpanel name" CONSOLE_EOL "--\t--\t--\t--\t--" CONSOLE_EOL));
 
 		uint8_t *offset = osd::screen::eeprom_offset (num);
 
@@ -393,7 +399,7 @@ namespace screen
 		{
 			uint8_t panel = eeprom_read_byte (offset);
 			if (panel >= osd::panel::count) break;
-			fprintf_P (&CONSOLE_UART::stream, PSTR ("%u\t%u\t%u\t%S" CONSOLE_EOL), eeprom_read_byte (offset + 1), \
+			fprintf_P (&CONSOLE_UART::stream, PSTR ("%u\t%u\t%u\t%u\t%S" CONSOLE_EOL), i, eeprom_read_byte (offset + 1), \
 				eeprom_read_byte (offset + 2), panel, osd::panel::name_p (panel));
 		}
 		console::eol ();
@@ -412,19 +418,160 @@ namespace screen
 			print (i);
 	}
 
+	bool check_panel (uint8_t x, uint8_t y, uint8_t panel)
+	{
+		if (x >= MAX7456_PAL_COLUMNS || y >= MAX7456_PAL_ROWS)
+		{
+			CONSOLE_UART::send_string_p (PSTR ("ERR: Invalid coordinates"));
+			return false;
+		}
+
+		if (panel >= osd::panel::count)
+		{
+			CONSOLE_UART::send_string_p (PSTR ("ERR: Invalid panel"));
+			return false;
+		}
+
+		return true;
+	}
+
 	void append ()
 	{
+		const char *idx = console::argument (2);
+		const char *sx = console::argument (3);
+		const char *sy = console::argument (4);
+		const char *sp = console::argument (5);
+		if (!(idx && sx && sy && sp))
+		{
+			CONSOLE_UART::send_string_p (PSTR ("Args: <screen> <x> <y> <panel>"));
+			return;
+		}
+		uint8_t scr = atoi (idx);
+		if (!check_screen (scr)) return;
+		uint8_t x = atoi (sx);
+		uint8_t y = atoi (sy);
+		uint8_t p = atoi (sp);
+		if (!check_panel (x, y, p)) return;
 
+		uint8_t *offset = osd::screen::eeprom_offset (scr);
+		uint8_t i = 0;
+		for (; i < OSD_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
+		{
+			uint8_t panel = eeprom_read_byte (offset);
+			if (panel >= osd::panel::count)
+			{
+				eeprom_update_byte (offset, p);
+				eeprom_update_byte (offset + 1, x);
+				eeprom_update_byte (offset + 2, y);
+				break;
+			}
+		}
+		if (i == OSD_SCREEN_PANELS)
+		{
+			CONSOLE_UART::send_string_p (PSTR ("ERR: Too much panels"));
+			return;
+		}
+		print (scr);
+	}
+
+	bool check_panel_idx (uint8_t scr, uint8_t i)
+	{
+		uint8_t *offset = osd::screen::eeprom_offset (scr) + sizeof (osd::screen::panel_pos_t) * i;
+		if (i >= OSD_SCREEN_PANELS || eeprom_read_byte (offset) >= osd::panel::count)
+		{
+			CONSOLE_UART::send_string_p (PSTR ("ERR: Invalid panel #"));
+			return false;
+		}
+		return true;
+	}
+
+	void edit ()
+	{
+		const char *idx = console::argument (2);
+		const char *si = console::argument (3);
+		const char *sx = console::argument (4);
+		const char *sy = console::argument (5);
+		const char *sp = console::argument (6);
+		if (!(idx && si && sx && sy && sp))
+		{
+			CONSOLE_UART::send_string_p (PSTR ("Args: <screen> <#> <x> <y> <panel>"));
+			return;
+		}
+		uint8_t scr = atoi (idx);
+		if (!check_screen (scr)) return;
+		uint8_t i = atoi (si);
+		if (!check_panel_idx (scr, i)) return;
+		uint8_t x = atoi (sx);
+		uint8_t y = atoi (sy);
+		uint8_t p = atoi (sp);
+		if (!check_panel (x, y, p)) return;
+
+		uint8_t *offset = osd::screen::eeprom_offset (scr, i);
+		eeprom_update_byte (offset, p);
+		eeprom_update_byte (offset + 1, x);
+		eeprom_update_byte (offset + 2, y);
+		print (scr);
 	}
 
 	void remove ()
 	{
+		const char *idx = console::argument (2);
+		const char *si = console::argument (3);
+		if (!(idx && si))
+		{
+			CONSOLE_UART::send_string_p (PSTR ("Args: <screen> <#>"));
+			return;
+		}
+		uint8_t scr = atoi (idx);
+		if (!check_screen (scr)) return;
+		uint8_t i = atoi (si);
+		if (!check_panel_idx (scr, i)) return;
 
+		i ++;
+		uint8_t *offset = osd::screen::eeprom_offset (scr, i);
+		if (i == OSD_SCREEN_PANELS || eeprom_read_byte (offset) >= osd::panel::count)
+		{
+			// last panel
+			uint8_t *prev = osd::screen::eeprom_offset (scr, i - 1);
+			eeprom_update_byte (prev, 0xff);
+			eeprom_update_byte (prev + 1, 0xff);
+			eeprom_update_byte (prev + 2, 0xff);
+		}
+		else
+		{
+			for (; i < OSD_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
+			{
+				uint8_t *prev = osd::screen::eeprom_offset (scr, i - 1);
+				eeprom_update_byte (prev, eeprom_read_byte (offset));
+				eeprom_update_byte (prev + 1, eeprom_read_byte (offset + 1));
+				eeprom_update_byte (prev + 2, eeprom_read_byte (offset + 2));
+			}
+			eeprom_update_byte (offset, 0xff);
+			eeprom_update_byte (offset + 1, 0xff);
+			eeprom_update_byte (offset + 2, 0xff);
+		}
+		print (scr);
 	}
 
 	void clear ()
 	{
+		const char *idx = console::argument (2);
+		if (!idx)
+		{
+			CONSOLE_UART::send_string_p (PSTR ("Args: <screen>"));
+			return;
+		}
+		uint8_t scr = atoi (idx);
+		if (!check_screen (scr)) return;
 
+		uint8_t *offset = osd::screen::eeprom_offset (scr);
+		for (uint8_t i = 0; i < OSD_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
+		{
+			eeprom_update_byte (offset, 0xff);
+			eeprom_update_byte (offset + 1, 0xff);
+			eeprom_update_byte (offset + 2, 0xff);
+		}
+		print (scr);
 	}
 
 	void exec ()
@@ -444,6 +591,10 @@ namespace screen
 				case 'A':
 					append ();
 					return;
+				case 'e':
+				case 'E':
+					edit ();
+					return;
 				case 'r':
 				case 'R':
 					remove ();
@@ -454,7 +605,7 @@ namespace screen
 					return;
 			}
 		}
-		CONSOLE_UART::send_string_p (PSTR ("Args: d - dump screens, a - append panel, r - remove panel, c - clear screen"));
+		CONSOLE_UART::send_string_p (PSTR ("Args: d - dump screens, a - append panel, e - edit panel, r - remove panel, c - clear screen"));
 	}
 
 }  // namespace screen
