@@ -5,9 +5,10 @@ MultiOSD
 .. toctree::
    :maxdepth: 2
    
-   console
-   modules
-   options
+   about
+   hw
+   lowlevel/index
+   examples/index
    
 
 Indices and tables
