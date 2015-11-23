@@ -20,6 +20,8 @@
 #include "telemetry/telemetry.h"
 #include "osd/osd.h"
 
+#include "lib/uart/uart.h"
+
 namespace settings
 {
 

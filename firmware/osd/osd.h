@@ -31,6 +31,9 @@ namespace settings
 	void reset ();
 }
 
+// enabled screens count
+uint8_t screens_enabled ();
+
 // load settings
 void init ();
 

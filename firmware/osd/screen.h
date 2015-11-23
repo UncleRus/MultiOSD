@@ -23,11 +23,20 @@ namespace osd
 namespace screen
 {
 
+	struct panel_pos_t
+	{
+		uint8_t panel;
+		uint8_t x;
+		uint8_t y;
+	};
+
 	void load (uint8_t num);
 	void update ();
 	void draw ();
 
 	extern volatile bool updated;
+
+	uint8_t *eeprom_offset (uint8_t num);
 
 	namespace settings
 	{

@@ -24,11 +24,11 @@ namespace adc
 namespace settings
 {
 
-#define EEPROM_ADDR_REF     ((uint8_t *) ADC_EEPROM_OFFSET)
-#define EEPROM_ADDR_VOLTAGE ((float *) ADC_EEPROM_OFFSET + 1)
+#define EEPROM_ADDR_REF     _eeprom_byte (ADC_EEPROM_OFFSET)
+#define EEPROM_ADDR_VOLTAGE _eeprom_float (ADC_EEPROM_OFFSET + 1)
 
 const char __opt_ref [] PROGMEM = "ADCREF";
-const char __opt_ref_voltage [] PROGMEM = "ADCREFV";
+const char __opt_ref_voltage [] PROGMEM = "ADCUREF";
 
 const ::settings::option_t __settings [] PROGMEM = {
 	declare_uint8_option (__opt_ref, EEPROM_ADDR_REF),

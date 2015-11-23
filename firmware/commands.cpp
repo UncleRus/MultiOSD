@@ -23,6 +23,8 @@
 #include "lib/max7456/max7456.h"
 #include "settings.h"
 #include "osd/panel.h"
+#include "osd/screen.h"
+#include "osd/osd.h"
 #include "telemetry/telemetry.h"
 
 namespace console
@@ -365,6 +367,98 @@ namespace opt
 
 }  // namespace opt
 
+namespace screen
+{
+
+	const char command [] PROGMEM = "scr";
+	const char help [] PROGMEM = "View/edit screens layout";
+
+	const char screens_opt [] PROGMEM = "SCREENS";
+	uint8_t screens_count;
+
+	void print (uint8_t num)
+	{
+		if (num >= screens_count)
+		{
+			CONSOLE_UART::send_string_p (PSTR ("Invalid screen index"));
+			return;
+		}
+
+		fprintf_P (&CONSOLE_UART::stream, PSTR ("Screen %u" CONSOLE_EOL), num);
+		CONSOLE_UART::send_string_p (PSTR ("x\ty\tpanel\tpanel name" CONSOLE_EOL "--\t--\t--\t--" CONSOLE_EOL));
+
+		uint8_t *offset = osd::screen::eeprom_offset (num);
+
+		for (uint8_t i = 0; i < OSD_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
+		{
+			uint8_t panel = eeprom_read_byte (offset);
+			if (panel >= osd::panel::count) break;
+			fprintf_P (&CONSOLE_UART::stream, PSTR ("%u\t%u\t%u\t%S" CONSOLE_EOL), eeprom_read_byte (offset + 1), \
+				eeprom_read_byte (offset + 2), panel, osd::panel::name_p (panel));
+		}
+		console::eol ();
+	}
+
+	void dump ()
+	{
+		const char *idx = console::argument (2);
+		if (idx)
+		{
+			print (atoi (idx));
+			return;
+		}
+
+		for (uint8_t i = 0; i < screens_count; i ++)
+			print (i);
+	}
+
+	void append ()
+	{
+
+	}
+
+	void remove ()
+	{
+
+	}
+
+	void clear ()
+	{
+
+	}
+
+	void exec ()
+	{
+		screens_count = osd::screens_enabled ();
+
+		const char *arg = console::argument (1);
+		if (arg)
+		{
+			switch (*arg)
+			{
+				case 'd':
+				case 'D':
+					dump ();
+					return;
+				case 'a':
+				case 'A':
+					append ();
+					return;
+				case 'r':
+				case 'R':
+					remove ();
+					return;
+				case 'c':
+				case 'C':
+					clear ();
+					return;
+			}
+		}
+		CONSOLE_UART::send_string_p (PSTR ("Args: d - dump screens, a - append panel, r - remove panel, c - clear screen"));
+	}
+
+}  // namespace screen
+
 namespace info
 {
 
@@ -448,6 +542,7 @@ const command_t values [] PROGMEM = {
 	declare_cmd (reset),
 	declare_cmd (eeprom),
 	declare_cmd (opt),
+	declare_cmd (screen),
 	declare_cmd (info),
 	declare_cmd (help),
 	declare_cmd (exit),

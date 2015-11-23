@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//doc/source/conf.py=utf-8
 encoding//res/__test__.py=utf-8
 encoding//res/eeprom_reader.py=utf-8
 encoding//res/font_uploader.py=utf-8

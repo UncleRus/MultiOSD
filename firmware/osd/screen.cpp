@@ -27,21 +27,19 @@ namespace osd
 namespace screen
 {
 
-struct panel_pos_t
-{
-	uint8_t panel;
-	uint8_t x;
-	uint8_t y;
-};
-
 static panel_pos_t records [OSD_SCREEN_PANELS];
 static uint8_t count = 0;
+
+uint8_t *eeprom_offset (uint8_t num)
+{
+	return _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (panel_pos_t) * OSD_SCREEN_PANELS);
+}
 
 void load (uint8_t num)
 {
 	if (num >= OSD_MAX_SCREENS) num = 0;
 
-	uint8_t *offset = _eeprom_byte (OSD_SCREENS_EEPROM_OFFSET + num * sizeof (panel_pos_t) * OSD_SCREEN_PANELS);
+	uint8_t *offset = eeprom_offset (num);
 
 	uint8_t i = 0;
 	for (; i < OSD_SCREEN_PANELS; i ++)

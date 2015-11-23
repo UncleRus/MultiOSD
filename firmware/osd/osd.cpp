@@ -109,6 +109,12 @@ bool check_input ()
 
 #endif
 
+uint8_t screens_enabled ()
+{
+	uint8_t res = eeprom_read_byte (EEPROM_ADDR_SCREENS);
+	return res > OSD_MAX_SCREENS ? OSD_MAX_SCREENS : res;
+}
+
 volatile bool started = false;
 volatile bool mutex = false;
 
@@ -169,10 +175,9 @@ void init ()
 {
 	_switch = eeprom_read_byte (EEPROM_ADDR_SWITCH);
 	_channel = eeprom_read_byte (EEPROM_ADDR_SWITCH_RAW_CHANNEL);
-	_screens_enabled = eeprom_read_byte (EEPROM_ADDR_SCREENS);
+	_screens_enabled = screens_enabled ();
 	_chan_min = eeprom_read_word (EEPROM_ADDR_CHANNEL_MIN);
 	_chan_max = eeprom_read_word (EEPROM_ADDR_CHANNEL_MAX);
-	if (_screens_enabled > OSD_MAX_SCREENS) _screens_enabled = OSD_MAX_SCREENS;
 	_raw_lvl_size = (_chan_max - _chan_min) / _screens_enabled;
 }
 
