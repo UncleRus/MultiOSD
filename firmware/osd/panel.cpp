@@ -72,6 +72,15 @@ namespace draw
 		}
 	}
 
+#define _ARROWS 0x90
+
+	void arrow (uint8_t x, uint8_t y, uint16_t direction)
+	{
+		uint8_t chr = _ARROWS + ((uint8_t) (telemetry::home::direction / 360.0 * 16)) * 2;
+		max7456::put (x, y, chr);
+		max7456::put (x + 1, y, chr + 1);
+	}
+
 }  // namespace draw
 
 
@@ -113,7 +122,6 @@ namespace climb
 {
 
 #define _PAN_CLIMB_SYMB 0x03
-
 
 	PANEL_NAME ("Climb");
 
@@ -415,17 +423,12 @@ namespace home_direction
 
 	uint8_t arrow;
 
-	void update ()
-	{
-		if (telemetry::home::state != HOME_STATE_FIXED) return;
-		arrow = _PAN_HD_ARROWS + ((uint8_t) (telemetry::home::direction / 360.0 * 16)) * 2;
-	}
+	void update () {}
 
 	void draw (uint8_t x, uint8_t y)
 	{
 		if (telemetry::home::state != HOME_STATE_FIXED) return;
-		max7456::put (x, y, arrow);
-		max7456::put (x + 1, y, arrow + 1);
+		osd::draw::arrow (x, y, telemetry::home::direction);
 	}
 
 }  // namespace home_direction
