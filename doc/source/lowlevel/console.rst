@@ -362,9 +362,7 @@ Upload and download MAX7456 MCM-font.
 font u
 """"""
 
-Upload MCM-file. After executing thios command console will
-wait MCM-file.
-
+Upload MCM-file.
 
 font d
 """"""
@@ -376,7 +374,12 @@ eeprom
 
 Upload and download EEPROM image.
 
-eeprom u
+eeprom r
+""""""""
+
+Download EEPROM contents is image.
+
+eeprom w
 """"""""
 
 Upload EEPROM-image (1024 bytes)
@@ -384,6 +387,24 @@ Upload EEPROM-image (1024 bytes)
 eeprom d
 """"""""
 
-Download current EEPROM contents.
+Dump EEPROM contents to console.
+
+*Example*
+
+::
+
+   osd# eeprom d
+   0000: 52 55 0a 00 00 03 cd cc 8c 3f 00 00 00 00 00 05
+   0010: 00 00 3f 05 3f 01 14 ae 2f 41 54 74 91 41 c8 00
+   0020: 06 07 3f 05 3f 05 3f 05 01 c8 00 0a 00 00 a0 41
+   0030: 01 0a 00 02 98 03 3f 05 3f 05 3f 05 3f 05 3f 05
+   0040: cd cc 4c 40 cd cc 6c 40 66 66 86 40 00 00 60 40
+   0050: 2d 2d 2d 2d 2d 00 3f 05 3f 05 3f 05 3f 05 3f 05
+   ...
+   03b0: 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04
+   03c0: 00 00 00 00 00 04 00 04 00 f8 fe ff 00 00 04 04
+   03d0: 20 00 06 04 00 00 00 04 04 04 04 04 04 04 04 04
+   03e0: 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04
+   03f0: 04 04 04 04 04 04 04 04 00 00 00 00 00 00 00 00
 
 

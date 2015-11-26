@@ -375,11 +375,45 @@ namespace screen
 	const char screens_opt [] PROGMEM = "SCREENS";
 	uint8_t screens_count;
 
+	void __attribute__ ((noinline)) print_err_p (const char *msg)
+	{
+		CONSOLE_UART::send_string_p (PSTR ("ERR: "));
+		CONSOLE_UART::send_string_p (msg);
+	}
+
 	bool check_screen (uint8_t num)
 	{
 		if (num >= screens_count)
 		{
-			CONSOLE_UART::send_string_p (PSTR ("ERR: Invalid screen #"));
+			print_err_p (PSTR ("Invalid screen #"));
+			return false;
+		}
+		return true;
+	}
+
+	bool check_panel (uint8_t x, uint8_t y, uint8_t panel)
+	{
+		if (x >= MAX7456_PAL_COLUMNS || y >= MAX7456_PAL_ROWS)
+		{
+			print_err_p (PSTR ("Invalid coordinates"));
+			return false;
+		}
+
+		if (panel >= osd::panel::count)
+		{
+			print_err_p (PSTR ("Invalid panel"));
+			return false;
+		}
+
+		return true;
+	}
+
+	bool check_panel_idx (uint8_t scr, uint8_t i)
+	{
+		uint8_t *offset = osd::screen::eeprom_offset (scr) + sizeof (osd::screen::panel_pos_t) * i;
+		if (i >= OSD_SCREEN_PANELS || eeprom_read_byte (offset) >= osd::panel::count)
+		{
+			print_err_p (PSTR ("Invalid panel #"));
 			return false;
 		}
 		return true;
@@ -417,23 +451,6 @@ namespace screen
 			print (i);
 	}
 
-	bool check_panel (uint8_t x, uint8_t y, uint8_t panel)
-	{
-		if (x >= MAX7456_PAL_COLUMNS || y >= MAX7456_PAL_ROWS)
-		{
-			CONSOLE_UART::send_string_p (PSTR ("ERR: Invalid coordinates"));
-			return false;
-		}
-
-		if (panel >= osd::panel::count)
-		{
-			CONSOLE_UART::send_string_p (PSTR ("ERR: Invalid panel"));
-			return false;
-		}
-
-		return true;
-	}
-
 	void append ()
 	{
 		const char *idx = console::argument (2);
@@ -467,21 +484,10 @@ namespace screen
 		}
 		if (i == OSD_SCREEN_PANELS)
 		{
-			CONSOLE_UART::send_string_p (PSTR ("ERR: Too much panels"));
+			print_err_p ("Too much panels");
 			return;
 		}
 		print (scr);
-	}
-
-	bool check_panel_idx (uint8_t scr, uint8_t i)
-	{
-		uint8_t *offset = osd::screen::eeprom_offset (scr) + sizeof (osd::screen::panel_pos_t) * i;
-		if (i >= OSD_SCREEN_PANELS || eeprom_read_byte (offset) >= osd::panel::count)
-		{
-			CONSOLE_UART::send_string_p (PSTR ("ERR: Invalid panel #"));
-			return false;
-		}
-		return true;
 	}
 
 	void edit ()

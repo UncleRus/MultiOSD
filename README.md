@@ -5,7 +5,7 @@ Yet another MinimOSD firmware with configurable screens.
 
 ![Screenshot](res/screenshot.png)
 
-**Warning: this software in early alpha stage!**
+**Warning: this software is on early alpha stage!**
 
 Capabilities:
 
@@ -15,16 +15,16 @@ Capabilities:
    * ADC RSSI and battery stats - useful with simple FC, such as CC3D
 
 
-Supported flight controllers
+Supported flight controllers and software
 ----------------------------
 
-* All OpenPilot boards: CC, CC3D/CC3D Atom (tested), Revoluition (tested)
-  Currently two releases:
+* CC, CC3D/CC3D Atom (tested), Revoluition (tested).
   
-  * Release 15.02.02 (latest CC/CC3D release)
-  * Release 15.05.02 (latest Revolution release)
-
-* LibrePilot 15.09 (https://github.com/librepilot/LibrePilot)
+  Supported FC firmware:
+  
+  * OpenPilot 15.02.02 (latest CC/CC3D release)
+  * OpenPilot 15.05.02 (latest Revolution release)
+  * LibrePilot 15.09 (https://github.com/librepilot/LibrePilot)
   
 * Many of MAVLink boards:
   
