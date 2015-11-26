@@ -16,7 +16,7 @@ Capabilities:
 
 
 Supported flight controllers and software
-----------------------------
+-----------------------------------------
 
 * CC, CC3D/CC3D Atom (tested), Revoluition (tested).
   
@@ -26,7 +26,7 @@ Supported flight controllers and software
   * OpenPilot 15.05.02 (latest Revolution release)
   * LibrePilot 15.09 (https://github.com/librepilot/LibrePilot)
   
-* Many of MAVLink boards:
+* Many of the MAVLink boards:
   
    * APM 2.x (tested)
    * Pixhawk PX4
@@ -35,8 +35,8 @@ Supported flight controllers and software
 
 **Testers are needed!**
 
-Already available indicators
-----------------------------
+Available indicators
+--------------------
 
 - Altitude
 - Climb rate
