@@ -15,6 +15,7 @@
 #include "adc_battery.h"
 #include <avr/io.h>
 #include <avr/eeprom.h>
+#include "../../lib/timer/timer.h"
 #include "../../lib/adc/adc.h"
 #include "../telemetry.h"
 #include "../../config.h"
@@ -70,6 +71,8 @@ void reset ()
 	eeprom_update_word (EEPROM_ADDR_UPDATE_INTERVAL, ADC_BATTERY_DEFAULT_UPDATE_INTERVAL);
 	eeprom_update_byte (EEPROM_ADDR_VOLTAGE_CHANNEL, ADC_BATTERY_DEFAULT_VOLTAGE_CHANNEL);
 	eeprom_update_byte (EEPROM_ADDR_CURRENT_CHANNEL, ADC_BATTERY_DEFAULT_CURRENT_CHANNEL);
+
+	adc::settings::reset ();
 }
 
 }  // namespace settings
@@ -98,19 +101,22 @@ void init ()
 
 bool update ()
 {
-	uint16_t interval = telemetry::ticks - last_update_time;
+	uint16_t interval = timer::ticks () - last_update_time;
 
 	if (interval < update_interval) return false;
 
-	last_update_time = telemetry::ticks;
+	last_update_time += interval;
 
-	telemetry::battery::voltage = adc::value (voltage_channel, voltage_multiplier);
+	float dt = interval / 1000.0;
+	float alpha = 1.0 - dt / (dt + 2.0);
+
+	telemetry::battery::voltage = alpha * telemetry::battery::voltage + (1 - alpha) * adc::value (voltage_channel, voltage_multiplier);
 	telemetry::battery::update_voltage ();
 
 	if (current_sensor)
 	{
-		telemetry::battery::current = adc::value (current_channel, current_multiplier);
-		telemetry::battery::update_consumed ();
+		telemetry::battery::current = alpha * telemetry::battery::current + (1 - alpha) * adc::value (current_channel, current_multiplier);
+		telemetry::battery::update_consumed (interval);
 	}
 	return true;
 }

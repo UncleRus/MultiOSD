@@ -1,0 +1,4 @@
+TXTSS - ADC3 (PC3)
+BAT1 - ADC2 (PC2)
+BAT2 - ADC0 (PC0)
+

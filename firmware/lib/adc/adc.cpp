@@ -50,32 +50,27 @@ void reset ()
 	eeprom_write_float (EEPROM_ADDR_VOLTAGE, ADC_DEFAULT_REF_VOLTAGE);
 }
 
+uint8_t ref_source;
+float ref_voltage;
+
 }  // namespace settings
 
 ///////////////////////////////////////////////////////////////////////////////
 
-uint8_t s_ref;
-float s_ref_voltage;
-bool initialized = false;
-
 void init ()
 {
-	if (initialized) return;
+	settings::ref_source = eeprom_read_byte (EEPROM_ADDR_REF);
+	settings::ref_voltage = eeprom_read_float (EEPROM_ADDR_VOLTAGE);
 
-	s_ref = eeprom_read_byte (EEPROM_ADDR_REF) << 6;
-	s_ref_voltage = eeprom_read_float (EEPROM_ADDR_VOLTAGE);
-
-	ADMUX = s_ref;
+	ADMUX = settings::ref_source << 6;
 	ADCSRA |= _BV (ADEN) | _BV (ADPS0) | _BV (ADPS1) | _BV (ADPS2);
-
-	initialized = true;
 }
 
 // TODO: Interrupt-based conversions, filters
 
 uint16_t read (uint8_t channel)
 {
-	ADMUX = s_ref | (channel & 0x0f);
+	ADMUX = (settings::ref_source << 6) | (channel & 0x0f);
 	ADCSRA |= _BV (ADSC);
 	loop_until_bit_is_clear (ADCSRA, ADSC);
 	ADCSRA |= _BV (ADIF);
@@ -84,7 +79,7 @@ uint16_t read (uint8_t channel)
 
 float value (uint8_t channel, float multiplier)
 {
-	return (read (channel) / 1024.0 * s_ref_voltage) * multiplier;
+	return (read (channel) / 1024.0 * settings::ref_voltage) * multiplier;
 }
 
 }  // namespace adc

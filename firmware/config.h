@@ -15,17 +15,17 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define VERSION 10
+#define VERSION 11
 
 /*
  * Telemetry modules config
  */
 
-//#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from ADC
-//#define TELEMETRY_MODULES_ADC_RSSI					// read RSSI level from ADC
-//#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
+#define TELEMETRY_MODULES_ADC_BATTERY				// read battery stats from ADC
+#define TELEMETRY_MODULES_ADC_RSSI					// read RSSI level from ADC
+#define TELEMETRY_MODULES_UAVTALK					// main telemetry module
 #if !defined (TELEMETRY_MODULES_UAVTALK) && !defined (TELEMETRY_MODULES_MAVLINK)
-#define TELEMETRY_MODULES_MAVLINK					// main telemetry module
+//#define TELEMETRY_MODULES_MAVLINK					// main telemetry module
 #endif
 
 /*
@@ -43,13 +43,13 @@
  * UAVTalk config
  */
 //#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
-#define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_OP150502
-#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_REVO
-#define UAVTALK_CONNECTION_TIMEOUT 5500					// ms
+#define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_LP150900
+#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
+#define UAVTALK_CONNECTION_TIMEOUT 6000					// ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500	// ms
 // Home distance/direction calculation: 0 - flight controller (REVO only), 1 - MultiOSD by GPS
 // Overrided by board setting
-#define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 0
+#define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 1
 
 /*
  * MAVLink config
@@ -68,16 +68,16 @@
  */
 #define OSD_MAX_SCREENS 8			// each screen will consume (OSD_SCREEN_PANELS * 3) bytes in EEPROM
 #define OSD_SCREEN_PANELS 24		// (OSD_SCREEN_PANELS * 3) bytes in SRAM
-//#define OSD_CHANNEL_MIN 1000		// us
-//#define OSD_CHANNEL_MAX 2000		// us
-#define OSD_CHANNEL_MIN 300			// us 300..1700 with my S.BUS Rx
-#define OSD_CHANNEL_MAX 1700		// us 300..1700 with my S.BUS Rx
+#define OSD_CHANNEL_MIN 1000		// us
+#define OSD_CHANNEL_MAX 2000		// us
+//#define OSD_CHANNEL_MIN 300		// us 300..1700 with my S.BUS Rx
+//#define OSD_CHANNEL_MAX 1700		// us 300..1700 with my S.BUS Rx
 // when to switch between screens
 //#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_FLIGHT_MODE // flight mode switch
 // or
 ///*
 #define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_RAW_CHANNEL // raw channel value
-#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 8 // it's ACCESSORY1 on my Tx in UAVTalk
+#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6 // it's ACCESSORY1 on my Tx in UAVTalk
 //#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 5 // it's ACCESSORY1 on my Tx in MAVLink
 //*/
 // or
@@ -124,8 +124,8 @@
 #define ADC_BATTERY_DEFAULT_CURRENT_CHANNEL 7		// ADC7 22 pin
 
 #define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 1		// ADC current sensor enabled
-#define ADC_BATTERY_DEFAULT_VOLTAGE_MULTIPLIER 10.98
-#define ADC_BATTERY_DEFAULT_CURRENT_MULTIPLIER 18.1818
+#define ADC_BATTERY_DEFAULT_VOLTAGE_MULTIPLIER 1.0
+#define ADC_BATTERY_DEFAULT_CURRENT_MULTIPLIER 1.0
 
 /*
  * ADC RSSI

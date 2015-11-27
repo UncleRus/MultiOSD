@@ -62,6 +62,8 @@ void reset ()
 	eeprom_update_word (EEPROM_ADDR_UPDATE_INTERVAL, ADC_RSSI_DEFAULT_UPDATE_INTERVAL);
 	eeprom_update_byte (EEPROM_ADDR_LOW_THRESHOLD, ADC_RSSI_DEFAULT_LOW_THRESHOLD);
 	eeprom_update_float (EEPROM_ADDR_MULTIPLIER, ADC_RSSI_DEFAULT_MULTIPLIER);
+
+	adc::settings::reset ();
 }
 
 }  // namespace settings

@@ -131,7 +131,7 @@ namespace battery
 	extern uint8_t level;			// percents
 
 	void update_voltage ();
-	void update_consumed ();
+	void update_consumed (uint16_t interval);
 }
 
 namespace messages

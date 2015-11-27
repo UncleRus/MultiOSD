@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <avr/wdt.h>
 #include "config.h"
+#include "lib/adc/adc.h"
 #include "lib/console/console.h"
 #include "lib/uart/uart.h"
 #include "lib/max7456/max7456.h"
@@ -690,17 +691,61 @@ namespace reboot
 
 }  // namespace reboot
 
+namespace adc
+{
+
+	const char command [] PROGMEM = "adc";
+	const char help [] PROGMEM = "Read ADC values";
+
+	void print (uint8_t ch)
+	{
+		if (ch > 0x0f)
+		{
+			CONSOLE_UART::send_string_p (PSTR ("Invalid ADC channel"));
+			return;
+		}
+
+		uint16_t raw = ::adc::read (ch);
+		float value = raw / 1024.0 * ::adc::settings::ref_voltage;
+
+		fprintf_P (&CONSOLE_UART::stream, PSTR ("ADC %u: %.4f (%u)" CONSOLE_EOL), ch, value, raw);
+	}
+
+	void exec ()
+	{
+		if (!::adc::settings::initialized)
+		{
+			CONSOLE_UART::send_string_p (PSTR ("ADC is not enabled"));
+			return;
+		}
+
+		::adc::init ();
+
+		const char *sch = console::argument (1);
+		if (sch)
+		{
+			print (atoi (sch));
+			return;
+		}
+
+		for (uint8_t i = 0; i < 0x10; i ++)
+			print (i);
+	}
+
+}  // namespace adc
+
 
 #define declare_cmd(NS) { NS :: command, NS :: help, NS :: exec }
 
 const command_t values [] PROGMEM = {
-	declare_cmd (font),
-	declare_cmd (reset),
-	declare_cmd (eeprom),
+	declare_cmd (help),
+	declare_cmd (info),
 	declare_cmd (opt),
 	declare_cmd (screen),
-	declare_cmd (info),
-	declare_cmd (help),
+	declare_cmd (reset),
+	declare_cmd (font),
+	declare_cmd (adc),
+	declare_cmd (eeprom),
 	declare_cmd (exit),
 	declare_cmd (reboot),
 };

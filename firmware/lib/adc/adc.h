@@ -29,6 +29,10 @@ namespace adc
 namespace settings
 {
 
+	extern bool initialized;
+	extern uint8_t ref_source;
+	extern float ref_voltage;
+
 	void init ();
 	void reset ();
 

@@ -87,6 +87,7 @@ mavlink_message_t *msg = &message;
 mavlink_status_t status;
 
 uint32_t connection_timeout = 0;
+uint32_t _last_battery_update = 0;
 
 // helpers
 float __attribute__ ((noinline)) rad_to_deg (float rad)
@@ -418,7 +419,9 @@ bool update ()
 #ifndef TELEMETRY_MODULES_ADC_BATTERY
 			case MAVLINK_MSG_ID_SYS_STATUS:
 				{
-					int16_t current;
+					uint16_t interval = telemetry::ticks - _last_battery_update;
+					_last_battery_update += interval;
+
 					telemetry::battery::voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
 					if (!internal_battery_level)
 					{
@@ -428,11 +431,11 @@ bool update ()
 					}
 					else
 						telemetry::battery::update_voltage ();
-					current = mavlink_msg_sys_status_get_current_battery (msg);
+					int16_t current = mavlink_msg_sys_status_get_current_battery (msg);
 					if (current >= 0)
 					{
 						telemetry::battery::current = current / 100.0;
-						telemetry::battery::update_consumed ();
+						telemetry::battery::update_consumed (interval);
 					}
 				}
 				break;

@@ -20,8 +20,7 @@
 #include <avr/io.h>
 #include <avr/wdt.h>
 #include "../eeprom.h"
-
-//#include "../lib/max7456/max7456.h"
+#include "../lib/max7456/max7456.h"
 
 namespace osd
 {
@@ -117,6 +116,8 @@ uint8_t screens_enabled ()
 
 volatile bool started = false;
 volatile bool mutex = false;
+//volatile uint32_t overlay_timeout = 0;
+//volatile bool draw_overlay = false;
 
 ISR (INT0_vect, ISR_NOBLOCK)
 {
@@ -125,8 +126,12 @@ ISR (INT0_vect, ISR_NOBLOCK)
 
 	screen::draw ();
 
-	//max7456::open (1, 1);
-	//fprintf_P (&max7456::stream, PSTR (" %u "), cur_screen);
+//	if (draw_overlay && telemetry::ticks < overlay_timeout)
+//	{
+//		osd::draw::rect (1, 0, 5, 3, true, MAX7456_ATTR_INVERT);
+//		max7456::open (3, 1);
+//		fprintf_P (&max7456::stream, PSTR ("%u"), cur_screen + 1);
+//	}
 
 	mutex = false;
 }
@@ -156,6 +161,8 @@ void main ()
 		if (_screens_enabled > 1 && check_input ())
 		{
 			screen::load (cur_screen);
+//			overlay_timeout = telemetry::ticks + 3000;
+//			draw_overlay = true;
 			updated = true;
 		}
 #endif

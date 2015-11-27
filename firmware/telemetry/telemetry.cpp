@@ -55,12 +55,18 @@ void init ()
 		modules::init_settings (i);
 }
 
+const char default_callsign [] PROGMEM = TELEMETRY_DEFAULT_CALLSIGN;
+
 void reset ()
 {
 	eeprom_update_float (EEPROM_ADDR_MIN_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE);
 	eeprom_update_float (EEPROM_ADDR_NOM_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE);
 	eeprom_update_float (EEPROM_ADDR_MAX_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE);
 	eeprom_update_float (EEPROM_ADDR_LOW_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE);
+	for (uint8_t i = 0; i < CALLSIGN_LENGTH; i ++)
+		eeprom_update_byte ((uint8_t *) EEPROM_ADDR_CALLSIGN + i, pgm_read_byte (&default_callsign [i]));
+	eeprom_update_byte ((uint8_t *) EEPROM_ADDR_CALLSIGN + CALLSIGN_LENGTH, 0);
+
 	eeprom_update_block (TELEMETRY_DEFAULT_CALLSIGN, EEPROM_ADDR_CALLSIGN, CALLSIGN_LENGTH);
 
 	for (uint8_t i = 0; i < modules::count; i ++)
@@ -178,9 +184,6 @@ namespace battery
 	uint8_t level = 0;
 
 	float _cell_range;
-	float _total_current = 0;
-	uint8_t _current_iter = 0;
-	uint32_t _consumed_last = 0;
 
 	void init ()
 	{
@@ -211,18 +214,9 @@ namespace battery
 		if (level > 100) level = 100;
 	}
 
-	void update_consumed ()
+	void update_consumed (uint16_t interval)
 	{
-		_total_current += current;
-		_current_iter ++;
-		uint16_t interval = ticks - _consumed_last;
-		if (interval >= TELEMETRY_DEFAULT_BATTERY_CONSUMED_INTERVAL)
-		{
-			consumed += _total_current / _current_iter * interval / 3600;
-			_total_current = 0;
-			_current_iter = 0;
-			_consumed_last = ticks;
-		}
+		consumed += current * interval / 3600.0;
 	}
 
 }  // namespace battery
