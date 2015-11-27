@@ -62,20 +62,20 @@ void reset ()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#define _UTPS_WAIT		0
-#define _UTPS_SYNC		1
-#define _UTPS_MSG_TYPE	2
-#define _UTPS_LENGTH	3
-#define _UTPS_OBJID		4
-#define _UTPS_INSTID	5
-#define _UTPS_DATA		6
-#define _UTPS_READY		7
+#define _UTPS_WAIT     0
+#define _UTPS_SYNC     1
+#define _UTPS_MSG_TYPE 2
+#define _UTPS_LENGTH   3
+#define _UTPS_OBJID    4
+#define _UTPS_INSTID   5
+#define _UTPS_DATA     6
+#define _UTPS_READY    7
 
 // internal parser state
-static uint8_t _state = _UTPS_WAIT;
-static uint8_t _crc = 0;
+uint8_t _state = _UTPS_WAIT;
+uint8_t _crc = 0;
 // current byte in every state
-static uint8_t _step = 0;
+uint8_t _step = 0;
 
 #define _update_crc(b) { _crc = get_crc (_crc ^ b); }
 #define _receive_byte(v, b) { v |= ((uint32_t) b) << (_step << 3); _step ++; }

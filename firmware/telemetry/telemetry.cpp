@@ -297,7 +297,8 @@ namespace home
 namespace waypoint
 {
 
-	uint8_t num = 0;
+	uint8_t prev = 0;
+	uint8_t current = 0;
 	uint16_t distance = 0;
 	uint16_t bearing = 0;
 
@@ -305,6 +306,13 @@ namespace waypoint
 	{
 		bearing = value < 0 ? value + 360 : value;
 		if (bearing >= 360) bearing -= 360;
+	}
+
+	void set (uint8_t value)
+	{
+		if (current == value) return;
+		prev = current;
+		current = value;
 	}
 
 }  // namespace waypoint

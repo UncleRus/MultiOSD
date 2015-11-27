@@ -506,7 +506,7 @@ bool update ()
 				telemetry::waypoint::distance = mavlink_msg_nav_controller_output_get_wp_dist (msg);
 				break;
 			case MAVLINK_MSG_ID_MISSION_CURRENT:
-				telemetry::waypoint::num = mavlink_msg_mission_current_get_seq (msg);
+				telemetry::waypoint::set (mavlink_msg_mission_current_get_seq (msg));
 				break;
 			default:
 				changed = false;
