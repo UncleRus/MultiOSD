@@ -358,6 +358,12 @@ namespace modules
 #ifdef TELEMETRY_MODULES_MAVLINK
 		declare_module (mavlink),
 #endif
+#ifdef TELEMETRY_MODULES_UBX
+		declare_module (ubx),
+#endif
+#ifdef TELEMETRY_MODULES_NMEA
+		declare_module (nmea),
+#endif
 	};
 
 	const uint8_t count = sizeof (modules) / sizeof (module_t);

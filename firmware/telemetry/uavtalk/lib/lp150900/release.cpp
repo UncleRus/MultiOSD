@@ -43,6 +43,6 @@ void handle_manualcontrolcommand ()
 #endif
 }
 
-}  // namespace op150202
+}  // namespace lp150900
 
 UT_NAMESPACE_CLOSE

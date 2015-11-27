@@ -80,7 +80,7 @@ struct GPSPositionSensor
 	GPSPositionSensorBaudRate BaudRate;
 };
 
-}  // namespace op150900
+}  // namespace lp150900
 
 UT_NAMESPACE_CLOSE
 

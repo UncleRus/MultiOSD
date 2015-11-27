@@ -17,7 +17,6 @@
 #include <stdlib.h>
 #include <avr/wdt.h>
 #include "config.h"
-#include "lib/adc/adc.h"
 #include "lib/console/console.h"
 #include "lib/uart/uart.h"
 #include "lib/max7456/max7456.h"
@@ -26,6 +25,10 @@
 #include "osd/screen.h"
 #include "osd/osd.h"
 #include "telemetry/telemetry.h"
+
+#ifdef ADC_MODULE
+#	include "lib/adc/adc.h"
+#endif
 
 namespace console
 {
@@ -691,6 +694,7 @@ namespace reboot
 
 }  // namespace reboot
 
+#ifdef ADC_MODULE
 namespace adc
 {
 
@@ -713,12 +717,6 @@ namespace adc
 
 	void exec ()
 	{
-		if (!::adc::settings::initialized)
-		{
-			CONSOLE_UART::send_string_p (PSTR ("ADC is not enabled"));
-			return;
-		}
-
 		::adc::init ();
 
 		const char *sch = console::argument (1);
@@ -733,7 +731,7 @@ namespace adc
 	}
 
 }  // namespace adc
-
+#endif
 
 #define declare_cmd(NS) { NS :: command, NS :: help, NS :: exec }
 
@@ -744,7 +742,9 @@ const command_t values [] PROGMEM = {
 	declare_cmd (screen),
 	declare_cmd (reset),
 	declare_cmd (font),
+#ifdef ADC_MODULE
 	declare_cmd (adc),
+#endif
 	declare_cmd (eeprom),
 	declare_cmd (exit),
 	declare_cmd (reboot),

@@ -28,6 +28,10 @@
 //#define TELEMETRY_MODULES_MAVLINK					// main telemetry module
 #endif
 
+#if defined (TELEMETRY_MODULES_ADC_BATTERY) || defined (TELEMETRY_MODULES_ADC_BATTERY)
+#	define ADC_MODULE
+#endif
+
 /*
  * Telemetry config
  */
@@ -42,7 +46,6 @@
 /*
  * UAVTalk config
  */
-//#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
 #define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_LP150900
 #define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
 #define UAVTALK_CONNECTION_TIMEOUT 6000					// ms
