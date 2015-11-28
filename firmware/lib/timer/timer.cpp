@@ -19,7 +19,7 @@
 namespace timer
 {
 
-volatile static uint32_t _ticks = 0;
+volatile uint32_t _ticks = 0;
 
 void init ()
 {

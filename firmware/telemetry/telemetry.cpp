@@ -157,7 +157,7 @@ namespace stable
 	float air_speed = 0.0;
 	uint16_t heading = 0;
 
-	static uint32_t _alt_update_time = 0;
+	uint32_t _alt_update_time = 0;
 
 	void update_alt_climb (float _alt)
 	{
@@ -241,8 +241,8 @@ namespace home
 	float latitude;
 	float altitude = 0;
 
-//	static uint16_t _fix_timeout = 3000;
-//	static uint32_t _fix_timestop = 0;
+//	uint16_t _fix_timeout = 3000;
+//	uint32_t _fix_timestop = 0;
 
 	void fix ()
 	{

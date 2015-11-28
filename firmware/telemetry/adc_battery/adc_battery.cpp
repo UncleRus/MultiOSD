@@ -79,12 +79,12 @@ void reset ()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static uint32_t last_update_time = 0;
-static bool current_sensor;
-static float voltage_multiplier;
-static float current_multiplier;
-static uint16_t update_interval;
-static uint8_t voltage_channel, current_channel;
+uint32_t last_update_time = 0;
+bool current_sensor;
+float voltage_multiplier;
+float current_multiplier;
+uint16_t update_interval;
+uint8_t voltage_channel, current_channel;
 
 void init ()
 {

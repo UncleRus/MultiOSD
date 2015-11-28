@@ -30,13 +30,13 @@ namespace uart0
 #	error TX buffer size is not a power of 2
 #endif
 
-static volatile uint8_t _tx_buffer [UART_TX_BUFFER_SIZE];
-static volatile uint8_t _rx_buffer [UART_RX_BUFFER_SIZE];
-static volatile uint8_t _tx_head;
-static volatile uint8_t _tx_tail;
-static volatile uint8_t _rx_head;
-static volatile uint8_t _rx_tail;
-static volatile uint8_t last_error;
+volatile uint8_t _tx_buffer [UART_TX_BUFFER_SIZE];
+volatile uint8_t _rx_buffer [UART_RX_BUFFER_SIZE];
+volatile uint8_t _tx_head;
+volatile uint8_t _tx_tail;
+volatile uint8_t _rx_head;
+volatile uint8_t _rx_tail;
+volatile uint8_t last_error;
 
 ISR (UART0_RECEIVE_INTERRUPT)
 {
@@ -246,13 +246,13 @@ int _fgetc (FILE *s)
 namespace uart1
 {
 
-static volatile uint8_t _tx_buffer [UART_TX_BUFFER_SIZE];
-static volatile uint8_t _rx_buffer [UART_RX_BUFFER_SIZE];
-static volatile uint8_t _tx_head;
-static volatile uint8_t _tx_tail;
-static volatile uint8_t _rx_head;
-static volatile uint8_t _rx_tail;
-static volatile uint8_t last_error;
+volatile uint8_t _tx_buffer [UART_TX_BUFFER_SIZE];
+volatile uint8_t _rx_buffer [UART_RX_BUFFER_SIZE];
+volatile uint8_t _tx_head;
+volatile uint8_t _tx_tail;
+volatile uint8_t _rx_head;
+volatile uint8_t _rx_tail;
+volatile uint8_t last_error;
 
 
 ISR (UART1_RECEIVE_INTERRUPT)

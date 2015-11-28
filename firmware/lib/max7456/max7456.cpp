@@ -85,8 +85,8 @@ void reset ()
 
 uint8_t mode, right, bottom, hcenter, vcenter;
 
-static uint8_t _mask = 0;
-static bool _opened = false;
+uint8_t _mask = 0;
+bool _opened = false;
 
 #define _chip_select() { cbi (MAX7456_SELECT_PORT, MAX7456_SELECT_BIT); }
 #define _chip_unselect() { sbi (MAX7456_SELECT_PORT, MAX7456_SELECT_BIT); }
@@ -294,7 +294,7 @@ void put (uint8_t col, uint8_t row, uint8_t chr, uint8_t attr)
 	_chip_unselect ();
 }
 
-static uint8_t _cur_attr = 0;
+uint8_t _cur_attr = 0;
 
 void open (uint8_t col, uint8_t row, uint8_t attr)
 {

@@ -23,9 +23,9 @@ namespace console
 {
 
 
-static uint8_t _command_len = 0;
+uint8_t _command_len = 0;
 callback_t handler = NULL;
-static char _command [CONSOLE_MAX_CMD_LENGTH];
+char _command [CONSOLE_MAX_CMD_LENGTH];
 
 void eol ()
 {

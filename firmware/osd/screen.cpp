@@ -27,8 +27,8 @@ namespace osd
 namespace screen
 {
 
-static panel_pos_t records [OSD_SCREEN_PANELS];
-static uint8_t count = 0;
+panel_pos_t records [OSD_SCREEN_PANELS];
+uint8_t count = 0;
 
 uint8_t *eeprom_offset (uint8_t num, uint8_t panel)
 {
