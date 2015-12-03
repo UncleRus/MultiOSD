@@ -6,6 +6,7 @@ MultiOSD
    :maxdepth: 2
    
    about
+   build
    hw
    lowlevel/index
    examples/index
