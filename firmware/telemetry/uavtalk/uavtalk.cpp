@@ -35,12 +35,15 @@ namespace settings
 #define EEPROM_ADDR_BOARD              _eeprom_byte (UAVTALK_EEPROM_OFFSET)
 #define EEPROM_ADDR_RELEASE            _eeprom_byte (UAVTALK_EEPROM_OFFSET + 1)
 #define EEPROM_ADDR_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 2)
+#define EEPROM_ADDR_BAUDRATE           _eeprom_byte (UAVTALK_EEPROM_OFFSET + 3)
 
 const char __opt_board [] PROGMEM = "UTBRD";
 const char __opt_utrel [] PROGMEM = "UTREL";
 const char __opt_utihc [] PROGMEM = "UTIHC";
+const char __opt_utbr [] PROGMEM = "UTBR";
 
 const ::settings::option_t __settings [] PROGMEM = {
+	declare_uint8_option (__opt_utbr, EEPROM_ADDR_BAUDRATE),
 	declare_uint8_option (__opt_board, EEPROM_ADDR_BOARD),
 	declare_uint8_option (__opt_utrel, EEPROM_ADDR_RELEASE),
 	declare_uint8_option (__opt_utihc, EEPROM_ADDR_INTERNAL_HOME_CALC),
@@ -56,6 +59,7 @@ void reset ()
 	eeprom_update_byte (EEPROM_ADDR_BOARD, UAVTALK_DEFAULT_BOARD);
 	eeprom_update_byte (EEPROM_ADDR_RELEASE, UAVTALK_DEFAULT_RELEASE);
 	eeprom_update_byte (EEPROM_ADDR_INTERNAL_HOME_CALC, UAVTALK_DEFAULT_INTERNAL_HOME_CALC);
+	eeprom_update_byte (EEPROM_ADDR_BAUDRATE, UAVTALK_DEFAULT_BAUDRATE);
 }
 
 }  // namespace settings
@@ -208,13 +212,7 @@ void init ()
 	release = eeprom_read_byte (EEPROM_ADDR_RELEASE);
 	internal_home_calc = eeprom_read_byte (EEPROM_ADDR_INTERNAL_HOME_CALC);
 	set_release ();
-}
-
-void reset ()
-{
-	eeprom_update_byte (EEPROM_ADDR_BOARD, UAVTALK_DEFAULT_BOARD);
-	eeprom_update_byte (EEPROM_ADDR_RELEASE, UAVTALK_DEFAULT_RELEASE);
-	eeprom_update_byte (EEPROM_ADDR_INTERNAL_HOME_CALC, UAVTALK_DEFAULT_INTERNAL_HOME_CALC);
+	TELEMETRY_UART::init (uart_utils::get_baudrate (eeprom_read_byte (EEPROM_ADDR_BAUDRATE), UAVTALK_DEFAULT_BAUDRATE));
 }
 
 }  // namespace uavtalk

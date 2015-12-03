@@ -44,14 +44,17 @@ namespace settings
 #define EEPROM_ADDR_EMULATE_RSSI           _eeprom_byte (MAVLINK_EEPROM_OFFSET + 2)
 #define EEPROM_ADDR_EMULATE_RSSI_CHANNEL   _eeprom_byte (MAVLINK_EEPROM_OFFSET + 3)
 #define EEPROM_ADDR_EMULATE_RSSI_THRESHOLD _eeprom_word (MAVLINK_EEPROM_OFFSET + 4)
+#define EEPROM_ADDR_BAUDRATE               _eeprom_byte (MAVLINK_EEPROM_OFFSET + 6)
 
 const char __opt_mlibl [] PROGMEM = "MLIBL";
 const char __opt_mlrlt [] PROGMEM = "MLRLT";
 const char __opt_mler [] PROGMEM = "MLER";
 const char __opt_mlerc [] PROGMEM = "MLERC";
 const char __opt_mlert [] PROGMEM = "MLERT";
+const char __opt_mlbr [] PROGMEM = "MLBR";
 
 const ::settings::option_t __settings [] PROGMEM = {
+	declare_uint8_option (__opt_mlbr, EEPROM_ADDR_BAUDRATE),
 	declare_uint8_option (__opt_mlibl, EEPROM_ADDR_INTERNAL_BATTERY_LEVEL),
 	declare_uint8_option (__opt_mlrlt, EEPROM_ADDR_RSSI_LOW_THRESHOLD),
 	declare_uint8_option (__opt_mler, EEPROM_ADDR_EMULATE_RSSI),
@@ -71,6 +74,7 @@ void reset ()
 	eeprom_update_byte (EEPROM_ADDR_EMULATE_RSSI, MAVLINK_DEFAULT_EMULATE_RSSI);
 	eeprom_update_byte (EEPROM_ADDR_EMULATE_RSSI_CHANNEL, MAVLINK_DEFAULT_EMULATE_RSSI_CHANNEL);
 	eeprom_update_word (EEPROM_ADDR_EMULATE_RSSI_THRESHOLD, MAVLINK_DEFAULT_EMULATE_RSSI_THRESHOLD);
+	eeprom_update_byte (EEPROM_ADDR_BAUDRATE, MAVLINK_DEFAULT_BAUDRATE);
 }
 
 }  // namespace settings
@@ -530,6 +534,7 @@ void init ()
 	emulate_rssi = eeprom_read_byte (EEPROM_ADDR_EMULATE_RSSI);
 	emulate_rssi_channel = eeprom_read_byte (EEPROM_ADDR_EMULATE_RSSI_CHANNEL);
 	emulate_rssi_threshold = eeprom_read_word (EEPROM_ADDR_EMULATE_RSSI_THRESHOLD);
+	TELEMETRY_UART::init (uart_utils::get_baudrate (eeprom_read_byte (EEPROM_ADDR_BAUDRATE), MAVLINK_DEFAULT_BAUDRATE));
 }
 
 }  // namespace mavlink

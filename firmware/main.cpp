@@ -37,7 +37,7 @@ inline void init ()
 	// wait 1 sec
 	// _delay_ms (1000);
 	// setup UART
-	CONSOLE_UART::init (UART_BAUD_SELECT (UART_BAUD_RATE));
+	CONSOLE_UART::init (uart_utils::get_baudrate (UART_BR_57600));
 	// setup SPI...
 	spi::init ();
 	// ...and MAX7456

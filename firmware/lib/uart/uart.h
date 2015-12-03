@@ -51,6 +51,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define UART_BAUD_SELECT(baud_rate)  (((F_CPU) + 8UL * (baud_rate)) / (16UL * (baud_rate)) - 1UL)
 #define UART_BAUD_SELECT_DOUBLE_SPEED(baud_rate) ( ((((F_CPU) + 4UL * (baud_rate)) / (8UL * (baud_rate)) - 1UL)) | 0x8000)
 
+#define UART_BR_9600 0
+#define UART_BR_19200 1
+#define UART_BR_38400 2
+#define UART_BR_57600 3
+#define UART_BR_115200 4
+
 #if ((UART_RX_BUFFER_SIZE + UART_TX_BUFFER_SIZE) >= (RAMEND - 0x60))
 #	error "size of UART_RX_BUFFER_SIZE + UART_TX_BUFFER_SIZE larger than size of SRAM"
 #endif
@@ -62,6 +68,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define UART_NO_DATA          0x0100              /* no receive data available   */
 
 #include "platform.h"
+
+namespace uart_utils
+{
+
+extern const uint16_t baudrates [];
+extern const uint16_t get_baudrate (uint8_t br_type, uint8_t def = 0);
+
+}  // namespace uart_utils
+
 
 namespace uart0
 {

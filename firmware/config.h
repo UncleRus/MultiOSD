@@ -46,6 +46,7 @@
 /*
  * UAVTalk config
  */
+#define UAVTALK_DEFAULT_BAUDRATE UART_BR_57600
 #define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_LP150900
 #define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
 #define UAVTALK_CONNECTION_TIMEOUT 6000                    // ms
@@ -55,6 +56,7 @@
 /*
  * MAVLink config
  */
+#define MAVLINK_DEFAULT_BAUDRATE UART_BR_57600
 #define MAVLINK_SYSID 'R'                          // our system id
 #define MAVLINK_COMPID 1
 #define MAVLINK_CONNECTION_TIMEOUT 2000            // ms
@@ -84,7 +86,6 @@
  * UART config
  */
 #define UART_STDIO              // we need fprintf
-#define UART_BAUD_RATE 57600
 #define UART_RX_BUFFER_SIZE 128 // I like big buffers
 #define UART_TX_BUFFER_SIZE 64
 
@@ -95,6 +96,7 @@
 #define CONSOLE_MAX_CMD_LENGTH 32
 #define CONSOLE_EOL "\r\n"
 #define CONSOLE_PROMPT "osd# "
+#define CONSOLE_BAUDRATE UART_BR_57600
 
 /*
  * Boot config
