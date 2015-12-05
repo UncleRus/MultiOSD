@@ -1,19 +1,19 @@
 Console
 =======
 
-MultiOSD offers low-level configuration console. To use it you will need
-terminal software and COM-port (it can be any USB-UART connector, like FTDI
+MultiOSD offers the low-level configuration console. To use it you'll need
+terminal software and serial port (it can be any USB-UART connector, like FTDI
 or Prolific pl2303).
 
 1. Run your terminal software.
 2. Connect MultiOSD to COM-port.
-3. Open port with baudrate **57600**.
+3. Open the port with baudrate **57600**.
 4. Press reset button on MultiOSD.
 5. Wait for message ``READY``.
 6. Type ``config`` and press ``Enter``. Entered characters will not be displayed.
    If you were mistaken you'll see ``BOOT`` message. Just press reset "Reset" and
    try again.
-7. After that you'll see command promt
+7. After that you'll see the command prompt
 
 ::
 
@@ -48,7 +48,7 @@ Provides information about commands.
 info
 ^^^^
 
-Provides information about firmware and shows panels list.
+Provides information about firmware and shows the list of available screen panels.
 
 *Example*
 
@@ -101,7 +101,7 @@ Read and write :doc:`options`.
 opt l
 """""
 
-List all options with values.
+List all the options with their values.
 
 *Example*
 
@@ -142,7 +142,7 @@ List all options with values.
 opt g
 """""
 
-Read option value from EEPROM.
+Read an option value from EEPROM.
 
 Usage: ``opt g <name>``
    - ``name`` - option name, uppercase
@@ -157,7 +157,7 @@ Usage: ``opt g <name>``
 opt s
 """""
 
-Write option value to EEPROM.
+Write an option value to EEPROM.
 
 Usage: ``opt s <name> <value>``
    - ``name`` - option name, uppercase
@@ -173,15 +173,15 @@ Usage: ``opt s <name> <value>``
 scr
 ^^^
 
-Setup OSD screens layout using panels.
+Setup the OSD screens layout using panels.
 
 scr d
 """""
 
-Dump screen layout.
+Dump current screen layout.
 
 Usage: ``scr d [ <screen> ]``.
-   - ``screen`` - screen number, 0..7. Without this arg will dumps all screens.
+   - ``screen`` - screen number, 0..7. Without this arg will dumps all the screens.
 
 *Example*
 
@@ -216,7 +216,7 @@ Usage: ``scr d [ <screen> ]``.
 scr a
 """""
 
-Append panel to screen.
+Append panel to the screen layout.
 
 Usage: ``scr a <screen> <x> <y> <panel>``
    - ``screen`` - screen number, 0..7
@@ -287,7 +287,7 @@ Usage: ``scr e <screen> <panel #> <x> <y> <panel>``
 scr r
 """""
 
-Remove panel from screen layout.
+Remove panel from the screen layout.
 
 Usage: ``scr r <screen> <panel #>``
    - ``screen`` - screen number, 0..7
