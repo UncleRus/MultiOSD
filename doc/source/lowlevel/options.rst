@@ -476,6 +476,33 @@ RSSI warning threshold, percents.
 UAVTalk
 =======
 
+.. _o-utbr:
+
+UTBR
+----
+
+UART baudrate to communicate with FC. Typically is **3** (57600).
+
++------+--------+
+| Type | Size   |
++======+========+
+| enum | 1 byte |
++------+--------+
+
++-------+----------+
+| Value | Baudrate |
++=======+==========+
+| 0     | 9600     |
++-------+----------+
+| 1     | 19200    |
++-------+----------+
+| 2     | 38400    |
++-------+----------+
+| 3     | 57600    |
++-------+----------+
+| 4     | 115200   |
++-------+----------+
+
 .. _o_utbrd:
 
 UTBRD
@@ -505,7 +532,7 @@ UTREL
 
 UAVTalk version release.
 
-.. warning:: Incorrect value of this parameters can cause variuos bugs!
+.. warning:: Incorrect value of this parameters may cause variuos bugs!
 
 +------+--------+
 | Type | Size   |
@@ -542,6 +569,33 @@ If 0, home position will be taken from the flight controller.
 
 MAVLink
 =======
+
+.. _o-mlbr:
+
+MLBR
+----
+
+UART baudrate to communicate with FC. Typically is **57600**.
+
++------+--------+
+| Type | Size   |
++======+========+
+| enum | 1 byte |
++------+--------+
+
++-------+----------+
+| Value | Baudrate |
++=======+==========+
+| 0     | 9600     |
++-------+----------+
+| 1     | 19200    |
++-------+----------+
+| 2     | 38400    |
++-------+----------+
+| 3     | 57600    |
++-------+----------+
+| 4     | 115200   |
++-------+----------+
 
 .. _o-mlibl:
 
