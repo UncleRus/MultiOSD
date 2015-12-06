@@ -294,14 +294,9 @@ void put (uint8_t col, uint8_t row, uint8_t chr, uint8_t attr)
 	_chip_unselect ();
 }
 
-uint8_t _cur_attr = 0;
-
 void open (uint8_t col, uint8_t row, uint8_t attr)
 {
 	if (_opened) close ();
-
-	// remember start
-	_cur_attr = attr;
 
 	_opened = true;
 

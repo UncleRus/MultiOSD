@@ -337,6 +337,12 @@ namespace waypoint
 #ifdef TELEMETRY_MODULES_MAVLINK
 #	include "mavlink/mavlink.h"
 #endif
+#ifdef TELEMETRY_MODULES_UBX
+#	include "ubx/ubx.h"
+#endif
+#ifdef TELEMETRY_MODULES_NMEA
+#	include "nmea/nmea.h"
+#endif
 
 #define declare_module(NS) { telemetry::modules:: NS ::__name, telemetry::modules:: NS ::settings::init, \
 	telemetry::modules:: NS ::settings::reset, telemetry::modules:: NS ::init, telemetry::modules:: NS ::update }

@@ -84,6 +84,7 @@ namespace draw
 {
 
 	void rect (uint8_t l, uint8_t t, uint8_t w, uint8_t h, bool filled = false, uint8_t attr = 0);
+	void arrow (uint8_t x, uint8_t y, uint16_t direction, uint8_t attr = 0);
 
 }  // namespace draw
 

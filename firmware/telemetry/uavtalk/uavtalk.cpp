@@ -205,7 +205,6 @@ bool update ()
 	return updated;
 }
 
-
 void init ()
 {
 	board = eeprom_read_byte (EEPROM_ADDR_BOARD);

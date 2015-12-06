@@ -74,12 +74,14 @@ namespace draw
 
 #define _ARROWS 0x90
 
-	void arrow (uint8_t x, uint8_t y, uint16_t direction)
+	void arrow (uint8_t x, uint8_t y, uint16_t direction, uint8_t attr)
 	{
 		uint8_t chr = _ARROWS + ((uint8_t) (telemetry::home::direction / 360.0 * 16)) * 2;
-		max7456::put (x, y, chr);
-		max7456::put (x + 1, y, chr + 1);
+		max7456::put (x, y, chr, attr);
+		max7456::put (x + 1, y, chr + 1, attr);
 	}
+
+	const char err_str [] PROGMEM = "---";
 
 }  // namespace draw
 
@@ -234,7 +236,7 @@ namespace gps_state
 		max7456::puts_p (x, y, PSTR ("\x10\x11"), err ? MAX7456_ATTR_INVERT : 0);
 		max7456::put (x + 2, y, telemetry::gps::state <  GPS_STATE_3D ? _PAN_GPS_2D : _PAN_GPS_3D,
 			err ? MAX7456_ATTR_INVERT : (telemetry::gps::state < GPS_STATE_2D ? MAX7456_ATTR_BLINK : 0));
-		if (err) max7456::puts_p (x + 3, y, PSTR ("ERR"), MAX7456_ATTR_INVERT);
+		if (err) max7456::puts_p (x + 3, y, draw::err_str, MAX7456_ATTR_INVERT);
 		else max7456::puts (x + 3, y, buffer);
 	}
 
@@ -398,7 +400,7 @@ namespace home_distance
 		i_attr = telemetry::home::state != HOME_STATE_FIXED ? MAX7456_ATTR_INVERT : 0;
 		if (i_attr)
 		{
-			snprintf_P (buffer, sizeof (buffer), PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? PSTR ("ERR") : PSTR ("\x09\x09\x09\x8d"));
+			snprintf_P (buffer, sizeof (buffer), PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? draw::err_str : PSTR ("\x09\x09\x09\x8d"));
 			return;
 		}
 		if (telemetry::home::distance >= 10000)
@@ -427,8 +429,7 @@ namespace home_direction
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		if (telemetry::home::state != HOME_STATE_FIXED) return;
-		osd::draw::arrow (x, y, telemetry::home::direction);
+		osd::draw::arrow (x, y, telemetry::home::direction, telemetry::home::state == HOME_STATE_FIXED ? 0 : MAX7456_ATTR_BLINK);
 	}
 
 }  // namespace home_direction
