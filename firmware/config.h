@@ -15,7 +15,9 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define VERSION 11
+#define _VER(h,l) (((h) << 8) | l)
+
+#define VERSION _VER (0, 12) // current version is 0.12
 
 /*
  * Telemetry modules config
@@ -23,9 +25,12 @@
 
 //#define TELEMETRY_MODULES_ADC_BATTERY             // read battery stats from ADC
 //#define TELEMETRY_MODULES_ADC_RSSI                // read RSSI level from ADC
-//#define TELEMETRY_MODULES_UAVTALK                 // main telemetry module
-#if !defined (TELEMETRY_MODULES_UAVTALK) && !defined (TELEMETRY_MODULES_MAVLINK)
-#	define TELEMETRY_MODULES_MAVLINK                // default main telemetry module
+//#define TELEMETRY_MODULES_UAVTALK                 // LibrePilot/OpenPilot UAVTalk telemetry
+#define TELEMETRY_MODULES_UBX						// GPS
+#if    !defined (TELEMETRY_MODULES_UAVTALK) \
+	&& !defined (TELEMETRY_MODULES_MAVLINK) \
+	&& !defined (TELEMETRY_MODULES_UBX)
+#	define TELEMETRY_MODULES_MAVLINK                // ArduPilot/ArduCopter telemetry module as default
 #endif
 
 #if defined (TELEMETRY_MODULES_ADC_BATTERY) || defined (TELEMETRY_MODULES_ADC_BATTERY)
@@ -65,6 +70,11 @@
 #define MAVLINK_DEFAULT_EMULATE_RSSI 0             // bool
 #define MAVLINK_DEFAULT_EMULATE_RSSI_CHANNEL 2     // 0 - roll, 1 - pitch, 2 - throttle and so on
 #define MAVLINK_DEFAULT_EMULATE_RSSI_THRESHOLD 920 // rssi_low
+
+/*
+ * UBX config
+ */
+#define UBX_DEFAULT_BAUDRATE UART_BR_19200
 
 /*
  * OSD config
