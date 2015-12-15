@@ -20,7 +20,6 @@
 #include "../../lib/uart/uart.h"
 #include "../telemetry.h"
 #include "../../lib/max7456/max7456.h"
-#include "../../lib/timer/timer.h"
 
 namespace telemetry
 {
@@ -195,7 +194,7 @@ bool update ()
 
 	while (receive ())
 	{
-		connection_timeout = timer::ticks () + timeout;
+		connection_timeout = telemetry::ticks + timeout;
 		if (!autoconf) telemetry::status::connection = CONNECTION_STATE_CONNECTED;
 		// TODO: autoconf
 		//if (telemetry::status::connection != CONNECTION_STATE_CONNECTED)
@@ -267,7 +266,7 @@ bool update ()
 		}
 	}
 
-	if (timer::ticks () >= connection_timeout)
+	if (telemetry::ticks >= connection_timeout)
 	{
 		// disconnect, but don't reset the home pos
 		telemetry::status::connection = CONNECTION_STATE_DISCONNECTED;

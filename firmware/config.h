@@ -74,10 +74,9 @@
 /*
  * UBX config
  */
-#define UBX_DEFAULT_BAUDRATE UART_BR_19200		// more than 57600 not recommended
+#define UBX_DEFAULT_BAUDRATE UART_BR_19200      // more than 57600 is not recommended
 #define UBX_DEFAULT_TIMEOUT 1000                // ms
-#define UBX_DEFAULT_AUTOCONF 0					// automatic UBX configuration after connect
-
+#define UBX_DEFAULT_AUTOCONF 0                  // automatically configurate GPS-module after connect
 /*
  * OSD config
  */
