@@ -89,6 +89,10 @@ namespace gps
 	extern int8_t   satellites;
 	extern uint8_t  state;      // GPS_STATE_xxx enum
 	extern float    climb;      // m/s
+
+	extern float hdop;
+	extern float vdop;
+	extern float pdop;
 }
 
 namespace barometer

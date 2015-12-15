@@ -18,6 +18,7 @@
 #include "../../settings.h"
 #include "../../eeprom.h"
 #include "../../lib/uart/uart.h"
+#include "../telemetry.h"
 #include "../../lib/max7456/max7456.h"
 
 namespace telemetry
@@ -179,19 +180,68 @@ bool update ()
 
 	while (receive ())
 	{
+		// TODO: update telemetry::status::connection
+		// TODO: autoconfig
 		switch (_WORD (buf.header.cls, buf.header.id))
 		{
+			case _WORD (UBX_CLASS_ACK, UBX_ID_ACK_NAK):
+			case _WORD (UBX_CLASS_ACK, UBX_ID_ACK_ACK):
+				// TODO: autoconfig
+				break;
 			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_POSLLH):
+				if (telemetry::gps::state > GPS_STATE_FIXING)
+				{
+					telemetry::gps::altitude = buf.payload.nav_posllh.alt / 1000.0;
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
+					telemetry::stable::altitude = telemetry::gps::altitude;
+#endif
+					telemetry::gps::latitude = buf.payload.nav_posllh.lat / 1000000.0;
+					telemetry::gps::longitude = buf.payload.nav_posllh.lat / 1000000.0;
+					telemetry::home::update ();
+					updated = true;
+				}
+				break;
+			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_SOL):
+				telemetry::gps::satellites = buf.payload.nav_sol.num_sv;
+				if (buf.payload.nav_sol.flags & UBX_STATUS_FLAGS_GPSFIX_OK)
+				{
+					switch (buf.payload.nav_sol.fix_type)
+					{
+						case f_2d:
+							telemetry::gps::state = GPS_STATE_2D;
+							telemetry::status::armed = true;
+							break;
+						case f_3d:
+							telemetry::gps::state = GPS_STATE_3D;
+							if (telemetry::home::state == HOME_STATE_NO_FIX)
+								telemetry::home::fix ();
+							telemetry::status::armed = true;
+							break;
+						default:
+							telemetry::gps::state = GPS_STATE_FIXING;
+					}
+				}
+				else telemetry::gps::state = GPS_STATE_FIXING;
 				updated = true;
 				break;
+			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_VELNED):
+				telemetry::gps::speed = buf.payload.nav_velned.speed / 100.0;
+				telemetry::gps::climb = -(buf.payload.nav_velned.vel_down / 100.0);
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
+				telemetry::stable::climb = telemetry::gps::climb;
+#endif
+				telemetry::gps::heading = buf.payload.nav_velned.heading * 1.0e-5f;
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+				telemetry::stable::heading = telemetry::gps::heading;
+#endif
+				updated = true;
+				break;
+			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_DOP):
+				telemetry::gps::hdop = buf.payload.nav_dop.hdop / 100.0;
+				telemetry::gps::vdop = buf.payload.nav_dop.vdop / 100.0;
+				telemetry::gps::pdop = buf.payload.nav_dop.pdop / 100.0;
+				break;
 		}
-//		switch (buf.header.cls << 8 | buf.header.id)
-//		{
-//
-//		}
-//		max7456::open (10, 10);
-//		fprintf_P (&max7456::stream, PSTR ("%04x"), (buf.header.cls << 8) |  buf.header.id);
-		updated = true;
 	}
 
 	return updated;

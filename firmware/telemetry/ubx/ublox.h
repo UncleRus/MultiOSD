@@ -123,16 +123,28 @@ struct header_t
     {}
 };
 
-// Geodetic Position Solution
-struct nav_pollsh_t
+// Status
+struct nav_status_t
 {
-    uint32_t itow;   // GPS Millisecond Time of Week (ms)
-    int32_t lon;     // Longitude (deg*1e-7)
-    int32_t lat;     // Latitude (deg*1e-7)
-    int32_t alt;     // Height above Ellipsoid (mm)
-    int32_t alt_msl; // Height above mean sea level (mm)
-    uint32_t h_acc;  // Horizontal Accuracy Estimate (mm)
-    uint32_t v_acc;  // Vertical Accuracy Estimate (mm)
+	uint32_t itow;              // GPS Millisecond Time of Week (ms)
+	uint8_t  fix_type;          // GPS fix type
+	uint8_t  fix_flags;         // Navigation Status Flags
+	uint8_t  fix_status;        // Fix Status Information
+	uint8_t  flags;             // Additional navigation output information
+	uint32_t time_to_first_fix; // Time to first fix (ms)
+	uint32_t uptime;            // Milliseconds since startup/reset (ms)
+};
+
+// Geodetic Position Solution
+struct nav_posllh_t
+{
+    uint32_t itow;    // GPS Millisecond Time of Week (ms)
+    int32_t  lon;     // Longitude (deg*1e-7)
+    int32_t  lat;     // Latitude (deg*1e-7)
+    int32_t  alt;     // Height above Ellipsoid (mm)
+    int32_t  alt_msl; // Height above mean sea level (mm)
+    uint32_t h_acc;   // Horizontal Accuracy Estimate (mm)
+    uint32_t v_acc;   // Vertical Accuracy Estimate (mm)
 };
 
 // Dilution of precision
@@ -184,13 +196,21 @@ struct nav_velned_t
     uint32_t course_acc;   // 1e-5 *deg Course / Heading Accuracy Estimate
 };
 
+struct ack_nack_t
+{
+	uint8_t cls; // Message class
+	uint8_t id;  // Message ID
+};
+
 union payload_t
 {
 	uint8_t data [1];
-	nav_pollsh_t nav_pollsh;
+	nav_posllh_t nav_posllh;
+	nav_status_t status;
 	nav_dop_t nav_dop;
 	nav_sol_t nav_sol;
 	nav_velned_t nav_velned;
+	ack_nack_t ack_nak;
 };
 
 struct crc_t

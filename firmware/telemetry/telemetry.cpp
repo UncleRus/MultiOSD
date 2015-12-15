@@ -128,6 +128,9 @@ namespace gps
 	uint8_t state = GPS_STATE_NO_FIX;
 	float climb = 0.0;
 
+	float hdop = 99.99;
+	float vdop = 99.99;
+	float pdop = 99.99;
 }  // namespace gps
 
 namespace barometer
