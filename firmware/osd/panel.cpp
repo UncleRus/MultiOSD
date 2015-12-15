@@ -429,7 +429,8 @@ namespace home_direction
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		osd::draw::arrow (x, y, telemetry::home::direction, telemetry::home::state == HOME_STATE_FIXED ? 0 : MAX7456_ATTR_BLINK);
+		if (telemetry::home::state == HOME_STATE_FIXED)
+			osd::draw::arrow (x, y, telemetry::home::direction);
 	}
 
 }  // namespace home_direction

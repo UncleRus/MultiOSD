@@ -47,7 +47,7 @@ bool show ()
 	max7456::clear ();
 
 	max7456::open (1, 1, MAX7456_ATTR_INVERT);
-	fprintf_P (&max7456::stream, PSTR ("MultiOSD v.%u.%u"), VERSION >> 8, VERSION);
+	fprintf_P (&max7456::stream, PSTR ("MultiOSD %u.%u"), VERSION >> 8, VERSION);
 	for (uint8_t x = 1; x < max7456::right; x ++)
 		max7456::put (x, 2, 0x1a);
 	max7456::puts_p (max7456::right - 3, 1, PSTR (_BOOT_LOGO));
