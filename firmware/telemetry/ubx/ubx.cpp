@@ -20,6 +20,7 @@
 #include "../../lib/uart/uart.h"
 #include "../telemetry.h"
 #include "../../lib/max7456/max7456.h"
+#include "../../lib/timer/timer.h"
 
 namespace telemetry
 {
@@ -33,12 +34,18 @@ namespace ubx
 namespace settings
 {
 
-#define EEPROM_ADDR_BAUDRATE _eeprom_byte (UBX_EEPROM_OFFSET)
+#define EEPROM_ADDR_BAUDRATE  _eeprom_byte (UBX_EEPROM_OFFSET)
+#define EEPROM_ADDR_TIMEOUT   _eeprom_word (UBX_EEPROM_OFFSET + 1)
+#define EEPROM_ADDR_AUTOCONF  _eeprom_byte (UBX_EEPROM_OFFSET + 3)
 
 const char __opt_ubxbr [] PROGMEM = "UBXBR";
+const char __opt_ubxto [] PROGMEM = "UBXTO";
+const char __opt_ubxac [] PROGMEM = "UBXAC";
 
 const ::settings::option_t __settings [] PROGMEM = {
 	declare_uint8_option (__opt_ubxbr, EEPROM_ADDR_BAUDRATE),
+	declare_uint16_option (__opt_ubxto, EEPROM_ADDR_TIMEOUT),
+	declare_bool_option (__opt_ubxac, EEPROM_ADDR_AUTOCONF),
 };
 
 void init ()
@@ -49,6 +56,8 @@ void init ()
 void reset ()
 {
 	eeprom_update_byte (EEPROM_ADDR_BAUDRATE, UBX_DEFAULT_BAUDRATE);
+	eeprom_update_word (EEPROM_ADDR_TIMEOUT, UBX_DEFAULT_TIMEOUT);
+	eeprom_update_byte (EEPROM_ADDR_AUTOCONF, UBX_DEFAULT_AUTOCONF);
 }
 
 }  // namespace settings
@@ -169,9 +178,15 @@ bool receive ()
 	return false;
 }
 
+uint16_t timeout;
+uint32_t connection_timeout;
+bool autoconf;
+
 void init ()
 {
 	TELEMETRY_UART::init (uart_utils::get_baudrate (eeprom_read_byte (EEPROM_ADDR_BAUDRATE), UBX_DEFAULT_BAUDRATE));
+	timeout = eeprom_read_word (EEPROM_ADDR_TIMEOUT);
+	autoconf = eeprom_read_byte (EEPROM_ADDR_AUTOCONF);
 }
 
 bool update ()
@@ -180,13 +195,16 @@ bool update ()
 
 	while (receive ())
 	{
-		// TODO: update telemetry::status::connection
-		// TODO: autoconfig
+		connection_timeout = timer::ticks () + timeout;
+		if (!autoconf) telemetry::status::connection = CONNECTION_STATE_CONNECTED;
+		// TODO: autoconf
+		//if (telemetry::status::connection != CONNECTION_STATE_CONNECTED)
+		//	telemetry::status::connection = CONNECTION_STATE_ESTABLISHING;
 		switch (_WORD (buf.header.cls, buf.header.id))
 		{
 			case _WORD (UBX_CLASS_ACK, UBX_ID_ACK_NAK):
 			case _WORD (UBX_CLASS_ACK, UBX_ID_ACK_ACK):
-				// TODO: autoconfig
+				// TODO: autoconf
 				break;
 			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_POSLLH):
 				if (telemetry::gps::state > GPS_STATE_FIXING)
@@ -225,7 +243,7 @@ bool update ()
 				updated = true;
 				break;
 			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_VELNED):
-				telemetry::gps::speed = buf.payload.nav_velned.speed / 100.0;
+				telemetry::stable::ground_speed = telemetry::gps::speed = buf.payload.nav_velned.speed / 100.0;
 				telemetry::gps::climb = -(buf.payload.nav_velned.vel_down / 100.0);
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
 				telemetry::stable::climb = telemetry::gps::climb;
@@ -240,8 +258,21 @@ bool update ()
 				telemetry::gps::hdop = buf.payload.nav_dop.hdop / 100.0;
 				telemetry::gps::vdop = buf.payload.nav_dop.vdop / 100.0;
 				telemetry::gps::pdop = buf.payload.nav_dop.pdop / 100.0;
+				updated = true;
+				break;
+			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_STATUS):
+				telemetry::status::flight_time = buf.payload.nav_status.uptime / 1000;
+				updated = true;
 				break;
 		}
+	}
+
+	if (timer::ticks () >= connection_timeout)
+	{
+		// disconnect, but don't reset the home pos
+		telemetry::status::connection = CONNECTION_STATE_DISCONNECTED;
+		telemetry::gps::state = GPS_STATE_NO_FIX;
+		updated = true;
 	}
 
 	return updated;

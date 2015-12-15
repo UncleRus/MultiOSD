@@ -240,7 +240,7 @@ namespace opt
 		uint8_t type = pgm_read_byte (&option->type);
 		uint8_t size = pgm_read_byte (&option->size);
 
-		fprintf_P (&CONSOLE_UART::stream, PSTR ("%03p\t(%S:%u@)\t%S\t= "), addr, (const char *) pgm_read_ptr (&types [type]), size, name_p);
+		fprintf_P (&CONSOLE_UART::stream, PSTR ("%03p\t(%S:%u) \t%S\t= "), addr, (const char *) pgm_read_ptr (&types [type]), size, name_p);
 
 		char buf [16];
 

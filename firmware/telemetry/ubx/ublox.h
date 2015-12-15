@@ -206,7 +206,7 @@ union payload_t
 {
 	uint8_t data [1];
 	nav_posllh_t nav_posllh;
-	nav_status_t status;
+	nav_status_t nav_status;
 	nav_dop_t nav_dop;
 	nav_sol_t nav_sol;
 	nav_velned_t nav_velned;
