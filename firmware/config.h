@@ -77,6 +77,7 @@
 #define UBX_DEFAULT_BAUDRATE UART_BR_19200      // more than 57600 is not recommended
 #define UBX_DEFAULT_TIMEOUT 1000                // ms
 #define UBX_DEFAULT_AUTOCONF 0                  // automatically configurate GPS-module after connect
+
 /*
  * OSD config
  */
@@ -91,7 +92,6 @@
 #define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6 // it's ACCESSORY1 on my Tx in UAVTalk
 // or
 //#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_OFF // single screen mode
-
 
 /*
  * UART config
@@ -125,10 +125,8 @@
  * ADC battery
  */
 #define ADC_BATTERY_DEFAULT_UPDATE_INTERVAL 200     // ms
-
 #define ADC_BATTERY_DEFAULT_VOLTAGE_CHANNEL 6       // ADC6 19 pin
 #define ADC_BATTERY_DEFAULT_CURRENT_CHANNEL 7       // ADC7 22 pin
-
 #define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 1        // ADC current sensor enabled
 #define ADC_BATTERY_DEFAULT_VOLTAGE_MULTIPLIER 1.0
 #define ADC_BATTERY_DEFAULT_CURRENT_MULTIPLIER 1.0

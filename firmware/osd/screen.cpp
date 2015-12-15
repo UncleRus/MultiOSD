@@ -16,7 +16,7 @@
 #include "screen.h"
 #include <avr/eeprom.h>
 #include <avr/pgmspace.h>
-#include "../config.h"
+#include "../screens_config.h"
 #include "../lib/max7456/max7456.h"
 #include "panel.h"
 #include "../eeprom.h"
@@ -77,72 +77,15 @@ void draw ()
 namespace settings
 {
 
-const panel_pos_t _default_screen_0 [] PROGMEM = {
-	{OSD_PANEL_GPS_STATE, 1, 1},
-	{OSD_PANEL_GPS_LAT, 8, 1},
-	{OSD_PANEL_GPS_LON, 19, 1},
-
-	{OSD_PANEL_CONNECTION_STATE, 0, 2},
-	{OSD_PANEL_ARMING_STATE, 3, 2},
-	{OSD_PANEL_RSSI, 21, 3},
-	{OSD_PANEL_FLIGHT_MODE, 24, 2},
-
-	{OSD_PANEL_PITCH, 1, 6},
-	{OSD_PANEL_HORIZON, 8, 6},
-	{OSD_PANEL_THROTTLE, 23, 6},
-
-	{OSD_PANEL_GROUND_SPEED, 1, 8},
-	{OSD_PANEL_ALT, 23, 8},
-
-	{OSD_PANEL_ROLL, 1, 10},
-	{OSD_PANEL_CLIMB, 23, 10},
-
-	{OSD_PANEL_FLIGHT_TIME, 1, 13},
-	{OSD_PANEL_COMPASS, 9, 12},
-
-	{OSD_PANEL_HOME_DISTANCE, 1, 14},
-	{OSD_PANEL_HOME_DIRECTION, 8, 14},
-
-	{OSD_PANEL_BATTERY_VOLTAGE, 22, 12},
-	{OSD_PANEL_BATTERY_CURRENT, 22, 13},
-	{OSD_PANEL_BATTERY_CONSUMED, 22, 14}
-};
+const panel_pos_t _default_screen_0 [] PROGMEM = { SCR_DEFAULT_0 };
 
 #if OSD_MAX_SCREENS > 1
-const panel_pos_t _default_screen_1 [] PROGMEM = {
-	{OSD_PANEL_CONNECTION_STATE, 0, 0},
-	{OSD_PANEL_ARMING_STATE, 3, 0},
-	{OSD_PANEL_CALLSIGN, 7, 1},
-	{OSD_PANEL_RSSI, 21, 1},
-	{OSD_PANEL_FLIGHT_MODE, 24, 0},
-
-	{OSD_PANEL_ALT, 1, 8},
-	{OSD_PANEL_HORIZON, 8, 6},
-
-	{OSD_PANEL_FLIGHT_TIME, 1, 13},
-	{OSD_PANEL_HOME_DISTANCE, 1, 14},
-
-	{OSD_PANEL_BATTERY_VOLTAGE, 22, 14}
-};
+const panel_pos_t _default_screen_1 [] PROGMEM = { SCR_DEFAULT_1 };
 #endif
 
 #if OSD_MAX_SCREENS > 2
-const panel_pos_t _default_screen_2 [] PROGMEM = {
-	{OSD_PANEL_CONNECTION_STATE, 0, 0},
-	{OSD_PANEL_ARMING_STATE, 3, 0},
-	{OSD_PANEL_RSSI, 20, 1},
-	{OSD_PANEL_FLIGHT_MODE, 24, 0},
-
-	{OSD_PANEL_PITCH, 1, 6},
-	{OSD_PANEL_ALT, 1, 8},
-	{OSD_PANEL_ROLL, 1, 10},
-
-	{OSD_PANEL_FLIGHT_TIME, 1, 13},
-
-	{OSD_PANEL_BATTERY_VOLTAGE, 22, 14}
-};
+const panel_pos_t _default_screen_2 [] PROGMEM = { SCR_DEFAULT_2 };
 #endif
-
 
 void reset_screen (uint8_t num, const panel_pos_t screen [], uint8_t len)
 {
