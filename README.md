@@ -5,8 +5,6 @@ Yet another MinimOSD firmware with configurable screens.
 
 ![Screenshot](res/screenshot.png)
 
-**Warning: this software is on early alpha stage!**
-
 Capabilities:
 
    * switching between screens
@@ -71,12 +69,12 @@ More to come.
 Known bugs and problems
 -----------------------
 
-- No configuration software (https://github.com/UncleRus/MultiConf - 
+* No configuration software (https://github.com/UncleRus/MultiConf - 
   currently in development).
   But you can use [the serial console](doc/source/lowlevel/console.rst)
-  to change an [options](doc/source/lowlevel/options.rst) and screens layout.
-- Probably home direction bug
-- Revolution home distance/direction bug
+  to change [options](doc/source/lowlevel/options.rst) and screens layout.
+* Probably home direction bug
+* Revolution home distance/direction bug
 
 
 
