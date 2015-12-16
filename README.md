@@ -13,6 +13,7 @@ Capabilities:
    * configuration console
    * no image snow
    * ADC RSSI and battery stats - useful with simple FC, such as CC3D
+   * "standalone" mode - u-blox GPS module instead of FC
 
 
 Supported flight controllers and software
@@ -32,6 +33,8 @@ Supported flight controllers and software
    * Pixhawk PX4
    * Paparazzi
    * Generic MAVLink boards
+
+* u-blox GPS modules (alpha stage)
 
 **Testers are needed!**
 
