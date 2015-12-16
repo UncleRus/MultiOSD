@@ -71,11 +71,15 @@ More to come.
 Known bugs and problems
 -----------------------
 
-- No configuration software (https://github.com/UncleRus/MultiConf)
-  currently in development
-- No documentation!
-- Home direction bug
-- CC3D Revolution home distance/direction bug
+- No configuration software (https://github.com/UncleRus/MultiConf - 
+  currently in development)
+  
+  But you can use `integrated serial console <doc/source/lowlevel/console.rst>`_ 
+  to change `options <doc/source/lowlevel/options.rst>`_ and setup screens layout.
+  
+- Probably home direction bug
+
+- Revolution home distance/direction bug
 
 
 
