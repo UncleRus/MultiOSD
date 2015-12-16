@@ -320,7 +320,7 @@ For example, Imax = 90A, :ref:`o-adcuref` = 5.1V, :ref:`o-abcmul` = 90 / 5.1 = 1
 ABUI
 ----
 
-Interval between battery stats updates, ms. 200 is good enough.
+Interval between battery stats updates, ms. **200** (5Hz) is good enough.
 
 +--------+---------+
 | Type   | Size    |
@@ -508,8 +508,8 @@ UART baudrate to communicate with FC. Typically is **3** (57600).
 UTBRD
 -----
 
-Flight controller type. It's recommended to use correct FC type as it affects
-altitide, velocity, temperature and other telemetry values.
+Flight controller type. It's recommended to set correct FC type as it affects
+altitude, velocity, temperature and other telemetry values.
 
 +------+--------+
 | Type | Size   |
@@ -679,7 +679,7 @@ MLERT
 -----
 
 RSSI emulation threshold. Minimal pulse width of input channel, us. Works
-only when :ref:`o-mlert` = 1. Typical value: ~900
+only when :ref:`o-mlert` = 1. Typical value: **~900**
 
 +--------+---------+
 | Type   | Size    |
