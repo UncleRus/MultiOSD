@@ -72,13 +72,10 @@ Known bugs and problems
 -----------------------
 
 - No configuration software (https://github.com/UncleRus/MultiConf - 
-  currently in development)
-  
+  currently in development).
   But you can use [serial console](doc/source/lowlevel/console.rst)
   to change an [options](doc/source/lowlevel/options.rst) and screens layout.
-  
 - Probably home direction bug
-
 - Revolution home distance/direction bug
 
 
