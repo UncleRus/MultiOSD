@@ -26,11 +26,11 @@
 //#define TELEMETRY_MODULES_ADC_BATTERY             // read battery stats from ADC
 //#define TELEMETRY_MODULES_ADC_RSSI                // read RSSI level from ADC
 //#define TELEMETRY_MODULES_UAVTALK                 // LibrePilot/OpenPilot UAVTalk telemetry
-#define TELEMETRY_MODULES_UBX						// GPS
-#if    !defined (TELEMETRY_MODULES_UAVTALK) \
+//#define TELEMETRY_MODULES_UBX						// GPS
+#if !defined (TELEMETRY_MODULES_UAVTALK) \
 	&& !defined (TELEMETRY_MODULES_MAVLINK) \
 	&& !defined (TELEMETRY_MODULES_UBX)
-#	define TELEMETRY_MODULES_MAVLINK                // ArduPilot/ArduCopter telemetry module as default
+#	define TELEMETRY_MODULES_MAVLINK                // ArduPilot/ArduCopter telemetry module by default
 #endif
 
 #if defined (TELEMETRY_MODULES_ADC_BATTERY) || defined (TELEMETRY_MODULES_ADC_BATTERY)
