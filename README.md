@@ -3,7 +3,7 @@ MultiOSD
 
 Yet another MinimOSD firmware with configurable screens.
 
-![Screenshot](res/screenshot.png)
+![Screenshot](doc/source/img/screenshot.png)
 
 Capabilities:
 
@@ -65,6 +65,11 @@ Available indicators
 - Compass
 
 More to come.
+
+Build and install
+-----------------
+
+[MultiOSD Building](doc/source/build.rst)
 
 Known bugs and problems
 -----------------------
