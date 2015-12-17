@@ -4,10 +4,10 @@
 import serial
 import sys
 
+portname = '/dev/ttyUSB0' if len (sys.argv) < 2 else sys.argv [1]
+filename = 'main_font.mcm' if len (sys.argv) < 3 else sys.argv [2]
 
-filename = 'main_font.mcm' if len (sys.argv) < 2 else sys.argv [1]
-
-port = serial.Serial ('/dev/ttyUSB0', 57600)
+port = serial.Serial (portname, 57600)
 
 print 'Press reset'
 
