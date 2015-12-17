@@ -30,84 +30,83 @@ import sys
 
 class const (object):
 
-    RESP_STK_OK = b'\x10'
-    RESP_STK_FAILED = b'\x11'
-    RESP_STK_UNKNOWN = b'\x12'
+    RESP_STK_OK       = b'\x10'
+    RESP_STK_FAILED   = b'\x11'
+    RESP_STK_UNKNOWN  = b'\x12'
     RESP_STK_NODEVICE = b'\x13'
-    RESP_STK_INSYNC = b'\x14'
-    RESP_STK_NOSYNC = b'\x15'
+    RESP_STK_INSYNC   = b'\x14'
+    RESP_STK_NOSYNC   = b'\x15'
 
     RESP_ADC_CHANNEL_ERROR = b'\x16'
-    RESP_ADC_MEASURE_OK = b'\x17'
+    RESP_ADC_MEASURE_OK    = b'\x17'
     RESP_PWM_CHANNEL_ERROR = b'\x18'
-    RESP_PWM_ADJUST_OK = b'\x19'
+    RESP_PWM_ADJUST_OK     = b'\x19'
 
     SYNC_CRC_EOP = b'\x20'  # 'SPACE'
 
-    CMD_STK_GET_SYNC = b'\x30'
+    CMD_STK_GET_SYNC    = b'\x30'
     CMD_STK_GET_SIGN_ON = b'\x31'
 
-    CMD_STK_SET_PARAMETER = b'\x40'
-    CMD_STK_GET_PARAMETER = b'\x41'
-    CMD_STK_SET_DEVICE = b'\x42'
+    CMD_STK_SET_PARAMETER  = b'\x40'
+    CMD_STK_GET_PARAMETER  = b'\x41'
+    CMD_STK_SET_DEVICE     = b'\x42'
     CMD_STK_SET_DEVICE_EXT = b'\x45'
 
-    CMD_STK_ENTER_PROGMODE = b'\x50'
-    CMD_STK_LEAVE_PROGMODE = b'\x51'
-    CMD_STK_CHIP_ERASE = b'\x52'
-    CMD_STK_CHECK_AUTOINC = b'\x53'
-    CMD_STK_LOAD_ADDRESS = b'\x55'
-    CMD_STK_UNIVERSAL = b'\x56'
+    CMD_STK_ENTER_PROGMODE  = b'\x50'
+    CMD_STK_LEAVE_PROGMODE  = b'\x51'
+    CMD_STK_CHIP_ERASE      = b'\x52'
+    CMD_STK_CHECK_AUTOINC   = b'\x53'
+    CMD_STK_LOAD_ADDRESS    = b'\x55'
+    CMD_STK_UNIVERSAL       = b'\x56'
     CMD_STK_UNIVERSAL_MULTI = b'\x57'
 
-    CMD_STK_PROG_FLASH = b'\x60'
-    CMD_STK_PROG_DATA = b'\x61'
-    CMD_STK_PROG_FUSE = b'\x62'
-    CMD_STK_PROG_LOCK = b'\x63'
-    CMD_STK_PROG_PAGE = b'\x64'
+    CMD_STK_PROG_FLASH    = b'\x60'
+    CMD_STK_PROG_DATA     = b'\x61'
+    CMD_STK_PROG_FUSE     = b'\x62'
+    CMD_STK_PROG_LOCK     = b'\x63'
+    CMD_STK_PROG_PAGE     = b'\x64'
     CMD_STK_PROG_FUSE_EXT = b'\x65'
 
-    CMD_STK_READ_FLASH = b'\x70'
-    CMD_STK_READ_DATA = b'\x71'
-    CMD_STK_READ_FUSE = b'\x72'
-    CMD_STK_READ_LOCK = b'\x73'
-    CMD_STK_READ_PAGE = b'\x74'
-    CMD_STK_READ_SIGN = b'\x75'
-    CMD_STK_READ_OSCCAL = b'\x76'
-    CMD_STK_READ_FUSE_EXT = b'\x77'
+    CMD_STK_READ_FLASH      = b'\x70'
+    CMD_STK_READ_DATA       = b'\x71'
+    CMD_STK_READ_FUSE       = b'\x72'
+    CMD_STK_READ_LOCK       = b'\x73'
+    CMD_STK_READ_PAGE       = b'\x74'
+    CMD_STK_READ_SIGN       = b'\x75'
+    CMD_STK_READ_OSCCAL     = b'\x76'
+    CMD_STK_READ_FUSE_EXT   = b'\x77'
     CMD_STK_READ_OSCCAL_EXT = b'\x78'
 
-    PARAM_STK_HW_VER = b'\x80'  # ' ' - R
-    PARAM_STK_SW_MAJOR = b'\x81'  # ' ' - R
-    PARAM_STK_SW_MINOR = b'\x82'  # ' ' - R
-    PARAM_STK_LEDS = b'\x83'  # ' ' - R/W
-    PARAM_STK_VTARGET = b'\x84'  # ' ' - R/W
-    PARAM_STK_VADJUST = b'\x85'  # ' ' - R/W
-    PARAM_STK_OSC_PSCALE = b'\x86'  # ' ' - R/W
-    PARAM_STK_OSC_CMATCH = b'\x87'  # ' ' - R/W
+    PARAM_STK_HW_VER         = b'\x80'  # ' ' - R
+    PARAM_STK_SW_MAJOR       = b'\x81'  # ' ' - R
+    PARAM_STK_SW_MINOR       = b'\x82'  # ' ' - R
+    PARAM_STK_LEDS           = b'\x83'  # ' ' - R/W
+    PARAM_STK_VTARGET        = b'\x84'  # ' ' - R/W
+    PARAM_STK_VADJUST        = b'\x85'  # ' ' - R/W
+    PARAM_STK_OSC_PSCALE     = b'\x86'  # ' ' - R/W
+    PARAM_STK_OSC_CMATCH     = b'\x87'  # ' ' - R/W
     PARAM_STK_RESET_DURATION = b'\x88'  # ' ' - R/W
-    PARAM_STK_SCK_DURATION = b'\x89'  # ' ' - R/W
+    PARAM_STK_SCK_DURATION   = b'\x89'  # ' ' - R/W
+    PARAM_STK_BUFSIZEL       = b'\x90'  # ' ' - R/W, Range {0..255}
+    PARAM_STK_BUFSIZEH       = b'\x91'  # ' ' - R/W, Range {0..255}
+    PARAM_STK_DEVICE         = b'\x92'  # ' ' - R/W, Range {0..255}
+    PARAM_STK_PROGMODE       = b'\x93'  # ' ' - 'P' or 'S'
+    PARAM_STK_PARAMODE       = b'\x94'  # ' ' - TRUE or FALSE
+    PARAM_STK_POLLING        = b'\x95'  # ' ' - TRUE or FALSE
+    PARAM_STK_SELFTIMED      = b'\x96'  # ' ' - TRUE or FALSE
+    PARAM_STK_TOPCARD_DETECT = b'\x98'  # ' ' - Detect top-card attached
 
-    PARAM_STK_BUFSIZEL = b'\x90'  # ' ' - R/W, Range {0..255}
-    PARAM_STK_BUFSIZEH = b'\x91'  # ' ' - R/W, Range {0..255}
-    PARAM_STK_DEVICE = b'\x92'  # ' ' - R/W, Range {0..255}
-    PARAM_STK_PROGMODE = b'\x93'  # ' ' - 'P' or 'S'
-    PARAM_STK_PARAMODE = b'\x94'  # ' ' - TRUE or FALSE
-    PARAM_STK_POLLING = b'\x95'  # ' ' - TRUE or FALSE
-    PARAM_STK_SELFTIMED = b'\x96'  # ' ' - TRUE or FALSE
-    PARAM_STK500_TOPCARD_DETECT = b'\x98'  # ' ' - Detect top-card attached
-
-    STATE_STK_INSYNC = b'\x01'  # INSYNC status bit, '1' - INSYNC
-    STATE_STK_PROGMODE = b'\x02'  # Programming mode,  '1' - PROGMODE
+    STATE_STK_INSYNC     = b'\x01'  # INSYNC status bit, '1' - INSYNC
+    STATE_STK_PROGMODE   = b'\x02'  # Programming mode,  '1' - PROGMODE
     STATE_STK_STANDALONE = b'\x04'  # Standalone mode,   '1' - SM mode
-    STATE_STK_RESET = b'\x08'  # RESET button,      '1' - Pushed
-    STATE_STK_PROGRAM = b'\x10'  # Program button, '   1' - Pushed
-    STATE_STK_LEDG = b'\x20'  # Green LED status,  '1' - Lit
-    STATE_STK_LEDR = b'\x40'  # Red LED status,    '1' - Lit
-    STATE_STK_LEDBLINK = b'\x80'  # LED blink ON/OFF,  '1' - Blink
+    STATE_STK_RESET      = b'\x08'  # RESET button,      '1' - Pushed
+    STATE_STK_PROGRAM    = b'\x10'  # Program button, '   1' - Pushed
+    STATE_STK_LEDG       = b'\x20'  # Green LED status,  '1' - Lit
+    STATE_STK_LEDR       = b'\x40'  # Red LED status,    '1' - Lit
+    STATE_STK_LEDBLINK   = b'\x80'  # LED blink ON/OFF,  '1' - Blink
 
     MEM_EEPROM = 0x45
-    MEM_FLASH = 0x46
+    MEM_FLASH  = 0x46
 
 
 def need_connection (func):
