@@ -26,17 +26,39 @@ Debian/Ubuntu
    $ cd MultiOSD
    $ make
 
-4. Select suitable version of firmware...:
+
+MultiOSD installation
+=====================
+
+You will need the USB-UART module like FT-232 or pl2303. Connect it to MinimOSD
+UART.
+
+.. todo:: Diagram
+
+
+1. Install python, pip and libraries:
+
+::
+
+   # apt-get install python python-pip
+   ...
+   $ pip install -r tools/requirements.txt
+
+2. Select suitable version of firmware:
 
 ::
 
    $ ls build/
+   MultiOSD_mavlink_adcrssi.hex  MultiOSD_mavlink.hex  MultiOSD_uavtalk_adcbattery_adcrssi.hex  MultiOSD_uavtalk_adcbattery.hex  MultiOSD_uavtalk_adcrssi.hex  MultiOSD_uavtalk.hex
 
-5. ...and flash it like this:
+3. Flash it like this:
 
 ::
 
-   $ avrdude -pm328p -carduino -P/dev/ttyUSB0 -Uflash:w:build/MultiOSD_uavtalk_adcbattery_adcrssi.hex:a
-   
+   $ python tools/flasher.py -p /dev/ttyUSB0 build/MultiOSD_uavtalk_adcbattery_adcrssi.hex
 
+4. Upload MAX7456 font:
+
+::
    
+   $ python tools/font_uploader.py -p /dev/ttyUSB0 res/font.mcm
