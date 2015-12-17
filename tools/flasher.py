@@ -1,5 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+# This file is part of MultiOSD <https://github.com/UncleRus/MultiOSD>
+#
+# MultiOSD is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 from __future__ import print_function
 
 import serial
@@ -233,7 +249,8 @@ class STK500 (object):
                     continue
                 if self.read_bytes (2) == const.RESP_STK_INSYNC + const.RESP_STK_OK:
                     break
-            print ('Connected.')
+            bl_v_h, bl_v_l = self.get_bootloader_version ()
+            print ('Connected. BL version: %d.%d, chip signature: %4x' % (bl_v_h, bl_v_l, self.read_signature ()))
         except:
             try:
                 self.serial.close ()
@@ -313,9 +330,14 @@ def main ():
     parser.add_argument ('hex', help = 'Firmware filename')
     args = parser.parse_args ()
 
-    s = STK500 ()
-    s.open (args.port)
-    s.upload_hex (open (args.hex, 'rb'))
+    try:
+        s = STK500 ()
+        s.open (args.port)
+        s.upload_hex (open (args.hex, 'rb'))
+    except KeyboardInterrupt:
+        print ('Interrupted.')
+    except Exception as e:
+        print ('%s: %s' % (type (e).__name__, str (e)), file = sys.stderr)
 
 
 if __name__ == '__main__':
