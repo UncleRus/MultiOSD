@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#from __future__ import print_function
+from __future__ import print_function
 import serial
 import argparse
 import sys
@@ -8,7 +8,7 @@ import sys
 def upload_font (args):
     f = open (args.font, 'rb')
 
-    print 'Press device reset button...',
+    print ('Press device reset button...', end = ' ')
     sys.stdout.flush ()
 
     port = serial.Serial (args.port, 57600)
@@ -19,8 +19,8 @@ def upload_font (args):
     while port.readline ().strip () != 'osd#':
         pass
 
-    print 'Connected.'
-    print 'Uploading font...',
+    print ('Connected.')
+    print ('Uploading font...', end = ' ')
     sys.stdout.flush ()
 
     port.write ('font u\r')
@@ -29,7 +29,7 @@ def upload_font (args):
     port.write ('\r\rreboot\r')
     port.close ()
 
-    print 'Done.'
+    print ('Done.')
 
 
 if __name__ == '__main__':
