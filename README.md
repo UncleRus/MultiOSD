@@ -53,7 +53,7 @@ Available indicators
 - GPS Longitude
 - Artifical horizon
 - Throttle
-- Ground speed
+- Groundspeed
 - Battery voltage
 - Battery current
 - Battery consumed
@@ -64,6 +64,7 @@ Available indicators
 - Temperature
 - RSSI level
 - Compass
+- Airspeed
 
 More to come.
 
