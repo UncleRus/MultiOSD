@@ -23,7 +23,8 @@ Supported flight controllers and software
   
   * OpenPilot 15.02.02 (latest CC/CC3D release)
   * OpenPilot 15.05.02 (latest Revolution release)
-  * LibrePilot 15.09 (https://github.com/librepilot/LibrePilot)
+  * LibrePilot 15.09 (http://librepilot.org)
+  * TauLabs 20151123 (http://taulabs.org) - alpha!
   
 * Many of the MAVLink boards:
   
@@ -32,7 +33,7 @@ Supported flight controllers and software
    * Paparazzi
    * Generic MAVLink boards
 
-* u-blox GPS modules (alpha stage)
+* u-blox GPS modules - alpha!
 
 **Testers are needed!**
 
