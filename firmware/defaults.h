@@ -17,9 +17,7 @@
 #ifndef DEFAULTS_H_
 #define DEFAULTS_H_
 
-
+// This settings will be used only in Eclipse
 #define TELEMETRY_MODULES_UAVTALK
-
-
 
 #endif /* DEFAULTS_H_ */
