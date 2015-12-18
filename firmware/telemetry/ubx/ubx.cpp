@@ -244,7 +244,7 @@ bool update ()
 				updated = true;
 				break;
 			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_VELNED):
-				telemetry::stable::ground_speed = telemetry::gps::speed = buf.payload.nav_velned.speed / 100.0;
+				telemetry::stable::groundspeed = telemetry::gps::speed = buf.payload.nav_velned.speed / 100.0;
 				telemetry::gps::climb = -(buf.payload.nav_velned.vel_down / 100.0);
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
 				telemetry::stable::climb = telemetry::gps::climb;
