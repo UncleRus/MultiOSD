@@ -113,7 +113,7 @@ void handle_gpspositionsensor ()
 	telemetry::gps::longitude   = obj->Longitude / 10000000.0;
 	telemetry::gps::altitude    = obj->Altitude;
 	telemetry::gps::heading     = round (obj->Heading);
-	telemetry::stable::ground_speed = telemetry::gps::speed = obj->Groundspeed;
+	telemetry::stable::groundspeed = telemetry::gps::speed = obj->Groundspeed;
 	telemetry::gps::state 		= obj->Status;
 	telemetry::gps::satellites 	= obj->Satellites;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)

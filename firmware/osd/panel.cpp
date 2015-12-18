@@ -327,10 +327,10 @@ namespace throttle
 
 }  // namespace throttle
 
-namespace ground_speed
+namespace groundspeed
 {
 
-	STD_PANEL ("GroundSpeed", 7, "\x80%d\x81", (int16_t) (telemetry::stable::ground_speed * 3.6));
+	STD_PANEL ("Groundspeed", 7, "\x80%d\x81", (int16_t) (telemetry::stable::groundspeed * 3.6));
 
 }  // namespace ground_speed
 
@@ -527,6 +527,13 @@ namespace compass
 
 }  // namespace compass
 
+namespace airspeed
+{
+
+	STD_PANEL ("Airspeed", 7, "\x88%d\x81", (int16_t) (telemetry::stable::airspeed * 3.6));
+
+}  // namespace airspeed
+
 }  // namespace panels
 
 namespace panel
@@ -548,7 +555,7 @@ const panel_t panels [] PROGMEM = {
 	declare_panel (gps_lon),
 	declare_panel (horizon),
 	declare_panel (throttle),
-	declare_panel (ground_speed),
+	declare_panel (groundspeed),
 	declare_panel (battery_voltage),
 	declare_panel (battery_current),
 	declare_panel (battery_consumed),
@@ -559,6 +566,7 @@ const panel_t panels [] PROGMEM = {
 	declare_panel (temperature),
 	declare_panel (rssi),
 	declare_panel (compass),
+	declare_panel (airspeed),
 };
 
 const uint8_t count = sizeof (panels) / sizeof (panel_t);
