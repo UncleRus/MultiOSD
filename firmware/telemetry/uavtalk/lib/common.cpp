@@ -86,16 +86,22 @@ void request_object (uint32_t obj_id)
 
 ///////////////////////////////////////////////////////////////////////////
 
-const obj_handler_t * const releases [] PROGMEM = {
-	op150202::handlers,
-	op150502::handlers,
-	lp150900::handlers,
-	tl20151123::handlers,
+const release_t releases [] PROGMEM = {
+	{ op150202::handlers,   op150202::fm::names,   op150202::fm::size },
+	{ op150502::handlers,   op150502::fm::names,   op150502::fm::size },
+	{ lp150900::handlers,   op150502::fm::names,   op150502::fm::size },
+	{ tl20151123::handlers, tl20151123::fm::names, tl20151123::fm::size },
 };
+
+const char *get_fm_name_p (uint8_t fm)
+{
+	const char * const *names = (const char * const *) pgm_read_ptr (&releases [release].fm_names);
+	return fm < pgm_read_byte (&releases [release].fm_count) ? (const char *) pgm_read_ptr (&names [fm]) : NULL;
+}
 
 bool handle ()
 {
-	const obj_handler_t *rel = (const obj_handler_t *) pgm_read_ptr (&releases [release]);
+	const obj_handler_t *rel = (const obj_handler_t *) pgm_read_ptr (&releases [release].handlers);
 	while (true)
 	{
 		uint32_t objid = pgm_read_dword (&rel->objid);
@@ -112,9 +118,9 @@ bool handle ()
 
 void set_release ()
 {
-	if (release >= sizeof (releases) / sizeof (obj_handler_t *))
+	if (release >= sizeof (releases) / sizeof (release_t))
 		release = UAVTALK_DEFAULT_RELEASE;
-	fts_objid = pgm_read_dword (&((const obj_handler_t *) pgm_read_ptr (&releases [release]))->objid);
+	fts_objid = pgm_read_dword (&((const obj_handler_t *) pgm_read_ptr (&releases [release].handlers))->objid);
 }
 
 void update_connection ()

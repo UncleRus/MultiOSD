@@ -29,33 +29,31 @@ namespace op150202
 void handle_flightstatus ()
 {
 	FlightStatus *obj = (FlightStatus *) &buffer.data;
-	bool was_armed = telemetry::status::armed;
-	telemetry::status::armed = obj->Armed == FLIGHTSTATUS_ARMED_ARMED;
-	telemetry::status::flight_mode = obj->FlightMode;
-	telemetry::status::flight_mode_name_p = telemetry::status::flight_mode < sizeof (fm::names) / sizeof (char *)
-		? (const char *) pgm_read_ptr (&fm::names [telemetry::status::flight_mode])
-		: NULL;
+	bool was_armed = status::armed;
+	status::armed = obj->Armed == FLIGHTSTATUS_ARMED_ARMED;
+	status::flight_mode = obj->FlightMode;
+	status::flight_mode_name_p = uavtalk::get_fm_name_p (status::flight_mode);
 	// fix home if armed on CC3D
-	if ((board == UAVTALK_BOARD_CC3D || internal_home_calc) && !was_armed && telemetry::status::armed)
-		telemetry::home::fix ();
+	if ((board == UAVTALK_BOARD_CC3D || internal_home_calc) && !was_armed && status::armed)
+		home::fix ();
 }
 
 void handle_attitudestate ()
 {
 	AttitudeState *obj = (AttitudeState *) &buffer.data;
-	telemetry::attitude::roll  = obj->Roll;
-	telemetry::attitude::pitch = obj->Pitch;
-	telemetry::attitude::yaw   = obj->Yaw;
+	attitude::roll  = obj->Roll;
+	attitude::pitch = obj->Pitch;
+	attitude::yaw   = obj->Yaw;
 }
 
 void handle_barosensor ()
 {
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
 	BaroSensor *obj = (BaroSensor *) &buffer.data;
-	telemetry::barometer::altitude = obj->Altitude;
-	telemetry::barometer::pressure = obj->Pressure;
-	telemetry::environment::temperature = telemetry::barometer::temperature = obj->Temperature;
-	telemetry::stable::update_alt_climb (telemetry::barometer::altitude);
+	barometer::altitude = obj->Altitude;
+	barometer::pressure = obj->Pressure;
+	environment::temperature = barometer::temperature = obj->Temperature;
+	stable::update_alt_climb (barometer::altitude);
 #endif
 }
 
@@ -63,11 +61,11 @@ void handle_flightbatterystate ()
 {
 #if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 	FlightBatteryState *obj = (FlightBatteryState *) &buffer.data;
-	telemetry::battery::voltage = obj->Voltage;
-	telemetry::battery::cells = obj->NbCells;
-	telemetry::battery::update_voltage ();
-	telemetry::battery::current = obj->Current;
-	telemetry::battery::consumed = obj->ConsumedEnergy;
+	battery::voltage = obj->Voltage;
+	battery::cells = obj->NbCells;
+	battery::update_voltage ();
+	battery::current = obj->Current;
+	battery::consumed = obj->ConsumedEnergy;
 #endif
 }
 
@@ -102,53 +100,53 @@ inline uint8_t fts_respond (uint8_t state)
 void handle_flighttelemetrystats ()
 {
 	FlightTelemetryStats *obj = (FlightTelemetryStats *) &buffer.data;
-	telemetry::status::connection = fts_respond (obj->Status);
-	connection_timeout = telemetry::ticks + UAVTALK_CONNECTION_TIMEOUT;
+	status::connection = fts_respond (obj->Status);
+	connection_timeout = ticks + UAVTALK_CONNECTION_TIMEOUT;
 }
 
 void handle_gpspositionsensor ()
 {
 	GPSPositionSensor *obj = (GPSPositionSensor *) &buffer.data;
-	telemetry::gps::latitude    = obj->Latitude / 10000000.0;
-	telemetry::gps::longitude   = obj->Longitude / 10000000.0;
-	telemetry::gps::altitude    = obj->Altitude;
-	telemetry::gps::heading     = round (obj->Heading);
-	telemetry::stable::groundspeed = telemetry::gps::speed = obj->Groundspeed;
-	telemetry::gps::state 		= obj->Status;
-	telemetry::gps::satellites 	= obj->Satellites;
+	gps::latitude   = obj->Latitude / 10000000.0;
+	gps::longitude  = obj->Longitude / 10000000.0;
+	gps::altitude   = obj->Altitude;
+	gps::heading    = round (obj->Heading);
+	stable::groundspeed = gps::speed = obj->Groundspeed;
+	gps::state      = obj->Status;
+	gps::satellites = obj->Satellites;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
 	// let's set heading if we don't have mag
-	if (board == UAVTALK_BOARD_CC3D) telemetry::stable::heading = telemetry::gps::heading;
+	if (board == UAVTALK_BOARD_CC3D) stable::heading = gps::heading;
 #endif
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
 	// update stable altitude if we can't get the baro altitude
-	if (board == UAVTALK_BOARD_CC3D) telemetry::stable::update_alt_climb (telemetry::gps::altitude);
+	if (board == UAVTALK_BOARD_CC3D) stable::update_alt_climb (gps::altitude);
 #endif
 	// calc home distance/direction based on gps
-	if (board == UAVTALK_BOARD_CC3D || internal_home_calc) telemetry::home::update ();
+	if (board == UAVTALK_BOARD_CC3D || internal_home_calc) home::update ();
 }
 
 void handle_gpsvelocitysensor ()
 {
 	GPSVelocitySensor *obj = (GPSVelocitySensor *) &buffer.data;
-	telemetry::gps::climb = -obj->Down;
+	gps::climb = -obj->Down;
 }
 
 void handle_manualcontrolcommand ()
 {
 	ManualControlCommand *obj = (ManualControlCommand *) &buffer.data;
-	telemetry::input::throttle   = (int8_t) (obj->Throttle * 100);
-	telemetry::input::roll       = (int8_t) (obj->Roll * 100);
-	telemetry::input::pitch      = (int8_t) (obj->Pitch * 100);
-	telemetry::input::yaw        = (int8_t) (obj->Yaw * 100);
-	telemetry::input::collective = (int8_t) (obj->Collective * 100);
-	telemetry::input::thrust     = (int8_t) (obj->Thrust * 100);
-	memcpy (telemetry::input::channels, obj->Channel, sizeof (obj->Channel));
-	telemetry::input::connected = obj->Connected;
-	telemetry::input::flight_mode_switch = obj->FlightModeSwitchPosition;
+	input::throttle   = (int8_t) (obj->Throttle * 100);
+	input::roll       = (int8_t) (obj->Roll * 100);
+	input::pitch      = (int8_t) (obj->Pitch * 100);
+	input::yaw        = (int8_t) (obj->Yaw * 100);
+	input::collective = (int8_t) (obj->Collective * 100);
+	input::thrust     = (int8_t) (obj->Thrust * 100);
+	memcpy (input::channels, obj->Channel, sizeof (obj->Channel));
+	input::connected = obj->Connected;
+	input::flight_mode_switch = obj->FlightModeSwitchPosition;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
-	telemetry::messages::rssi_low = !telemetry::input::connected;
-	telemetry::input::rssi = telemetry::input::connected ? 100 : 0;
+	messages::rssi_low = !input::connected;
+	input::rssi = input::connected ? 100 : 0;
 #endif
 }
 
@@ -156,21 +154,21 @@ void handle_positionstate ()
 {
 	if (internal_home_calc) return;
 
-	telemetry::home::state = HOME_STATE_FIXED;
+	home::state = HOME_STATE_FIXED;
 
 	PositionState *obj = (PositionState *) &buffer.data;
-	telemetry::home::distance = sqrt (square (obj->East) + square (obj->North));
+	home::distance = sqrt (square (obj->East) + square (obj->North));
 	int16_t bearing = atan2 (obj->East, obj->North) * 57.295775;
 	if (bearing < 0) bearing += 360;
-	bearing -= telemetry::stable::heading;
+	bearing -= stable::heading;
 	if (bearing < 0) bearing += 360;
-	telemetry::home::direction = bearing;
+	home::direction = bearing;
 }
 
 void handle_systemstats ()
 {
 	SystemStats *obj = (SystemStats *) &buffer.data;
-	telemetry::status::flight_time = obj->FlightTime / 1000;
+	status::flight_time = obj->FlightTime / 1000;
 }
 
 void update_connection ()

@@ -68,42 +68,19 @@ struct message_t
 	uint8_t crc;
 };
 
-namespace fm
-{
-
-	const char man [] PROGMEM = "MANU";
-	const char stab1 [] PROGMEM = "STB1";
-	const char stab2 [] PROGMEM = "STB2";
-	const char stab3 [] PROGMEM = "STB3";
-	const char stab4 [] PROGMEM = "STB4";
-	const char stab5 [] PROGMEM = "STB5";
-	const char stab6 [] PROGMEM = "STB6";
-	const char atune [] PROGMEM = "ATUN";
-	const char pos_hold [] PROGMEM = "PHLD";
-	const char pos_v_fpv [] PROGMEM = "PVAF";
-	const char pos_v_los [] PROGMEM = "PVAL";
-	const char pos_v_nsew [] PROGMEM = "PVAN";
-	const char rtb [] PROGMEM = "RTH ";
-	const char land [] PROGMEM = "LAND";
-	const char plan [] PROGMEM = "PLAN";
-	const char poi [] PROGMEM = "POI ";
-	const char acruise [] PROGMEM = "ACRU";
-	const char atakeoff [] PROGMEM = "ATOF";
-
-	const char * const names [] PROGMEM = {
-		man, stab1, stab2, stab3, stab4, stab5, stab6,
-		atune, pos_hold, pos_v_fpv, pos_v_los, pos_v_nsew,
-		rtb, land, plan, poi, acruise, atakeoff
-	};
-
-}  // namespace fm
-
 struct obj_handler_t
 {
 	typedef void (* callable_t) ();
 
 	uint32_t objid;
 	callable_t handler;
+};
+
+struct release_t
+{
+	const obj_handler_t *handlers;
+	const char * const *fm_names;
+	uint8_t fm_count;
 };
 
 extern uint8_t board;
@@ -119,12 +96,15 @@ uint8_t __attribute__ ((noinline)) get_crc (uint8_t b);
 void send (const header_t &head, uint8_t *data = NULL, uint8_t size = 0);
 void request_object (uint32_t obj_id);
 
+// flight mode name
+const char *get_fm_name_p (uint8_t fm);
 // handle current UAVObject
 bool handle ();
 // timeout, resend GCSTelemetryStats
 void update_connection ();
 // init
 void set_release ();
+
 
 UT_NAMESPACE_CLOSE
 

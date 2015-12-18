@@ -51,6 +51,38 @@ void handle_manualcontrolcommand ();
 void handle_positionstate ();
 void handle_systemstats ();
 
+namespace fm
+{
+
+	const char manu [] PROGMEM = "MANU";  // Manual
+	const char stb1 [] PROGMEM = "STB1";  // Stabilized 1
+	const char stb2 [] PROGMEM = "STB2";  // Stabilized 2
+	const char stb3 [] PROGMEM = "STB3";  // Stabilized 3
+	const char stb4 [] PROGMEM = "STB4";  // Stabilized 4
+	const char stb5 [] PROGMEM = "STB5";  // Stabilized 5
+	const char stb6 [] PROGMEM = "STB6";  // Stabilized 6
+	const char posh [] PROGMEM = "POSH";  // Position Hold
+	const char clck [] PROGMEM = "CLCK";  // Course lock
+	const char roam [] PROGMEM = "ROAM";  // Position Roam
+	const char hlea [] PROGMEM = "HLEA";  // Home Leash
+	const char absp [] PROGMEM = "ABSP";  // Absolute Position
+	const char rtb  [] PROGMEM = "RTB ";  // Return to Base
+	const char land [] PROGMEM = "LAND";  // Land
+	const char plan [] PROGMEM = "PLAN";  // Path Planner
+	const char poi  [] PROGMEM = "POI ";  // Point of Interest
+	const char acru [] PROGMEM = "ACRU";  // Aurocruise
+
+	const char * const names [] PROGMEM = {
+		manu, stb1, stb2, stb3, stb4,
+		stb5, posh, clck, roam, hlea,
+		absp, rtb,  land, plan, poi,
+		acru
+	};
+
+	const uint8_t size = sizeof (names);
+
+}  // namespace fm
+
 const obj_handler_t handlers [] PROGMEM = {
 	{UAVTALK_OP150202_FLIGHTSTATUS_OBJID,         handle_flightstatus},
 	{UAVTALK_OP150202_ATTITUDESTATE_OBJID,        handle_attitudestate},

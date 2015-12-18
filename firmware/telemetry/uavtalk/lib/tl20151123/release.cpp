@@ -26,49 +26,13 @@ UT_NAMESPACE_OPEN
 namespace tl20151123
 {
 
-namespace __fm
-{
-	const char manu [] PROGMEM = "MANU";
-	const char acro [] PROGMEM = "ACRO";
-	const char levl [] PROGMEM = "LEVL";
-	const char mwrt [] PROGMEM = "MWRT";
-	const char horz [] PROGMEM = "HORZ";
-	const char axlk [] PROGMEM = "AXLK";
-	const char virt [] PROGMEM = "VIRT";
-	const char stb1 [] PROGMEM = "STB1";
-	const char stb2 [] PROGMEM = "STB2";
-	const char stb3 [] PROGMEM = "STB3";
-	const char atun [] PROGMEM = "ATUN";
-	const char alth [] PROGMEM = "ALTH";
-	const char posh [] PROGMEM = "POSH";
-	const char rth  [] PROGMEM = "RTH ";
-	const char plan [] PROGMEM = "PLAN";
-	const char tblt [] PROGMEM = "TBLT";
-	const char acrp [] PROGMEM = "ACR+";
-
-	const char * const names [] PROGMEM = {
-		manu, acro, levl, mwrt, horz,
-		axlk, virt, stb1, stb2, stb3,
-		atun, alth, posh, rth,  plan,
-		tblt, acrp
-	};
-
-	const uint8_t size = sizeof (names) / sizeof (char *);
-
-	inline const char *get (uint8_t i)
-	{
-		return i < size ? names [i] : NULL;
-	}
-}
-
-
 void handle_flightstatus ()
 {
 	FlightStatus *obj = (FlightStatus *) &buffer.data;
 	bool was_armed = telemetry::status::armed;
 	telemetry::status::armed = obj->Armed == FLIGHTSTATUS_ARMED_ARMED;
 	telemetry::status::flight_mode = obj->FlightMode;
-	telemetry::status::flight_mode_name_p = __fm::get (telemetry::status::flight_mode);
+	telemetry::status::flight_mode_name_p = uavtalk::get_fm_name_p (telemetry::status::flight_mode);
 
 	if (internal_home_calc && !was_armed && telemetry::status::armed)
 		telemetry::home::fix ();

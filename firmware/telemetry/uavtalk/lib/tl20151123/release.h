@@ -41,6 +41,30 @@ namespace tl20151123
 
 #define UAVTALK_TL20151123 telemetry::modules::uavtalk::tl20151123
 
+namespace fm
+{
+	const char acro [] PROGMEM = "ACRO";
+	const char levl [] PROGMEM = "LEVL";
+	const char mwrt [] PROGMEM = "MWRT";
+	const char horz [] PROGMEM = "HORZ";
+	const char axlk [] PROGMEM = "AXLK";
+	const char virt [] PROGMEM = "VIRT";
+	const char atun [] PROGMEM = "ATUN";
+	const char alth [] PROGMEM = "ALTH";
+	const char rth  [] PROGMEM = "RTH ";
+	const char tblt [] PROGMEM = "TBLT";
+	const char acrp [] PROGMEM = "ACR+";
+
+	const char * const names [] PROGMEM = {
+		UAVTALK_OP150202::fm::manu, acro, levl, mwrt, horz,
+		axlk, virt, UAVTALK_OP150202::fm::stb1, UAVTALK_OP150202::fm::stb2, UAVTALK_OP150202::fm::stb3,
+		atun, alth, UAVTALK_OP150202::fm::posh, rth, UAVTALK_OP150202::fm::plan,
+		tblt, acrp
+	};
+
+	const uint8_t size = sizeof (names) / sizeof (char *);
+}
+
 void update_connection ();
 
 void handle_baroaltitude ();

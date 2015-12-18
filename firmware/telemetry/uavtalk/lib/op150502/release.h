@@ -31,6 +31,23 @@ namespace op150502
 
 #define UAVTALK_OP150502 telemetry::modules::uavtalk::op150502
 
+namespace fm
+{
+
+	const char atof [] PROGMEM = "ATOF";
+
+	const char * const names [] PROGMEM = {
+		UAVTALK_OP150202::fm::manu, UAVTALK_OP150202::fm::stb1, UAVTALK_OP150202::fm::stb2, UAVTALK_OP150202::fm::stb3,
+		UAVTALK_OP150202::fm::stb4, UAVTALK_OP150202::fm::stb5, UAVTALK_OP150202::fm::stb6, UAVTALK_OP150202::fm::posh,
+		UAVTALK_OP150202::fm::clck, UAVTALK_OP150202::fm::roam, UAVTALK_OP150202::fm::hlea, UAVTALK_OP150202::fm::absp,
+		UAVTALK_OP150202::fm::rtb,  UAVTALK_OP150202::fm::land, UAVTALK_OP150202::fm::plan, UAVTALK_OP150202::fm::poi,
+		UAVTALK_OP150202::fm::acru, atof
+	};
+
+	const uint8_t size = sizeof (names);
+
+}  // namespace fm
+
 const obj_handler_t handlers [] PROGMEM = {
 	{UAVTALK_OP150502_FLIGHTSTATUS_OBJID,         UAVTALK_OP150202::handle_flightstatus}, // new obj_id
 	{UAVTALK_OP150202_ATTITUDESTATE_OBJID,        UAVTALK_OP150202::handle_attitudestate},
