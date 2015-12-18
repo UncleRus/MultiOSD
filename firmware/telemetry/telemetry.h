@@ -116,7 +116,7 @@ namespace stable
 	extern float    climb;        // m/s
 	extern float    altitude;     // meters
 	extern float    ground_speed; // m/s
-	extern float    air_speed;    // m/s
+	extern float    airspeed;    // m/s
 	extern uint16_t heading;      // degrees, 0..360
 
 	void update_alt_climb (float altitude);

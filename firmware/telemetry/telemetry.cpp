@@ -159,7 +159,7 @@ namespace stable
 	float climb = 0.0;
 	float altitude = 0.0;
 	float ground_speed = 0.0;
-	float air_speed = 0.0;
+	float airspeed = 0.0;
 	uint16_t heading = 0;
 
 	uint32_t _alt_update_time = 0;
