@@ -74,14 +74,6 @@ void handle_flightstatus ()
 		telemetry::home::fix ();
 }
 
-void handle_attitudeactual ()
-{
-	AttitudeActual *obj = (AttitudeActual *) &buffer.data;
-	telemetry::attitude::roll  = obj->Roll;
-	telemetry::attitude::pitch = obj->Pitch;
-	telemetry::attitude::yaw   = obj->Yaw;
-}
-
 void handle_baroaltitude ()
 {
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
@@ -141,25 +133,8 @@ void handle_flighttelemetrystats ()
 
 void handle_gpsposition ()
 {
-	GPSPosition *obj = (GPSPosition *) &buffer.data;
-	telemetry::gps::latitude    = obj->Latitude / 10000000.0;
-	telemetry::gps::longitude   = obj->Longitude / 10000000.0;
-	telemetry::gps::altitude    = obj->Altitude;
-	telemetry::gps::heading     = round (obj->Heading);
-	telemetry::stable::ground_speed = telemetry::gps::speed = obj->Groundspeed;
-	telemetry::gps::state 		= obj->Status > 0 ? obj->Status - 1 : 0;
-	telemetry::gps::satellites 	= obj->Satellites;
-#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-	// let's set heading if we don't have the mag
-	// FIXME: replace UTXBRD with set of flags
-	if (board == UAVTALK_BOARD_CC3D) telemetry::stable::heading = telemetry::gps::heading;
-#endif
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
-	// update stable altitude if we can't get the baro altitude
-	if (board == UAVTALK_BOARD_CC3D) telemetry::stable::update_alt_climb (telemetry::gps::altitude);
-#endif
-	// calc home distance/direction based on gps
-	if (internal_home_calc) telemetry::home::update ();
+	UAVTALK_OP150202::handle_gpspositionsensor ();
+	if (telemetry::gps::state > 0) telemetry::gps::state --;
 }
 
 void handle_gpsvelocity ()
@@ -184,28 +159,6 @@ void handle_manualcontrolcommand ()
 #endif
 }
 
-// update home distance and direction
-void handle_nedposition ()
-{
-	if (internal_home_calc || telemetry::home::state != HOME_STATE_FIXED) return;
-
-	NEDPosition *obj = (NEDPosition *) &buffer.data;
-	telemetry::home::distance = sqrt (square (obj->East) + square (obj->North));
-	int16_t bearing = atan2 (obj->East, obj->North) * 57.295775;
-	if (bearing < 0) bearing += 360;
-	bearing -= telemetry::stable::heading;
-	if (bearing < 0) bearing += 360;
-	telemetry::home::direction = bearing;
-}
-
-// flight time
-void handle_systemstats ()
-{
-	SystemStats *obj = (SystemStats *) &buffer.data;
-	telemetry::status::flight_time = obj->FlightTime / 1000;
-}
-
-// airspeed
 void handle_airspeedactual ()
 {
 	AirspeedActual *obj = (AirspeedActual *) &buffer.data;

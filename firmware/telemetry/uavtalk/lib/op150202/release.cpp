@@ -154,7 +154,17 @@ void handle_manualcontrolcommand ()
 
 void handle_positionstate ()
 {
-	// TODO : Revo home position, waypoints
+	if (internal_home_calc) return;
+
+	telemetry::home::state = HOME_STATE_FIXED;
+
+	PositionState *obj = (PositionState *) &buffer.data;
+	telemetry::home::distance = sqrt (square (obj->East) + square (obj->North));
+	int16_t bearing = atan2 (obj->East, obj->North) * 57.295775;
+	if (bearing < 0) bearing += 360;
+	bearing -= telemetry::stable::heading;
+	if (bearing < 0) bearing += 360;
+	telemetry::home::direction = bearing;
 }
 
 void handle_systemstats ()

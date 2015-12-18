@@ -17,6 +17,8 @@
 #ifndef TELEMETRY_UAVTALK_LIB_TL20151123_RELEASE_H_
 #define TELEMETRY_UAVTALK_LIB_TL20151123_RELEASE_H_
 
+#include "../op150202/release.h"
+
 #include "../common.h"
 
 #include "attitudeactual.h"
@@ -41,31 +43,27 @@ namespace tl20151123
 
 void update_connection ();
 
-void handle_attitudeactual ();
 void handle_baroaltitude ();
 void handle_flightbatterystate ();
 void handle_flightstatus ();
 void handle_flighttelemetrystats ();
 void handle_gpsposition ();
-void handle_gpsvelocity ();
 void handle_manualcontrolcommand ();
-void handle_nedposition ();
-void handle_systemstats ();
 void handle_airspeedactual ();
 
 const obj_handler_t handlers [] PROGMEM = {
-	{UAVTALK_TL20151123_FLIGHTSTATUS_OBJID, handle_flightstatus},
-	{UAVTALK_TL20151123_ATTITUDEACTUAL_OBJID, handle_attitudeactual},
-	{UAVTALK_TL20151123_BAROALTITUDE_OBJID, handle_baroaltitude},
-	{UAVTALK_TL20151123_FLIGHTBATTERYSTATE_OBJID, handle_flightbatterystate},
+	{UAVTALK_TL20151123_FLIGHTSTATUS_OBJID,         handle_flightstatus},
+	{UAVTALK_TL20151123_ATTITUDEACTUAL_OBJID,       UAVTALK_OP150202::handle_attitudestate},
+	{UAVTALK_TL20151123_BAROALTITUDE_OBJID,         handle_baroaltitude},
+	{UAVTALK_TL20151123_FLIGHTBATTERYSTATE_OBJID,   handle_flightbatterystate},
 	{UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
-	{UAVTALK_TL20151123_GPSPOSITION_OBJID, handle_gpsposition},
-	{UAVTALK_TL20151123_GPSVELOCITY_OBJID, handle_gpsvelocity},
+	{UAVTALK_TL20151123_GPSPOSITION_OBJID,          handle_gpsposition},
+	{UAVTALK_TL20151123_GPSVELOCITY_OBJID,          UAVTALK_OP150202::handle_gpsvelocitysensor},
 	{UAVTALK_TL20151123_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
-	{UAVTALK_TL20151123_NEDPOSITION_OBJID, handle_nedposition},
-	{UAVTALK_TL20151123_SYSTEMSTATS_OBJID, handle_systemstats},
-	{UAVTALK_TL20151123_AIRSPEEDACTUAL_OBJID, handle_airspeedactual},
-	{_UT_TIMEOUT_OBJID, update_connection}
+	{UAVTALK_TL20151123_NEDPOSITION_OBJID,          UAVTALK_OP150202::handle_positionstate},
+	{UAVTALK_TL20151123_SYSTEMSTATS_OBJID,          UAVTALK_OP150202::handle_systemstats},
+	{UAVTALK_TL20151123_AIRSPEEDACTUAL_OBJID,       handle_airspeedactual},
+	{_UT_TIMEOUT_OBJID,                             update_connection}
 };
 
 }  // namespace tl20151123
