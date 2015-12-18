@@ -150,7 +150,7 @@ void handle_gpsposition ()
 	telemetry::gps::state 		= obj->Status > 0 ? obj->Status - 1 : 0;
 	telemetry::gps::satellites 	= obj->Satellites;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-	// let's set heading if we don't have mag
+	// let's set heading if we don't have the mag
 	// FIXME: replace UTXBRD with set of flags
 	if (board == UAVTALK_BOARD_CC3D) telemetry::stable::heading = telemetry::gps::heading;
 #endif
@@ -184,18 +184,28 @@ void handle_manualcontrolcommand ()
 #endif
 }
 
-void handle_homelocation ()
+// update home distance and direction
+void handle_nedposition ()
 {
-	if (internal_home_calc) return;
-	// FIXME: request and handle homelocation
+	if (internal_home_calc || telemetry::home::state != HOME_STATE_FIXED) return;
+
+	NEDPosition *obj = (NEDPosition *) &buffer.data;
+	telemetry::home::distance = sqrt (square (obj->East) + square (obj->North));
+	int16_t bearing = atan2 (obj->East, obj->North) * 57.295775;
+	if (bearing < 0) bearing += 360;
+	bearing -= telemetry::stable::heading;
+	if (bearing < 0) bearing += 360;
+	telemetry::home::direction = bearing;
 }
 
+// flight time
 void handle_systemstats ()
 {
 	SystemStats *obj = (SystemStats *) &buffer.data;
 	telemetry::status::flight_time = obj->FlightTime / 1000;
 }
 
+// airspeed
 void handle_airspeedactual ()
 {
 	AirspeedActual *obj = (AirspeedActual *) &buffer.data;

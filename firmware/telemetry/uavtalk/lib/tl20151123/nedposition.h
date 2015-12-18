@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_TL20151123_GCSTELEMETRYSTATS_H
-#define UAVTALK_TL20151123_GCSTELEMETRYSTATS_H
+#ifndef UAVTALK_TL20151123_NEDPOSITION_H
+#define UAVTALK_TL20151123_NEDPOSITION_H
 
 #include "../common.h"
 
@@ -24,28 +24,17 @@ UT_NAMESPACE_OPEN
 namespace tl20151123
 {
 
-#define UAVTALK_TL20151123_GCSTELEMETRYSTATS_OBJID 0xABC72744
+#define UAVTALK_TL20151123_NEDPOSITION_OBJID 0x1FB15A00
 
-enum GCSTelemetryStatsStatus
+struct NEDPosition
 {
-	GCSTELEMETRYSTATS_STATUS_DISCONNECTED = 0,
-	GCSTELEMETRYSTATS_STATUS_HANDSHAKEREQ = 1,
-	GCSTELEMETRYSTATS_STATUS_HANDSHAKEACK = 2,
-	GCSTELEMETRYSTATS_STATUS_CONNECTED    = 3
-};
-
-struct GCSTelemetryStats
-{
-	float TxDataRate;
-	float RxDataRate;
-	uint32_t TxFailures;
-	uint32_t RxFailures;
-	uint32_t TxRetries;
-	GCSTelemetryStatsStatus Status;
+    float North;
+    float East;
+    float Down;
 };
 
 }  // namespace tl20151123
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_TL20151123_GCSTELEMETRYSTATS_H
+#endif // UAVTALK_TL20151123_NEDPOSITION_H

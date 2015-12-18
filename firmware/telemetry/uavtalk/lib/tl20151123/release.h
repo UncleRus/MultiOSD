@@ -28,7 +28,7 @@
 #include "gpsposition.h"
 #include "gpsvelocity.h"
 #include "manualcontrolcommand.h"
-#include "homelocation.h"
+#include "nedposition.h"
 #include "systemstats.h"
 #include "airspeedactual.h"
 
@@ -49,7 +49,7 @@ void handle_flighttelemetrystats ();
 void handle_gpsposition ();
 void handle_gpsvelocity ();
 void handle_manualcontrolcommand ();
-void handle_homelocation ();
+void handle_nedposition ();
 void handle_systemstats ();
 void handle_airspeedactual ();
 
@@ -62,7 +62,7 @@ const obj_handler_t handlers [] PROGMEM = {
 	{UAVTALK_TL20151123_GPSPOSITION_OBJID, handle_gpsposition},
 	{UAVTALK_TL20151123_GPSVELOCITY_OBJID, handle_gpsvelocity},
 	{UAVTALK_TL20151123_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
-	{UAVTALK_TL20151123_HOMELOCATION_OBJID, handle_homelocation},
+	{UAVTALK_TL20151123_NEDPOSITION_OBJID, handle_nedposition},
 	{UAVTALK_TL20151123_SYSTEMSTATS_OBJID, handle_systemstats},
 	{UAVTALK_TL20151123_AIRSPEEDACTUAL_OBJID, handle_airspeedactual},
 	{_UT_TIMEOUT_OBJID, update_connection}
