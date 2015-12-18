@@ -19,6 +19,7 @@
 #include "op150202/release.h"
 #include "op150502/release.h"
 #include "lp150900/release.h"
+#include "tl20151123/release.h"
 
 UT_NAMESPACE_OPEN
 
@@ -89,6 +90,7 @@ const obj_handler_t * const releases [] PROGMEM = {
 	op150202::handlers,
 	op150502::handlers,
 	lp150900::handlers,
+	tl20151123::handlers,
 };
 
 bool handle ()

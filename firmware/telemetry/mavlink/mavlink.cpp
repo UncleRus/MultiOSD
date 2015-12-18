@@ -463,7 +463,7 @@ bool update ()
 				break;
 			case MAVLINK_MSG_ID_VFR_HUD:
 				telemetry::stable::ground_speed = mavlink_msg_vfr_hud_get_groundspeed (msg);
-				telemetry::stable::air_speed = mavlink_msg_vfr_hud_get_airspeed (msg);
+				telemetry::stable::airspeed = mavlink_msg_vfr_hud_get_airspeed (msg);
 				telemetry::stable::altitude = mavlink_msg_vfr_hud_get_alt (msg);
 				telemetry::stable::climb = mavlink_msg_vfr_hud_get_climb (msg);
 				telemetry::stable::heading = mavlink_msg_vfr_hud_get_heading (msg);

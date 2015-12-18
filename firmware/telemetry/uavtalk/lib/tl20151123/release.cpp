@@ -23,8 +23,44 @@
 
 UT_NAMESPACE_OPEN
 
-namespace op150202
+namespace tl20151123
 {
+
+namespace __fm
+{
+	const char manu [] PROGMEM = "MANU";
+	const char acro [] PROGMEM = "ACRO";
+	const char levl [] PROGMEM = "LEVL";
+	const char mwrt [] PROGMEM = "MWRT";
+	const char horz [] PROGMEM = "HORZ";
+	const char axlk [] PROGMEM = "AXLK";
+	const char virt [] PROGMEM = "VIRT";
+	const char stb1 [] PROGMEM = "STB1";
+	const char stb2 [] PROGMEM = "STB2";
+	const char stb3 [] PROGMEM = "STB3";
+	const char atun [] PROGMEM = "ATUN";
+	const char alth [] PROGMEM = "ALTH";
+	const char posh [] PROGMEM = "POSH";
+	const char rth  [] PROGMEM = "RTH ";
+	const char plan [] PROGMEM = "PLAN";
+	const char tblt [] PROGMEM = "TBLT";
+	const char acrp [] PROGMEM = "ACR+";
+
+	const char * const names [] PROGMEM = {
+		manu, acro, levl, mwrt, horz,
+		axlk, virt, stb1, stb2, stb3,
+		atun, alth, posh, rth,  plan,
+		tblt, acrp
+	};
+
+	const uint8_t size = sizeof (names) / sizeof (char *);
+
+	inline const char *get (uint8_t i)
+	{
+		return i < size ? names [i] : NULL;
+	}
+}
+
 
 void handle_flightstatus ()
 {
@@ -32,26 +68,16 @@ void handle_flightstatus ()
 	bool was_armed = telemetry::status::armed;
 	telemetry::status::armed = obj->Armed == FLIGHTSTATUS_ARMED_ARMED;
 	telemetry::status::flight_mode = obj->FlightMode;
-	telemetry::status::flight_mode_name_p = telemetry::status::flight_mode < sizeof (fm::names) / sizeof (char *)
-		? (const char *) pgm_read_ptr (&fm::names [telemetry::status::flight_mode])
-		: NULL;
-	// fix home if armed on CC3D
-	if ((board == UAVTALK_BOARD_CC3D || internal_home_calc) && !was_armed && telemetry::status::armed)
+	telemetry::status::flight_mode_name_p = __fm::get (telemetry::status::flight_mode);
+
+	if (internal_home_calc && !was_armed && telemetry::status::armed)
 		telemetry::home::fix ();
 }
 
-void handle_attitudestate ()
-{
-	AttitudeState *obj = (AttitudeState *) &buffer.data;
-	telemetry::attitude::roll  = obj->Roll;
-	telemetry::attitude::pitch = obj->Pitch;
-	telemetry::attitude::yaw   = obj->Yaw;
-}
-
-void handle_barosensor ()
+void handle_baroaltitude ()
 {
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
-	BaroSensor *obj = (BaroSensor *) &buffer.data;
+	BaroAltitude *obj = (BaroAltitude *) &buffer.data;
 	telemetry::barometer::altitude = obj->Altitude;
 	telemetry::barometer::pressure = obj->Pressure;
 	telemetry::environment::temperature = telemetry::barometer::temperature = obj->Temperature;
@@ -64,7 +90,6 @@ void handle_flightbatterystate ()
 #if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 	FlightBatteryState *obj = (FlightBatteryState *) &buffer.data;
 	telemetry::battery::voltage = obj->Voltage;
-	telemetry::battery::cells = obj->NbCells;
 	telemetry::battery::update_voltage ();
 	telemetry::battery::current = obj->Current;
 	telemetry::battery::consumed = obj->ConsumedEnergy;
@@ -78,7 +103,7 @@ void send_gcs_telemetry_stats (GCSTelemetryStatsStatus status)
 	data.Status = status;
 	h.msg_type = _UT_TYPE_OBJ_ACK;
 	h.length = UAVTALK_HEADER_LEN + sizeof (GCSTelemetryStats);
-	h.objid = UAVTALK_OP150202_GCSTELEMETRYSTATS_OBJID;
+	h.objid = UAVTALK_TL20151123_GCSTELEMETRYSTATS_OBJID;
 	send (h, (uint8_t *) &data, sizeof (GCSTelemetryStats));
 }
 
@@ -106,31 +131,15 @@ void handle_flighttelemetrystats ()
 	connection_timeout = telemetry::ticks + UAVTALK_CONNECTION_TIMEOUT;
 }
 
-void handle_gpspositionsensor ()
+void handle_gpsposition ()
 {
-	GPSPositionSensor *obj = (GPSPositionSensor *) &buffer.data;
-	telemetry::gps::latitude    = obj->Latitude / 10000000.0;
-	telemetry::gps::longitude   = obj->Longitude / 10000000.0;
-	telemetry::gps::altitude    = obj->Altitude;
-	telemetry::gps::heading     = round (obj->Heading);
-	telemetry::stable::ground_speed = telemetry::gps::speed = obj->Groundspeed;
-	telemetry::gps::state 		= obj->Status;
-	telemetry::gps::satellites 	= obj->Satellites;
-#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-	// let's set heading if we don't have mag
-	if (board == UAVTALK_BOARD_CC3D) telemetry::stable::heading = telemetry::gps::heading;
-#endif
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
-	// update stable altitude if we can't get the baro altitude
-	if (board == UAVTALK_BOARD_CC3D) telemetry::stable::update_alt_climb (telemetry::gps::altitude);
-#endif
-	// calc home distance/direction based on gps
-	if (board == UAVTALK_BOARD_CC3D || internal_home_calc) telemetry::home::update ();
+	UAVTALK_OP150202::handle_gpspositionsensor ();
+	if (telemetry::gps::state > 0) telemetry::gps::state --;
 }
 
-void handle_gpsvelocitysensor ()
+void handle_gpsvelocity ()
 {
-	GPSVelocitySensor *obj = (GPSVelocitySensor *) &buffer.data;
+	GPSVelocity *obj = (GPSVelocity *) &buffer.data;
 	telemetry::gps::climb = -obj->Down;
 }
 
@@ -142,35 +151,18 @@ void handle_manualcontrolcommand ()
 	telemetry::input::pitch      = (int8_t) (obj->Pitch * 100);
 	telemetry::input::yaw        = (int8_t) (obj->Yaw * 100);
 	telemetry::input::collective = (int8_t) (obj->Collective * 100);
-	telemetry::input::thrust     = (int8_t) (obj->Thrust * 100);
 	memcpy (telemetry::input::channels, obj->Channel, sizeof (obj->Channel));
 	telemetry::input::connected = obj->Connected;
-	telemetry::input::flight_mode_switch = obj->FlightModeSwitchPosition;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
 	telemetry::messages::rssi_low = !telemetry::input::connected;
-	telemetry::input::rssi = telemetry::input::connected ? 100 : 0;
+	telemetry::input::rssi = obj->Rssi < 0 ? 0 : (obj->Rssi > 100 ? 100 : obj->Rssi);
 #endif
 }
 
-void handle_positionstate ()
+void handle_airspeedactual ()
 {
-	if (internal_home_calc) return;
-
-	telemetry::home::state = HOME_STATE_FIXED;
-
-	PositionState *obj = (PositionState *) &buffer.data;
-	telemetry::home::distance = sqrt (square (obj->East) + square (obj->North));
-	int16_t bearing = atan2 (obj->East, obj->North) * 57.295775;
-	if (bearing < 0) bearing += 360;
-	bearing -= telemetry::stable::heading;
-	if (bearing < 0) bearing += 360;
-	telemetry::home::direction = bearing;
-}
-
-void handle_systemstats ()
-{
-	SystemStats *obj = (SystemStats *) &buffer.data;
-	telemetry::status::flight_time = obj->FlightTime / 1000;
+	AirspeedActual *obj = (AirspeedActual *) &buffer.data;
+	telemetry::stable::airspeed = obj->CalibratedAirspeed;
 }
 
 void update_connection ()
@@ -178,6 +170,6 @@ void update_connection ()
 	send_gcs_telemetry_stats (GCSTELEMETRYSTATS_STATUS_CONNECTED);
 }
 
-}  // namespace op150202
+}  // namespace tl20151123
 
 UT_NAMESPACE_CLOSE

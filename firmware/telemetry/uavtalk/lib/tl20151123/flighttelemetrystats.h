@@ -1,7 +1,7 @@
 /*
  * This file is part of MultiOSD <https://github.com/UncleRus/MultiOSD>
  *
- * This program is free software: you can redistribute it and/or modify
+ * MultiOSD is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -14,33 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_LP150900_MANUALCONTROLCOMMAND_H
-#define UAVTALK_LP150900_MANUALCONTROLCOMMAND_H
+#ifndef UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_H
+#define UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace lp150900
+namespace tl20151123
 {
 
-#define UAVTALK_LP150900_MANUALCONTROLCOMMAND_OBJID 0xC4107480
+#define UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_OBJID 0x2F7E2902
 
-struct ManualControlCommand
+enum FlightTelemetryStatsStatus
 {
-    float Throttle;
-    float Roll;
-    float Pitch;
-    float Yaw;
-    float Collective;
-    float Thrust;
-    uint16_t Channel [10];
-    bool Connected;
-    uint8_t FlightModeSwitchPosition;
+	FLIGHTTELEMETRYSTATS_STATUS_DISCONNECTED = 0,
+	FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEREQ = 1,
+	FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEACK = 2,
+	FLIGHTTELEMETRYSTATS_STATUS_CONNECTED    = 3
 };
 
-}  // namespace lp150900
+struct FlightTelemetryStats
+{
+	float TxDataRate;
+	float RxDataRate;
+	uint32_t TxFailures;
+	uint32_t RxFailures;
+	uint32_t TxRetries;
+	FlightTelemetryStatsStatus Status;
+};
+
+}  // namespace tl20151123
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_LP150900_MANUALCONTROLCOMMAND_H
+#endif // UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_H

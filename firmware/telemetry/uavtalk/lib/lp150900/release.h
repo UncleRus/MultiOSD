@@ -1,4 +1,6 @@
 /*
+ * This file is part of MultiOSD <https://github.com/UncleRus/MultiOSD>
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -33,17 +35,17 @@ namespace lp150900
 void handle_manualcontrolcommand ();
 
 const obj_handler_t handlers [] PROGMEM = {
-	{UAVTALK_OP150502_FLIGHTSTATUS_OBJID, UAVTALK_OP150202::handle_flightstatus},
-	{UAVTALK_OP150202_ATTITUDESTATE_OBJID, UAVTALK_OP150202::handle_attitudestate},
-	{UAVTALK_OP150202_BAROSENSOR_OBJID, UAVTALK_OP150202::handle_barosensor},
-	{UAVTALK_OP150202_FLIGHTBATTERYSTATE_OBJID, UAVTALK_OP150202::handle_flightbatterystate},
+	{UAVTALK_OP150502_FLIGHTSTATUS_OBJID,         UAVTALK_OP150202::handle_flightstatus},
+	{UAVTALK_OP150202_ATTITUDESTATE_OBJID,        UAVTALK_OP150202::handle_attitudestate},
+	{UAVTALK_OP150202_BAROSENSOR_OBJID,           UAVTALK_OP150202::handle_barosensor},
+	{UAVTALK_OP150202_FLIGHTBATTERYSTATE_OBJID,   UAVTALK_OP150202::handle_flightbatterystate},
 	{UAVTALK_OP150202_FLIGHTTELEMETRYSTATS_OBJID, UAVTALK_OP150202::handle_flighttelemetrystats},
-	{UAVTALK_LP150900_GPSPOSITIONSENSOR_OBJID, UAVTALK_OP150202::handle_gpspositionsensor}, // new obj_id, pretty same struct
-	{UAVTALK_OP150202_GPSVELOCITYSENSOR_OBJID, UAVTALK_OP150202::handle_gpsvelocitysensor},
+	{UAVTALK_LP150900_GPSPOSITIONSENSOR_OBJID,    UAVTALK_OP150202::handle_gpspositionsensor}, // new obj_id, structs are pretty the same
+	{UAVTALK_OP150202_GPSVELOCITYSENSOR_OBJID,    UAVTALK_OP150202::handle_gpsvelocitysensor},
 	{UAVTALK_LP150900_MANUALCONTROLCOMMAND_OBJID, UAVTALK_LP150900::handle_manualcontrolcommand}, // new struct
-	{UAVTALK_OP150202_POSITIONSTATE_OBJID, UAVTALK_OP150202::handle_positionstate},
-	{UAVTALK_OP150202_SYSTEMSTATS_OBJID, UAVTALK_OP150202::handle_systemstats},
-	{_UT_TIMEOUT_OBJID, UAVTALK_OP150202::update_connection}
+	{UAVTALK_OP150202_POSITIONSTATE_OBJID,        UAVTALK_OP150202::handle_positionstate},
+	{UAVTALK_OP150202_SYSTEMSTATS_OBJID,          UAVTALK_OP150202::handle_systemstats},
+	{_UT_TIMEOUT_OBJID,                           UAVTALK_OP150202::update_connection}
 };
 
 }  // namespace lp150900

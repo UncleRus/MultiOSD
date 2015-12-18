@@ -52,17 +52,17 @@ void handle_positionstate ();
 void handle_systemstats ();
 
 const obj_handler_t handlers [] PROGMEM = {
-	{UAVTALK_OP150202_FLIGHTSTATUS_OBJID, handle_flightstatus},
-	{UAVTALK_OP150202_ATTITUDESTATE_OBJID, handle_attitudestate},
-	{UAVTALK_OP150202_BAROSENSOR_OBJID, handle_barosensor},
-	{UAVTALK_OP150202_FLIGHTBATTERYSTATE_OBJID, handle_flightbatterystate},
+	{UAVTALK_OP150202_FLIGHTSTATUS_OBJID,         handle_flightstatus},
+	{UAVTALK_OP150202_ATTITUDESTATE_OBJID,        handle_attitudestate},
+	{UAVTALK_OP150202_BAROSENSOR_OBJID,           handle_barosensor},
+	{UAVTALK_OP150202_FLIGHTBATTERYSTATE_OBJID,   handle_flightbatterystate},
 	{UAVTALK_OP150202_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
-	{UAVTALK_OP150202_GPSPOSITIONSENSOR_OBJID, handle_gpspositionsensor},
-	{UAVTALK_OP150202_GPSVELOCITYSENSOR_OBJID, handle_gpsvelocitysensor},
+	{UAVTALK_OP150202_GPSPOSITIONSENSOR_OBJID,    handle_gpspositionsensor},
+	{UAVTALK_OP150202_GPSVELOCITYSENSOR_OBJID,    handle_gpsvelocitysensor},
 	{UAVTALK_OP150202_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
-	{UAVTALK_OP150202_POSITIONSTATE_OBJID, handle_positionstate},
-	{UAVTALK_OP150202_SYSTEMSTATS_OBJID, handle_systemstats},
-	{_UT_TIMEOUT_OBJID, update_connection}
+	{UAVTALK_OP150202_POSITIONSTATE_OBJID,        handle_positionstate},
+	{UAVTALK_OP150202_SYSTEMSTATS_OBJID,          handle_systemstats},
+	{_UT_TIMEOUT_OBJID,                           update_connection}
 };
 
 }  // namespace op150202
