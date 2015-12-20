@@ -1,83 +1,77 @@
-MultiOSD
-========
+# MultiOSD
 
-Yet another MinimOSD firmware with configurable screens.
+Yet another MinimOSD firmware with configurable screens layout.
 
 ![Screenshot](doc/source/img/screenshot.png)
 
-Capabilities:
+* switching between screens
+* configuration console
+* no image noise
+* ADC RSSI and battery stats - useful with simple FC, such as CC3D
 
-   * switching between screens
-   * configuration console
-   * no image snow
-   * ADC RSSI and battery stats - useful with simple FC, such as CC3D
-   * "standalone" mode - u-blox GPS module instead of FC
+## Supported flight controllers and software
 
+### UAVTalk module
 
-Supported flight controllers and software
------------------------------------------
-
-* CC, CC3D/CC3D Atom (tested), Revoluition (tested).
-  
-  Supported FC firmware:
-  
+* All OpenPilot family flight controllers (CopterControl, CC3D/CC3D Atom,
+  Revoluition, Revoluition Nano):
   * OpenPilot 15.02.02 (latest CC/CC3D release)
   * OpenPilot 15.05.02 (latest Revolution release)
   * LibrePilot 15.09 (http://librepilot.org)
-  * TauLabs 20151123 (http://taulabs.org)
-  
-* Many of the MAVLink boards:
-  
-   * APM 2.x (tested)
-   * Pixhawk PX4
-   * Paparazzi
-   * Generic MAVLink boards
+* All TauLabs 20151123 (http://taulabs.org) boards
 
-* u-blox GPS modules - alpha!
+### MAVLink module  
 
-**Testers are welcomed!**
+* APM 2.xx (ArduCopter, ArduPilot)
+* Pixhawk PX4 (ArduCopter, ArduPilot)
+* Paparazzi
+* Generic MAVLink boards
 
-Available indicators
---------------------
+### UBX module
 
-- Altitude
-- Climb rate
-- Flight mode
-- Armed indicator
-- Connected indicator
-- Flight time (time since FC boot actually)
-- Roll angle
-- Pitch angle
-- GPS state
-- GPS Latitude
-- GPS Longitude
-- Artifical horizon
-- Throttle
-- Groundspeed
-- Battery voltage
-- Battery current
-- Battery consumed
-- RSSI flag
-- Distance to home
-- Direction to home
-- Callsign
-- Temperature
-- RSSI level
-- Compass
-- Airspeed
+* u-blox GPS modules - *experimental*
+
+**Any help would be appreciated**
+
+## Available indicators
+
+* Altitude
+* Climb rate
+* Flight mode
+* Armed indicator
+* Connected indicator
+* Flight time (time since FC boot actually)
+* Roll angle
+* Pitch angle
+* GPS state
+* GPS Latitude
+* GPS Longitude
+* Artifical horizon
+* Throttle
+* Groundspeed
+* Battery voltage
+* Battery current
+* Battery consumed
+* RSSI flag
+* Distance to home
+* Direction to home
+* Callsign
+* Temperature
+* RSSI level
+* Compass
+* Airspeed
 
 More to come.
 
-Build and install
------------------
+## Build and install
 
 [MultiOSD Building](doc/source/build.rst)
 
-Known bugs and problems
------------------------
+## Known bugs and problems
 
 * No configuration software (https://github.com/UncleRus/MultiConf - 
   currently in development).
+  
   But you can use [the serial console](doc/source/lowlevel/console.rst)
   to change [options](doc/source/lowlevel/options.rst) and screens layout.
 * No autoconfig for UBX
