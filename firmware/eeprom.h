@@ -23,6 +23,7 @@
 #define _eeprom_float(ADDR) ((float *)    (ADDR))
 #define _eeprom_str(ADDR)   ((char *)     (ADDR))
 
+// EEPROM sections offsets
 #define ADC_EEPROM_OFFSET            0x05
 #define MAX7456_EEPROM_OFFSET        0x0a
 #define ADC_BATTERY_EEPROM_OFFSET    0x0c

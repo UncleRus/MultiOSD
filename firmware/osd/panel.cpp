@@ -118,7 +118,7 @@ namespace panels
 namespace alt
 {
 
-	STD_PANEL ("StableAlt", 8, "\x85%d\x8d", (int16_t) telemetry::stable::altitude);
+	STD_PANEL ("StableAlt", 8, "\x85%d\x8d", round (telemetry::stable::altitude));
 
 }  // namespace alt
 
@@ -298,7 +298,7 @@ namespace horizon
 		for (uint8_t col = 1; col <= _PAN_HORZ_INT_WIDTH; col ++)
 		{
 			// center X point at middle of each column
-			int16_t middle = col * _PAN_HORZ_INT_WIDTH - (_PAN_HORZ_INT_WIDTH * _PAN_HORZ_INT_WIDTH / 2) - _PAN_HORZ_INT_WIDTH / 2;
+			float middle = col * _PAN_HORZ_INT_WIDTH - (_PAN_HORZ_INT_WIDTH * _PAN_HORZ_INT_WIDTH / 2) - _PAN_HORZ_INT_WIDTH / 2;
 			// calculating hit point on Y plus offset to eliminate negative values
 			int8_t hit = roll * middle + pitch_line + _PAN_HORZ_LINES;
 			if (hit > 0 && hit < _PAN_HORZ_TOTAL_LINES)

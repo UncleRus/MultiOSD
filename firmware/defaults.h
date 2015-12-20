@@ -17,7 +17,11 @@
 #ifndef DEFAULTS_H_
 #define DEFAULTS_H_
 
-// This settings will be used only in Eclipse
+// This settings used only in Eclipse
 #define TELEMETRY_MODULES_UAVTALK
+#define TELEMETRY_MODULES_ADC_BATTERY
+#define TELEMETRY_MODULES_ADC_RSSI
+//#define TELEMETRY_MODULES_MAVLINK
+//#define TELEMETRY_MODULES_UBX
 
 #endif /* DEFAULTS_H_ */

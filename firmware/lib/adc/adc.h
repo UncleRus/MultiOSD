@@ -17,8 +17,6 @@
 #ifndef LIB_ADC_ADC_H_
 #define LIB_ADC_ADC_H_
 
-#define ADC_MODULE
-
 #include <stdint.h>
 
 namespace adc

@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_150202_BAROSENSOR_H
-#define UAVTALK_150202_BAROSENSOR_H
+#ifndef UAVTALK_OP150202_BAROSENSOR_H
+#define UAVTALK_OP150202_BAROSENSOR_H
 
 #include "../common.h"
 
@@ -37,4 +37,4 @@ struct BaroSensor
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_150202_BAROSENSOR_H
+#endif // UAVTALK_OP150202_BAROSENSOR_H

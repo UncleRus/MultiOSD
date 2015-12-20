@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_OP150202_GPSVELOCITYSENSOR_H
-#define UAVTALK_OP150202_GPSVELOCITYSENSOR_H
+#ifndef UAVTALK_OP150202_TAKEOFFLOCATION_H
+#define UAVTALK_OP150202_TAKEOFFLOCATION_H
 
 #include "../common.h"
 
@@ -24,17 +24,25 @@ UT_NAMESPACE_OPEN
 namespace op150202
 {
 
-#define UAVTALK_OP150202_GPSVELOCITYSENSOR_OBJID 0xBC57454
+#define UAVTALK_OP150202_TAKEOFFLOCATION_OBJID 0xD292FDCC
 
-struct GPSVelocitySensor
+enum TakeOffLocationMode {
+    TAKEOFFLOCATION_MODE_ARMINGLOCATION      = 0,
+    TAKEOFFLOCATION_MODE_FIRSTARMINGLOCATION = 1,
+    TAKEOFFLOCATION_MODE_PRESET              = 2
+};
+
+struct TakeOffLocation
 {
     float North;
     float East;
     float Down;
+    TakeOffLocationMode Mode;
+    bool Status;
 };
 
 }  // namespace op150202
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_OP150202_GPSVELOCITYSENSOR_H
+#endif // UAVTALK_OP150202_POSITIONSTATE_H

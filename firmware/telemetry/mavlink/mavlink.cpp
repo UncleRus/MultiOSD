@@ -50,17 +50,17 @@ namespace settings
 
 const char __opt_mlibl [] PROGMEM = "MLIBL";
 const char __opt_mlrlt [] PROGMEM = "MLRLT";
-const char __opt_mler [] PROGMEM = "MLER";
+const char __opt_mler  [] PROGMEM = "MLER";
 const char __opt_mlerc [] PROGMEM = "MLERC";
 const char __opt_mlert [] PROGMEM = "MLERT";
-const char __opt_mlbr [] PROGMEM = "MLBR";
+const char __opt_mlbr  [] PROGMEM = "MLBR";
 
 const ::settings::option_t __settings [] PROGMEM = {
-	declare_uint8_option (__opt_mlbr, EEPROM_ADDR_BAUDRATE),
-	declare_uint8_option (__opt_mlibl, EEPROM_ADDR_INTERNAL_BATTERY_LEVEL),
-	declare_uint8_option (__opt_mlrlt, EEPROM_ADDR_RSSI_LOW_THRESHOLD),
-	declare_uint8_option (__opt_mler, EEPROM_ADDR_EMULATE_RSSI),
-	declare_uint8_option (__opt_mlerc, EEPROM_ADDR_EMULATE_RSSI_CHANNEL),
+	declare_uint8_option  (__opt_mlbr,  EEPROM_ADDR_BAUDRATE),
+	declare_uint8_option  (__opt_mlibl, EEPROM_ADDR_INTERNAL_BATTERY_LEVEL),
+	declare_uint8_option  (__opt_mlrlt, EEPROM_ADDR_RSSI_LOW_THRESHOLD),
+	declare_uint8_option  (__opt_mler,  EEPROM_ADDR_EMULATE_RSSI),
+	declare_uint8_option  (__opt_mlerc, EEPROM_ADDR_EMULATE_RSSI_CHANNEL),
 	declare_uint16_option (__opt_mlert, EEPROM_ADDR_EMULATE_RSSI_THRESHOLD),
 };
 
@@ -424,26 +424,26 @@ bool update ()
 				break;
 #ifndef TELEMETRY_MODULES_ADC_BATTERY
 			case MAVLINK_MSG_ID_SYS_STATUS:
-				{
-					uint16_t interval = telemetry::ticks - _last_battery_update;
-					_last_battery_update += interval;
+			{
+				uint16_t interval = telemetry::ticks - _last_battery_update;
+				_last_battery_update += interval;
 
-					telemetry::battery::voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
-					if (!internal_battery_level)
-					{
-						telemetry::battery::level = mavlink_msg_sys_status_get_battery_remaining (msg);
-						if (telemetry::battery::level == 0xff) // -1 (0xff) means "unknown"
-							telemetry::battery::level = 0;
-					}
-					else
-						telemetry::battery::update_voltage ();
-					int16_t current = mavlink_msg_sys_status_get_current_battery (msg);
-					if (current >= 0)
-					{
-						telemetry::battery::current = current / 100.0;
-						telemetry::battery::update_consumed (interval);
-					}
+				telemetry::battery::voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
+				if (!internal_battery_level)
+				{
+					telemetry::battery::level = mavlink_msg_sys_status_get_battery_remaining (msg);
+					if (telemetry::battery::level == 0xff) // -1 (0xff) means "unknown"
+						telemetry::battery::level = 0;
 				}
+				else
+					telemetry::battery::update_voltage ();
+				int16_t current = mavlink_msg_sys_status_get_current_battery (msg);
+				if (current >= 0)
+				{
+					telemetry::battery::current = current / 100.0;
+					telemetry::battery::update_consumed (interval);
+				}
+			}
 				break;
 #endif
 			case MAVLINK_MSG_ID_ATTITUDE:
@@ -452,15 +452,18 @@ bool update ()
 				telemetry::attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
 				break;
 			case MAVLINK_MSG_ID_GPS_RAW_INT:
+			{
 				telemetry::gps::state = mavlink_msg_gps_raw_int_get_fix_type (msg);
 				telemetry::gps::satellites = mavlink_msg_gps_raw_int_get_satellites_visible (msg);
 				telemetry::gps::latitude = mavlink_msg_gps_raw_int_get_lat (msg) / 10000000.0;
 				telemetry::gps::longitude = mavlink_msg_gps_raw_int_get_lon (msg) / 10000000.0;
 				telemetry::gps::altitude = mavlink_msg_gps_raw_int_get_alt (msg) / 1000.0;
-				telemetry::gps::speed = mavlink_msg_gps_raw_int_get_vel (msg) / 100.0;
+				uint16_t gs = mavlink_msg_gps_raw_int_get_vel (msg);
+				telemetry::gps::speed = gs < UINT16_MAX ? gs / 100.0 : 0;
 				// FIXME: FC home
 				telemetry::home::update ();
 				break;
+			}
 			case MAVLINK_MSG_ID_VFR_HUD:
 				telemetry::stable::groundspeed = mavlink_msg_vfr_hud_get_groundspeed (msg);
 				telemetry::stable::airspeed = mavlink_msg_vfr_hud_get_airspeed (msg);

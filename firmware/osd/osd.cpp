@@ -36,16 +36,16 @@ namespace settings
 #define EEPROM_ADDR_CHANNEL_MIN        _eeprom_word (OSD_EEPROM_OFFSET + 3)
 #define EEPROM_ADDR_CHANNEL_MAX        _eeprom_word (OSD_EEPROM_OFFSET + 5)
 
-const char __opt_switch [] PROGMEM = "SWITCH";
-const char __opt_swch [] PROGMEM = "SWCH";
+const char __opt_switch  [] PROGMEM = "SWITCH";
+const char __opt_swch    [] PROGMEM = "SWCH";
 const char __opt_screens [] PROGMEM = "SCREENS";
 const char __opt_swchmin [] PROGMEM = "SWCHMIN";
 const char __opt_swchmax [] PROGMEM = "SWCHMAX";
 
 const ::settings::option_t __settings [] PROGMEM = {
-	declare_uint8_option (__opt_switch, EEPROM_ADDR_SWITCH),
-	declare_uint8_option (__opt_swch, EEPROM_ADDR_SWITCH_RAW_CHANNEL),
-	declare_uint8_option (__opt_screens, EEPROM_ADDR_SCREENS),
+	declare_uint8_option  (__opt_switch,  EEPROM_ADDR_SWITCH),
+	declare_uint8_option  (__opt_swch,    EEPROM_ADDR_SWITCH_RAW_CHANNEL),
+	declare_uint8_option  (__opt_screens, EEPROM_ADDR_SCREENS),
 	declare_uint16_option (__opt_swchmin, EEPROM_ADDR_CHANNEL_MIN),
 	declare_uint16_option (__opt_swchmax, EEPROM_ADDR_CHANNEL_MAX),
 };

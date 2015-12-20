@@ -18,18 +18,18 @@
 #include <util/delay.h>
 #include <stdlib.h>
 #include <avr/wdt.h>
-#include "config.h"
-#include "lib/console/console.h"
-#include "lib/uart/uart.h"
-#include "lib/max7456/max7456.h"
-#include "settings.h"
-#include "osd/panel.h"
-#include "osd/screen.h"
-#include "osd/osd.h"
-#include "telemetry/telemetry.h"
+#include "../config.h"
+#include "../lib/uart/uart.h"
+#include "console.h"
+#include "../lib/max7456/max7456.h"
+#include "../settings.h"
+#include "../osd/panel.h"
+#include "../osd/screen.h"
+#include "../osd/osd.h"
+#include "../telemetry/telemetry.h"
 
-#ifdef ADC_MODULE
-#	include "lib/adc/adc.h"
+#if defined (ADC_MODULE)
+#	include "../lib/adc/adc.h"
 #endif
 
 namespace console
@@ -151,62 +151,6 @@ namespace reset
 
 }  // namespace reset
 
-namespace eeprom
-{
-
-	const char command [] PROGMEM = "eeprom";
-	const char help [] PROGMEM = "Read/write EEPROM";
-
-	void dump ()
-	{
-		for (uint8_t row = 0; row < EEPROM_SIZE / 16; row ++)
-		{
-			fprintf_P (&CONSOLE_UART::stream, PSTR ("%04x: "), row << 4);
-			for (uint8_t byte = 0; byte < 16; byte ++)
-				fprintf_P (&CONSOLE_UART::stream, PSTR ("%02x "), eeprom_read_byte ((uint8_t *) ((row << 4) | byte)));
-			console::eol ();
-		}
-	}
-
-	void read ()
-	{
-		for (uint16_t addr = 0; addr < EEPROM_SIZE; addr ++)
-			CONSOLE_UART::send (eeprom_read_byte ((uint8_t *) addr));
-	}
-
-	void write ()
-	{
-		for (uint16_t addr = 0; addr < EEPROM_SIZE; addr ++)
-			eeprom_update_byte ((uint8_t *) addr, console::read ());
-	}
-
-	void exec ()
-	{
-		const char *arg = console::argument (1);
-		if (arg)
-		{
-			switch (*arg)
-			{
-				case 'd':
-				case 'D':
-					dump ();
-					return;
-				case 'r':
-				case 'R':
-					read ();
-					return;
-				case 'w':
-				case 'W':
-					write ();
-					return;
-			}
-		}
-		CONSOLE_UART::send_string_p (PSTR ("Args: d - dump, r - read, w - write"));
-	}
-
-}  // namespace eeprom
-
-
 namespace opt
 {
 
@@ -215,15 +159,15 @@ namespace opt
 
 	const char __unknown [] PROGMEM = "ERR: Unknown option";
 
-	const char __uint [] PROGMEM = "%u";
+	const char __uint  [] PROGMEM = "%u";
 	const char __float [] PROGMEM = "%0.4f";
 
-	const char __t_bool [] PROGMEM = "bool";
-	const char __t_byte [] PROGMEM = "byte";
-	const char __t_word [] PROGMEM = "word";
+	const char __t_bool  [] PROGMEM = "bool";
+	const char __t_byte  [] PROGMEM = "byte";
+	const char __t_word  [] PROGMEM = "word";
 	const char __t_dword [] PROGMEM = "dword";
 	const char __t_float [] PROGMEM = "float";
-	const char __t_str [] PROGMEM = "str";
+	const char __t_str   [] PROGMEM = "str";
 
 	const char * const types [] PROGMEM = {
 		__t_bool, __t_byte, __t_word, __t_dword, __t_float, __t_str
@@ -238,11 +182,9 @@ namespace opt
 		}
 
 		const char *name_p = (const char *) pgm_read_ptr (&option->name_p);
-		void *addr = pgm_read_ptr (&option->addr);
 		uint8_t type = pgm_read_byte (&option->type);
-		uint8_t size = pgm_read_byte (&option->size);
 
-		fprintf_P (&CONSOLE_UART::stream, PSTR ("%03p\t(%S:%u) \t%S\t= "), addr, (const char *) pgm_read_ptr (&types [type]), size, name_p);
+		fprintf_P (&CONSOLE_UART::stream, PSTR ("%S\t%S\t= "), (const char *) pgm_read_ptr (&types [type]), name_p);
 
 		char buf [16];
 
@@ -407,7 +349,7 @@ namespace screen
 
 		if (panel >= osd::panel::count)
 		{
-			print_err_p (PSTR ("Invalid panel"));
+			print_err_p (PSTR ("Invalid panel id"));
 			return false;
 		}
 
@@ -629,7 +571,7 @@ namespace info
 
 	void exec ()
 	{
-		fprintf_P (&CONSOLE_UART::stream, PSTR ("VERSION: %04u\r\n"), VERSION);
+		fprintf_P (&CONSOLE_UART::stream, PSTR ("VERSION: %u.%u\r\n"), VERSION >> 8, VERSION);
 		CONSOLE_UART::send_string_p (PSTR ("MODULES: "));
 		for (uint8_t i = 0; i < telemetry::modules::count; i ++)
 		{
@@ -640,7 +582,7 @@ namespace info
 		CONSOLE_UART::send_string_p (PSTR ("PANELS:\r\n"));
 		for (uint8_t i = 0; i < osd::panel::count; i ++)
 		{
-			fprintf_P (&CONSOLE_UART::stream, PSTR ("%03u: "), i);
+			fprintf_P (&CONSOLE_UART::stream, PSTR ("  %u\t"), i);
 			CONSOLE_UART::send_string_p (osd::panel::name_p (i));
 			console::eol ();
 		}
@@ -696,7 +638,7 @@ namespace reboot
 
 }  // namespace reboot
 
-#ifdef ADC_MODULE
+#if defined (ADC_MODULE)
 namespace adc
 {
 
@@ -714,7 +656,7 @@ namespace adc
 		uint16_t raw = ::adc::read (ch);
 		float value = raw / 1024.0 * ::adc::settings::ref_voltage;
 
-		fprintf_P (&CONSOLE_UART::stream, PSTR ("ADC %u: %.4f (%u)" CONSOLE_EOL), ch, value, raw);
+		fprintf_P (&CONSOLE_UART::stream, PSTR ("ADC %u\t%.4f (%u)" CONSOLE_EOL), ch, value, raw);
 	}
 
 	void exec ()
@@ -744,10 +686,9 @@ const command_t values [] PROGMEM = {
 	declare_cmd (screen),
 	declare_cmd (reset),
 	declare_cmd (font),
-#ifdef ADC_MODULE
+#if defined (ADC_MODULE)
 	declare_cmd (adc),
 #endif
-	declare_cmd (eeprom),
 	declare_cmd (exit),
 	declare_cmd (reboot),
 };

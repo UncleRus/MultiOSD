@@ -226,6 +226,9 @@ bool update ()
 				{
 					switch (buf.payload.nav_sol.fix_type)
 					{
+						case f_no_fix:
+							telemetry::gps::state = GPS_STATE_NO_FIX;
+							break;
 						case f_2d:
 							telemetry::gps::state = GPS_STATE_2D;
 							telemetry::status::armed = true;

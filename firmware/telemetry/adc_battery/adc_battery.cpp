@@ -43,20 +43,20 @@ namespace settings
 #define EEPROM_ADDR_VOLTAGE_CHANNEL		_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET + 11)
 #define EEPROM_ADDR_CURRENT_CHANNEL		_eeprom_byte (ADC_BATTERY_EEPROM_OFFSET + 12)
 
-const char __opt_abcs [] PROGMEM = "ABCS";
+const char __opt_abcs   [] PROGMEM = "ABCS";
 const char __opt_abvmul [] PROGMEM = "ABVMUL";
 const char __opt_abcmul [] PROGMEM = "ABCMUL";
-const char __opt_abui [] PROGMEM = "ABUI";
-const char __opt_abvch [] PROGMEM = "ABVCH";
-const char __opt_abcch [] PROGMEM = "ABCCH";
+const char __opt_abui   [] PROGMEM = "ABUI";
+const char __opt_abvch  [] PROGMEM = "ABVCH";
+const char __opt_abcch  [] PROGMEM = "ABCCH";
 
 const ::settings::option_t __settings [] PROGMEM = {
-	declare_bool_option (__opt_abcs, EEPROM_ADDR_CURRENT_SENSOR),
-	declare_float_option (__opt_abvmul, EEPROM_ADDR_VOLTAGE_MULTIPLIER),
-	declare_float_option (__opt_abcmul, EEPROM_ADDR_CURRENT_MULTIPLIER),
-	declare_uint16_option (__opt_abui, EEPROM_ADDR_UPDATE_INTERVAL),
-	declare_uint8_option (__opt_abvch, EEPROM_ADDR_VOLTAGE_CHANNEL),
-	declare_uint8_option (__opt_abcch, EEPROM_ADDR_CURRENT_CHANNEL),
+	declare_bool_option   (__opt_abcs,   EEPROM_ADDR_CURRENT_SENSOR),
+	declare_float_option  (__opt_abvmul, EEPROM_ADDR_VOLTAGE_MULTIPLIER),
+	declare_float_option  (__opt_abcmul, EEPROM_ADDR_CURRENT_MULTIPLIER),
+	declare_uint16_option (__opt_abui,   EEPROM_ADDR_UPDATE_INTERVAL),
+	declare_uint8_option  (__opt_abvch,  EEPROM_ADDR_VOLTAGE_CHANNEL),
+	declare_uint8_option  (__opt_abcch,  EEPROM_ADDR_CURRENT_CHANNEL),
 };
 
 void init ()

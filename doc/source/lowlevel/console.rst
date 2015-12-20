@@ -17,7 +17,7 @@ or Prolific pl2303).
 
 ::
 
-   MultiOSD v.0010
+   MultiOSD v0.12
    osd#
    
 8. Type ``help`` to see commands.
@@ -35,13 +35,13 @@ Provides information about commands.
 ::
 
    osd# help
-   font - Upload and download mcm-file
-   reset - Reset settings to defaults
-   eeprom - Read/write EEPROM
+   help - Commands list
+   info - Firmware version, modules, panels
    opt - Read/write OSD options
    scr - View/edit screens layout
-   info - Firmware version, modules, panels
-   help - Commands list
+   reset - Reset settings to defaults
+   font - Upload and download mcm-file
+   adc - Read ADC values
    exit - Exit console
    reboot - Reboot OSD
 
@@ -369,42 +369,33 @@ font d
 
 Download current MAX7456 font as MCM-file.
 
-eeprom
-^^^^^^
+adc
+^^^
 
-Upload and download EEPROM image.
+Read ADC values.
 
-eeprom r
-""""""""
-
-Download EEPROM contents is image.
-
-eeprom w
-""""""""
-
-Upload EEPROM-image (1024 bytes)
-
-eeprom d
-""""""""
-
-Dump EEPROM contents to console.
+Uasge: ``adc [<channel>]``
+   - ``channel`` - ADC channel numer, 0..15
 
 *Example*
 
 ::
 
-   osd# eeprom d
-   0000: 52 55 0a 00 00 03 cd cc 8c 3f 00 00 00 00 00 05
-   0010: 00 00 3f 05 3f 01 14 ae 2f 41 54 74 91 41 c8 00
-   0020: 06 07 3f 05 3f 05 3f 05 01 c8 00 0a 00 00 a0 41
-   0030: 01 0a 00 02 98 03 3f 05 3f 05 3f 05 3f 05 3f 05
-   0040: cd cc 4c 40 cd cc 6c 40 66 66 86 40 00 00 60 40
-   0050: 2d 2d 2d 2d 2d 00 3f 05 3f 05 3f 05 3f 05 3f 05
-   ...
-   03b0: 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04
-   03c0: 00 00 00 00 00 04 00 04 00 f8 fe ff 00 00 04 04
-   03d0: 20 00 06 04 00 00 00 04 04 04 04 04 04 04 04 04
-   03e0: 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04
-   03f0: 04 04 04 04 04 04 04 04 00 00 00 00 00 00 00 00
-
+   osd# adc
+   ADC 0   0.4877 (454)
+   ADC 1   0.7391 (688)
+   ADC 2   0.9346 (870)
+   ADC 3   1.0581 (985)
+   ADC 4   1.0989 (1023)
+   ADC 5   1.0989 (1023)
+   ADC 6   1.0989 (1023)
+   ADC 7   1.0989 (1023)
+   ADC 8   0.3803 (354)
+   ADC 9   0.0021 (2)
+   ADC 10  0.8594 (800)
+   ADC 11  0.0000 (0)
+   ADC 12  0.8551 (796)
+   ADC 13  0.0000 (0)
+   ADC 14  0.8583 (799)
+   ADC 15  0.0000 (0)
 

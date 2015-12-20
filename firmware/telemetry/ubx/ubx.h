@@ -17,7 +17,9 @@
 #ifndef TELEMETRY_UBX_UBX_H_
 #define TELEMETRY_UBX_UBX_H_
 
-#include <avr/pgmspace.h>
+#define MAIN_MODULE
+
+#include "../../lib/pgmspace.h"
 
 namespace telemetry
 {

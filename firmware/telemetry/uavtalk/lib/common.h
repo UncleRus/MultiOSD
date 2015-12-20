@@ -21,9 +21,6 @@
 #include "../../../lib/pgmspace.h"
 #include "../../../lib/uart/uart.h"
 
-#define UAVTALK_BOARD_CC3D 0
-#define UAVTALK_BOARD_REVO 1
-
 #define UAVTALK_RELEASE_OP150202   0
 #define UAVTALK_RELEASE_OP150502   1
 #define UAVTALK_RELEASE_LP150900   2
@@ -83,8 +80,13 @@ struct release_t
 	uint8_t fm_count;
 };
 
-extern uint8_t board;
 extern bool internal_home_calc;
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
+extern bool baro_enabled;
+#endif
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+extern bool mag_enabled;
+#endif
 extern uint8_t release;
 extern uint32_t telemetry_request_timeout;
 extern uint32_t connection_timeout;

@@ -33,7 +33,7 @@ namespace settings
 #define EEPROM_ADDR_NOM_CELL_VOLTAGE _eeprom_float (TELEMETRY_EEPROM_OFFSET + 4)
 #define EEPROM_ADDR_MAX_CELL_VOLTAGE _eeprom_float (TELEMETRY_EEPROM_OFFSET + 8)
 #define EEPROM_ADDR_LOW_VOLTAGE      _eeprom_float (TELEMETRY_EEPROM_OFFSET + 12)
-#define EEPROM_ADDR_CALLSIGN         _eeprom_str (TELEMETRY_EEPROM_OFFSET + 16)
+#define EEPROM_ADDR_CALLSIGN         _eeprom_str   (TELEMETRY_EEPROM_OFFSET + 16)
 
 const char __opt_mincv [] PROGMEM = "MINCV";
 const char __opt_nomcv [] PROGMEM = "NOMCV";
@@ -46,7 +46,7 @@ const ::settings::option_t __settings [] PROGMEM = {
 	declare_float_option (__opt_nomcv, EEPROM_ADDR_NOM_CELL_VOLTAGE),
 	declare_float_option (__opt_maxcv, EEPROM_ADDR_MAX_CELL_VOLTAGE),
 	declare_float_option (__opt_lowcv, EEPROM_ADDR_LOW_VOLTAGE),
-	declare_str_option (__opt_csign, EEPROM_ADDR_CALLSIGN, 5),
+	declare_str_option   (__opt_csign, EEPROM_ADDR_CALLSIGN, 5),
 };
 
 void init ()
@@ -325,28 +325,40 @@ namespace waypoint
 }  // namespace telemetry
 
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
-#	include "adc_battery/adc_battery.h"
+	#include "adc_battery/adc_battery.h"
 #endif
 #ifdef TELEMETRY_MODULES_ADC_RSSI
-#	include "adc_rssi/adc_rssi.h"
+	#include "adc_rssi/adc_rssi.h"
 #endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
-#	include "i2c_baro/i2c_baro.h"
+	#include "i2c_baro/i2c_baro.h"
 #endif
 #ifdef TELEMETRY_MODULES_I2C_COMPASS
-#	include "i2c_compass/i2c_compass.h"
+	#include "i2c_compass/i2c_compass.h"
 #endif
 #ifdef TELEMETRY_MODULES_UAVTALK
-#	include "uavtalk/uavtalk.h"
+	#ifdef MAIN_MODULE
+		#error Conflicting modules
+	#endif
+	#include "uavtalk/uavtalk.h"
 #endif
 #ifdef TELEMETRY_MODULES_MAVLINK
-#	include "mavlink/mavlink.h"
+	#ifdef MAIN_MODULE
+		#error Conflicting modules
+	#endif
+	#include "mavlink/mavlink.h"
 #endif
 #ifdef TELEMETRY_MODULES_UBX
-#	include "ubx/ubx.h"
+	#ifdef MAIN_MODULE
+		#error Conflicting modules
+	#endif
+	#include "ubx/ubx.h"
 #endif
 #ifdef TELEMETRY_MODULES_NMEA
-#	include "nmea/nmea.h"
+	#ifdef MAIN_MODULE
+		#error Conflicting modules
+	#endif
+	#include "nmea/nmea.h"
 #endif
 
 #define declare_module(NS) { telemetry::modules:: NS ::__name, telemetry::modules:: NS ::settings::init, \

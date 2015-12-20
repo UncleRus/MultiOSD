@@ -35,13 +35,13 @@
 //#define TELEMETRY_MODULES_UAVTALK                 // LibrePilot/OpenPilot UAVTalk telemetry
 //#define TELEMETRY_MODULES_UBX						// GPS
 #if !defined (TELEMETRY_MODULES_UAVTALK) \
-	&& !defined (TELEMETRY_MODULES_MAVLINK) \
-	&& !defined (TELEMETRY_MODULES_UBX)
-#	define TELEMETRY_MODULES_MAVLINK                // ArduPilot/ArduCopter telemetry module by default
+    	&& !defined (TELEMETRY_MODULES_MAVLINK) \
+    	&& !defined (TELEMETRY_MODULES_UBX)
+	#define TELEMETRY_MODULES_MAVLINK                // ArduPilot/ArduCopter telemetry module by default
 #endif
 
 #if defined (TELEMETRY_MODULES_ADC_BATTERY) || defined (TELEMETRY_MODULES_ADC_BATTERY)
-#	define ADC_MODULE
+	#define ADC_MODULE
 #endif
 
 /*
@@ -53,17 +53,18 @@
 #define TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE 3.7  // Nominal cell voltage, 3.7 for LiPo
 #define TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE 3.2  // Minimal cell voltage (dead battery), 3.2 for LiPo
 #define TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE 3.5  // Warning threshold
-#define TELEMETRY_DEFAULT_CALLSIGN "-----"              // Default callsign
+#define TELEMETRY_DEFAULT_CALLSIGN "DRONE"              // Default callsign
 
 /*
  * UAVTalk config
  */
 #define UAVTALK_DEFAULT_BAUDRATE UART_BR_57600
 #define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_LP150900
-#define UAVTALK_DEFAULT_BOARD UAVTALK_BOARD_CC3D
 #define UAVTALK_CONNECTION_TIMEOUT 6000                    // ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500      // ms
 #define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 1               // Home distance/direction calculation: 0 - flight controller (REVO only), 1 - MultiOSD by GPS
+#define UAVTALK_DEFAULT_BARO_ENABLED 0                     // 0 - no barometer in FC (CC3D and so on)
+#define UAVTALK_DEFAULT_MAG_ENABLED 0                      // 0 - no magintometer in FC (CC3D and so on)
 
 /*
  * MAVLink config
@@ -81,7 +82,7 @@
 /*
  * UBX config
  */
-#define UBX_DEFAULT_BAUDRATE UART_BR_19200      // more than 57600 is not recommended
+#define UBX_DEFAULT_BAUDRATE UART_BR_19200      // higher than 57600 is not recommended
 #define UBX_DEFAULT_TIMEOUT 1000                // ms
 #define UBX_DEFAULT_AUTOCONF 0                  // automatically configurate GPS-module after connect
 
@@ -96,7 +97,7 @@
 //#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_FLIGHT_MODE // flight mode switch
 // or
 #define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_RAW_CHANNEL // raw channel value
-#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6 // it's ACCESSORY1 on my Tx in UAVTalk
+#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6          // it's ACCESSORY1 on my Tx :)
 // or
 //#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_OFF // single screen mode
 

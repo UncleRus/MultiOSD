@@ -38,17 +38,6 @@ void handle_flightstatus ()
 		telemetry::home::fix ();
 }
 
-void handle_baroaltitude ()
-{
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
-	BaroAltitude *obj = (BaroAltitude *) &buffer.data;
-	telemetry::barometer::altitude = obj->Altitude;
-	telemetry::barometer::pressure = obj->Pressure;
-	telemetry::environment::temperature = telemetry::barometer::temperature = obj->Temperature;
-	telemetry::stable::update_alt_climb (telemetry::barometer::altitude);
-#endif
-}
-
 void handle_flightbatterystate ()
 {
 #if !defined (TELEMETRY_MODULES_ADC_BATTERY)
@@ -119,7 +108,7 @@ void handle_manualcontrolcommand ()
 	telemetry::input::connected = obj->Connected;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
 	telemetry::messages::rssi_low = !telemetry::input::connected;
-	telemetry::input::rssi = obj->Rssi < 0 ? 0 : (obj->Rssi > 100 ? 100 : obj->Rssi);
+	telemetry::input::rssi = obj->Rssi * 100;
 #endif
 }
 

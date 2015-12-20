@@ -18,14 +18,14 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <avr/pgmspace.h>
-#include "../uart/uart.h"
+#include "../lib/uart/uart.h"
 
 #define KEY_ENTER	0x0D
 #define KEY_BS		0x08
 #define KEY_DEL		0x7F
 #define KEY_ESC		0x1B
 
-#include "../../config.h"
+#include "../config.h"
 
 #ifndef CONSOLE_UART
 #	define CONSOLE_UART uart0

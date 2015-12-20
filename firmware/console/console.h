@@ -26,6 +26,7 @@ namespace console
 typedef void (* callback_t) (const char *command);
 
 extern callback_t handler;
+extern const char *banner_p;
 
 void eol ();
 void show_prompt ();

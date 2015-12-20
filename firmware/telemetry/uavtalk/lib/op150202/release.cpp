@@ -34,7 +34,7 @@ void handle_flightstatus ()
 	status::flight_mode = obj->FlightMode;
 	status::flight_mode_name_p = uavtalk::get_fm_name_p (status::flight_mode);
 	// fix home if armed on CC3D
-	if ((board == UAVTALK_BOARD_CC3D || internal_home_calc) && !was_armed && status::armed)
+	if (internal_home_calc && !was_armed && status::armed)
 		home::fix ();
 }
 
@@ -54,6 +54,7 @@ void handle_barosensor ()
 	barometer::pressure = obj->Pressure;
 	environment::temperature = barometer::temperature = obj->Temperature;
 	stable::update_alt_climb (barometer::altitude);
+	baro_enabled = true;
 #endif
 }
 
@@ -115,15 +116,14 @@ void handle_gpspositionsensor ()
 	gps::state      = obj->Status;
 	gps::satellites = obj->Satellites;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-	// let's set heading if we don't have mag
-	if (board == UAVTALK_BOARD_CC3D) stable::heading = gps::heading;
+	if (!mag_enabled) stable::heading = gps::heading;
 #endif
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
 	// update stable altitude if we can't get the baro altitude
-	if (board == UAVTALK_BOARD_CC3D) stable::update_alt_climb (gps::altitude);
+	if (!baro_enabled) stable::update_alt_climb (gps::altitude);
 #endif
 	// calc home distance/direction based on gps
-	if (board == UAVTALK_BOARD_CC3D || internal_home_calc) home::update ();
+	if (internal_home_calc) home::update ();
 }
 
 void handle_gpsvelocitysensor ()
@@ -159,8 +159,6 @@ void handle_positionstate ()
 	PositionState *obj = (PositionState *) &buffer.data;
 	home::distance = sqrt (square (obj->East) + square (obj->North));
 	int16_t bearing = atan2 (obj->East, obj->North) * 57.295775;
-	if (bearing < 0) bearing += 360;
-	bearing -= stable::heading;
 	if (bearing < 0) bearing += 360;
 	home::direction = bearing;
 }

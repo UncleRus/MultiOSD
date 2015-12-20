@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_150202_GCSTELEMETRYSTATS_H
-#define UAVTALK_150202_GCSTELEMETRYSTATS_H
+#ifndef UAVTALK_OP150202_GCSTELEMETRYSTATS_H
+#define UAVTALK_OP150202_GCSTELEMETRYSTATS_H
 
 #include "../common.h"
 
@@ -52,4 +52,4 @@ struct GCSTelemetryStats
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_150202_GCSTELEMETRYSTATS_H
+#endif // UAVTALK_OP150202_GCSTELEMETRYSTATS_H

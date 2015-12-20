@@ -174,14 +174,14 @@ void init ()
 	cbi (MAX7456_VSYNC_DDR, MAX7456_VSYNC_BIT);
 	sbi (MAX7456_VSYNC_PORT, MAX7456_VSYNC_BIT); // pull-up
 
+	// Reset
+	write_register (MAX7456_REG_VM0, _BV (1));
+	_delay_us (100);
+	while (read_register (MAX7456_REG_VM0) & _BV (1))
+		;
+
 	// Detect video mode
 	_detect_mode ();
-
-	// Reset doesn't work
-	//write_register (MAX7456_REG_VM0, _BV (1));
-	//_delay_us (100);
-	//while (read_register (MAX7456_REG_VM0) & _BV (1))
-	//	;
 
 	_chip_select ();
 	/*
@@ -196,7 +196,7 @@ void init ()
 
 	_enable_osd ();
 
-	// set all rows to same character brightness black/white level
+	// set all rows to the same character brightness black/white level
 	uint8_t brightness = eeprom_read_byte (EEPROM_ADDR_BRIGHTNESS);
 	for (uint8_t r = 0; r < 16; ++ r)
 		write_register (0x10 + r, brightness);

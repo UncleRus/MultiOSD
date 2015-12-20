@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_150202_FLIGHTSTATUS_H
-#define UAVTALK_150202_FLIGHTSTATUS_H
+#ifndef UAVTALK_OP150202_FLIGHTSTATUS_H
+#define UAVTALK_OP150202_FLIGHTSTATUS_H
 
 #include "../common.h"
 
@@ -96,4 +96,4 @@ struct FlightStatus
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_150202_FLIGHTSTATUS_H
+#endif // UAVTALK_OP150202_FLIGHTSTATUS_H

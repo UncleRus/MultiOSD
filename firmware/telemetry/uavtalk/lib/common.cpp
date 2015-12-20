@@ -23,8 +23,13 @@
 
 UT_NAMESPACE_OPEN
 
-uint8_t board;
 bool internal_home_calc;
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
+bool baro_enabled = false;
+#endif
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+bool mag_enabled = false;
+#endif
 uint8_t release = 0;
 uint32_t telemetry_request_timeout = 0;
 uint32_t connection_timeout = 0;

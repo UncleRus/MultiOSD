@@ -67,7 +67,6 @@ namespace fm
 
 void update_connection ();
 
-void handle_baroaltitude ();
 void handle_flightbatterystate ();
 void handle_flightstatus ();
 void handle_flighttelemetrystats ();
@@ -78,7 +77,7 @@ void handle_airspeedactual ();
 const obj_handler_t handlers [] PROGMEM = {
 	{UAVTALK_TL20151123_FLIGHTSTATUS_OBJID,         handle_flightstatus},
 	{UAVTALK_TL20151123_ATTITUDEACTUAL_OBJID,       UAVTALK_OP150202::handle_attitudestate},
-	{UAVTALK_TL20151123_BAROALTITUDE_OBJID,         handle_baroaltitude},
+	{UAVTALK_TL20151123_BAROALTITUDE_OBJID,         UAVTALK_OP150202::handle_barosensor},
 	{UAVTALK_TL20151123_FLIGHTBATTERYSTATE_OBJID,   handle_flightbatterystate},
 	{UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
 	{UAVTALK_TL20151123_GPSPOSITION_OBJID,          handle_gpsposition},

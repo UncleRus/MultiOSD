@@ -503,28 +503,6 @@ UART baudrate to communicate with FC. Typically is **3** (57600).
 | 4     | 115200   |
 +-------+----------+
 
-.. _o_utbrd:
-
-UTBRD
------
-
-Flight controller type. It's recommended to set correct FC type as it affects
-altitude, velocity, temperature and other telemetry values.
-
-+------+--------+
-| Type | Size   |
-+======+========+
-| enum | 1 byte |
-+------+--------+
-
-+-------+--------------+
-| Value | FC type      |
-+=======+==============+
-| 0     | CC/CC3D/Atom |
-+-------+--------------+
-| 1     | Revo/Nano    |
-+-------+--------------+
-
 .. _o_utrel:
 
 UTREL
@@ -679,7 +657,50 @@ MLERT
 -----
 
 RSSI emulation threshold. Minimal pulse width of input channel, us. Works
-only when :ref:`o-mlert` = 1. Typical value: **~900**
+only when :ref:`o-mlert` = 1. Typical value is **~900**
+
++--------+---------+
+| Type   | Size    |
++========+=========+
+| uint16 | 2 bytes |
++--------+---------+
+
+UBX
+===
+
+.. _o-ubxbr:
+
+UBXBR
+-----
+
+UART baudrate to communicate with U-BLOX GPS module.
+
++------+--------+
+| Type | Size   |
++======+========+
+| enum | 1 byte |
++------+--------+
+
++-------+----------+
+| Value | Baudrate |
++=======+==========+
+| 0     | 9600     |
++-------+----------+
+| 1     | 19200    |
++-------+----------+
+| 2     | 38400    |
++-------+----------+
+| 3     | 57600    |
++-------+----------+
+| 4     | 115200   |
++-------+----------+
+
+.. _o-ubxto:
+
+UBXTO
+-----
+
+Connection timeout, ms. Recommended value **1000**.
 
 +--------+---------+
 | Type   | Size    |
