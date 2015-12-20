@@ -24,7 +24,7 @@ Supported flight controllers and software
   * OpenPilot 15.02.02 (latest CC/CC3D release)
   * OpenPilot 15.05.02 (latest Revolution release)
   * LibrePilot 15.09 (http://librepilot.org)
-  * TauLabs 20151123 (http://taulabs.org) - alpha!
+  * TauLabs 20151123 (http://taulabs.org)
   
 * Many of the MAVLink boards:
   
@@ -35,7 +35,7 @@ Supported flight controllers and software
 
 * u-blox GPS modules - alpha!
 
-**Testers are needed!**
+**Testers are welcomed!**
 
 Available indicators
 --------------------
@@ -80,8 +80,7 @@ Known bugs and problems
   currently in development).
   But you can use [the serial console](doc/source/lowlevel/console.rst)
   to change [options](doc/source/lowlevel/options.rst) and screens layout.
-* Probably home direction bug
-* Revolution home distance/direction bug
-
+* No autoconfig for UBX
+* No mag support by UAVTalk module
 
 
