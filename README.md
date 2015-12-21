@@ -40,7 +40,7 @@ Yet another MinimOSD firmware with configurable screens layout.
 * Flight mode
 * Armed indicator
 * Connected indicator
-* Flight time (time since FC boot actually)
+* Flight time (FC uptime actually)
 * Roll angle
 * Pitch angle
 * GPS state
