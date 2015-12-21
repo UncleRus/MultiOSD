@@ -7,7 +7,7 @@ Yet another MinimOSD firmware with configurable screens layout.
 * switching between screens
 * configuration console
 * no image noise
-* ADC RSSI and battery stats - useful with simple FC, such as CC3D
+* ADC RSSI and battery stats
 
 ## Supported flight controllers and software
 

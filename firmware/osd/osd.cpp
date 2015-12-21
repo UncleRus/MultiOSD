@@ -59,9 +59,9 @@ void reset ()
 {
 	eeprom_update_byte (EEPROM_ADDR_SWITCH, OSD_EEPROM_SWITCH_DEFAULT);
 	eeprom_update_byte (EEPROM_ADDR_SWITCH_RAW_CHANNEL, OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT);
-	eeprom_update_byte (EEPROM_ADDR_SCREENS, OSD_MAX_SCREENS);
-	eeprom_update_word (EEPROM_ADDR_CHANNEL_MIN, OSD_CHANNEL_MIN);
-	eeprom_update_word (EEPROM_ADDR_CHANNEL_MAX, OSD_CHANNEL_MAX);
+	eeprom_update_byte (EEPROM_ADDR_SCREENS, OSD_DEFAULT_SCREENS);
+	eeprom_update_word (EEPROM_ADDR_CHANNEL_MIN, OSD_DEFAULT_CHANNEL_MIN);
+	eeprom_update_word (EEPROM_ADDR_CHANNEL_MAX, OSD_DEFAULT_CHANNEL_MAX);
 	screen::settings::reset ();
 }
 
@@ -80,11 +80,11 @@ uint8_t cur_screen;
 uint8_t _screens_enabled;
 //bool visible;
 
-#if (OSD_MAX_SCREENS <= 0) || (OSD_MAX_SCREENS > 8)
-#	error OSD_MAX_SCREENS must be between 0 and 8
+#if (OSD_DEFAULT_SCREENS <= 0) || (OSD_DEFAULT_SCREENS > 8)
+#	error OSD_DEFAULT_SCREENS must be between 0 and 8
 #endif
 
-#if OSD_MAX_SCREENS > 1
+#if OSD_DEFAULT_SCREENS > 1
 
 uint8_t get_screen (uint16_t raw)
 {
@@ -113,7 +113,7 @@ bool check_input ()
 uint8_t screens_enabled ()
 {
 	uint8_t res = eeprom_read_byte (EEPROM_ADDR_SCREENS);
-	return res > OSD_MAX_SCREENS ? OSD_MAX_SCREENS : res;
+	return res > OSD_DEFAULT_SCREENS ? OSD_DEFAULT_SCREENS : res;
 }
 
 volatile bool started = false;
@@ -150,7 +150,7 @@ void main ()
 		wdt_reset ();
 
 		bool updated = telemetry::update ();
-#if OSD_MAX_SCREENS > 1
+#if OSD_DEFAULT_SCREENS > 1
 		if (_screens_enabled > 1 && check_input ())
 		{
 			screen::load (cur_screen);

@@ -31,6 +31,7 @@ bool baro_enabled = false;
 bool mag_enabled = false;
 #endif
 uint8_t release = 0;
+uint8_t rssi_low_threshold = 0;
 uint32_t telemetry_request_timeout = 0;
 uint32_t connection_timeout = 0;
 uint32_t fts_objid;

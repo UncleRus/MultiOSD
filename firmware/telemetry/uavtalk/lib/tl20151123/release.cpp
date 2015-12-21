@@ -107,8 +107,8 @@ void handle_manualcontrolcommand ()
 	memcpy (telemetry::input::channels, obj->Channel, sizeof (obj->Channel));
 	telemetry::input::connected = obj->Connected;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
-	telemetry::messages::rssi_low = !telemetry::input::connected;
 	telemetry::input::rssi = obj->Rssi * 100;
+	telemetry::messages::rssi_low = telemetry::input::rssi < rssi_low_threshold;
 #endif
 }
 

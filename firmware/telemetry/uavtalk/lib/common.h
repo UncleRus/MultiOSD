@@ -91,6 +91,7 @@ extern uint8_t release;
 extern uint32_t telemetry_request_timeout;
 extern uint32_t connection_timeout;
 extern uint32_t fts_objid;
+extern uint8_t rssi_low_threshold;
 
 extern message_t buffer;
 
