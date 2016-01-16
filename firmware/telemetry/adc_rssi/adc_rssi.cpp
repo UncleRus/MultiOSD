@@ -46,10 +46,10 @@ const char __opt_arlt [] PROGMEM = "ARLT";
 const char __opt_armul [] PROGMEM = "ARMUL";
 
 const ::settings::option_t __settings [] PROGMEM = {
-	declare_uint8_option (__opt_arch, EEPROM_ADDR_CHANNEL),
+	declare_uint8_option  (__opt_arch, EEPROM_ADDR_CHANNEL),
 	declare_uint16_option (__opt_arui, EEPROM_ADDR_UPDATE_INTERVAL),
-	declare_uint8_option (__opt_arlt, EEPROM_ADDR_LOW_THRESHOLD),
-	declare_float_option (__opt_armul, EEPROM_ADDR_MULTIPLIER),
+	declare_uint8_option  (__opt_arlt, EEPROM_ADDR_LOW_THRESHOLD),
+	declare_float_option  (__opt_armul, EEPROM_ADDR_MULTIPLIER),
 };
 
 void init ()
@@ -60,9 +60,9 @@ void init ()
 
 void reset ()
 {
-	eeprom_update_byte (EEPROM_ADDR_CHANNEL, ADC_RSSI_DEFAULT_CHANNEL);
-	eeprom_update_word (EEPROM_ADDR_UPDATE_INTERVAL, ADC_RSSI_DEFAULT_UPDATE_INTERVAL);
-	eeprom_update_byte (EEPROM_ADDR_LOW_THRESHOLD, ADC_RSSI_DEFAULT_LOW_THRESHOLD);
+	eeprom_update_byte  (EEPROM_ADDR_CHANNEL, ADC_RSSI_DEFAULT_CHANNEL);
+	eeprom_update_word  (EEPROM_ADDR_UPDATE_INTERVAL, ADC_RSSI_DEFAULT_UPDATE_INTERVAL);
+	eeprom_update_byte  (EEPROM_ADDR_LOW_THRESHOLD, ADC_RSSI_DEFAULT_LOW_THRESHOLD);
 	eeprom_update_float (EEPROM_ADDR_MULTIPLIER, ADC_RSSI_DEFAULT_MULTIPLIER);
 
 	adc::settings::reset ();
@@ -99,9 +99,9 @@ bool update ()
 	int16_t value = round (adc::value (channel, multiplier));
 	if (value < 0) value = 0;
 	else if (value > 100) value = 100;
-	telemetry::input::rssi = value;
+	input::rssi = value;
 
-	telemetry::messages::rssi_low = telemetry::input::rssi < low_threshold;
+	messages::rssi_low = input::rssi < low_threshold;
 
 	return true;
 }

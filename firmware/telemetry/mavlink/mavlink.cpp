@@ -103,7 +103,7 @@ float __attribute__ ((noinline)) rad_to_deg (float rad)
 
 inline int16_t filter_int16 (int16_t value)
 {
-	return value == INT16_MAX ? 0 : value;
+	return value == 0x7fff ? 0 : value;
 }
 
 
@@ -127,15 +127,15 @@ namespace flight_modes
 		void update ()
 		{
 			uint8_t mode = mavlink_msg_heartbeat_get_base_mode (msg);
-			if (mode && MAV_MODE_FLAG_TEST_ENABLED) telemetry::status::flight_mode = 1;
-			else if (mode && MAV_MODE_FLAG_HIL_ENABLED) telemetry::status::flight_mode = 5;
-			else if (mode && MAV_MODE_FLAG_AUTO_ENABLED) telemetry::status::flight_mode = 2;
-			else if (mode && MAV_MODE_FLAG_GUIDED_ENABLED) telemetry::status::flight_mode = 3;
-			else if (mode && MAV_MODE_FLAG_STABILIZE_ENABLED) telemetry::status::flight_mode = 4;
-			else if (mode && MAV_MODE_FLAG_MANUAL_INPUT_ENABLED) telemetry::status::flight_mode = 6;
-			else telemetry::status::flight_mode = 0;
+			if (mode && MAV_MODE_FLAG_TEST_ENABLED) status::flight_mode = 1;
+			else if (mode && MAV_MODE_FLAG_HIL_ENABLED) status::flight_mode = 5;
+			else if (mode && MAV_MODE_FLAG_AUTO_ENABLED) status::flight_mode = 2;
+			else if (mode && MAV_MODE_FLAG_GUIDED_ENABLED) status::flight_mode = 3;
+			else if (mode && MAV_MODE_FLAG_STABILIZE_ENABLED) status::flight_mode = 4;
+			else if (mode && MAV_MODE_FLAG_MANUAL_INPUT_ENABLED) status::flight_mode = 6;
+			else status::flight_mode = 0;
 
-			telemetry::status::flight_mode_name_p = (const char *) pgm_read_ptr (&values [telemetry::status::flight_mode]);
+			status::flight_mode_name_p = (const char *) pgm_read_ptr (&values [status::flight_mode]);
 		}
 
 	}  // namespace generic
@@ -189,7 +189,7 @@ namespace flight_modes
 
 		void update ()
 		{
-			telemetry::status::flight_mode = mavlink_msg_heartbeat_get_custom_mode (msg);
+			status::flight_mode = mavlink_msg_heartbeat_get_custom_mode (msg);
 
 			const char * const *values = NULL;
 			uint8_t size = 0;
@@ -208,8 +208,8 @@ namespace flight_modes
 					size = apm_size;
 					break;
 			}
-			telemetry::status::flight_mode_name_p = values && telemetry::status::flight_mode < size
-				? (const char *) pgm_read_ptr (&values [telemetry::status::flight_mode])
+			status::flight_mode_name_p = values && status::flight_mode < size
+				? (const char *) pgm_read_ptr (&values [status::flight_mode])
 				: NULL;
 		}
 
@@ -256,17 +256,17 @@ namespace flight_modes
 			}
 
 			if (mode & MAV_MODE_FLAG_STABILIZE_ENABLED)
-				telemetry::status::flight_mode = 1;
+				status::flight_mode = 1;
 			else if (mode & MAV_MODE_FLAG_MANUAL_INPUT_ENABLED)
-				telemetry::status::flight_mode = 0;
+				status::flight_mode = 0;
 			else if (mode & MAV_MODE_FLAG_GUIDED_ENABLED)
-				telemetry::status::flight_mode = 2;
+				status::flight_mode = 2;
 			else if (mode & MAV_MODE_FLAG_AUTO_ENABLED)
-				telemetry::status::flight_mode = 3;
-			else telemetry::status::flight_mode = 0xff;
+				status::flight_mode = 3;
+			else status::flight_mode = 0xff;
 
-			telemetry::status::flight_mode_name_p = values && telemetry::status::flight_mode < size
-				? (const char *) pgm_read_ptr (&values [telemetry::status::flight_mode])
+			status::flight_mode_name_p = values && status::flight_mode < size
+				? (const char *) pgm_read_ptr (&values [status::flight_mode])
 				: NULL;
 		}
 
@@ -306,20 +306,20 @@ namespace flight_modes
 		{
 			uint16_t mode = mavlink_msg_heartbeat_get_custom_mode (msg);
 			// uh-oh let's sqeeze it into byte
-			telemetry::status::flight_mode = ((mode >> 4) & 0xf0) | (mode & 0x0f);
+			status::flight_mode = ((mode >> 4) & 0xf0) | (mode & 0x0f);
 
 			// FIXME: rewrite
 			uint8_t main_mode = mode >> 8;
 			uint8_t sub_mode = mode & 0xff;
 
 			if (main_mode >= px4::mm_size)
-				telemetry::status::flight_mode_name_p = NULL;
+				status::flight_mode_name_p = NULL;
 			else if (main_mode != _MAVLINK_PX4_MODE_AUTO)
-				telemetry::status::flight_mode_name_p = (const char *) pgm_read_ptr (&px4::mm [main_mode]);
+				status::flight_mode_name_p = (const char *) pgm_read_ptr (&px4::mm [main_mode]);
 			else if (sub_mode >= px4::sm_size)
-				telemetry::status::flight_mode_name_p = NULL;
+				status::flight_mode_name_p = NULL;
 			else
-				telemetry::status::flight_mode_name_p = (const char *) pgm_read_ptr (&px4::sm [sub_mode]);
+				status::flight_mode_name_p = (const char *) pgm_read_ptr (&px4::sm [sub_mode]);
 		}
 
 	}  // namespace px4
@@ -402,25 +402,25 @@ bool update ()
 		switch (msg->msgid)
 		{
 			case MAVLINK_MSG_ID_HEARTBEAT:
-				was_armed = telemetry::status::armed;
+				was_armed = status::armed;
 
-				telemetry::status::armed = mavlink_msg_heartbeat_get_base_mode (msg) & MAV_MODE_FLAG_SAFETY_ARMED;
+				status::armed = mavlink_msg_heartbeat_get_base_mode (msg) & MAV_MODE_FLAG_SAFETY_ARMED;
 				// FIXME: use FC home. Home in ArduXXX is waypoint 0
-				if (!was_armed && telemetry::status::armed)
-					telemetry::home::fix ();
+				if (!was_armed && status::armed)
+					home::fix ();
 
 				flight_modes::update ();
 
 				connection_timeout = telemetry::ticks + MAVLINK_CONNECTION_TIMEOUT;
-				if (telemetry::status::connection != CONNECTION_STATE_CONNECTED)
+				if (status::connection != CONNECTION_STATE_CONNECTED)
 				{
-					telemetry::status::connection = CONNECTION_STATE_CONNECTED;
+					status::connection = CONNECTION_STATE_CONNECTED;
 					rates::setup ();
 				}
 
 				break;
 			case MAVLINK_MSG_ID_SYSTEM_TIME:
-				telemetry::status::flight_time = mavlink_msg_system_time_get_time_boot_ms (msg) / 1000;
+				status::flight_time = mavlink_msg_system_time_get_time_boot_ms (msg) / 1000;
 				break;
 #ifndef TELEMETRY_MODULES_ADC_BATTERY
 			case MAVLINK_MSG_ID_SYS_STATUS:
@@ -428,94 +428,94 @@ bool update ()
 				uint16_t interval = telemetry::ticks - _last_battery_update;
 				_last_battery_update += interval;
 
-				telemetry::battery::voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
+				battery::voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
 				if (!internal_battery_level)
 				{
-					telemetry::battery::level = mavlink_msg_sys_status_get_battery_remaining (msg);
-					if (telemetry::battery::level == 0xff) // -1 (0xff) means "unknown"
-						telemetry::battery::level = 0;
+					battery::level = mavlink_msg_sys_status_get_battery_remaining (msg);
+					if (battery::level == 0xff) // -1 (0xff) means "unknown"
+						battery::level = 0;
 				}
 				else
-					telemetry::battery::update_voltage ();
+					battery::update_voltage ();
 				int16_t current = mavlink_msg_sys_status_get_current_battery (msg);
 				if (current >= 0)
 				{
-					telemetry::battery::current = current / 100.0;
-					telemetry::battery::update_consumed (interval);
+					battery::current = current / 100.0;
+					battery::update_consumed (interval);
 				}
 			}
 				break;
 #endif
 			case MAVLINK_MSG_ID_ATTITUDE:
-				telemetry::attitude::roll = rad_to_deg (mavlink_msg_attitude_get_roll (msg));
-				telemetry::attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (msg));
-				telemetry::attitude::yaw = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
+				attitude::roll  = rad_to_deg (mavlink_msg_attitude_get_roll (msg));
+				attitude::pitch = rad_to_deg (mavlink_msg_attitude_get_pitch (msg));
+				attitude::yaw   = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
 				break;
 			case MAVLINK_MSG_ID_GPS_RAW_INT:
 			{
-				telemetry::gps::state = mavlink_msg_gps_raw_int_get_fix_type (msg);
-				telemetry::gps::satellites = mavlink_msg_gps_raw_int_get_satellites_visible (msg);
-				telemetry::gps::latitude = mavlink_msg_gps_raw_int_get_lat (msg) / 10000000.0;
-				telemetry::gps::longitude = mavlink_msg_gps_raw_int_get_lon (msg) / 10000000.0;
-				telemetry::gps::altitude = mavlink_msg_gps_raw_int_get_alt (msg) / 1000.0;
-				uint16_t gs = mavlink_msg_gps_raw_int_get_vel (msg);
-				telemetry::gps::speed = gs < UINT16_MAX ? gs / 100.0 : 0;
+				gps::state      = mavlink_msg_gps_raw_int_get_fix_type (msg);
+				gps::satellites = mavlink_msg_gps_raw_int_get_satellites_visible (msg);
+				gps::latitude   = mavlink_msg_gps_raw_int_get_lat (msg) / 10000000.0;
+				gps::longitude  = mavlink_msg_gps_raw_int_get_lon (msg) / 10000000.0;
+				gps::altitude   = mavlink_msg_gps_raw_int_get_alt (msg) / 1000.0;
+				uint16_t gs     = mavlink_msg_gps_raw_int_get_vel (msg);
+				gps::speed      = gs == 0xffff ? 0 : gs / 100.0;
 				// FIXME: FC home
-				telemetry::home::update ();
+				home::update ();
 				break;
 			}
 			case MAVLINK_MSG_ID_VFR_HUD:
-				telemetry::stable::groundspeed = mavlink_msg_vfr_hud_get_groundspeed (msg);
-				telemetry::stable::airspeed = mavlink_msg_vfr_hud_get_airspeed (msg);
-				telemetry::stable::altitude = mavlink_msg_vfr_hud_get_alt (msg);
-				telemetry::stable::climb = mavlink_msg_vfr_hud_get_climb (msg);
-				telemetry::stable::heading = mavlink_msg_vfr_hud_get_heading (msg);
-				telemetry::input::throttle = mavlink_msg_vfr_hud_get_throttle (msg);
+				stable::groundspeed = mavlink_msg_vfr_hud_get_groundspeed (msg);
+				stable::airspeed    = mavlink_msg_vfr_hud_get_airspeed (msg);
+				stable::altitude    = mavlink_msg_vfr_hud_get_alt (msg);
+				stable::climb       = mavlink_msg_vfr_hud_get_climb (msg);
+				stable::heading     = mavlink_msg_vfr_hud_get_heading (msg);
+				input::throttle     = mavlink_msg_vfr_hud_get_throttle (msg);
 				break;
 			case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
-				telemetry::input::roll = filter_int16 (mavlink_msg_rc_channels_scaled_get_chan1_scaled (msg)) / 100;
-				telemetry::input::pitch = filter_int16 (mavlink_msg_rc_channels_scaled_get_chan2_scaled (msg)) / 100;
-				telemetry::input::yaw = filter_int16 (mavlink_msg_rc_channels_scaled_get_chan4_scaled (msg)) / 100;
+				input::roll  = filter_int16 (mavlink_msg_rc_channels_scaled_get_chan1_scaled (msg)) / 100;
+				input::pitch = filter_int16 (mavlink_msg_rc_channels_scaled_get_chan2_scaled (msg)) / 100;
+				input::yaw   = filter_int16 (mavlink_msg_rc_channels_scaled_get_chan4_scaled (msg)) / 100;
 				break;
 			case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
-				telemetry::input::connected = true;		// enable switching between screens
+				input::connected = true;		// enable switching between screens
 				// memcpy?
-				telemetry::input::channels [0] = mavlink_msg_rc_channels_raw_get_chan1_raw (msg);
-				telemetry::input::channels [1] = mavlink_msg_rc_channels_raw_get_chan2_raw (msg);
-				telemetry::input::channels [2] = mavlink_msg_rc_channels_raw_get_chan3_raw (msg);
-				telemetry::input::channels [3] = mavlink_msg_rc_channels_raw_get_chan4_raw (msg);
-				telemetry::input::channels [4] = mavlink_msg_rc_channels_raw_get_chan5_raw (msg);
-				telemetry::input::channels [5] = mavlink_msg_rc_channels_raw_get_chan6_raw (msg);
-				telemetry::input::channels [6] = mavlink_msg_rc_channels_raw_get_chan7_raw (msg);
-				telemetry::input::channels [7] = mavlink_msg_rc_channels_raw_get_chan8_raw (msg);
+				input::channels [0] = mavlink_msg_rc_channels_raw_get_chan1_raw (msg);
+				input::channels [1] = mavlink_msg_rc_channels_raw_get_chan2_raw (msg);
+				input::channels [2] = mavlink_msg_rc_channels_raw_get_chan3_raw (msg);
+				input::channels [3] = mavlink_msg_rc_channels_raw_get_chan4_raw (msg);
+				input::channels [4] = mavlink_msg_rc_channels_raw_get_chan5_raw (msg);
+				input::channels [5] = mavlink_msg_rc_channels_raw_get_chan6_raw (msg);
+				input::channels [6] = mavlink_msg_rc_channels_raw_get_chan7_raw (msg);
+				input::channels [7] = mavlink_msg_rc_channels_raw_get_chan8_raw (msg);
 #ifndef TELEMETRY_MODULES_ADC_RSSI
 				if (!emulate_rssi)
 				{
-					telemetry::input::rssi = mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
-					telemetry::messages::rssi_low = telemetry::input::rssi < rssi_low_threshold;
+					input::rssi = mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
+					messages::rssi_low = input::rssi < rssi_low_threshold;
 				}
 				else
 				{
-					telemetry::messages::rssi_low = telemetry::input::channels [emulate_rssi_channel] < emulate_rssi_threshold;
-					telemetry::input::rssi = telemetry::messages::rssi_low ? 100 : 0;
+					messages::rssi_low = input::channels [emulate_rssi_channel] < emulate_rssi_threshold;
+					input::rssi = messages::rssi_low ? 100 : 0;
 				}
 #endif
 				break;
 			case MAVLINK_MSG_ID_SCALED_PRESSURE:
-				telemetry::barometer::temperature = mavlink_msg_scaled_pressure_get_temperature (msg) / 100.0;
-				telemetry::environment::temperature = telemetry::barometer::temperature;
-				telemetry::barometer::pressure = mavlink_msg_scaled_pressure_get_press_abs (msg) * 100;
+				barometer::temperature   = mavlink_msg_scaled_pressure_get_temperature (msg) / 100.0;
+				environment::temperature = barometer::temperature;
+				barometer::pressure      = mavlink_msg_scaled_pressure_get_press_abs (msg) * 100;
 				break;
 			case MAVLINK_MSG_ID_WIND:
-				telemetry::environment::wind_direction = mavlink_msg_wind_get_direction (msg);
-				telemetry::environment::wind_speed = mavlink_msg_wind_get_speed (msg);
+				environment::wind_direction = mavlink_msg_wind_get_direction (msg);
+				environment::wind_speed     = mavlink_msg_wind_get_speed (msg);
 				break;
 			case MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT:
-				telemetry::waypoint::set_bearing (mavlink_msg_nav_controller_output_get_target_bearing (msg));
-				telemetry::waypoint::distance = mavlink_msg_nav_controller_output_get_wp_dist (msg);
+				waypoint::set_bearing (mavlink_msg_nav_controller_output_get_target_bearing (msg));
+				waypoint::distance = mavlink_msg_nav_controller_output_get_wp_dist (msg);
 				break;
 			case MAVLINK_MSG_ID_MISSION_CURRENT:
-				telemetry::waypoint::set (mavlink_msg_mission_current_get_seq (msg));
+				waypoint::set (mavlink_msg_mission_current_get_seq (msg));
 				break;
 			default:
 				changed = false;
@@ -523,9 +523,9 @@ bool update ()
 		updated |= changed;
 	}
 
-	if (telemetry::ticks >= connection_timeout && telemetry::status::connection != CONNECTION_STATE_DISCONNECTED)
+	if (telemetry::ticks >= connection_timeout && status::connection != CONNECTION_STATE_DISCONNECTED)
 	{
-		telemetry::status::connection = CONNECTION_STATE_DISCONNECTED;
+		status::connection = CONNECTION_STATE_DISCONNECTED;
 		updated = true;
 	}
 

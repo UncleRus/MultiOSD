@@ -112,13 +112,13 @@ bool update ()
 	float dt = interval / 1000.0;
 	float alpha = 1.0 - dt / (dt + 2.0);
 
-	telemetry::battery::voltage = alpha * telemetry::battery::voltage + (1 - alpha) * adc::value (voltage_channel, voltage_multiplier);
-	telemetry::battery::update_voltage ();
+	battery::voltage = alpha * battery::voltage + (1 - alpha) * adc::value (voltage_channel, voltage_multiplier);
+	battery::update_voltage ();
 
 	if (current_sensor)
 	{
-		telemetry::battery::current = alpha * telemetry::battery::current + (1 - alpha) * adc::value (current_channel, current_multiplier);
-		telemetry::battery::update_consumed (interval);
+		battery::current = alpha * battery::current + (1 - alpha) * adc::value (current_channel, current_multiplier);
+		battery::update_consumed (interval);
 	}
 	return true;
 }

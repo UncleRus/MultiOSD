@@ -198,24 +198,24 @@ bool update ()
 	// handle all received messages
 	while (uavtalk::receive ())
 	{
-		uint32_t ticks = timer::ticks ();
+		uint32_t _ticks = timer::ticks ();
 		updated |= handle ();
-		if (telemetry::status::connection == CONNECTION_STATE_DISCONNECTED)
+		if (status::connection == CONNECTION_STATE_DISCONNECTED)
 		{
-			telemetry::status::connection = CONNECTION_STATE_ESTABLISHING;
-			connection_timeout = ticks + UAVTALK_CONNECTION_TIMEOUT;
+			status::connection = CONNECTION_STATE_ESTABLISHING;
+			connection_timeout = _ticks + UAVTALK_CONNECTION_TIMEOUT;
 		}
-		if (ticks >= telemetry_request_timeout && telemetry::status::connection == CONNECTION_STATE_CONNECTED)
+		if (_ticks >= telemetry_request_timeout && status::connection == CONNECTION_STATE_CONNECTED)
 		{
 			// time to send GCSTelemetryStats to FC
 			update_connection ();
-			telemetry_request_timeout = ticks + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL;
+			telemetry_request_timeout = _ticks + UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL;
 		}
 	}
 
-	if (ticks >= connection_timeout && telemetry::status::connection == CONNECTION_STATE_CONNECTED)
+	if (ticks >= connection_timeout && status::connection == CONNECTION_STATE_CONNECTED)
 	{
-		telemetry::status::connection = CONNECTION_STATE_DISCONNECTED;
+		status::connection = CONNECTION_STATE_DISCONNECTED;
 		updated = true;
 	}
 

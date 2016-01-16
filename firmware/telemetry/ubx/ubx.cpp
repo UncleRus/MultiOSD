@@ -197,10 +197,10 @@ bool update ()
 	while (receive ())
 	{
 		connection_timeout = telemetry::ticks + timeout;
-		if (!autoconf) telemetry::status::connection = CONNECTION_STATE_CONNECTED;
+		if (!autoconf) status::connection = CONNECTION_STATE_CONNECTED;
 		// TODO: autoconf
-		//if (telemetry::status::connection != CONNECTION_STATE_CONNECTED)
-		//	telemetry::status::connection = CONNECTION_STATE_ESTABLISHING;
+		//if (status::connection != CONNECTION_STATE_CONNECTED)
+		//	status::connection = CONNECTION_STATE_ESTABLISHING;
 		switch (_WORD (buf.header.cls, buf.header.id))
 		{
 			case _WORD (UBX_CLASS_ACK, UBX_ID_ACK_NAK):
@@ -208,64 +208,64 @@ bool update ()
 				// TODO: autoconf
 				break;
 			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_POSLLH):
-				if (telemetry::gps::state > GPS_STATE_FIXING)
+				if (gps::state > GPS_STATE_FIXING)
 				{
-					telemetry::gps::altitude = buf.payload.nav_posllh.alt / 1000.0;
+					gps::altitude = buf.payload.nav_posllh.alt / 1000.0;
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
-					telemetry::stable::altitude = telemetry::gps::altitude;
+					stable::altitude = gps::altitude;
 #endif
-					telemetry::gps::latitude = buf.payload.nav_posllh.lat / 1000000.0;
-					telemetry::gps::longitude = buf.payload.nav_posllh.lat / 1000000.0;
-					telemetry::home::update ();
+					gps::latitude = buf.payload.nav_posllh.lat / 1000000.0;
+					gps::longitude = buf.payload.nav_posllh.lat / 1000000.0;
+					home::update ();
 					updated = true;
 				}
 				break;
 			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_SOL):
-				telemetry::gps::satellites = buf.payload.nav_sol.num_sv;
+				gps::satellites = buf.payload.nav_sol.num_sv;
 				if (buf.payload.nav_sol.flags & UBX_STATUS_FLAGS_GPSFIX_OK)
 				{
 					switch (buf.payload.nav_sol.fix_type)
 					{
 						case f_no_fix:
-							telemetry::gps::state = GPS_STATE_NO_FIX;
+							gps::state = GPS_STATE_NO_FIX;
 							break;
 						case f_2d:
-							telemetry::gps::state = GPS_STATE_2D;
-							telemetry::status::armed = true;
+							gps::state = GPS_STATE_2D;
+							status::armed = true;
 							break;
 						case f_3d:
-							telemetry::gps::state = GPS_STATE_3D;
-							if (telemetry::home::state == HOME_STATE_NO_FIX)
-								telemetry::home::fix ();
-							telemetry::status::armed = true;
+							gps::state = GPS_STATE_3D;
+							if (home::state == HOME_STATE_NO_FIX)
+								home::fix ();
+							status::armed = true;
 							break;
 						default:
-							telemetry::gps::state = GPS_STATE_FIXING;
+							gps::state = GPS_STATE_FIXING;
 					}
 				}
-				else telemetry::gps::state = GPS_STATE_FIXING;
+				else gps::state = GPS_STATE_FIXING;
 				updated = true;
 				break;
 			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_VELNED):
-				telemetry::stable::groundspeed = telemetry::gps::speed = buf.payload.nav_velned.speed / 100.0;
-				telemetry::gps::climb = -(buf.payload.nav_velned.vel_down / 100.0);
+				stable::groundspeed = gps::speed = buf.payload.nav_velned.speed / 100.0;
+				gps::climb = -(buf.payload.nav_velned.vel_down / 100.0);
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
-				telemetry::stable::climb = telemetry::gps::climb;
+				stable::climb = gps::climb;
 #endif
-				telemetry::gps::heading = buf.payload.nav_velned.heading * 1.0e-5f;
+				gps::heading = buf.payload.nav_velned.heading * 1.0e-5f;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-				telemetry::stable::heading = telemetry::gps::heading;
+				stable::heading = gps::heading;
 #endif
 				updated = true;
 				break;
 			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_DOP):
-				telemetry::gps::hdop = buf.payload.nav_dop.hdop / 100.0;
-				telemetry::gps::vdop = buf.payload.nav_dop.vdop / 100.0;
-				telemetry::gps::pdop = buf.payload.nav_dop.pdop / 100.0;
+				gps::hdop = buf.payload.nav_dop.hdop / 100.0;
+				gps::vdop = buf.payload.nav_dop.vdop / 100.0;
+				gps::pdop = buf.payload.nav_dop.pdop / 100.0;
 				updated = true;
 				break;
 			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_STATUS):
-				telemetry::status::flight_time = buf.payload.nav_status.uptime / 1000;
+				status::flight_time = buf.payload.nav_status.uptime / 1000;
 				updated = true;
 				break;
 		}
@@ -274,8 +274,8 @@ bool update ()
 	if (telemetry::ticks >= connection_timeout)
 	{
 		// disconnect, but don't reset the home pos
-		telemetry::status::connection = CONNECTION_STATE_DISCONNECTED;
-		telemetry::gps::state = GPS_STATE_NO_FIX;
+		status::connection = CONNECTION_STATE_DISCONNECTED;
+		gps::state = GPS_STATE_NO_FIX;
 		updated = true;
 	}
 
