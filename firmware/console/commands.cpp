@@ -333,7 +333,7 @@ namespace screen
 	{
 		if (num >= screens_count)
 		{
-			print_err_p (PSTR ("Invalid screen #"));
+			print_err_p (PSTR ("Bad screen #"));
 			return false;
 		}
 		return true;
@@ -343,13 +343,13 @@ namespace screen
 	{
 		if (x >= MAX7456_PAL_COLUMNS || y >= MAX7456_PAL_ROWS)
 		{
-			print_err_p (PSTR ("Invalid coordinates"));
+			print_err_p (PSTR ("Bad coordinates"));
 			return false;
 		}
 
 		if (panel >= osd::panel::count)
 		{
-			print_err_p (PSTR ("Invalid panel id"));
+			print_err_p (PSTR ("Bad panel id"));
 			return false;
 		}
 
@@ -361,7 +361,7 @@ namespace screen
 		uint8_t *offset = osd::screen::eeprom_offset (scr) + sizeof (osd::screen::panel_pos_t) * i;
 		if (i >= OSD_SCREEN_PANELS || eeprom_read_byte (offset) >= osd::panel::count)
 		{
-			print_err_p (PSTR ("Invalid panel #"));
+			print_err_p (PSTR ("Bad panel #"));
 			return false;
 		}
 		return true;
@@ -649,7 +649,7 @@ namespace adc
 	{
 		if (ch > 0x0f)
 		{
-			CONSOLE_UART::send_string_p (PSTR ("Invalid ADC channel"));
+			CONSOLE_UART::send_string_p (PSTR ("Bad ADC channel"));
 			return;
 		}
 
@@ -716,7 +716,7 @@ void process (const char *cmd)
 	while (command [size] && command [size] != ' ') size ++;
 
 	if (!commands::exec (command, size))
-		CONSOLE_UART::send_string_p (PSTR ("Invalid command"));
+		CONSOLE_UART::send_string_p (PSTR ("Bad command"));
 }
 
 }
