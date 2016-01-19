@@ -359,7 +359,7 @@ namespace screen
 	bool check_panel_idx (uint8_t scr, uint8_t i)
 	{
 		uint8_t *offset = osd::screen::eeprom_offset (scr) + sizeof (osd::screen::panel_pos_t) * i;
-		if (i >= OSD_DEFAULT_SCREEN_PANELS || eeprom_read_byte (offset) >= osd::panel::count)
+		if (i >= OSD_SCREEN_PANELS || eeprom_read_byte (offset) >= osd::panel::count)
 		{
 			print_err_p (PSTR ("Invalid panel #"));
 			return false;
@@ -376,7 +376,7 @@ namespace screen
 
 		uint8_t *offset = osd::screen::eeprom_offset (num);
 
-		for (uint8_t i = 0; i < OSD_DEFAULT_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
+		for (uint8_t i = 0; i < OSD_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
 		{
 			uint8_t panel = eeprom_read_byte (offset);
 			if (panel >= osd::panel::count) break;
@@ -419,7 +419,7 @@ namespace screen
 
 		uint8_t *offset = osd::screen::eeprom_offset (scr);
 		uint8_t i = 0;
-		for (; i < OSD_DEFAULT_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
+		for (; i < OSD_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
 		{
 			uint8_t panel = eeprom_read_byte (offset);
 			if (panel >= osd::panel::count)
@@ -430,7 +430,7 @@ namespace screen
 				break;
 			}
 		}
-		if (i == OSD_DEFAULT_SCREEN_PANELS)
+		if (i == OSD_SCREEN_PANELS)
 		{
 			print_err_p ("Too much panels");
 			return;
@@ -482,7 +482,7 @@ namespace screen
 
 		i ++;
 		uint8_t *offset = osd::screen::eeprom_offset (scr, i);
-		if (i == OSD_DEFAULT_SCREEN_PANELS || eeprom_read_byte (offset) >= osd::panel::count)
+		if (i == OSD_SCREEN_PANELS || eeprom_read_byte (offset) >= osd::panel::count)
 		{
 			// last panel
 			uint8_t *prev = osd::screen::eeprom_offset (scr, i - 1);
@@ -492,7 +492,7 @@ namespace screen
 		}
 		else
 		{
-			for (; i < OSD_DEFAULT_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
+			for (; i < OSD_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
 			{
 				uint8_t *prev = osd::screen::eeprom_offset (scr, i - 1);
 				eeprom_update_byte (prev, eeprom_read_byte (offset));
@@ -518,7 +518,7 @@ namespace screen
 		if (!check_screen (scr)) return;
 
 		uint8_t *offset = osd::screen::eeprom_offset (scr);
-		for (uint8_t i = 0; i < OSD_DEFAULT_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
+		for (uint8_t i = 0; i < OSD_SCREEN_PANELS; i ++, offset += sizeof (osd::screen::panel_pos_t))
 		{
 			eeprom_update_byte (offset, 0xff);
 			eeprom_update_byte (offset + 1, 0xff);

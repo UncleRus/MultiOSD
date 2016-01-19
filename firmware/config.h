@@ -82,8 +82,9 @@
 /*
  * OSD config
  */
+#define OSD_SCREEN_PANELS 24                              // (OSD_SCREEN_PANELS * 3) bytes in SRAM
+#define OSD_MAX_SCREENS 8
 #define OSD_DEFAULT_SCREENS 8                             // each screen will consume (OSD_SCREEN_PANELS * 3) bytes in EEPROM
-#define OSD_DEFAULT_SCREEN_PANELS 24                      // (OSD_SCREEN_PANELS * 3) bytes in SRAM
 #define OSD_DEFAULT_CHANNEL_MIN 1000                      // us
 #define OSD_DEFAULT_CHANNEL_MAX 2000                      // us
 #define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_RAW_CHANNEL  // Screens switch: OSD_SWITCH_OFF (0) - Single screen,
