@@ -24,10 +24,18 @@ import sys
 def upload_font (args):
     f = open (args.font, 'rb')
 
+    port = serial.Serial (args.port, 57600)
+    
     print ('Press device reset button...', end = ' ')
     sys.stdout.flush ()
+    
+    self.serial.setDTR (False)
+    self.serial.setRTS (False)
+    time.sleep (0.25)
+    self.serial.setDTR (True)
+    self.serial.setRTS (True)
+    time.sleep (0.05)
 
-    port = serial.Serial (args.port, 57600)
     while port.readline ().strip () != 'READY':
         pass
 
