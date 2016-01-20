@@ -78,7 +78,7 @@ namespace draw
 
 	void arrow (uint8_t x, uint8_t y, uint16_t direction, uint8_t attr)
 	{
-		uint8_t chr = _ARROWS + ((uint8_t) (telemetry::home::direction / 360.0 * 16)) * 2;
+		uint8_t chr = _ARROWS + ((uint8_t) (direction / 360.0 * 16)) * 2;
 		max7456::put (x, y, chr, attr);
 		max7456::put (x + 1, y, chr + 1, attr);
 	}
@@ -424,8 +424,6 @@ namespace home_direction
 #define _PAN_HD_ARROWS 0x90
 
 	PANEL_NAME ("HomeDirection");
-
-	uint8_t arrow;
 
 	void update () {}
 
