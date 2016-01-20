@@ -20,6 +20,7 @@ from __future__ import print_function
 import serial
 import argparse
 import sys
+import time
 
 def upload_font (args):
     f = open (args.font, 'rb')
