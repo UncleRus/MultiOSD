@@ -30,11 +30,11 @@ def upload_font (args):
     print ('Press device reset button...', end = ' ')
     sys.stdout.flush ()
     
-    self.serial.setDTR (False)
-    self.serial.setRTS (False)
+    port.setDTR (False)
+    port.setRTS (False)
     time.sleep (0.25)
-    self.serial.setDTR (True)
-    self.serial.setRTS (True)
+    port.setDTR (True)
+    port.setRTS (True)
     time.sleep (0.05)
 
     while port.readline ().strip () != 'READY':
