@@ -13,7 +13,7 @@ Debian/Ubuntu
 
    # apt-get install gcc-avr avr-libc
 
-2. Clone the repo:
+2. Clone repo:
 
 ::
 
@@ -44,7 +44,7 @@ UART.
    ...
    $ pip install -r tools/requirements.txt
 
-2. Select suitable version of firmware:
+2. Select suitable firmware version:
 
 ::
 
@@ -55,7 +55,7 @@ UART.
 
 ::
 
-   $ python tools/flasher.py -p /dev/ttyUSB0 build/MultiOSD_uavtalk_adcbattery_adcrssi.hex
+   $ python tools/flasher.py -p /dev/ttyUSB0 -b 57600 build/MultiOSD_uavtalk_adcbattery_adcrssi.hex
 
 4. Upload MAX7456 font:
 

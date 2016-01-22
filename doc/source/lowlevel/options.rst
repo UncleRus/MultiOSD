@@ -51,7 +51,7 @@ MAX7456
 VMODE
 -----
 
-OSD composite video mode. Works only when jumper "PAL" on MinimOSD is not closed.
+OSD composite video mode. Used only when jumper "PAL" on MinimOSD is not closed.
 Value will be applied after reboot.
 
 +------+--------+
@@ -163,7 +163,7 @@ Way to switch between screens. Switching between screen works only when :ref:`o-
 SWCH
 ----
 
-Switch input channel. Works if :ref:`o-switch` = 2.
+Switch input channel. Used if :ref:`o-switch` = 2.
 
 +-------+--------+
 | Type  | Size   |
@@ -176,7 +176,7 @@ Switch input channel. Works if :ref:`o-switch` = 2.
 SWCHMIN
 -------
 
-Minimal pulse width of raw input channel (usually 1000). Works if
+Minimal pulse width of raw input channel (usually 1000). Used if
 :ref:`o-switch` = 2.
 
 +--------+---------+
@@ -190,7 +190,7 @@ Minimal pulse width of raw input channel (usually 1000). Works if
 SWCHMAX
 -------
 
-Maximal pulse width of raw input channel (usually 2000). Works if
+Maximal pulse width of raw input channel (usually 2000). Used if
 :ref:`o-switch` = 2.
 
 +--------+---------+
@@ -623,7 +623,7 @@ by :ref:`o-mlerc` lower than :ref:`o-mlert`.
 MLERC
 -----
 
-Receiver channel used for emulation. Works only when :ref:`o-mler` = 1.
+Receiver channel used for emulation. Used only when :ref:`o-mler` = 1.
 
 +------+--------+
 | Type | Size   |
@@ -656,7 +656,7 @@ Receiver channel used for emulation. Works only when :ref:`o-mler` = 1.
 MLERT
 -----
 
-RSSI emulation threshold. Minimal pulse width of input channel, us. Works
+RSSI emulation threshold. Minimal pulse width of input channel, us. Used
 only when :ref:`o-mlert` = 1. Typical value is **~900**
 
 +--------+---------+
