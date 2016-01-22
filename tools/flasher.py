@@ -118,10 +118,6 @@ def need_connection (func):
     return wrapped
 
 
-def dump (data):
-    return ' '.join (('%02x' % ord (b) for b in data))
-
-
 def get_byte (bytes_, i = 0):
     return bytes_ [i] if isinstance (bytes_ [i], int) else ord (bytes_ [i])
 
@@ -326,12 +322,13 @@ class STK500 (object):
 def main ():
     parser = argparse.ArgumentParser (description = 'MultiOSD firmware uploader')
     parser.add_argument ('-p', '--port', default = '/dev/ttyUSB0', help = 'Serial port name')
+    parser.add_argument ('-b', '--baudrate', type = int, default = 57600, help = 'Serial port baudrate (Arduino - 57600, optiboot - 115200)')
     parser.add_argument ('hex', help = 'Firmware filename')
     args = parser.parse_args ()
 
     try:
         s = STK500 ()
-        s.open (args.port)
+        s.open (args.port, args.baudrate)
         s.upload_hex (open (args.hex, 'rb'))
     except KeyboardInterrupt:
         print ('Interrupted.')
