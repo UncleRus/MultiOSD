@@ -6,7 +6,7 @@ terminal software and serial port (it can be any USB-UART connector, like FTDI
 or Prolific pl2303).
 
 1. Run your terminal software.
-2. Connect MultiOSD to COM-port.
+2. Connect MultiOSD to the serial port.
 3. Open the port with baudrate **57600**.
 4. Press reset button on MultiOSD.
 5. Wait for message ``READY``.
@@ -54,34 +54,34 @@ Provides information about firmware and shows the list of available screen panel
 
 ::
 
-   osd# info
-   VERSION: 0010
-   MODULES: ADCBattery ADCRSSI MAVLink
-   PANELS:
-   000: StableAlt
-   001: Climb
-   002: FlightMode
-   003: ArmedFlag
-   004: ConState
-   005: FlightTime
-   006: Roll
-   007: Pitch
-   008: GPS
-   009: Lat
-   010: Lon
-   011: Horizon
-   012: Throttle
-   013: GroundSpeed
-   014: BatVoltage
-   015: BatCurrent
-   016: BatConsumed
-   017: RSSIFlag
-   018: HomeDistance
-   019: HomeDirection
-   020: CallSign
-   021: Temperature
-   022: RSSI
-   023: Compass
+      osd# info
+      VERSION: 0.12
+      MODULES: ADCBattery ADCRSSI MAVLink
+      PANELS:
+      000: StableAlt
+      001: Climb
+      002: FlightMode
+      003: ArmedFlag
+      004: ConState
+      005: FlightTime
+      006: Roll
+      007: Pitch
+      008: GPS
+      009: Lat
+      010: Lon
+      011: Horizon
+      012: Throttle
+      013: GroundSpeed
+      014: BatVoltage
+      015: BatCurrent
+      016: BatConsumed
+      017: RSSIFlag
+      018: HomeDistance
+      019: HomeDirection
+      020: CallSign
+      021: Temperature
+      022: RSSI
+      023: Compass
 
 exit
 ^^^^

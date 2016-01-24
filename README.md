@@ -65,12 +65,12 @@ More to come.
 
 ## Build and install
 
-[MultiOSD Building](doc/source/build.rst)
+[MultiOSD Building](https://github.com/UncleRus/MultiOSD/wiki/Build-and-install)
 
 ## Configure
 
-* You can use [the serial console](doc/source/lowlevel/console.rst)
-  to change [options](doc/source/lowlevel/options.rst) and screens layout.
+You can use [the serial console](https://github.com/UncleRus/MultiOSD/wiki/Configuration-console)
+to change [options](https://github.com/UncleRus/MultiOSD/wiki/Configuration-options) and screens layout.
 
 ## Todo
 
