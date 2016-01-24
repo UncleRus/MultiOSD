@@ -67,14 +67,17 @@ More to come.
 
 [MultiOSD Building](doc/source/build.rst)
 
-## Known bugs and problems
+## Configure
 
-* No configuration software (https://github.com/UncleRus/MultiConf - 
-  currently in development).
-  
-  But you can use [the serial console](doc/source/lowlevel/console.rst)
+* You can use [the serial console](doc/source/lowlevel/console.rst)
   to change [options](doc/source/lowlevel/options.rst) and screens layout.
-* No autoconfig for UBX
-* No mag support by UAVTalk module
+
+## Todo
+
+* UBX autoconfig
+* MultiWii Serial Protocol
+* Configuration GUI
+
+
 
 
