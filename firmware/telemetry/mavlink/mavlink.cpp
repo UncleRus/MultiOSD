@@ -469,8 +469,9 @@ bool update ()
 				stable::airspeed    = mavlink_msg_vfr_hud_get_airspeed (msg);
 				stable::altitude    = mavlink_msg_vfr_hud_get_alt (msg);
 				stable::climb       = mavlink_msg_vfr_hud_get_climb (msg);
-				stable::heading     = mavlink_msg_vfr_hud_get_heading (msg);
 				input::throttle     = mavlink_msg_vfr_hud_get_throttle (msg);
+				stable::heading     = mavlink_msg_vfr_hud_get_heading (msg);
+				stable::heading_source = stable::hs_external_mag;
 				break;
 			case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
 				input::roll  = filter_int16 (mavlink_msg_rc_channels_scaled_get_chan1_scaled (msg)) / 100;

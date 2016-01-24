@@ -255,6 +255,7 @@ bool update ()
 				gps::heading = buf.payload.nav_velned.heading * 1.0e-5f;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
 				stable::heading = gps::heading;
+				stable::heading_source = stable::hs_gps;
 #endif
 				updated = true;
 				break;

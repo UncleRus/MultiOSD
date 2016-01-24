@@ -27,6 +27,10 @@
 #include "gcstelemetrystats.h"
 #include "gpspositionsensor.h"
 #include "gpsvelocitysensor.h"
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+	#include "magsensor.h"
+	#include "magstate.h"
+#endif
 #include "manualcontrolcommand.h"
 #include "positionstate.h"
 #include "systemstats.h"
@@ -41,14 +45,20 @@ namespace op150202
 void update_connection ();
 
 void handle_attitudestate ();
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
 void handle_barosensor ();
+#endif
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 void handle_flightbatterystate ();
+#endif
 void handle_flightstatus ();
 void handle_flighttelemetrystats ();
 void handle_gpspositionsensor ();
 void handle_gpsvelocitysensor ();
 void handle_manualcontrolcommand ();
 void handle_positionstate ();
+void handle_magsensor ();
+void handle_magstate ();
 void handle_systemstats ();
 
 namespace fm
@@ -86,13 +96,22 @@ namespace fm
 const obj_handler_t handlers [] PROGMEM = {
 	{UAVTALK_OP150202_FLIGHTSTATUS_OBJID,         handle_flightstatus},
 	{UAVTALK_OP150202_ATTITUDESTATE_OBJID,        handle_attitudestate},
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
 	{UAVTALK_OP150202_BAROSENSOR_OBJID,           handle_barosensor},
+#endif
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 	{UAVTALK_OP150202_FLIGHTBATTERYSTATE_OBJID,   handle_flightbatterystate},
+#endif
 	{UAVTALK_OP150202_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
 	{UAVTALK_OP150202_GPSPOSITIONSENSOR_OBJID,    handle_gpspositionsensor},
 	{UAVTALK_OP150202_GPSVELOCITYSENSOR_OBJID,    handle_gpsvelocitysensor},
 	{UAVTALK_OP150202_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+	{UAVTALK_OP150202_MAGSENSOR_OBJID,            handle_magsensor},
+	{UAVTALK_OP150202_MAGSTATE_OBJID,             handle_magstate},
+#endif
 	{UAVTALK_OP150202_POSITIONSTATE_OBJID,        handle_positionstate},
+	{UAVTALK_OP150202_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
 	{UAVTALK_OP150202_SYSTEMSTATS_OBJID,          handle_systemstats},
 	{_UT_TIMEOUT_OBJID,                           update_connection}
 };

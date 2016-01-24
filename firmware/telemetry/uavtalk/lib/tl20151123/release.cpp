@@ -29,25 +29,25 @@ namespace tl20151123
 void handle_flightstatus ()
 {
 	FlightStatus *obj = (FlightStatus *) &buffer.data;
-	bool was_armed = telemetry::status::armed;
-	telemetry::status::armed = obj->Armed == FLIGHTSTATUS_ARMED_ARMED;
-	telemetry::status::flight_mode = obj->FlightMode;
-	telemetry::status::flight_mode_name_p = uavtalk::get_fm_name_p (telemetry::status::flight_mode);
+	bool was_armed = status::armed;
+	status::armed = obj->Armed == FLIGHTSTATUS_ARMED_ARMED;
+	status::flight_mode = obj->FlightMode;
+	status::flight_mode_name_p = uavtalk::get_fm_name_p (status::flight_mode);
 
-	if (internal_home_calc && !was_armed && telemetry::status::armed)
-		telemetry::home::fix ();
+	if (internal_home_calc && !was_armed && status::armed)
+		home::fix ();
 }
 
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 void handle_flightbatterystate ()
 {
-#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 	FlightBatteryState *obj = (FlightBatteryState *) &buffer.data;
-	telemetry::battery::voltage = obj->Voltage;
-	telemetry::battery::update_voltage ();
-	telemetry::battery::current = obj->Current;
-	telemetry::battery::consumed = obj->ConsumedEnergy;
-#endif
+	battery::voltage = obj->Voltage;
+	battery::update_voltage ();
+	battery::current = obj->Current;
+	battery::consumed = obj->ConsumedEnergy;
 }
+#endif
 
 void send_gcs_telemetry_stats (GCSTelemetryStatsStatus status)
 {
@@ -80,42 +80,52 @@ inline uint8_t fts_respond (uint8_t state)
 void handle_flighttelemetrystats ()
 {
 	FlightTelemetryStats *obj = (FlightTelemetryStats *) &buffer.data;
-	telemetry::status::connection = fts_respond (obj->Status);
-	connection_timeout = telemetry::ticks + UAVTALK_CONNECTION_TIMEOUT;
+	status::connection = fts_respond (obj->Status);
+	connection_timeout = ticks + UAVTALK_CONNECTION_TIMEOUT;
 }
 
 void handle_gpsposition ()
 {
 	UAVTALK_OP150202::handle_gpspositionsensor ();
-	if (telemetry::gps::state > 0) telemetry::gps::state --;
+	if (gps::state > 0) gps::state --;
 }
 
 void handle_gpsvelocity ()
 {
 	GPSVelocity *obj = (GPSVelocity *) &buffer.data;
-	telemetry::gps::climb = -obj->Down;
+	gps::climb = -obj->Down;
 }
+
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+void handle_magnitometer ()
+{
+	Magnetometer *obj = (Magnetometer *) &buffer.data;
+	stable::heading_source = stable::hs_external_mag;
+	stable::calc_heading (obj->x, obj->y);
+	mag_enabled = true;
+}
+#endif
 
 void handle_manualcontrolcommand ()
 {
 	ManualControlCommand *obj = (ManualControlCommand *) &buffer.data;
-	telemetry::input::throttle   = (int8_t) (obj->Throttle * 100);
-	telemetry::input::roll       = (int8_t) (obj->Roll * 100);
-	telemetry::input::pitch      = (int8_t) (obj->Pitch * 100);
-	telemetry::input::yaw        = (int8_t) (obj->Yaw * 100);
-	telemetry::input::collective = (int8_t) (obj->Collective * 100);
-	memcpy (telemetry::input::channels, obj->Channel, sizeof (obj->Channel));
-	telemetry::input::connected = obj->Connected;
+	input::throttle   = (int8_t) (obj->Throttle * 100);
+	input::roll       = (int8_t) (obj->Roll * 100);
+	input::pitch      = (int8_t) (obj->Pitch * 100);
+	input::yaw        = (int8_t) (obj->Yaw * 100);
+	input::collective = (int8_t) (obj->Collective * 100);
+	memcpy (input::channels, obj->Channel, sizeof (obj->Channel));
+	input::connected = obj->Connected;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
-	telemetry::input::rssi = obj->Rssi * 100;
-	telemetry::messages::rssi_low = telemetry::input::rssi < rssi_low_threshold;
+	input::rssi = obj->Rssi * 100;
+	messages::rssi_low = input::rssi < rssi_low_threshold;
 #endif
 }
 
 void handle_airspeedactual ()
 {
 	AirspeedActual *obj = (AirspeedActual *) &buffer.data;
-	telemetry::stable::airspeed = obj->CalibratedAirspeed;
+	stable::airspeed = obj->CalibratedAirspeed;
 }
 
 void update_connection ()

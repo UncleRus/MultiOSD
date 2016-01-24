@@ -29,6 +29,9 @@
 #include "gcstelemetrystats.h"
 #include "gpsposition.h"
 #include "gpsvelocity.h"
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+	#include "magnetometer.h"
+#endif
 #include "manualcontrolcommand.h"
 #include "nedposition.h"
 #include "systemstats.h"
@@ -67,21 +70,33 @@ namespace fm
 
 void update_connection ();
 
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 void handle_flightbatterystate ();
+#endif
 void handle_flightstatus ();
 void handle_flighttelemetrystats ();
 void handle_gpsposition ();
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+void handle_magnitometer ();
+#endif
 void handle_manualcontrolcommand ();
 void handle_airspeedactual ();
 
 const obj_handler_t handlers [] PROGMEM = {
 	{UAVTALK_TL20151123_FLIGHTSTATUS_OBJID,         handle_flightstatus},
 	{UAVTALK_TL20151123_ATTITUDEACTUAL_OBJID,       UAVTALK_OP150202::handle_attitudestate},
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
 	{UAVTALK_TL20151123_BAROALTITUDE_OBJID,         UAVTALK_OP150202::handle_barosensor},
+#endif
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 	{UAVTALK_TL20151123_FLIGHTBATTERYSTATE_OBJID,   handle_flightbatterystate},
+#endif
 	{UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
 	{UAVTALK_TL20151123_GPSPOSITION_OBJID,          handle_gpsposition},
 	{UAVTALK_TL20151123_GPSVELOCITY_OBJID,          UAVTALK_OP150202::handle_gpsvelocitysensor},
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+	{UAVTALK_TL20151123_MAGNETOMETER_OBJID,         handle_magnitometer},
+#endif
 	{UAVTALK_TL20151123_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
 	{UAVTALK_TL20151123_NEDPOSITION_OBJID,          UAVTALK_OP150202::handle_positionstate},
 	{UAVTALK_TL20151123_SYSTEMSTATS_OBJID,          UAVTALK_OP150202::handle_systemstats},

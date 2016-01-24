@@ -33,7 +33,6 @@ void handle_flightstatus ()
 	status::armed = obj->Armed == FLIGHTSTATUS_ARMED_ARMED;
 	status::flight_mode = obj->FlightMode;
 	status::flight_mode_name_p = uavtalk::get_fm_name_p (status::flight_mode);
-	// fix home if armed on CC3D
 	if (internal_home_calc && !was_armed && status::armed)
 		home::fix ();
 }
@@ -46,29 +45,29 @@ void handle_attitudestate ()
 	attitude::yaw   = obj->Yaw;
 }
 
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
 void handle_barosensor ()
 {
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
 	BaroSensor *obj = (BaroSensor *) &buffer.data;
 	barometer::altitude = obj->Altitude;
 	barometer::pressure = obj->Pressure;
 	environment::temperature = barometer::temperature = obj->Temperature;
 	stable::update_alt_climb (barometer::altitude);
 	baro_enabled = true;
-#endif
 }
+#endif
 
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 void handle_flightbatterystate ()
 {
-#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 	FlightBatteryState *obj = (FlightBatteryState *) &buffer.data;
 	battery::voltage = obj->Voltage;
 	battery::cells = obj->NbCells;
 	battery::update_voltage ();
 	battery::current = obj->Current;
 	battery::consumed = obj->ConsumedEnergy;
-#endif
 }
+#endif
 
 void send_gcs_telemetry_stats (GCSTelemetryStatsStatus status)
 {
@@ -116,7 +115,12 @@ void handle_gpspositionsensor ()
 	gps::state      = obj->Status;
 	gps::satellites = obj->Satellites;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-	if (!mag_enabled) stable::heading = gps::heading;
+	if (stable::heading_source == stable::hs_disabled
+		|| stable::heading_source == stable::hs_gps)
+	{
+		stable::heading = gps::heading;
+		stable::heading_source = stable::hs_gps;
+	}
 #endif
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
 	// update stable altitude if we can't get the baro altitude
@@ -160,8 +164,32 @@ void handle_positionstate ()
 	home::distance = sqrt (square (obj->East) + square (obj->North));
 	int16_t bearing = atan2 (obj->East, obj->North) * 57.295775;
 	if (bearing < 0) bearing += 360;
+	if (bearing > 360) bearing -= 360;
 	home::direction = bearing;
 }
+
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+void handle_magsensor ()
+{
+	MagSensor *obj = (MagSensor *) &buffer.data;
+	if (mag_enabled) return;
+
+	stable::heading_source = stable::hs_internal_mag;
+	stable::calc_heading (obj->x, obj->y);
+}
+
+void handle_magstate ()
+{
+	MagState *obj = (MagState *) &buffer.data;
+	if (obj->Source == MAGSTATE_SOURCE_INVALID) return;
+
+	stable::heading_source = obj->Source == MAGSTATE_SOURCE_ONBOARD
+		? stable::hs_internal_mag
+		: stable::hs_external_mag;
+	stable::calc_heading (obj->x, obj->y);
+	mag_enabled = true;
+}
+#endif
 
 void handle_systemstats ()
 {

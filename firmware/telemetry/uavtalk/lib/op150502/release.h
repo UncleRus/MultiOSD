@@ -51,12 +51,20 @@ namespace fm
 const obj_handler_t handlers [] PROGMEM = {
 	{UAVTALK_OP150502_FLIGHTSTATUS_OBJID,         UAVTALK_OP150202::handle_flightstatus}, // new obj_id
 	{UAVTALK_OP150202_ATTITUDESTATE_OBJID,        UAVTALK_OP150202::handle_attitudestate},
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
 	{UAVTALK_OP150202_BAROSENSOR_OBJID,           UAVTALK_OP150202::handle_barosensor},
+#endif
+#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
 	{UAVTALK_OP150202_FLIGHTBATTERYSTATE_OBJID,   UAVTALK_OP150202::handle_flightbatterystate},
+#endif
 	{UAVTALK_OP150202_FLIGHTTELEMETRYSTATS_OBJID, UAVTALK_OP150202::handle_flighttelemetrystats},
 	{UAVTALK_OP150202_GPSPOSITIONSENSOR_OBJID,    UAVTALK_OP150202::handle_gpspositionsensor},
 	{UAVTALK_OP150202_GPSVELOCITYSENSOR_OBJID,    UAVTALK_OP150202::handle_gpsvelocitysensor},
 	{UAVTALK_OP150202_MANUALCONTROLCOMMAND_OBJID, UAVTALK_OP150202::handle_manualcontrolcommand},
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+	{UAVTALK_OP150202_MAGSENSOR_OBJID,            UAVTALK_OP150202::handle_magsensor},
+	{UAVTALK_OP150202_MAGSTATE_OBJID,             UAVTALK_OP150202::handle_magstate},
+#endif
 	{UAVTALK_OP150202_POSITIONSTATE_OBJID,        UAVTALK_OP150202::handle_positionstate},
 	{UAVTALK_OP150202_SYSTEMSTATS_OBJID,          UAVTALK_OP150202::handle_systemstats},
 	{_UT_TIMEOUT_OBJID,                           UAVTALK_OP150202::update_connection}

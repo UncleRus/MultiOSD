@@ -505,6 +505,8 @@ namespace compass
 
 	DECLARE_BUF (12);
 
+	uint8_t attr, arrow;
+
 	void update ()
 	{
 		int16_t offset = round (telemetry::stable::heading * ruler_size / 360.0) - (sizeof (buffer) - 1) / 2;
@@ -515,12 +517,30 @@ namespace compass
 			if (++ offset >= ruler_size) offset = 0;
 		}
 		terminate_buffer ();
+		switch (telemetry::stable::heading_source)
+		{
+			case telemetry::stable::hs_disabled:
+				attr = MAX7456_ATTR_INVERT;
+				arrow = 0xc6;
+				break;
+			case telemetry::stable::hs_gps:
+				attr = 0;
+				arrow = 0xb6;
+				break;
+			case telemetry::stable::hs_internal_mag:
+				attr = 0;
+				arrow = 0xc7;
+				break;
+			default:
+				attr = 0;
+				arrow = 0xc6;
+		}
 	}
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::put (x + (sizeof (buffer) - 1) / 2, y, 0xc6);
-		max7456::puts (x, y + 1, buffer);
+		max7456::put (x + (sizeof (buffer) - 1) / 2, y, arrow, attr);
+		max7456::puts (x, y + 1, buffer, attr);
 	}
 
 }  // namespace compass

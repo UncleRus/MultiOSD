@@ -161,6 +161,7 @@ namespace stable
 	float groundspeed = 0.0;
 	float airspeed = 0.0;
 	uint16_t heading = 0;
+	heading_source_t heading_source = hs_disabled;
 
 	uint32_t _alt_update_time = 0;
 
@@ -169,6 +170,17 @@ namespace stable
 		climb = (_alt - altitude) / (ticks - _alt_update_time) * 1000;
 		altitude = _alt;
 		_alt_update_time = ticks;
+	}
+
+	void calc_heading (float x, float y)
+	{
+		int16_t bearing = 90 + atan2 (x, y) * 57.295775;
+
+		// TODO: declination
+
+		if (bearing < 0) bearing += 360;    // normalization
+		if (bearing > 360) bearing -= 360;  // normalization
+		heading = bearing;
 	}
 
 }  // namespace stable

@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include "../lib/pgmspace.h"
 
+// FIXME: enums
 #define GPS_STATE_NO_FIX 0
 #define GPS_STATE_FIXING 1
 #define GPS_STATE_2D     2
@@ -113,13 +114,22 @@ namespace environment
 
 namespace stable
 {
+	enum heading_source_t {
+		hs_disabled = 0,
+		hs_gps = 1,
+		hs_internal_mag = 2,
+		hs_external_mag = 3
+	};
+
 	extern float    climb;        // m/s
 	extern float    altitude;     // meters
-	extern float    groundspeed; // m/s
-	extern float    airspeed;    // m/s
+	extern float    groundspeed;  // m/s
+	extern float    airspeed;     // m/s
 	extern uint16_t heading;      // degrees, 0..360
+	extern heading_source_t heading_source;
 
 	void update_alt_climb (float altitude);
+	void calc_heading (float x, float y);
 }
 
 namespace battery
