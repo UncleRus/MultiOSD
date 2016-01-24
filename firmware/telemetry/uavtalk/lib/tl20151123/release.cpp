@@ -97,7 +97,7 @@ void handle_gpsvelocity ()
 }
 
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-void handle_magnitometer ()
+void handle_magnetometer ()
 {
 	Magnetometer *obj = (Magnetometer *) &buffer.data;
 	stable::heading_source = stable::hs_external_mag;

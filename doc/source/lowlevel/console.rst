@@ -145,7 +145,7 @@ opt g
 Read an option value from EEPROM.
 
 Usage: ``opt g <name>``
-   - ``name`` - option name, uppercase
+   - ``name`` - option name, case insensetive
 
 *Example*
 
@@ -160,7 +160,7 @@ opt s
 Write an option value to EEPROM.
 
 Usage: ``opt s <name> <value>``
-   - ``name`` - option name, uppercase
+   - ``name`` - option name, case insensetive
    - ``value`` - option value
 
 *Example*

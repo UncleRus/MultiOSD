@@ -77,7 +77,7 @@ void handle_flightstatus ();
 void handle_flighttelemetrystats ();
 void handle_gpsposition ();
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-void handle_magnitometer ();
+void handle_magnetometer ();
 #endif
 void handle_manualcontrolcommand ();
 void handle_airspeedactual ();
@@ -95,7 +95,7 @@ const obj_handler_t handlers [] PROGMEM = {
 	{UAVTALK_TL20151123_GPSPOSITION_OBJID,          handle_gpsposition},
 	{UAVTALK_TL20151123_GPSVELOCITY_OBJID,          UAVTALK_OP150202::handle_gpsvelocitysensor},
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-	{UAVTALK_TL20151123_MAGNETOMETER_OBJID,         handle_magnitometer},
+	{UAVTALK_TL20151123_MAGNETOMETER_OBJID,         handle_magnetometer},
 #endif
 	{UAVTALK_TL20151123_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
 	{UAVTALK_TL20151123_NEDPOSITION_OBJID,          UAVTALK_OP150202::handle_positionstate},
