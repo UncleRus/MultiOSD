@@ -19,6 +19,10 @@
 #include "../common.h"
 #include "../../config.h"
 
+#define SPI_CPOL 0   // Clock polarity: low when idle
+#define SPI_CPHA 0   // Clock phase: leading edge
+#define SPI_CLOCK 0  // Fosc / 4
+
 namespace spi
 {
 

@@ -148,9 +148,6 @@
 #define SPI_MOSI_BIT PB3
 #define SPI_MISO_BIT PB4
 #define SPI_SCK_BIT PB5
-#define SPI_CPOL 0                                        // Clock polarity: low when idle
-#define SPI_CPHA 0                                        // Clock phase: leading edge
-#define SPI_CLOCK 0                                       // Fosc / 4
 
 /*
  * MAX7456 config

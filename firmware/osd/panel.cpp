@@ -91,7 +91,7 @@ namespace draw
 namespace panels
 {
 
-#define terminate_buffer() { buffer [sizeof (buffer) - 1] = 0; }
+#define terminate_buffer() do { buffer [sizeof (buffer) - 1] = 0; } while (0)
 
 #define DECLARE_BUF(n) char buffer [n];
 

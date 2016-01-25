@@ -90,13 +90,13 @@ uint8_t mode, right, bottom, hcenter, vcenter;
 uint8_t _mask = 0;
 bool _opened = false;
 
-#define _chip_select() { cbi (MAX7456_SELECT_PORT, MAX7456_SELECT_BIT); }
-#define _chip_unselect() { sbi (MAX7456_SELECT_PORT, MAX7456_SELECT_BIT); }
+#define _chip_select() do { cbi (MAX7456_SELECT_PORT, MAX7456_SELECT_BIT); } while (0)
+#define _chip_unselect() do { sbi (MAX7456_SELECT_PORT, MAX7456_SELECT_BIT); } while (0)
 
 // Write VM0[3] = 1 to enable the display of the OSD image.
 // mode | autosync | vsync on | enable OSD
-#define _enable_osd() { write_register (MAX7456_REG_VM0, _mask | 0x0c); }
-#define _disable_osd() { write_register (MAX7456_REG_VM0, 0); }
+#define _enable_osd() do { write_register (MAX7456_REG_VM0, _mask | 0x0c); } while (0)
+#define _disable_osd() do { write_register (MAX7456_REG_VM0, 0); } while (0)
 
 void wait_vsync ()
 {
