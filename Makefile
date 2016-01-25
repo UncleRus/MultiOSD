@@ -2,65 +2,51 @@ BUILDDIR = build
 TARGET = MultiOSD
 FWDIR = firmware
 
-
 all: firmware
 
-set_tag = $(file >$(BUILDDIR)/config.mk,TAG = $1)
-set_defs = $(file >>$(BUILDDIR)/config.mk,DEFS = $1)
-clear = @rm -rf $(BUILDDIR)/*[!.hex]
-fw_tgt = $(BUILDDIR)/$(TARGET)_$1.hex
+clear = @rm -rf $(BUILDDIR)/*[!h][!e][!x]
 
-firmware: $(call fw_tgt,uavtalk) $(call fw_tgt,uavtalk_adcrssi) $(call fw_tgt,uavtalk_adcbattery) \
-	 $(call fw_tgt,uavtalk_adcbattery_adcrssi) $(call fw_tgt,mavlink) $(call fw_tgt,mavlink_adcrssi) \
-	 $(call fw_tgt,ubx_adcbattery_adcrssi)
+firmware: $(BUILDDIR)/$(TARGET)_uavtalk.hex \
+          $(BUILDDIR)/$(TARGET)_uavtalk_adcrssi.hex \
+          $(BUILDDIR)/$(TARGET)_uavtalk_adcbattery.hex \
+          $(BUILDDIR)/$(TARGET)_uavtalk_adcbattery_adcrssi.hex \
+          $(BUILDDIR)/$(TARGET)_mavlink.hex \
+          $(BUILDDIR)/$(TARGET)_mavlink_adcrssi.hex \
+          $(BUILDDIR)/$(TARGET)_ubx_adcbattery_adcrssi.hex
 
-$(call fw_tgt,uavtalk):
+$(BUILDDIR)/$(TARGET)_uavtalk.hex:
 	mkdir -p $(BUILDDIR)
-	$(call set_tag,uavtalk)
-	$(call set_defs,-DTELEMETRY_MODULES_UAVTALK)
-	$(MAKE) -C $(FWDIR)
+	$(MAKE) TAG=uavtalk DEFS=-DTELEMETRY_MODULES_UAVTALK -C $(FWDIR)
 	$(clear)
 
-$(call fw_tgt,uavtalk_adcrssi):
+$(BUILDDIR)/$(TARGET)_uavtalk_adcrssi.hex:
 	mkdir -p $(BUILDDIR)
-	$(call set_tag,uavtalk_adcrssi)
-	$(call set_defs,-DTELEMETRY_MODULES_UAVTALK -DTELEMETRY_MODULES_ADC_RSSI)
-	$(MAKE) -C $(FWDIR)
+	$(MAKE) TAG=uavtalk_adcrssi "DEFS=-DTELEMETRY_MODULES_UAVTALK -DTELEMETRY_MODULES_ADC_RSSI" -C $(FWDIR)
 	$(clear)
 
-$(call fw_tgt,uavtalk_adcbattery):
+$(BUILDDIR)/$(TARGET)_uavtalk_adcbattery.hex:
 	mkdir -p $(BUILDDIR)
-	$(call set_tag,uavtalk_adcbattery)
-	$(call set_defs,-DTELEMETRY_MODULES_UAVTALK -DTELEMETRY_MODULES_ADC_BATTERY)
-	$(MAKE) -C $(FWDIR)
+	$(MAKE) TAG=uavtalk_adcbattery "DEFS=-DTELEMETRY_MODULES_UAVTALK -DTELEMETRY_MODULES_ADC_BATTERY" -C $(FWDIR)
 	$(clear)
 
-$(call fw_tgt,uavtalk_adcbattery_adcrssi):
+$(BUILDDIR)/$(TARGET)_uavtalk_adcbattery_adcrssi.hex:
 	mkdir -p $(BUILDDIR)
-	$(call set_tag,uavtalk_adcbattery_adcrssi)
-	$(call set_defs,-DTELEMETRY_MODULES_UAVTALK -DTELEMETRY_MODULES_ADC_BATTERY -DTELEMETRY_MODULES_ADC_RSSI)
-	$(MAKE) -C $(FWDIR)
+	$(MAKE) TAG=uavtalk_adcbattery_adcrssi "DEFS=-DTELEMETRY_MODULES_UAVTALK -DTELEMETRY_MODULES_ADC_BATTERY -DTELEMETRY_MODULES_ADC_RSSI" -C $(FWDIR)
 	$(clear)
 
-$(call fw_tgt,mavlink):
+$(BUILDDIR)/$(TARGET)_mavlink.hex:
 	mkdir -p $(BUILDDIR)
-	$(call set_tag,mavlink)
-	$(call set_defs,-DTELEMETRY_MODULES_MAVLINK)
-	$(MAKE) -C $(FWDIR)
+	$(MAKE) TAG=mavlink DEFS=-DTELEMETRY_MODULES_MAVLINK -C $(FWDIR)
 	$(clear)
 
-$(call fw_tgt,mavlink_adcrssi):
+$(BUILDDIR)/$(TARGET)_mavlink_adcrssi.hex:
 	mkdir -p $(BUILDDIR)
-	$(call set_tag,mavlink_adcrssi)
-	$(call set_defs,-DTELEMETRY_MODULES_MAVLINK -DTELEMETRY_MODULES_ADC_RSSI)
-	$(MAKE) -C $(FWDIR)
+	$(MAKE) TAG=mavlink_adcrssi "DEFS=-DTELEMETRY_MODULES_MAVLINK -DTELEMETRY_MODULES_ADC_RSSI" -C $(FWDIR)
 	$(clear)
 
-$(call fw_tgt,ubx_adcbattery_adcrssi):
+$(BUILDDIR)/$(TARGET)_ubx_adcbattery_adcrssi.hex:
 	mkdir -p $(BUILDDIR)
-	$(call set_tag,ubx_adcbattery_adcrssi)
-	$(call set_defs,-DTELEMETRY_MODULES_UBX -DTELEMETRY_MODULES_ADC_BATTERY -DTELEMETRY_MODULES_ADC_RSSI)
-	$(MAKE) -C $(FWDIR)
+	$(MAKE) TAG=ubx_adcbattery_adcrssi "DEFS=-DTELEMETRY_MODULES_UBX -DTELEMETRY_MODULES_ADC_BATTERY -DTELEMETRY_MODULES_ADC_RSSI" -C $(FWDIR)
 	$(clear)
 
 clean:

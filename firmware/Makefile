@@ -1,9 +1,7 @@
 BUILD_DIR = ../build
 
-TAG = mavlink
-DEFS = -DTELEMETRY_MODULES_MAVLINK
-
--include $(BUILD_DIR)/config.mk
+TAG ?= mavlink
+DEFS ?= -DTELEMETRY_MODULES_MAVLINK
 
 TARGET = MultiOSD_$(TAG)
 SOURCE_DIR = 
