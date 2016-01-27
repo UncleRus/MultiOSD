@@ -43,7 +43,7 @@ def main (args):
     
     timeout = time.time () + args.timeout
     while True:
-        if port.readline ().strip () == 'READY':
+        if port.readline ().strip ().endswith ('READY'):
             break
         if time.time () >= timeout:
             raise IOError ('Sync timeout')
@@ -54,7 +54,7 @@ def main (args):
     while True:
         l = port.readline ()
         if l.startswith ('MultiOSD'):
-            print ('Connected. Press Ctrl+D to exit.')
+            print ('Connected. Type "help" for commands list. Press Ctrl+D to exit.')
             print ()
             print (l.strip ())
             break
@@ -64,11 +64,11 @@ def main (args):
     
     term = Miniterm (port, echo = False, eol = 'crlf', filters = ['default'], )
     
-    term.exit_character = chr(0x04)
-    term.menu_character = chr(0x14)
+    term.exit_character = chr (0x04)
+    term.menu_character = chr (0x14)
     term.raw = True
-    term.set_rx_encoding('Latin1')
-    term.set_tx_encoding('Latin1')
+    term.set_rx_encoding ('Latin1')
+    term.set_tx_encoding ('Latin1')
 
     term.start ()
 
@@ -80,8 +80,16 @@ def main (args):
     term.join ()
     print ()
 
+    port.write ('exit\r\n')
+    
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser (description = 'MultiOSD config console')
     parser.add_argument ('-p', '--port', default = '/dev/ttyUSB1', help = 'Serial port name')
-    parser.add_argument ('-t', '--timeout', type = float, default = 4.0, help = 'Timeout in seconds')
-    main (parser.parse_args ())
+    parser.add_argument ('-t', '--timeout', type = float, default = 5.0, help = 'Timeout in seconds')
+    try:
+        main (parser.parse_args ())
+    except KeyboardInterrupt:
+        print ('Interrupted.')
+    except Exception as e:
+        print ('%s: %s' % (type (e).__name__, str (e)), file = sys.stderr)
