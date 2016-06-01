@@ -100,7 +100,7 @@ namespace gps
 
 namespace barometer
 {
-	extern int16_t  altitude;    // meters
+	extern float    altitude;    // meters
 	extern float    temperature; // Celsius
 	extern uint32_t pressure;    // Pa
 }

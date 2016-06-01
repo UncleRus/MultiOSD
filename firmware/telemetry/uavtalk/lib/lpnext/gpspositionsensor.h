@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_LP150900_GPSPOSITIONSENSOR_H
-#define UAVTALK_LP150900_GPSPOSITIONSENSOR_H
+#ifndef UAVTALK_LPNEXT_GPSPOSITIONSENSOR_H
+#define UAVTALK_LPNEXT_GPSPOSITIONSENSOR_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace lp150900
+namespace lpnext
 {
 
-#define UAVTALK_LP150900_GPSPOSITIONSENSOR_OBJID 0x98A7858C
+#define UAVTALK_LPNEXT_GPSPOSITIONSENSOR_OBJID 0x9DF1F67A
 
 enum GPSPositionSensorStatus
 {
@@ -40,7 +40,8 @@ enum GPSPositionSensorSensorType
 	GPSPOSITIONSENSOR_SENSORTYPE_NMEA = 1,
 	GPSPOSITIONSENSOR_SENSORTYPE_UBX = 2,
 	GPSPOSITIONSENSOR_SENSORTYPE_UBX7 = 3,
-	GPSPOSITIONSENSOR_SENSORTYPE_UBX8 = 4
+	GPSPOSITIONSENSOR_SENSORTYPE_UBX8 = 4,
+	GPSPOSITIONSENSOR_SENSORTYPE_DJI = 5
 };
 
 enum GPSPositionSensorAutoConfigStatus
@@ -82,8 +83,8 @@ struct GPSPositionSensor
 	GPSPositionSensorBaudRate BaudRate;
 };
 
-}  // namespace lp150900
+}  // namespace lpnext
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_LP150900_GPSPOSITIONSENSOR_H
+#endif // UAVTALK_LPNEXT_GPSPOSITIONSENSOR_H

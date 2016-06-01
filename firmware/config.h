@@ -19,7 +19,7 @@
 
 #define _VER(h,l) (((h) << 8) | l)
 
-#define VERSION _VER (0, 12) // current version is 0.12
+#define VERSION _VER (0, 14) // current version is 0.14
 
 // eclipse build conf
 #ifdef ECLIPSE_BUILD

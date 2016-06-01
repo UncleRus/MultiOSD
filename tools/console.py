@@ -85,7 +85,7 @@ def main (args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser (description = 'MultiOSD config console')
-    parser.add_argument ('-p', '--port', default = '/dev/ttyUSB1', help = 'Serial port name')
+    parser.add_argument ('-p', '--port', default = '/dev/ttyUSB0', help = 'Serial port name')
     parser.add_argument ('-t', '--timeout', type = float, default = 5.0, help = 'Timeout in seconds')
     try:
         main (parser.parse_args ())

@@ -138,7 +138,7 @@ namespace gps
 namespace barometer
 {
 
-	int16_t altitude = 0;
+	float altitude = 0.0;
 	float temperature = 0.0;
 	uint32_t pressure = 0;
 

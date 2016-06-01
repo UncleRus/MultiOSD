@@ -52,7 +52,7 @@ void handle_barosensor ()
 	barometer::altitude = obj->Altitude;
 	barometer::pressure = obj->Pressure;
 	environment::temperature = barometer::temperature = obj->Temperature;
-	stable::update_alt_climb (barometer::altitude);
+	stable::update_alt_climb (obj->Altitude);
 	baro_enabled = true;
 }
 #endif

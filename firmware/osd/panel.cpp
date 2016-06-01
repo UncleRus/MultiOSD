@@ -118,7 +118,8 @@ namespace panels
 namespace alt
 {
 
-	STD_PANEL ("StableAlt", 8, "\x85%d\x8d", round (telemetry::stable::altitude));
+	STD_PANEL ("StableAlt", 8, "\x85%d\x8d", (int16_t) round (telemetry::stable::altitude));
+	//STD_PANEL ("StableAlt", 8, "\x85%.1f\x8d", telemetry::stable::altitude);
 
 }  // namespace alt
 

@@ -67,7 +67,7 @@ namespace font
 	void print_byte (uint8_t b)
 	{
 		for (uint8_t i = 0; i < 8; i ++)
-			CONSOLE_UART::send ((b >> i) & 1 ? '1' : '0');
+			CONSOLE_UART::send (((b >> i) & 1) ? '1' : '0');
 		eol ();
 	}
 
