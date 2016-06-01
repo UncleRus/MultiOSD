@@ -18,6 +18,7 @@ Yet another MinimOSD firmware with configurable screens layout.
   * OpenPilot 15.02.02 (latest CC/CC3D release)
   * OpenPilot 15.05.02 (latest Revolution release)
   * LibrePilot 15.09 (http://librepilot.org)
+  * LibrePilot Next release
 * All TauLabs 20151123 (http://taulabs.org) boards
 
 ### MAVLink module  
