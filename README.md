@@ -4,9 +4,9 @@ Yet another MinimOSD firmware with configurable screens layout.
 
 ![Screenshot](doc/source/img/screenshot.png)
 
-* switching between screens
+* up to 8 screens
 * configuration console
-* no image noise
+* no image "snow"
 * ADC RSSI and battery stats
 
 ## Supported flight controllers and software
