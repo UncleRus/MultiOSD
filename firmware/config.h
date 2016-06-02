@@ -31,7 +31,8 @@
  */
 #if !defined (TELEMETRY_MODULES_UAVTALK) \
     	&& !defined (TELEMETRY_MODULES_MAVLINK) \
-    	&& !defined (TELEMETRY_MODULES_UBX)
+    	&& !defined (TELEMETRY_MODULES_UBX) \
+    	&& !defined (TELEMETRY_MODULES_MSP)
 	#define TELEMETRY_MODULES_MAVLINK                // ArduPilot/ArduCopter telemetry module by default
 #endif
 
@@ -78,6 +79,13 @@
 #define UBX_DEFAULT_BAUDRATE UART_BR_19200                // values higher than 57600 is not recommended
 #define UBX_DEFAULT_TIMEOUT 1000                          // ms
 #define UBX_DEFAULT_AUTOCONF 0                            // automatically configure GPS-module after connect
+
+/*
+ * MSP config
+ */
+#define MSP_BUFFER_SIZE 128
+#define MSP_UART uart0
+#define MSP_CONNECTION_TIMEOUT 2000						// ms
 
 /*
  * OSD config

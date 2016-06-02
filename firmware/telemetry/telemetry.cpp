@@ -372,6 +372,9 @@ namespace waypoint
 	#endif
 	#include "nmea/nmea.h"
 #endif
+#ifdef TELEMETRY_MODULES_MSP
+#	include "msp/msp.h"
+#endif
 
 #define declare_module(NS) { telemetry::modules:: NS ::__name, telemetry::modules:: NS ::settings::init, \
 	telemetry::modules:: NS ::settings::reset, telemetry::modules:: NS ::init, telemetry::modules:: NS ::update }
@@ -406,6 +409,9 @@ namespace modules
 #endif
 #ifdef TELEMETRY_MODULES_NMEA
 		declare_module (nmea),
+#endif
+#ifdef TELEMETRY_MODULES_MSP
+		declare_module (msp),
 #endif
 	};
 
