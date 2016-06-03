@@ -117,6 +117,10 @@ void reset ()
 #if OSD_MAX_SCREENS > 2
 	reset_screen (2, _default_screen_2, sizeof (_default_screen_2) / sizeof (panel_pos_t));
 #endif
+#if OSD_MAX_SCREENS > 3
+	for (uint8_t i = 3; i < OSD_MAX_SCREENS; i ++)
+		reset_screen (i, NULL, 0);
+#endif
 }
 
 }  // namespace settings

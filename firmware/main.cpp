@@ -55,6 +55,7 @@ inline void init ()
 	}
 	// boot to OSD
 	CONSOLE_UART::send_string_p (PSTR ("BOOT\r\n"));
+	CONSOLE_UART::send_string_p (PSTR ("BOOT\r\n"));
 	// load telemetry settings
 	telemetry::init ();
 	// load OSD settings

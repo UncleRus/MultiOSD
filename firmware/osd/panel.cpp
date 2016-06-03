@@ -85,6 +85,13 @@ namespace draw
 
 	const char err_str [] PROGMEM = "---";
 
+	void battery_voltage (uint8_t x, uint8_t y, uint8_t symbol_offset, telemetry::battery::battery_t *bat)
+	{
+		max7456::put (x, y, symbol_offset + (uint8_t) round (bat->level / 20.0), telemetry::battery::battery1.low ? MAX7456_ATTR_BLINK : 0);
+		max7456::open (x + 1, y);
+		fprintf_P (&max7456::stream, PSTR ("%.2f\x8e"), bat->voltage);
+	}
+
 }  // namespace draw
 
 
@@ -340,23 +347,11 @@ namespace battery1_voltage
 
 	PANEL_NAME ("Bat1Voltage");
 
-	DECLARE_BUF (7);
-	char symbol;
-	uint8_t attr;
-
-	void update ()
-	{
-		snprintf_P (buffer, sizeof (buffer), PSTR ("%.2f\x8e"), telemetry::battery::battery1.voltage);
-		terminate_buffer ();
-
-		symbol = 0xf4 + (uint8_t) round (telemetry::battery::battery1.level / 20.0);
-		attr = telemetry::battery::battery1.low ? MAX7456_ATTR_BLINK : 0;
-	}
+	void update () {}
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::put (x, y, symbol, attr);
-		max7456::puts (x + 1, y, buffer);
+		osd::draw::battery_voltage (x, y, 0xee, &telemetry::battery::battery1);
 	}
 
 }  // namespace battery_voltage
@@ -366,23 +361,11 @@ namespace battery2_voltage
 
 	PANEL_NAME ("Bat2Voltage");
 
-	DECLARE_BUF (7);
-	char symbol;
-	uint8_t attr;
-
-	void update ()
-	{
-		snprintf_P (buffer, sizeof (buffer), PSTR ("%.2f\x8e"), telemetry::battery::battery2.voltage);
-		terminate_buffer ();
-
-		symbol = 0xf4 + (uint8_t) round (telemetry::battery::battery2.level / 20.0);
-		attr = telemetry::battery::battery2.low ? MAX7456_ATTR_BLINK : 0;
-	}
+	void update () {}
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		max7456::put (x, y, symbol, attr);
-		max7456::puts (x + 1, y, buffer);
+		osd::draw::battery_voltage (x, y, 0xf4, &telemetry::battery::battery2);
 	}
 
 }  // namespace battery_voltage
@@ -390,14 +373,14 @@ namespace battery2_voltage
 namespace battery_current
 {
 
-	STD_PANEL ("BatCurrent", 8, "\xfa%.2f\x8f", telemetry::battery::current);
+	STD_PANEL ("Bat1Current", 8, "\xfa%.2f\x8f", telemetry::battery::current);
 
 }  // namespace battery_current
 
 namespace battery_consumed
 {
 
-	STD_PANEL ("BatConsumed", 8, "\xfb%u\x82", (uint16_t) telemetry::battery::consumed);
+	STD_PANEL ("Bat1Consumed", 8, "\xfb%u\x82", (uint16_t) telemetry::battery::consumed);
 
 }  // namespace battery_consumed
 

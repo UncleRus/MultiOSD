@@ -34,17 +34,18 @@
 #define OSD_PANEL_HORIZON             11
 #define OSD_PANEL_THROTTLE            12
 #define OSD_PANEL_GROUND_SPEED        13
-#define OSD_PANEL_BATTERY_VOLTAGE     14
-#define OSD_PANEL_BATTERY_CURRENT     15
-#define OSD_PANEL_BATTERY_CONSUMED    16
-#define OSD_PANEL_RSSI_FLAG           17
-#define OSD_PANEL_HOME_DISTANCE       18
-#define OSD_PANEL_HOME_DIRECTION      19
-#define OSD_PANEL_CALLSIGN            20
-#define OSD_PANEL_TEMPERATURE         21
-#define OSD_PANEL_RSSI                22
-#define OSD_PANEL_COMPASS             23
-#define OSD_PANEL_AIRSPEED            24
+#define OSD_PANEL_BATTERY1_VOLTAGE    14
+#define OSD_PANEL_BATTERY2_VOLTAGE    15
+#define OSD_PANEL_BATTERY_CURRENT     16
+#define OSD_PANEL_BATTERY_CONSUMED    17
+#define OSD_PANEL_RSSI_FLAG           18
+#define OSD_PANEL_HOME_DISTANCE       19
+#define OSD_PANEL_HOME_DIRECTION      20
+#define OSD_PANEL_CALLSIGN            21
+#define OSD_PANEL_TEMPERATURE         22
+#define OSD_PANEL_RSSI                23
+#define OSD_PANEL_COMPASS             24
+#define OSD_PANEL_AIRSPEED            25
 
 namespace osd
 {

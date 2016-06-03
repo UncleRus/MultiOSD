@@ -50,9 +50,10 @@ Yet another MinimOSD firmware with configurable screens layout.
 * Artifical horizon
 * Throttle
 * Groundspeed
-* Battery voltage
-* Battery current
-* Battery consumed
+* Flight battery voltage
+* Flight battery current
+* Flight battery consumed
+* Secondary battery voltage
 * RSSI flag
 * Distance to home
 * Direction to home
