@@ -72,6 +72,7 @@ namespace input
 {
 	extern bool     connected;                 // input values are valid
 	extern uint8_t  rssi;                      // percents
+	extern bool     rssi_low;
 	extern int8_t   throttle;                  // percents
 	extern int8_t   roll;                      // percents
 	extern int8_t   pitch;                     // percents
@@ -134,26 +135,29 @@ namespace stable
 
 namespace battery
 {
+	struct battery_t
+	{
+		float   voltage;      // Volts
+		uint8_t cells;
+		float   cell_voltage; // Volts
+		uint8_t level;        // percents
+		bool    low;
+
+		void update ();
+	};
+
 	extern float   max_cell_voltage; // Volts
 	extern float   nom_cell_voltage; // Volts
 	extern float   min_cell_voltage; // Volts
 	extern float   low_cell_voltage; // Volts
 
-	extern float   voltage;          // Volts
+	extern battery_t battery1;
+	extern battery_t battery2;
+
 	extern float   current;          // amperes
 	extern float   consumed;         // mAh
-	extern uint8_t cells;
-	extern float   cell_voltage;      // Volts
-	extern uint8_t level;             // percents
 
-	void update_voltage ();
 	void update_consumed (uint16_t interval);
-}
-
-namespace messages
-{
-	extern bool battery_low;
-	extern bool rssi_low;
 }
 
 namespace home

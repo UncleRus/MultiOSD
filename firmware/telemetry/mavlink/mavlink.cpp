@@ -428,15 +428,15 @@ bool update ()
 				uint16_t interval = telemetry::ticks - _last_battery_update;
 				_last_battery_update += interval;
 
-				battery::voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
+				battery::battery1.voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
 				if (!internal_battery_level)
 				{
-					battery::level = mavlink_msg_sys_status_get_battery_remaining (msg);
-					if (battery::level == 0xff) // -1 (0xff) means "unknown"
-						battery::level = 0;
+					battery::battery1.level = mavlink_msg_sys_status_get_battery_remaining (msg);
+					if (battery::battery1.level == 0xff) // -1 (0xff) means "unknown"
+						battery::battery1.level = 0;
 				}
 				else
-					battery::update_voltage ();
+					battery::battery1.update ();
 				int16_t current = mavlink_msg_sys_status_get_current_battery (msg);
 				if (current >= 0)
 				{
@@ -493,12 +493,12 @@ bool update ()
 				if (!emulate_rssi)
 				{
 					input::rssi = mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
-					messages::rssi_low = input::rssi < rssi_low_threshold;
+					input::rssi_low = input::rssi < rssi_low_threshold;
 				}
 				else
 				{
-					messages::rssi_low = input::channels [emulate_rssi_channel] < emulate_rssi_threshold;
-					input::rssi = messages::rssi_low ? 100 : 0;
+					input::rssi_low = input::channels [emulate_rssi_channel] < emulate_rssi_threshold;
+					input::rssi = input::rssi_low ? 100 : 0;
 				}
 #endif
 				break;

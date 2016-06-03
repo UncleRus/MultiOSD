@@ -335,10 +335,10 @@ namespace groundspeed
 
 }  // namespace ground_speed
 
-namespace battery_voltage
+namespace battery1_voltage
 {
 
-	PANEL_NAME ("BatVoltage");
+	PANEL_NAME ("Bat1Voltage");
 
 	DECLARE_BUF (7);
 	char symbol;
@@ -346,11 +346,37 @@ namespace battery_voltage
 
 	void update ()
 	{
-		snprintf_P (buffer, sizeof (buffer), PSTR ("%.2f\x8e"), telemetry::battery::voltage);
+		snprintf_P (buffer, sizeof (buffer), PSTR ("%.2f\x8e"), telemetry::battery::battery1.voltage);
 		terminate_buffer ();
 
-		symbol = 0xf4 + (uint8_t) round (telemetry::battery::level / 20.0);
-		attr = telemetry::messages::battery_low ? MAX7456_ATTR_BLINK : 0;
+		symbol = 0xf4 + (uint8_t) round (telemetry::battery::battery1.level / 20.0);
+		attr = telemetry::battery::battery1.low ? MAX7456_ATTR_BLINK : 0;
+	}
+
+	void draw (uint8_t x, uint8_t y)
+	{
+		max7456::put (x, y, symbol, attr);
+		max7456::puts (x + 1, y, buffer);
+	}
+
+}  // namespace battery_voltage
+
+namespace battery2_voltage
+{
+
+	PANEL_NAME ("Bat2Voltage");
+
+	DECLARE_BUF (7);
+	char symbol;
+	uint8_t attr;
+
+	void update ()
+	{
+		snprintf_P (buffer, sizeof (buffer), PSTR ("%.2f\x8e"), telemetry::battery::battery2.voltage);
+		terminate_buffer ();
+
+		symbol = 0xf4 + (uint8_t) round (telemetry::battery::battery2.level / 20.0);
+		attr = telemetry::battery::battery2.low ? MAX7456_ATTR_BLINK : 0;
 	}
 
 	void draw (uint8_t x, uint8_t y)
@@ -384,7 +410,7 @@ namespace rssi_flag
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		if (telemetry::messages::rssi_low) max7456::put (x, y, 0xb4, MAX7456_ATTR_BLINK);
+		if (telemetry::input::rssi_low) max7456::put (x, y, 0xb4, MAX7456_ATTR_BLINK);
 	}
 
 }  // namespace rssi_flag
@@ -575,7 +601,8 @@ const panel_t panels [] PROGMEM = {
 	declare_panel (horizon),
 	declare_panel (throttle),
 	declare_panel (groundspeed),
-	declare_panel (battery_voltage),
+	declare_panel (battery1_voltage),
+	declare_panel (battery2_voltage),
 	declare_panel (battery_current),
 	declare_panel (battery_consumed),
 	declare_panel (rssi_flag),

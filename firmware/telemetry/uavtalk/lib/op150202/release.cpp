@@ -61,9 +61,9 @@ void handle_barosensor ()
 void handle_flightbatterystate ()
 {
 	FlightBatteryState *obj = (FlightBatteryState *) &buffer.data;
-	battery::voltage = obj->Voltage;
-	battery::cells = obj->NbCells;
-	battery::update_voltage ();
+	battery::battery1.voltage = obj->Voltage;
+	battery::battery1.cells = obj->NbCells;
+	battery::battery1.update ();
 	battery::current = obj->Current;
 	battery::consumed = obj->ConsumedEnergy;
 }
@@ -149,7 +149,7 @@ void handle_manualcontrolcommand ()
 	input::connected = obj->Connected;
 	input::flight_mode_switch = obj->FlightModeSwitchPosition;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
-	messages::rssi_low = !input::connected;
+	input::rssi_low = !input::connected;
 	input::rssi = input::connected ? 100 : 0;
 #endif
 }

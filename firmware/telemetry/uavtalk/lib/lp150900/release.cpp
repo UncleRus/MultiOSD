@@ -30,18 +30,18 @@ namespace lp150900
 void handle_manualcontrolcommand ()
 {
 	ManualControlCommand *obj = (ManualControlCommand *) &buffer.data;
-	telemetry::input::throttle   = (int8_t) (obj->Throttle * 100);
-	telemetry::input::roll       = (int8_t) (obj->Roll * 100);
-	telemetry::input::pitch      = (int8_t) (obj->Pitch * 100);
-	telemetry::input::yaw        = (int8_t) (obj->Yaw * 100);
-	telemetry::input::collective = (int8_t) (obj->Collective * 100);
-	telemetry::input::thrust     = (int8_t) (obj->Thrust * 100);
-	memcpy (telemetry::input::channels, obj->Channel, sizeof (obj->Channel));
-	telemetry::input::connected = obj->Connected;
-	telemetry::input::flight_mode_switch = obj->FlightModeSwitchPosition;
+	input::throttle   = (int8_t) (obj->Throttle * 100);
+	input::roll       = (int8_t) (obj->Roll * 100);
+	input::pitch      = (int8_t) (obj->Pitch * 100);
+	input::yaw        = (int8_t) (obj->Yaw * 100);
+	input::collective = (int8_t) (obj->Collective * 100);
+	input::thrust     = (int8_t) (obj->Thrust * 100);
+	memcpy (input::channels, obj->Channel, sizeof (obj->Channel));
+	input::connected = obj->Connected;
+	input::flight_mode_switch = obj->FlightModeSwitchPosition;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
-	telemetry::messages::rssi_low = !telemetry::input::connected;
-	telemetry::input::rssi = telemetry::input::connected ? 100 : 0;
+	input::rssi_low = !telemetry::input::connected;
+	input::rssi = telemetry::input::connected ? 100 : 0;
 #endif
 }
 

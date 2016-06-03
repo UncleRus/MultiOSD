@@ -101,7 +101,7 @@ bool update ()
 	else if (value > 100) value = 100;
 	input::rssi = value;
 
-	messages::rssi_low = input::rssi < low_threshold;
+	input::rssi_low = input::rssi < low_threshold;
 
 	return true;
 }

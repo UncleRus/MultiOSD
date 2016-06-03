@@ -107,6 +107,7 @@ namespace input
 
 	uint8_t rssi = 0;
 	bool connected = false;
+	bool rssi_low;
 	int8_t throttle = 0;
 	int8_t roll = 0;
 	int8_t pitch = 0;
@@ -193,14 +194,33 @@ namespace battery
 	float max_cell_voltage = TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE;
 	float low_cell_voltage = TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE;
 
-	float voltage = 0;
 	float current = 0;
 	float consumed = 0;
-	uint8_t cells = 0;
-	float cell_voltage = 0;
-	uint8_t level = 0;
 
 	float _cell_range;
+
+	battery_t battery1;
+	battery_t battery2;
+
+	void battery_t::update ()
+	{
+		// FIXME: find another way to calc battery cells
+		if (!cells) cells = round (voltage / nom_cell_voltage);
+		//cells = (uint8_t)(voltage / max_cell_voltage) + 1;
+		if (!cells)
+		{
+			cell_voltage = 0;
+			level = 0;
+			low = true;
+			return;
+		}
+		cell_voltage = voltage / cells;
+		low = cell_voltage <= low_cell_voltage;
+		level = cell_voltage > min_cell_voltage
+			? (cell_voltage - min_cell_voltage) / _cell_range * 100
+			: 0;
+		if (level > 100) level = 100;
+	}
 
 	void init ()
 	{
@@ -211,40 +231,12 @@ namespace battery
 		_cell_range = max_cell_voltage - min_cell_voltage;
 	}
 
-	void update_voltage ()
-	{
-		// FIXME: other way to calc battery cells
-		if (!cells) cells = round (voltage / nom_cell_voltage);
-		//cells = (uint8_t)(voltage / max_cell_voltage) + 1;
-		if (!cells)
-		{
-			cell_voltage = 0;
-			level = 0;
-			messages::battery_low = true;
-			return;
-		}
-		cell_voltage = voltage / cells;
-		messages::battery_low = cell_voltage <= low_cell_voltage;
-		level = cell_voltage > min_cell_voltage
-			? (cell_voltage - min_cell_voltage) / _cell_range * 100
-			: 0;
-		if (level > 100) level = 100;
-	}
-
 	void update_consumed (uint16_t interval)
 	{
 		consumed += current * interval / 3600.0;
 	}
 
 }  // namespace battery
-
-namespace messages
-{
-
-	bool battery_low = false;
-	bool rssi_low = false;
-
-}  // namespace messages
 
 namespace home
 {

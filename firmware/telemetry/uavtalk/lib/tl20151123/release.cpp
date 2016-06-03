@@ -42,8 +42,8 @@ void handle_flightstatus ()
 void handle_flightbatterystate ()
 {
 	FlightBatteryState *obj = (FlightBatteryState *) &buffer.data;
-	battery::voltage = obj->Voltage;
-	battery::update_voltage ();
+	battery::battery1.voltage = obj->Voltage;
+	battery::battery1.update ();
 	battery::current = obj->Current;
 	battery::consumed = obj->ConsumedEnergy;
 }
@@ -118,7 +118,7 @@ void handle_manualcontrolcommand ()
 	input::connected = obj->Connected;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
 	input::rssi = obj->Rssi * 100;
-	messages::rssi_low = input::rssi < rssi_low_threshold;
+	input::rssi_low = input::rssi < rssi_low_threshold;
 #endif
 }
 
