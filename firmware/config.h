@@ -19,7 +19,7 @@
 
 #include "defaults.h"
 
-#define VERSION _VER (0, 14) // current version is 0.14
+#define VERSION _VER (0, 15)
 
 /*
  * Telemetry config
