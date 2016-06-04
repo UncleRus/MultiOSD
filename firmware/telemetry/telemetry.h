@@ -142,7 +142,7 @@ namespace battery
 		uint8_t level;        // percents
 		bool    low;
 
-		void update ();
+		void update (bool calc_cells);
 	};
 
 	extern float   max_cell_voltage; // Volts

@@ -201,11 +201,9 @@ namespace battery
 	battery_t battery1;
 	battery_t battery2;
 
-	void battery_t::update ()
+	void battery_t::update (bool calc_cells)
 	{
-		// FIXME: find another way to calc battery cells
-		if (!cells) cells = round (voltage / nom_cell_voltage);
-		//cells = (uint8_t)(voltage / max_cell_voltage) + 1;
+		if (calc_cells) cells = round (voltage / nom_cell_voltage);
 		if (!cells)
 		{
 			cell_voltage = 0;
@@ -228,8 +226,8 @@ namespace battery
 		max_cell_voltage = eeprom_read_float (EEPROM_ADDR_MAX_CELL_VOLTAGE);
 		low_cell_voltage = eeprom_read_float (EEPROM_ADDR_LOW_VOLTAGE);
 		_cell_range = max_cell_voltage - min_cell_voltage;
-		battery1.update ();
-		battery2.update ();
+		battery1.update (true);
+		battery2.update (true);
 	}
 
 	void update_consumed (uint16_t interval)

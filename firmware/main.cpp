@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <avr/io.h>
-//#include <util/delay.h>
+#include <util/delay.h>
 #include "lib/pgmspace.h"
 #include "config.h"
 #include "settings.h"
@@ -36,8 +36,7 @@ inline void init ()
 	settings::init ();
 	// setup timer
 	timer::init ();
-	// wait 1 sec
-	// _delay_ms (1000);
+	_delay_ms (500);
 	// setup UART
 	CONSOLE_UART::init (uart_utils::get_baudrate (CONSOLE_BAUDRATE));
 	// setup SPI...
@@ -47,14 +46,13 @@ inline void init ()
 	// Show boot screen
 	if (boot::show ())
 	{
-		// the magic word was typed so let's run console
+		// magic word was typed so let's run console
 		max7456::clear ();
 		max7456::puts_p (max7456::hcenter - 4, max7456::vcenter, PSTR ("\xfc CONFIG"));
 		fprintf_P (&CONSOLE_UART::stream, PSTR ("MultiOSD v%u.%u\r\n"), VERSION >> 8, VERSION);
 		console::run (console::process);
 	}
 	// boot to OSD
-	CONSOLE_UART::send_string_p (PSTR ("BOOT\r\n"));
 	CONSOLE_UART::send_string_p (PSTR ("BOOT\r\n"));
 	// load telemetry settings
 	telemetry::init ();

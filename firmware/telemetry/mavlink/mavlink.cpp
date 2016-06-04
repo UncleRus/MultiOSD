@@ -438,7 +438,7 @@ bool update ()
 					battery::battery1.low = !battery::battery1.level;
 				}
 				else
-					battery::battery1.update ();
+					battery::battery1.update (true);
 				int16_t current = mavlink_msg_sys_status_get_current_battery (msg);
 				if (current >= 0)
 				{

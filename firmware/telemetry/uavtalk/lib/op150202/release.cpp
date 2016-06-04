@@ -63,7 +63,7 @@ void handle_flightbatterystate ()
 	FlightBatteryState *obj = (FlightBatteryState *) &buffer.data;
 	battery::battery1.voltage = obj->Voltage;
 	battery::battery1.cells = obj->NbCells;
-	battery::battery1.update ();
+	battery::battery1.update (false);
 	battery::current = obj->Current;
 	battery::consumed = obj->ConsumedEnergy;
 }

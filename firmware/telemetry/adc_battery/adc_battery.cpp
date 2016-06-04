@@ -124,9 +124,9 @@ bool update ()
 	float alpha = 1.0 - dt / (dt + 2.0);
 
 	battery::battery1.voltage = alpha * battery::battery1.voltage + (1 - alpha) * adc::value (voltage1_channel, voltage1_multiplier);
+	battery::battery1.update (true);
 	battery::battery2.voltage = alpha * battery::battery2.voltage + (1 - alpha) * adc::value (voltage2_channel, voltage2_multiplier);
-	battery::battery1.update ();
-	battery::battery2.update ();
+	battery::battery2.update (true);
 
 	if (current_sensor)
 	{
