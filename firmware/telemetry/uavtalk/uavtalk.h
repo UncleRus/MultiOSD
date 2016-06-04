@@ -17,6 +17,9 @@
 #ifndef TELEMETRY_UAVTALK_UAVTALK_H_
 #define TELEMETRY_UAVTALK_UAVTALK_H_
 
+#ifdef MAIN_MODULE
+	#error Conflicting modules
+#endif
 #define MAIN_MODULE
 
 #include "lib/common.h"

@@ -17,6 +17,9 @@
 #ifndef TELEMETRY_UBX_UBX_H_
 #define TELEMETRY_UBX_UBX_H_
 
+#ifdef MAIN_MODULE
+	#error Conflicting modules
+#endif
 #define MAIN_MODULE
 
 #include "../../lib/pgmspace.h"

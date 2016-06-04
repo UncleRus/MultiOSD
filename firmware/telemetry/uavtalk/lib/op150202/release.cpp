@@ -147,7 +147,6 @@ void handle_manualcontrolcommand ()
 	input::thrust     = (int8_t) (obj->Thrust * 100);
 	memcpy (input::channels, obj->Channel, sizeof (obj->Channel));
 	input::connected = obj->Connected;
-	input::flight_mode_switch = obj->FlightModeSwitchPosition;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
 	input::rssi_low = !input::connected;
 	input::rssi = input::connected ? 100 : 0;

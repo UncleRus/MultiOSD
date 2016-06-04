@@ -87,7 +87,7 @@ namespace draw
 
 	void battery_voltage (uint8_t x, uint8_t y, uint8_t symbol_offset, telemetry::battery::battery_t *bat)
 	{
-		max7456::put (x, y, symbol_offset + (uint8_t) round (bat->level / 20.0), telemetry::battery::battery1.low ? MAX7456_ATTR_BLINK : 0);
+		max7456::put (x, y, symbol_offset + (uint8_t) round (bat->level / 20.0), bat->low ? MAX7456_ATTR_BLINK : 0);
 		max7456::open (x + 1, y);
 		fprintf_P (&max7456::stream, PSTR ("%.2f\x8e"), bat->voltage);
 	}

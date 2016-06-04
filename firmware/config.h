@@ -17,28 +17,9 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define _VER(h,l) (((h) << 8) | l)
+#include "defaults.h"
 
 #define VERSION _VER (0, 14) // current version is 0.14
-
-// eclipse build conf
-#ifdef ECLIPSE_BUILD
-#	include "defaults.h"
-#endif
-
-/*
- * Telemetry modules config
- */
-#if !defined (TELEMETRY_MODULES_UAVTALK) \
-    	&& !defined (TELEMETRY_MODULES_MAVLINK) \
-    	&& !defined (TELEMETRY_MODULES_UBX) \
-    	&& !defined (TELEMETRY_MODULES_MSP)
-	#define TELEMETRY_MODULES_MAVLINK                // ArduPilot/ArduCopter telemetry module by default
-#endif
-
-#if defined (TELEMETRY_MODULES_ADC_BATTERY) || defined (TELEMETRY_MODULES_ADC_BATTERY)
-	#define ADC_MODULE
-#endif
 
 /*
  * Telemetry config
@@ -81,24 +62,17 @@
 #define UBX_DEFAULT_AUTOCONF 0                            // automatically configure GPS-module after connect
 
 /*
- * MSP config
- */
-#define MSP_BUFFER_SIZE 128
-#define MSP_UART uart0
-#define MSP_CONNECTION_TIMEOUT 2000						// ms
-
-/*
  * OSD config
  */
 #define OSD_SCREEN_PANELS 24                              // (OSD_SCREEN_PANELS * 3) bytes in SRAM
 #define OSD_MAX_SCREENS 8
+
 #define OSD_DEFAULT_SCREENS 8                             // each screen will consume (OSD_SCREEN_PANELS * 3) bytes in EEPROM
-#define OSD_DEFAULT_CHANNEL_MIN 1000                      // us
-#define OSD_DEFAULT_CHANNEL_MAX 2000                      // us
-#define OSD_EEPROM_SWITCH_DEFAULT OSD_SWITCH_RAW_CHANNEL  // Screens switch: OSD_SWITCH_OFF (0) - Single screen,
-                                                          //                 OSD_SWITCH_FLIGHT_MODE (1) - By "Flight mode" switch
-                                                          //                 OSD_SWITCH_RAW_CHANNEL (2) - By input channel
-#define OSD_EEPROM_SWITCH_RAW_CHANNEL_DEFAULT 6           // Input channel to switch screens
+#define OSD_DEFAULT_SWITCH_MODE OSD_SWITCH_MODE_TOGGLE    // OSD_SWITCH_MODE_SELECTOR or OSD_SWITCH_MODE_TOGGLE
+#define OSD_DEFAULT_SWITCH_CHANNEL 6                      // switch input channel
+#define OSD_DEFAULT_SELECTOR_MIN 1000                     // us, minimal input channel value for selector mode
+#define OSD_DEFAULT_SELECTOR_MAX 2000                     // us, maximal input channel value for selector mode
+#define OSD_DEFAULT_TOGGLE_TRESHOLD	1200                  // us, input channel value threshold for toggle mode
 
 /*
  * UART config

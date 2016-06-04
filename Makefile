@@ -12,6 +12,7 @@ firmware: $(BUILDDIR)/$(TARGET)_uavtalk.hex \
           $(BUILDDIR)/$(TARGET)_uavtalk_adcbattery_adcrssi.hex \
           $(BUILDDIR)/$(TARGET)_mavlink.hex \
           $(BUILDDIR)/$(TARGET)_mavlink_adcrssi.hex \
+          $(BUILDDIR)/$(TARGET)_mavlink_adcbattery_adcrssi.hex \
           $(BUILDDIR)/$(TARGET)_ubx_adcbattery_adcrssi.hex
 
 $(BUILDDIR)/$(TARGET)_uavtalk.hex:
@@ -44,15 +45,14 @@ $(BUILDDIR)/$(TARGET)_mavlink_adcrssi.hex:
 	$(MAKE) TAG=mavlink_adcrssi "DEFS=-DTELEMETRY_MODULES_MAVLINK -DTELEMETRY_MODULES_ADC_RSSI" -C $(FWDIR)
 	$(clear)
 
+$(BUILDDIR)/$(TARGET)_mavlink_adcbattery_adcrssi.hex:
+	mkdir -p $(BUILDDIR)
+	$(MAKE) TAG=mavlink_adcbattery_adcrssi "DEFS=-DTELEMETRY_MODULES_MAVLINK -DTELEMETRY_MODULES_ADC_BATTERY -DTELEMETRY_MODULES_ADC_RSSI" -C $(FWDIR)
+	$(clear)
+
 $(BUILDDIR)/$(TARGET)_ubx_adcbattery_adcrssi.hex:
 	mkdir -p $(BUILDDIR)
 	$(MAKE) TAG=ubx_adcbattery_adcrssi "DEFS=-DTELEMETRY_MODULES_UBX -DTELEMETRY_MODULES_ADC_BATTERY -DTELEMETRY_MODULES_ADC_RSSI" -C $(FWDIR)
-	$(clear)
-
-$(call fw_tgt,msp):
-	$(call set_tag,mavlink)
-	$(call set_defs,-DTELEMETRY_MODULES_MSP)
-	$(MAKE) -C $(FW_DIR)
 	$(clear)
 
 clean:

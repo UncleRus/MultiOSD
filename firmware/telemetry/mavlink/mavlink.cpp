@@ -434,6 +434,8 @@ bool update ()
 					battery::battery1.level = mavlink_msg_sys_status_get_battery_remaining (msg);
 					if (battery::battery1.level == 0xff) // -1 (0xff) means "unknown"
 						battery::battery1.level = 0;
+					// FIXME correct low level warning
+					battery::battery1.low = !battery::battery1.level;
 				}
 				else
 					battery::battery1.update ();
@@ -443,8 +445,8 @@ bool update ()
 					battery::current = current / 100.0;
 					battery::update_consumed (interval);
 				}
-			}
 				break;
+			}
 #endif
 			case MAVLINK_MSG_ID_ATTITUDE:
 				attitude::roll  = rad_to_deg (mavlink_msg_attitude_get_roll (msg));

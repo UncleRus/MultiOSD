@@ -17,6 +17,9 @@
 #ifndef TELEMETRY_MAVLINK_MAVLINK_H_
 #define TELEMETRY_MAVLINK_MAVLINK_H_
 
+#ifdef MAIN_MODULE
+	#error Conflicting modules
+#endif
 #define MAIN_MODULE
 
 #include "../../lib/pgmspace.h"

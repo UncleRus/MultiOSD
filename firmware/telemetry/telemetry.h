@@ -79,7 +79,6 @@ namespace input
 	extern int8_t   yaw;                       // percents
 	extern int8_t   collective;                // percents
 	extern int8_t   thrust;                    // percents
-	extern uint8_t  flight_mode_switch;        // switch position
 	extern uint16_t channels [INPUT_CHANNELS]; // raw values
 }
 

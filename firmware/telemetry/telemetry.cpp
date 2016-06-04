@@ -114,8 +114,7 @@ namespace input
 	int8_t yaw = 0;
 	int8_t collective = 0;
 	int8_t thrust = 0;
-	uint8_t flight_mode_switch = 0;
-	uint16_t channels [INPUT_CHANNELS];
+	uint16_t channels [INPUT_CHANNELS] = {0};
 
 }  // namespace input
 
@@ -229,6 +228,8 @@ namespace battery
 		max_cell_voltage = eeprom_read_float (EEPROM_ADDR_MAX_CELL_VOLTAGE);
 		low_cell_voltage = eeprom_read_float (EEPROM_ADDR_LOW_VOLTAGE);
 		_cell_range = max_cell_voltage - min_cell_voltage;
+		battery1.update ();
+		battery2.update ();
 	}
 
 	void update_consumed (uint16_t interval)
@@ -341,31 +342,19 @@ namespace waypoint
 	#include "i2c_compass/i2c_compass.h"
 #endif
 #ifdef TELEMETRY_MODULES_UAVTALK
-	#ifdef MAIN_MODULE
-		#error Conflicting modules
-	#endif
 	#include "uavtalk/uavtalk.h"
 #endif
 #ifdef TELEMETRY_MODULES_MAVLINK
-	#ifdef MAIN_MODULE
-		#error Conflicting modules
-	#endif
 	#include "mavlink/mavlink.h"
 #endif
 #ifdef TELEMETRY_MODULES_UBX
-	#ifdef MAIN_MODULE
-		#error Conflicting modules
-	#endif
 	#include "ubx/ubx.h"
 #endif
 #ifdef TELEMETRY_MODULES_NMEA
-	#ifdef MAIN_MODULE
-		#error Conflicting modules
-	#endif
 	#include "nmea/nmea.h"
 #endif
 #ifdef TELEMETRY_MODULES_MSP
-#	include "msp/msp.h"
+	#include "msp/msp.h"
 #endif
 
 #define declare_module(NS) { telemetry::modules:: NS ::__name, telemetry::modules:: NS ::settings::init, \
