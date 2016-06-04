@@ -72,7 +72,7 @@ More to come.
 ## Configure
 
 You can use [the serial console](doc/configure.md)
-to change [options](doc/settings) and screens layout.
+to change [options](doc/settings.md) and screens layout.
 
 ## Todo
 
