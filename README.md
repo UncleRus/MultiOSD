@@ -4,7 +4,7 @@ Yet another MinimOSD firmware with configurable screens layout.
 
 ![Screenshot](doc/img/screenshot.png)
 
-* up to 8 screens each with up to 24 indicators
+* up to 8 screens with up to 24 indicators each
 * configuration console
 * no image snow
 * ADC RSSI and battery stats
