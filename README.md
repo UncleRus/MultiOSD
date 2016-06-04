@@ -2,11 +2,11 @@
 
 Yet another MinimOSD firmware with configurable screens layout.
 
-![Screenshot](doc/source/img/screenshot.png)
+![Screenshot](doc/img/screenshot.png)
 
-* up to 8 screens
+* up to 8 screens each with up to 24 indicators
 * configuration console
-* no image "snow"
+* no image snow
 * ADC RSSI and battery stats
 
 ## Supported flight controllers and software
@@ -67,12 +67,12 @@ More to come.
 
 ## Build and install
 
-[MultiOSD Building](https://github.com/UncleRus/MultiOSD/wiki/Build-and-install)
+[MultiOSD Building](doc/build.md)
 
 ## Configure
 
-You can use [the serial console](https://github.com/UncleRus/MultiOSD/wiki/Configuration-console)
-to change [options](https://github.com/UncleRus/MultiOSD/wiki/Configuration-options) and screens layout.
+You can use [the serial console](doc/configure.md)
+to change [options](doc/settings) and screens layout.
 
 ## Todo
 
