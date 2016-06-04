@@ -84,7 +84,7 @@ uint8    | 1 byte
 
 Screen switch mode.
 
-- **Selector** - Range of the input channel (`SELMAX` - 'SELMIN`) divided by screens count `SCREENS`.
+- **Selector** - Range of the input channel (`SELMAX` - `SELMIN`) divided by screens count `SCREENS`.
   Current screen selected by input channel value.
 - **Toggle** - Cycle through the screens when the input channel value crossing threshold `TGTRESH`.
 
