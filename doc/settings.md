@@ -407,6 +407,15 @@ Type     | Size
 -------- | --------
 bool     | 1 byte
 
+### MLBLT
+
+Battery level warning threshold, percents. This option is used only when `MLIBL` is 0.
+
+Type     | Size
+-------- | --------
+uint8    | 1 byte
+
+
 ### MLRLT
 
 RSSI warning threshold, percents. This option is used when `MLER` is 0.
