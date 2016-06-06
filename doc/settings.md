@@ -409,7 +409,7 @@ bool     | 1 byte
 
 ### MLBLT
 
-Battery level warning threshold, percents. This option is used only when `MLIBL` is 0.
+Battery level warning threshold, percents. Used when `MLIBL` is 0.
 
 Type     | Size
 -------- | --------
@@ -418,7 +418,7 @@ uint8    | 1 byte
 
 ### MLRLT
 
-RSSI warning threshold, percents. This option is used when `MLER` is 0.
+RSSI warning threshold, percents. Used when `MLER` is 0.
 
 Type     | Size
 -------- | --------
@@ -437,7 +437,7 @@ bool     | 1 byte
 
 ### MLERC
 
-Receiver channel for RSSI emulation. This option is used when `MLER` is 1.
+Receiver channel for RSSI emulation. Used when `MLER` is 1.
 
 Type     | Size
 -------- | --------
@@ -457,7 +457,7 @@ Value | Input channel
 ### MLERT
 
 RSSI emulation threshold (minimal pulse width of the input channel), microseconds.
-This option is used when `MLERT` = 1. Typical value is about **900**.
+Used when `MLERT` = 1. Typical value is about **900**.
 
 Type     | Size
 -------- | --------
