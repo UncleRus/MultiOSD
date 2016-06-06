@@ -43,7 +43,7 @@ Value | Video mode
 
 ### VBRIGHT
 
-OSD character brithness in % of OSD white level.
+OSD character brightness in % of OSD white level.
 Value will be applied after OSD reboot.
 
 Type     | Size

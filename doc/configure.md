@@ -119,7 +119,7 @@ Write option value to EEPROM.
 
 ### scr
 
-Setup the OSD screens layout using panels.
+Setup layout of the OSD screens using panels.
 
 #### scr d
 
