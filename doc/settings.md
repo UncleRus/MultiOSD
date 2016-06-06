@@ -4,7 +4,7 @@
 
 ### ADCREF
 
-ADC reference voltage source. Make sure that `ADCUREF` value is correct.
+Source of the ADC reference voltage. Make sure that `ADCUREF` value is correct.
 
 Type     | Size
 -------- | --------
@@ -115,7 +115,7 @@ uint16   | 2 bytes
 
 ### SELMAX
 
-Maximal pulse width of raw input channel (usually 2000). Used in **Selector** mode.
+Maximal pulse width of the input channel (usually 2000). Used in **Selector** mode.
 
 Type     | Size
 -------- | --------
@@ -166,7 +166,7 @@ float    | 4 bytes
 
 ### CSIGN
 
-Text to show by callsign panel, 5 chars.
+Callsign text, 5 chars max.
 
 Type     | Size
 -------- | --------
