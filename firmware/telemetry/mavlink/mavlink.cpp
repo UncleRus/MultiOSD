@@ -47,6 +47,8 @@ namespace settings
 #define EEPROM_ADDR_EMULATE_RSSI_CHANNEL   _eeprom_byte (MAVLINK_EEPROM_OFFSET + 3)
 #define EEPROM_ADDR_EMULATE_RSSI_THRESHOLD _eeprom_word (MAVLINK_EEPROM_OFFSET + 4)
 #define EEPROM_ADDR_BAUDRATE               _eeprom_byte (MAVLINK_EEPROM_OFFSET + 6)
+#define EEPROM_ADDR_FC_TYPE                _eeprom_byte (MAVLINK_EEPROM_OFFSET + 7)
+#define EEPROM_ADDR_BATTERY_LOW_THRESHOD   _eeprom_byte (MAVLINK_EEPROM_OFFSET + 8)
 
 const char __opt_mlibl [] PROGMEM = "MLIBL";
 const char __opt_mlrlt [] PROGMEM = "MLRLT";
@@ -54,6 +56,8 @@ const char __opt_mler  [] PROGMEM = "MLER";
 const char __opt_mlerc [] PROGMEM = "MLERC";
 const char __opt_mlert [] PROGMEM = "MLERT";
 const char __opt_mlbr  [] PROGMEM = "MLBR";
+const char __opt_mlfc  [] PROGMEM = "MLFC";
+const char __opt_mlblt [] PROGMEM = "MLBLT";
 
 const ::settings::option_t __settings [] PROGMEM = {
 	declare_uint8_option  (__opt_mlbr,  EEPROM_ADDR_BAUDRATE),
@@ -62,6 +66,8 @@ const ::settings::option_t __settings [] PROGMEM = {
 	declare_uint8_option  (__opt_mler,  EEPROM_ADDR_EMULATE_RSSI),
 	declare_uint8_option  (__opt_mlerc, EEPROM_ADDR_EMULATE_RSSI_CHANNEL),
 	declare_uint16_option (__opt_mlert, EEPROM_ADDR_EMULATE_RSSI_THRESHOLD),
+	declare_uint8_option  (__opt_mlfc,  EEPROM_ADDR_FC_TYPE),
+	declare_uint8_option  (__opt_mlblt, EEPROM_ADDR_BATTERY_LOW_THRESHOD),
 };
 
 void init ()
@@ -77,6 +83,8 @@ void reset ()
 	eeprom_update_byte (EEPROM_ADDR_EMULATE_RSSI_CHANNEL, MAVLINK_DEFAULT_EMULATE_RSSI_CHANNEL);
 	eeprom_update_word (EEPROM_ADDR_EMULATE_RSSI_THRESHOLD, MAVLINK_DEFAULT_EMULATE_RSSI_THRESHOLD);
 	eeprom_update_byte (EEPROM_ADDR_BAUDRATE, MAVLINK_DEFAULT_BAUDRATE);
+	eeprom_update_byte (EEPROM_ADDR_FC_TYPE, MAVLINK_DEFAULT_FC_TYPE);
+	eeprom_update_byte (EEPROM_ADDR_BATTERY_LOW_THRESHOD, MAVLINK_DEFAULT_BATTERY_LOW_THRESHOD);
 }
 
 }  // namespace settings
@@ -84,10 +92,12 @@ void reset ()
 ///////////////////////////////////////////////////////////////////////////////
 
 uint8_t internal_battery_level;
+uint8_t battery_low_threshod;
 uint8_t rssi_low_threshold;
 bool emulate_rssi;
 uint8_t emulate_rssi_channel;
 uint16_t emulate_rssi_threshold;
+uint8_t fc_type;
 
 mavlink_message_t *msg = &message;
 mavlink_status_t status;
@@ -106,6 +116,15 @@ inline int16_t filter_int16 (int16_t value)
 	return value == 0x7fff ? 0 : value;
 }
 
+inline uint16_t filter_uint16 (uint16_t value)
+{
+	return value == 0xffff ? 0 : value;
+}
+
+inline uint8_t filter_uint8 (uint8_t value)
+{
+	return value == 0xff ? 0 : value;
+}
 
 namespace flight_modes
 {
@@ -204,6 +223,7 @@ namespace flight_modes
 					size = acm_size;
 					break;
 				case MAV_TYPE_FIXED_WING:
+				case MAV_TYPE_FLAPPING_WING:
 					values = apm_values;
 					size = apm_size;
 					break;
@@ -305,10 +325,10 @@ namespace flight_modes
 		void update ()
 		{
 			uint16_t mode = mavlink_msg_heartbeat_get_custom_mode (msg);
-			// uh-oh let's sqeeze it into byte
-			status::flight_mode = ((mode >> 4) & 0xf0) | (mode & 0x0f);
 
 			// FIXME: rewrite
+			// sqeeze it into byte
+			status::flight_mode = ((mode >> 4) & 0xf0) | (mode & 0x0f);
 			uint8_t main_mode = mode >> 8;
 			uint8_t sub_mode = mode & 0xff;
 
@@ -326,9 +346,7 @@ namespace flight_modes
 
 	void update ()
 	{
-		uint8_t autopilot = mavlink_msg_heartbeat_get_autopilot (msg);
-
-		switch (autopilot)
+		switch (fc_type ? fc_type : mavlink_msg_heartbeat_get_autopilot (msg))
 		{
 			case MAV_AUTOPILOT_ARDUPILOTMEGA:
 				apm::update ();
@@ -431,11 +449,8 @@ bool update ()
 				battery::battery1.voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
 				if (!internal_battery_level)
 				{
-					battery::battery1.level = mavlink_msg_sys_status_get_battery_remaining (msg);
-					if (battery::battery1.level == 0xff) // -1 (0xff) means "unknown"
-						battery::battery1.level = 0;
-					// FIXME correct low level warning
-					battery::battery1.low = !battery::battery1.level;
+					battery::battery1.level = filter_uint8 (mavlink_msg_sys_status_get_battery_remaining (msg));
+					battery::battery1.low = battery::battery1.level <= battery_low_threshod;
 				}
 				else
 					battery::battery1.update (true);
@@ -454,18 +469,15 @@ bool update ()
 				attitude::yaw   = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
 				break;
 			case MAVLINK_MSG_ID_GPS_RAW_INT:
-			{
 				gps::state      = mavlink_msg_gps_raw_int_get_fix_type (msg);
 				gps::satellites = mavlink_msg_gps_raw_int_get_satellites_visible (msg);
 				gps::latitude   = mavlink_msg_gps_raw_int_get_lat (msg) / 10000000.0;
 				gps::longitude  = mavlink_msg_gps_raw_int_get_lon (msg) / 10000000.0;
 				gps::altitude   = mavlink_msg_gps_raw_int_get_alt (msg) / 1000.0;
-				uint16_t gs     = mavlink_msg_gps_raw_int_get_vel (msg);
-				gps::speed      = gs == 0xffff ? 0 : gs / 100.0;
+				gps::speed      = filter_uint16 (mavlink_msg_gps_raw_int_get_vel (msg)) / 100.0;
 				// FIXME: FC home
 				home::update ();
 				break;
-			}
 			case MAVLINK_MSG_ID_VFR_HUD:
 				stable::groundspeed = mavlink_msg_vfr_hud_get_groundspeed (msg);
 				stable::airspeed    = mavlink_msg_vfr_hud_get_airspeed (msg);
@@ -482,19 +494,18 @@ bool update ()
 				break;
 			case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
 				input::connected = true;		// enable switching between screens
-				// memcpy?
-				input::channels [0] = mavlink_msg_rc_channels_raw_get_chan1_raw (msg);
-				input::channels [1] = mavlink_msg_rc_channels_raw_get_chan2_raw (msg);
-				input::channels [2] = mavlink_msg_rc_channels_raw_get_chan3_raw (msg);
-				input::channels [3] = mavlink_msg_rc_channels_raw_get_chan4_raw (msg);
-				input::channels [4] = mavlink_msg_rc_channels_raw_get_chan5_raw (msg);
-				input::channels [5] = mavlink_msg_rc_channels_raw_get_chan6_raw (msg);
-				input::channels [6] = mavlink_msg_rc_channels_raw_get_chan7_raw (msg);
-				input::channels [7] = mavlink_msg_rc_channels_raw_get_chan8_raw (msg);
+				input::channels [0] = filter_uint16 (mavlink_msg_rc_channels_raw_get_chan1_raw (msg));
+				input::channels [1] = filter_uint16 (mavlink_msg_rc_channels_raw_get_chan2_raw (msg));
+				input::channels [2] = filter_uint16 (mavlink_msg_rc_channels_raw_get_chan3_raw (msg));
+				input::channels [3] = filter_uint16 (mavlink_msg_rc_channels_raw_get_chan4_raw (msg));
+				input::channels [4] = filter_uint16 (mavlink_msg_rc_channels_raw_get_chan5_raw (msg));
+				input::channels [5] = filter_uint16 (mavlink_msg_rc_channels_raw_get_chan6_raw (msg));
+				input::channels [6] = filter_uint16 (mavlink_msg_rc_channels_raw_get_chan7_raw (msg));
+				input::channels [7] = filter_uint16 (mavlink_msg_rc_channels_raw_get_chan8_raw (msg));
 #ifndef TELEMETRY_MODULES_ADC_RSSI
 				if (!emulate_rssi)
 				{
-					input::rssi = mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
+					input::rssi = (uint16_t) mavlink_msg_rc_channels_raw_get_rssi (msg) * 100 / 255;
 					input::rssi_low = input::rssi < rssi_low_threshold;
 				}
 				else
@@ -542,6 +553,8 @@ void init ()
 	emulate_rssi = eeprom_read_byte (EEPROM_ADDR_EMULATE_RSSI);
 	emulate_rssi_channel = eeprom_read_byte (EEPROM_ADDR_EMULATE_RSSI_CHANNEL);
 	emulate_rssi_threshold = eeprom_read_word (EEPROM_ADDR_EMULATE_RSSI_THRESHOLD);
+	fc_type = eeprom_read_byte (EEPROM_ADDR_FC_TYPE);
+	battery_low_threshod = eeprom_read_byte (EEPROM_ADDR_BATTERY_LOW_THRESHOD);
 	TELEMETRY_UART::init (uart_utils::get_baudrate (eeprom_read_byte (EEPROM_ADDR_BAUDRATE), MAVLINK_DEFAULT_BAUDRATE));
 }
 

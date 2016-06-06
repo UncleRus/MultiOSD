@@ -45,10 +45,12 @@
  * MAVLink config
  */
 #define MAVLINK_DEFAULT_BAUDRATE UART_BR_57600
+#define MAVLINK_DEFAULT_FC_TYPE 0                         // 0 - Auto, 3 - APM, 9 - PPZ, 12 - PX4
 #define MAVLINK_SYSID 'R'                                 // MAVLink system ID
 #define MAVLINK_COMPID 1                                  // MAVLink component ID
 #define MAVLINK_CONNECTION_TIMEOUT 2000                   // ms
-#define MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL 1             // Internal battery level calculation (may be better)
+#define MAVLINK_DEFAULT_INTERNAL_BATT_LEVEL 1             // Internal calculation of the battery level (may be better)
+#define MAVLINK_DEFAULT_BATTERY_LOW_THRESHOD 15           // Low battery threshold, %. Only for FC battery level
 #define MAVLINK_DEFAULT_RSSI_LOW_THRESHOLD 10             // RSSI low threshold, %
 #define MAVLINK_DEFAULT_EMULATE_RSSI 0                    // Emulate RSSI by input channels
 #define MAVLINK_DEFAULT_EMULATE_RSSI_CHANNEL 2            // Input channel number for RSSI emulation 0 - roll, 1 - pitch, 2 - throttle, ...
