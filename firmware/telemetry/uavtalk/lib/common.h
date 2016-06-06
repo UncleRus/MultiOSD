@@ -21,10 +21,12 @@
 #include "../../../lib/pgmspace.h"
 #include "../../../lib/uart/uart.h"
 
-#define UAVTALK_RELEASE_OP150202   0
-#define UAVTALK_RELEASE_OP150502   1
-#define UAVTALK_RELEASE_LP150900   2
-#define UAVTALK_RELEASE_TL20151123 3
+#define UAVTALK_RELEASE_OP150202    0
+#define UAVTALK_RELEASE_OP150502    1
+#define UAVTALK_RELEASE_LP150900    2
+#define UAVTALK_RELEASE_TL20151123  3
+#define UAVTALK_RELEASE_LPNEXT      4
+#define UAVTALK_RELEASE_DR201604092 5
 
 #include "../../../config.h"
 

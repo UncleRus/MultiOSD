@@ -21,6 +21,7 @@
 #include "lp150900/release.h"
 #include "tl20151123/release.h"
 #include "lpnext/release.h"
+#include "dr201604092/release.h"
 
 UT_NAMESPACE_OPEN
 
@@ -94,11 +95,12 @@ void request_object (uint32_t obj_id)
 ///////////////////////////////////////////////////////////////////////////
 
 const release_t releases [] PROGMEM = {
-	{ op150202::handlers,   op150202::fm::names,   op150202::fm::size },
-	{ op150502::handlers,   op150502::fm::names,   op150502::fm::size },
-	{ lp150900::handlers,   op150502::fm::names,   op150502::fm::size },
-	{ tl20151123::handlers, tl20151123::fm::names, tl20151123::fm::size },
-	{ lpnext::handlers,     op150502::fm::names,   op150502::fm::size },
+	{ op150202::handlers,    op150202::fm::names,    op150202::fm::size },
+	{ op150502::handlers,    op150502::fm::names,    op150502::fm::size },
+	{ lp150900::handlers,    op150502::fm::names,    op150502::fm::size },
+	{ tl20151123::handlers,  tl20151123::fm::names,  tl20151123::fm::size },
+	{ lpnext::handlers,      op150502::fm::names,    op150502::fm::size },
+	{ dr201604092::handlers, dr201604092::fm::names, dr201604092::fm::size },
 };
 
 const char *get_fm_name_p (uint8_t fm)
