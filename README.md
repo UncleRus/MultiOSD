@@ -25,6 +25,7 @@ Yet another MinimOSD firmware with configurable screens layout.
 ### MAVLink module  
 
 * APM 2.xx (ArduCopter, ArduPilot)
+* Cleanflight MAVLink telemetry
 * Pixhawk PX4 (ArduCopter, ArduPilot)
 * Paparazzi
 * Generic MAVLink boards
