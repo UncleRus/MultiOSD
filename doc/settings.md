@@ -177,7 +177,7 @@ str      | 6 bytes
 
 ### ABCS
 
-1 to enable current sensor.
+Set this option to 1 to enable current sensor.
 
 Type     | Size
 -------- | --------
