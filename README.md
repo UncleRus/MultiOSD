@@ -20,6 +20,7 @@ Yet another MinimOSD firmware with configurable screens layout.
   * LibrePilot 15.09 (http://librepilot.org)
   * LibrePilot Next release
 * All TauLabs 20151123 (http://taulabs.org) boards
+* All dRonin dRonin 2016-04-09.2 (http://dronin.org) boards
 
 ### MAVLink module  
 
