@@ -4,7 +4,7 @@
 
 ### ADCREF
 
-ADC reference voltage source. Make sure the `ADCUREF` value is correct.
+ADC reference voltage source. Make sure that `ADCUREF` value is correct.
 
 Type     | Size
 -------- | --------
@@ -99,7 +99,7 @@ Value | Mode
 
 ### SWCH
 
-Switch input channel.
+Input channel used for screens switching.
 
 Type     | Size
 -------- | --------
@@ -107,7 +107,7 @@ uint8    | 1 byte
 
 ### SELMIN
 
-Minimal pulse width of raw input channel (usually 1000). Used in **Selector** mode.
+Minimal pulse width of the input channel (usually 1000). Used in **Selector** mode.
 
 Type     | Size
 -------- | --------
@@ -123,7 +123,7 @@ uint16   | 2 bytes
 
 ### TGTRESH
 
-Screen switch threshold. Used in **Toggle** mode. Recommended value about **1200**.
+Screen switch threshold, microseconds. Used in **Toggle** mode. Recommended value is in range **1200 .. 1600**.
 
 Type     | Size
 -------- | --------
@@ -356,7 +356,7 @@ Value | Firmware   | Version
 
 ### UTIHC
 
-Calculate home position internally if 1. Useful with CC3D/Atom.
+Calculate home position by OSD if 1. Useful with CC3D/Atom.
 If 0, flight controller defines home position.
 
 Type     | Size
@@ -384,8 +384,8 @@ Value | Baudrate
 
 ### MLIBL
 
-Claculate battery level internally if 1. Setting this option to 1 can
-improve the accuracy of the battery level calculation.
+Claculate battery level by OSD. Setting this option to 1 can
+improve accuracy of the battery level calculation.
 
 Type     | Size
 -------- | --------
@@ -393,7 +393,7 @@ bool     | 1 byte
 
 ### MLRLT
 
-RSSI warning threshold, percents. This option will be used when `MLER` = 0.
+RSSI warning threshold, percents. This option used when `MLER` is 0.
 
 Type     | Size
 -------- | --------
@@ -403,7 +403,7 @@ uint8    | 1 byte
 
 Emulate RSSI level by receiver input channel value. Useful when receiver
 has no RSSI level output.
-RSSI low level warning will be set if value if the input channel defined
+RSSI low level warning will be set if value of the input channel defined
 by `MLERC` lower than `MLERT`.
 
 Type     | Size
@@ -412,7 +412,7 @@ bool     | 1 byte
 
 ### MLERC
 
-Receiver channel used for emulation. Used when `MLER` = 1.
+Receiver channel for RSSI emulation. This option used when `MLER` is 1.
 
 Type     | Size
 -------- | --------
@@ -431,8 +431,8 @@ Value | Input channel
 
 ### MLERT
 
-RSSI emulation threshold. Minimal pulse width of input channel, us. Used
-when `MLERT` = 1. Typical value is **~900**
+RSSI emulation threshold - minimal pulse width of the input channel, microseconds.
+Option used when `MLERT` = 1. Typical value is about **900**.
 
 Type     | Size
 -------- | --------

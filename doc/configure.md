@@ -1,6 +1,6 @@
 ## Console connection
 
-MultiOSD offers the low-level configuration console. To use it you'll need
+MultiOSD offers the low-level configuration console. To use it you need
 terminal software and serial port (it can be any USB-UART connector, like FTDI
 or Prolific pl2303).
 

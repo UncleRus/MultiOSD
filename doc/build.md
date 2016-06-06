@@ -19,8 +19,7 @@
 
 # MultiOSD installation
 
-You will need the USB-UART module like FT-232 or pl2303.
-Connect it to MinimOSD UART.
+You need the USB-UART module like FT-232 or pl2303, connect it to MinimOSD UART.
 
 1. Install python, pip and libraries:
 
