@@ -30,7 +30,7 @@ float    | 4 bytes
 ### VMODE
 
 OSD composite video mode. Used only when jumper "PAL" on MinimOSD is not closed.
-Value will be applied after reboot.
+Value will be applied after OSD reboot.
 
 Type     | Size
 -------- | --------
@@ -44,7 +44,7 @@ Value | Video mode
 ### VBRIGHT
 
 OSD character brithness in % of OSD white level.
-Value will be applied after MinimOSD reboot.
+Value will be applied after OSD reboot.
 
 Type     | Size
 -------- | --------
@@ -381,10 +381,26 @@ Value | Baudrate
  2    | 38400
  3    | 57600
  4    | 115200
+ 
+### MLFC
+
+Flight controller type. Useful with Cleanflight MAVLink telemetry: set it to **3** (APM) for
+correct display of the current flight mode.
+
+Type     | Size
+-------- | --------
+enum     | 1 byte 
+
+Value | FC type
+----- | -------
+ 0    | Autodetect
+ 3    | APM
+ 9    | Paparazzi
+ 12   | PX4
 
 ### MLIBL
 
-Claculate battery level by OSD. Setting this option to 1 can
+Calculate battery level by OSD, not by flight controller if set to 1. Setting this option to 1 can
 improve accuracy of the battery level calculation.
 
 Type     | Size
@@ -393,7 +409,7 @@ bool     | 1 byte
 
 ### MLRLT
 
-RSSI warning threshold, percents. This option used when `MLER` is 0.
+RSSI warning threshold, percents. This option is used when `MLER` is 0.
 
 Type     | Size
 -------- | --------
@@ -412,7 +428,7 @@ bool     | 1 byte
 
 ### MLERC
 
-Receiver channel for RSSI emulation. This option used when `MLER` is 1.
+Receiver channel for RSSI emulation. This option is used when `MLER` is 1.
 
 Type     | Size
 -------- | --------
@@ -431,8 +447,8 @@ Value | Input channel
 
 ### MLERT
 
-RSSI emulation threshold - minimal pulse width of the input channel, microseconds.
-Option used when `MLERT` = 1. Typical value is about **900**.
+RSSI emulation threshold (minimal pulse width of the input channel), microseconds.
+This option is used when `MLERT` = 1. Typical value is about **900**.
 
 Type     | Size
 -------- | --------
