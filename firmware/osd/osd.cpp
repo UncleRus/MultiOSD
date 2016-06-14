@@ -126,7 +126,7 @@ uint8_t screens_enabled ()
 {
 	uint8_t res = eeprom_read_byte (EEPROM_ADDR_SCREENS);
 	if (!res) res = 1;
-	return res >= OSD_MAX_SCREENS ? OSD_MAX_SCREENS - 1 : res;
+	return res >= OSD_MAX_SCREENS ? OSD_MAX_SCREENS : res;
 }
 
 volatile bool started = false;
