@@ -432,7 +432,7 @@ namespace screen
 		}
 		if (i == OSD_SCREEN_PANELS)
 		{
-			print_err_p ("Too much panels");
+			print_err_p (PSTR ("Too much panels"));
 			return;
 		}
 		print (scr);
