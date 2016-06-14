@@ -66,7 +66,7 @@ namespace font
 
 	void print_byte (uint8_t b)
 	{
-		for (uint8_t i = 0; i < 8; i ++)
+		for (int8_t i = 7; i >= 0; i --)
 			CONSOLE_UART::send (((b >> i) & 1) ? '1' : '0');
 		eol ();
 	}
@@ -649,7 +649,7 @@ namespace adc
 	{
 		if (ch > 0x0f)
 		{
-			CONSOLE_UART::send_string_p (PSTR ("Bad ADC channel"));
+			CONSOLE_UART::send_string_p (PSTR ("ERR: Bad ADC channel"));
 			return;
 		}
 
