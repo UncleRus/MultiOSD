@@ -32,6 +32,10 @@ namespace lp150900
 
 #define UAVTALK_LP150900 telemetry::modules::uavtalk::lp150900
 
+const bool instid_required = true;
+
+const uint32_t flightstatus_objid = UAVTALK_OP150502_FLIGHTSTATUS_OBJID;
+
 void handle_manualcontrolcommand ();
 
 const obj_handler_t handlers [] PROGMEM = {

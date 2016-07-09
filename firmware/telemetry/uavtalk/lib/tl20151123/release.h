@@ -44,6 +44,10 @@ namespace tl20151123
 
 #define UAVTALK_TL20151123 telemetry::modules::uavtalk::tl20151123
 
+const bool instid_required = false;
+
+const uint32_t flightstatus_objid = UAVTALK_TL20151123_FLIGHTSTATUS_OBJID;
+
 namespace fm
 {
 	const char acro [] PROGMEM = "ACRO";

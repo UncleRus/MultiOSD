@@ -22,6 +22,10 @@
 #include <math.h>
 #include "../../../telemetry.h"
 
+#ifdef DEBUG
+	#include "../../../../lib/dbgconsole.h"
+#endif
+
 UT_NAMESPACE_OPEN
 
 namespace lp150900

@@ -21,6 +21,10 @@
 #include <math.h>
 #include "../../../telemetry.h"
 
+#ifdef DEBUG
+	#include "../../../../lib/dbgconsole.h"
+#endif
+
 UT_NAMESPACE_OPEN
 
 namespace tl20151123
@@ -55,9 +59,12 @@ void send_gcs_telemetry_stats (GCSTelemetryStatsStatus status)
 	GCSTelemetryStats data;
 	data.Status = status;
 	h.msg_type = _UT_TYPE_OBJ_ACK;
-	h.length = UAVTALK_HEADER_LEN + sizeof (GCSTelemetryStats);
+	h.length = header_len + sizeof (GCSTelemetryStats);
 	h.objid = UAVTALK_TL20151123_GCSTELEMETRYSTATS_OBJID;
 	send (h, (uint8_t *) &data, sizeof (GCSTelemetryStats));
+#ifdef DEBUG
+	dbgconsole::send_string_p (PSTR ("GCSTelemetryStats\n"));
+#endif
 }
 
 inline uint8_t fts_respond (uint8_t state)
@@ -71,7 +78,7 @@ inline uint8_t fts_respond (uint8_t state)
 	if (state == FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEACK)
 	{
 		send_gcs_telemetry_stats (GCSTELEMETRYSTATS_STATUS_CONNECTED);
-		request_object (fts_objid);
+		request_object (release.flightstatus_objid);
 	}
 
 	return CONNECTION_STATE_CONNECTED;
@@ -117,7 +124,7 @@ void handle_manualcontrolcommand ()
 	memcpy (input::channels, obj->Channel, sizeof (obj->Channel));
 	input::connected = obj->Connected;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
-	input::rssi = obj->Rssi * 100;
+	input::rssi = obj->Rssi;
 	input::rssi_low = input::rssi < rssi_low_threshold;
 #endif
 }

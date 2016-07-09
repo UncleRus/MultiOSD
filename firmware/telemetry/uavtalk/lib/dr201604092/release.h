@@ -31,6 +31,10 @@ namespace dr201604092
 
 #define UAVTALK_DR201604092 telemetry::modules::uavtalk::dr201604092
 
+const bool instid_required = false;
+
+const uint32_t flightstatus_objid = UAVTALK_DR201604092_FLIGHTSTATUS_OBJID;
+
 namespace fm
 {
 	const char fsaf [] PROGMEM = "FSAF";

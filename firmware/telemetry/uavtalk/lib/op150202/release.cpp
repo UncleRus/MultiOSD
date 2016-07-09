@@ -20,6 +20,11 @@
 #include <string.h>
 #include <math.h>
 #include "../../../telemetry.h"
+#include "../common.h"
+
+#ifdef DEBUG
+	#include "../../../../lib/dbgconsole.h"
+#endif
 
 UT_NAMESPACE_OPEN
 
@@ -75,7 +80,7 @@ void send_gcs_telemetry_stats (GCSTelemetryStatsStatus status)
 	GCSTelemetryStats data;
 	data.Status = status;
 	h.msg_type = _UT_TYPE_OBJ_ACK;
-	h.length = UAVTALK_HEADER_LEN + sizeof (GCSTelemetryStats);
+	h.length = header_len + sizeof (GCSTelemetryStats);
 	h.objid = UAVTALK_OP150202_GCSTELEMETRYSTATS_OBJID;
 	send (h, (uint8_t *) &data, sizeof (GCSTelemetryStats));
 }
@@ -91,7 +96,7 @@ inline uint8_t fts_respond (uint8_t state)
 	if (state == FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEACK)
 	{
 		send_gcs_telemetry_stats (GCSTELEMETRYSTATS_STATUS_CONNECTED);
-		request_object (fts_objid);
+		request_object (release.flightstatus_objid);
 	}
 
 	return CONNECTION_STATE_CONNECTED;

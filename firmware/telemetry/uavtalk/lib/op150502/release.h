@@ -31,6 +31,10 @@ namespace op150502
 
 #define UAVTALK_OP150502 telemetry::modules::uavtalk::op150502
 
+const bool instid_required = true;
+
+const uint32_t flightstatus_objid = UAVTALK_OP150502_FLIGHTSTATUS_OBJID;
+
 namespace fm
 {
 

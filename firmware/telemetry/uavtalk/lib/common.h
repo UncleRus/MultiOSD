@@ -32,7 +32,6 @@
 
 #define UAVTALK_VERSION 0x20
 #define UAVTALK_SYNC 0x3c
-#define UAVTALK_HEADER_LEN 0x0a
 
 #define _UT_TYPE_OBJ		(UAVTALK_VERSION | 0x00)
 #define _UT_TYPE_OBJ_REQ	(UAVTALK_VERSION | 0x01)
@@ -56,7 +55,11 @@ struct header_t
 	uint16_t instid;
 
 	header_t () :
-		sync (UAVTALK_SYNC), msg_type (0), length (UAVTALK_HEADER_LEN), objid (0), instid (0)
+		sync (UAVTALK_SYNC), msg_type (0), length (0), objid (0), instid (0)
+	{}
+
+	header_t (uint8_t msg_type_, uint16_t length_, uint32_t objid_) :
+		sync (UAVTALK_SYNC), msg_type (msg_type_), length (length_), objid (objid_), instid (0)
 	{}
 };
 
@@ -77,6 +80,8 @@ struct obj_handler_t
 
 struct release_t
 {
+	bool instid_required;
+	uint32_t flightstatus_objid;
 	const obj_handler_t *handlers;
 	const char * const *fm_names;
 	uint8_t fm_count;
@@ -89,10 +94,11 @@ extern bool baro_enabled;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
 extern bool mag_enabled;
 #endif
-extern uint8_t release;
+extern uint8_t release_idx;
+extern release_t release;
+extern uint8_t header_len;
 extern uint32_t telemetry_request_timeout;
 extern uint32_t connection_timeout;
-extern uint32_t fts_objid;
 extern uint8_t rssi_low_threshold;
 
 extern message_t buffer;
@@ -109,6 +115,8 @@ bool handle ();
 void update_connection ();
 // init
 void set_release ();
+// receive and process byte
+bool receive ();
 
 
 UT_NAMESPACE_CLOSE

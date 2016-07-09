@@ -30,20 +30,21 @@
 #include "boot.h"
 #include "osd/osd.h"
 
+#ifdef DEBUG
+	#include "lib/dbgconsole.h"
+#endif
+
 inline void init ()
 {
-	// let's check EEPROM state
+#ifdef DEBUG
+	dbgconsole::init ();
+#endif
 	settings::init ();
-	// setup timer
 	timer::init ();
 	_delay_ms (500);
-	// setup UART
 	CONSOLE_UART::init (uart_utils::get_baudrate (CONSOLE_BAUDRATE));
-	// setup SPI...
 	spi::init ();
-	// ...and MAX7456
 	max7456::init ();
-	// Show boot screen
 	if (boot::show ())
 	{
 		// magic word was typed so let's run console
@@ -52,11 +53,8 @@ inline void init ()
 		fprintf_P (&CONSOLE_UART::stream, PSTR ("MultiOSD v%u.%u\r\n"), VERSION >> 8, VERSION);
 		console::run (console::process);
 	}
-	// boot to OSD
 	CONSOLE_UART::send_string_p (PSTR ("BOOT\r\n"));
-	// load telemetry settings
 	telemetry::init ();
-	// load OSD settings
 	osd::init ();
 }
 

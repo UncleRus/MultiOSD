@@ -23,6 +23,10 @@
 #include "lpnext/release.h"
 #include "dr201604092/release.h"
 
+#ifdef DEBUG
+	#include "../../../lib/dbgconsole.h"
+#endif
+
 UT_NAMESPACE_OPEN
 
 bool internal_home_calc;
@@ -32,11 +36,12 @@ bool baro_enabled = false;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
 bool mag_enabled = false;
 #endif
-uint8_t release = 0;
+uint8_t release_idx = 0;
+release_t release;
+uint8_t header_len;
 uint8_t rssi_low_threshold = 0;
 uint32_t telemetry_request_timeout = 0;
 uint32_t connection_timeout = 0;
-uint32_t fts_objid;
 
 message_t buffer;
 
@@ -69,7 +74,7 @@ void send (const header_t &head, uint8_t *data, uint8_t size)
 {
 	uint8_t crc = 0;
 	uint8_t *offset = (uint8_t *) &head;
-	for (uint8_t i = 0; i < sizeof (header_t); i ++, offset ++)
+	for (uint8_t i = 0; i < header_len; i ++, offset ++)
 	{
 		crc = get_crc (crc ^ *offset);
 		TELEMETRY_UART::send (*offset);
@@ -85,52 +90,174 @@ void send (const header_t &head, uint8_t *data, uint8_t size)
 
 void request_object (uint32_t obj_id)
 {
-	header_t h;
-	h.msg_type = _UT_TYPE_OBJ_REQ;
-	h.length = UAVTALK_HEADER_LEN;
-	h.objid = obj_id;
+	header_t h (_UT_TYPE_OBJ_REQ, header_len, obj_id);
+//	h.msg_type = _UT_TYPE_OBJ_REQ;
+//	h.length = header_len;
+//	h.objid = obj_id;
 	send (h, NULL, 0);
+}
+
+enum parser_state_t
+{
+	PS_SYNC     = 0,
+	PS_MSG_TYPE = 1,
+	PS_LENGTH   = 2,
+	PS_OBJID    = 3,
+	PS_INSTID   = 4,
+	PS_DATA     = 5,
+	PS_CRC      = 6,
+	PS_READY    = 7,
+};
+
+parser_state_t parser_state = PS_SYNC;
+uint8_t parser_crc = 0;
+// current byte in every state
+uint8_t parser_step = 0;
+
+#define _update_crc(b)      do { parser_crc = get_crc (parser_crc ^ b); } while (0)
+#define _receive_byte(v, b) do { v |= ((uint32_t) b) << (parser_step << 3); parser_step ++; } while (0)
+
+bool parse (uint8_t b)
+{
+	switch (parser_state)
+	{
+		case PS_SYNC:
+			if (b != UAVTALK_SYNC) return false;
+			parser_crc = get_crc (b);
+			buffer.head.sync = b;
+			buffer.head.length = 0;
+			buffer.head.objid = 0;
+			buffer.head.instid = 0;
+			parser_state = PS_MSG_TYPE;
+			break;
+		case PS_MSG_TYPE:
+			if ((b & 0xf8) != UAVTALK_VERSION)
+			{
+				parser_state = PS_SYNC;
+				return false;
+			}
+			_update_crc (b);
+			buffer.head.msg_type = b;
+			parser_step = 0;
+			parser_state = PS_LENGTH;
+			break;
+		case PS_LENGTH:
+			_receive_byte (buffer.head.length, b);
+			_update_crc (b);
+			if (parser_step == 2)
+			{
+				if (buffer.head.length < header_len || buffer.head.length > 0xff + (uint16_t) header_len)
+				{
+					parser_state = PS_SYNC;
+					return false;
+				}
+				parser_state = PS_OBJID;
+				parser_step = 0;
+			}
+			break;
+		case PS_OBJID:
+			_receive_byte (buffer.head.objid, b);
+			_update_crc (b);
+			if (parser_step == 4)
+			{
+				if (release.instid_required) parser_state = PS_INSTID;
+				else parser_state = buffer.head.length == header_len ? PS_CRC : PS_DATA;
+				parser_step = 0;
+			}
+			break;
+		case PS_INSTID:
+			_receive_byte (buffer.head.instid, b);
+			_update_crc (b);
+			if (parser_step == 2)
+			{
+				parser_state = buffer.head.length == header_len ? PS_CRC : PS_DATA;
+				parser_step = 0;
+			}
+			break;
+		case PS_DATA:
+			_update_crc (b);
+			buffer.data [parser_step] = b;
+			parser_step ++;
+			if (parser_step >= buffer.head.length - header_len) parser_state = PS_CRC;
+			break;
+		case PS_CRC:
+		case PS_READY: // supress warning
+			buffer.crc = b;
+			parser_state = PS_READY;
+			break;
+	}
+
+	if (parser_state == PS_READY)
+	{
+		parser_state = PS_SYNC;
+		bool res = buffer.crc == parser_crc;
+		if (res && buffer.head.msg_type == _UT_TYPE_OBJ_ACK)
+		{
+			header_t head;
+			head.objid = buffer.head.objid;
+			head.msg_type = _UT_TYPE_ACK;
+			send (head);
+		}
+		return res;
+	}
+
+	return false;
+}
+
+bool receive ()
+{
+	uint16_t err = 0;
+	do
+	{
+		uint16_t raw = TELEMETRY_UART::receive ();
+		err = raw & 0xff00;
+		if (!err && parse (raw)) return true;
+	}
+	while (!err);
+	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
 const release_t releases [] PROGMEM = {
-	{ op150202::handlers,    op150202::fm::names,    op150202::fm::size },
-	{ op150502::handlers,    op150502::fm::names,    op150502::fm::size },
-	{ lp150900::handlers,    op150502::fm::names,    op150502::fm::size },
-	{ tl20151123::handlers,  tl20151123::fm::names,  tl20151123::fm::size },
-	{ lpnext::handlers,      op150502::fm::names,    op150502::fm::size },
-	{ dr201604092::handlers, dr201604092::fm::names, dr201604092::fm::size },
+	{ op150202::instid_required,    op150202::flightstatus_objid,    op150202::handlers,    op150202::fm::names,    op150202::fm::size },
+	{ op150502::instid_required,    op150502::flightstatus_objid,    op150502::handlers,    op150502::fm::names,    op150502::fm::size },
+	{ lp150900::instid_required,    lp150900::flightstatus_objid,    lp150900::handlers,    op150502::fm::names,    op150502::fm::size },
+	{ tl20151123::instid_required,  tl20151123::flightstatus_objid,  tl20151123::handlers,  tl20151123::fm::names,  tl20151123::fm::size },
+	{ lpnext::instid_required,      lpnext::flightstatus_objid,      lpnext::handlers,      op150502::fm::names,    op150502::fm::size },
+	{ dr201604092::instid_required, dr201604092::flightstatus_objid, dr201604092::handlers, dr201604092::fm::names, dr201604092::fm::size },
 };
 
 const char *get_fm_name_p (uint8_t fm)
 {
-	const char * const *names = (const char * const *) pgm_read_ptr (&releases [release].fm_names);
-	return fm < pgm_read_byte (&releases [release].fm_count) ? (const char *) pgm_read_ptr (&names [fm]) : NULL;
+	const char * const *names = (const char * const *) pgm_read_ptr (&releases [release_idx].fm_names);
+	return fm < pgm_read_byte (&releases [release_idx].fm_count) ? (const char *) pgm_read_ptr (&names [fm]) : NULL;
 }
 
 bool handle ()
 {
-	const obj_handler_t *rel = (const obj_handler_t *) pgm_read_ptr (&releases [release].handlers);
+	const obj_handler_t *handler = release.handlers;
 	while (true)
 	{
-		uint32_t objid = pgm_read_dword (&rel->objid);
+		uint32_t objid = pgm_read_dword (&handler->objid);
 		if (objid == buffer.head.objid)
 		{
-			((obj_handler_t::callable_t) pgm_read_ptr (&rel->handler)) ();
+			((obj_handler_t::callable_t) pgm_read_ptr (&handler->handler)) ();
 			return true;
 		}
 		if (!objid) break;
-		rel ++;
+		handler ++;
 	}
 	return false;
 }
 
 void set_release ()
 {
-	if (release >= sizeof (releases) / sizeof (release_t))
-		release = UAVTALK_DEFAULT_RELEASE;
-	fts_objid = pgm_read_dword (&((const obj_handler_t *) pgm_read_ptr (&releases [release].handlers))->objid);
+	if (release_idx >= sizeof (releases) / sizeof (release_t))
+		release_idx = UAVTALK_DEFAULT_RELEASE;
+
+	memcpy_P (&release, &releases [release_idx], sizeof (release_t));
+	header_len = release.instid_required ? 10 : 8;
 }
 
 void update_connection ()

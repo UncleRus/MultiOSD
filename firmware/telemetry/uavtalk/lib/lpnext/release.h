@@ -34,6 +34,10 @@ namespace lpnext
 
 #define UAVTALK_LPNEXT telemetry::modules::uavtalk::lpnext
 
+const bool instid_required = true;
+
+const uint32_t flightstatus_objid = UAVTALK_LPNEXT_FLIGHTSTATUS_OBJID;
+
 const obj_handler_t handlers [] PROGMEM = {
 	{UAVTALK_LPNEXT_FLIGHTSTATUS_OBJID,           UAVTALK_OP150202::handle_flightstatus},         // new obj_id
 	{UAVTALK_OP150202_ATTITUDESTATE_OBJID,        UAVTALK_OP150202::handle_attitudestate},

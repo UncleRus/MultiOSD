@@ -77,120 +77,6 @@ void reset ()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#define _UTPS_WAIT     0
-#define _UTPS_SYNC     1
-#define _UTPS_MSG_TYPE 2
-#define _UTPS_LENGTH   3
-#define _UTPS_OBJID    4
-#define _UTPS_INSTID   5
-#define _UTPS_DATA     6
-#define _UTPS_READY    7
-
-uint8_t parser_state = _UTPS_WAIT;
-uint8_t parser_crc = 0;
-// current byte in every state
-uint8_t parser_step = 0;
-
-#define _update_crc(b) { parser_crc = get_crc (parser_crc ^ b); }
-#define _receive_byte(v, b) { v |= ((uint32_t) b) << (parser_step << 3); parser_step ++; }
-
-bool parse (uint8_t b)
-{
-	switch (parser_state)
-	{
-		case _UTPS_WAIT:
-			if (b != UAVTALK_SYNC) return false;
-			parser_crc = get_crc (b);
-			buffer.head.sync = b;
-			buffer.head.length = 0;
-			buffer.head.objid = 0;
-			buffer.head.instid = 0;
-			parser_state = _UTPS_SYNC;
-			break;
-		case _UTPS_SYNC:
-			if ((b & 0xf8) != UAVTALK_VERSION)
-			{
-				parser_state = _UTPS_WAIT;
-				return false;
-			}
-			_update_crc (b);
-			buffer.head.msg_type = b;
-			parser_step = 0;
-			parser_state = _UTPS_MSG_TYPE;
-			break;
-		case _UTPS_MSG_TYPE:
-			_receive_byte (buffer.head.length, b);
-			_update_crc (b);
-			if (parser_step == 2)
-			{
-				if (buffer.head.length < UAVTALK_HEADER_LEN || buffer.head.length > 0xff + UAVTALK_HEADER_LEN)
-				{
-					parser_state = _UTPS_WAIT;
-					return false;
-				}
-				parser_state = _UTPS_LENGTH;
-				parser_step = 0;
-			}
-			break;
-		case _UTPS_LENGTH:
-			_receive_byte (buffer.head.objid, b);
-			_update_crc (b);
-			if (parser_step == 4)
-			{
-				parser_state = _UTPS_OBJID;
-				parser_step = 0;
-			}
-			break;
-		case _UTPS_OBJID:
-			_receive_byte (buffer.head.instid, b);
-			_update_crc (b);
-			if (parser_step == 2)
-			{
-				parser_state = buffer.head.length == UAVTALK_HEADER_LEN ? _UTPS_DATA : _UTPS_INSTID;
-				parser_step = 0;
-			}
-			break;
-		case _UTPS_INSTID:
-			_update_crc (b);
-			buffer.data [parser_step] = b;
-			parser_step ++;
-			if (parser_step >= buffer.head.length - UAVTALK_HEADER_LEN) parser_state = _UTPS_DATA;
-			break;
-		case _UTPS_DATA:
-			buffer.crc = b;
-			parser_state = _UTPS_READY;
-	}
-
-	if (parser_state == _UTPS_READY)
-	{
-		parser_state = _UTPS_WAIT;
-		bool res = buffer.crc == parser_crc;
-		if (res && buffer.head.msg_type == _UT_TYPE_OBJ_ACK)
-		{
-			header_t head;
-			head.objid = buffer.head.objid;
-			head.msg_type = _UT_TYPE_ACK;
-			send (head);
-		}
-		return res;
-	}
-
-	return false;
-}
-
-bool receive ()
-{
-	uint16_t err = 0;
-	do
-	{
-		uint16_t raw = TELEMETRY_UART::receive ();
-		err = raw & 0xff00;
-		if (!err && parse (raw)) return true;
-	}
-	while (!err);
-	return false;
-}
-
 bool update ()
 {
 	bool updated = false;
@@ -224,7 +110,7 @@ bool update ()
 
 void init ()
 {
-	release = eeprom_read_byte (EEPROM_ADDR_RELEASE);
+	release_idx = eeprom_read_byte (EEPROM_ADDR_RELEASE);
 	internal_home_calc = eeprom_read_byte (EEPROM_ADDR_INTERNAL_HOME_CALC);
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
 	rssi_low_threshold = eeprom_read_byte (EEPROM_ADDR_RSSI_THRESHOLD);
