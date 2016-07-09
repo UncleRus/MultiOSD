@@ -91,9 +91,6 @@ void send (const header_t &head, uint8_t *data, uint8_t size)
 void request_object (uint32_t obj_id)
 {
 	header_t h (_UT_TYPE_OBJ_REQ, header_len, obj_id);
-//	h.msg_type = _UT_TYPE_OBJ_REQ;
-//	h.length = header_len;
-//	h.objid = obj_id;
 	send (h, NULL, 0);
 }
 
@@ -230,8 +227,7 @@ const release_t releases [] PROGMEM = {
 
 const char *get_fm_name_p (uint8_t fm)
 {
-	const char * const *names = (const char * const *) pgm_read_ptr (&releases [release_idx].fm_names);
-	return fm < pgm_read_byte (&releases [release_idx].fm_count) ? (const char *) pgm_read_ptr (&names [fm]) : NULL;
+	return fm < release.fm_count ? (const char *) pgm_read_ptr (&release.fm_names [fm]) : NULL;
 }
 
 bool handle ()

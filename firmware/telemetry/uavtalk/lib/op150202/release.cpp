@@ -94,11 +94,9 @@ inline uint8_t fts_respond (uint8_t state)
 	}
 
 	if (state == FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEACK)
-	{
 		send_gcs_telemetry_stats (GCSTELEMETRYSTATS_STATUS_CONNECTED);
-		request_object (release.flightstatus_objid);
-	}
 
+	request_object (release.flightstatus_objid);
 	return CONNECTION_STATE_CONNECTED;
 }
 

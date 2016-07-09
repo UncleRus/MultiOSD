@@ -62,9 +62,6 @@ void send_gcs_telemetry_stats (GCSTelemetryStatsStatus status)
 	h.length = header_len + sizeof (GCSTelemetryStats);
 	h.objid = UAVTALK_TL20151123_GCSTELEMETRYSTATS_OBJID;
 	send (h, (uint8_t *) &data, sizeof (GCSTelemetryStats));
-#ifdef DEBUG
-	dbgconsole::send_string_p (PSTR ("GCSTelemetryStats\n"));
-#endif
 }
 
 inline uint8_t fts_respond (uint8_t state)
@@ -76,11 +73,9 @@ inline uint8_t fts_respond (uint8_t state)
 	}
 
 	if (state == FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEACK)
-	{
 		send_gcs_telemetry_stats (GCSTELEMETRYSTATS_STATUS_CONNECTED);
-		request_object (release.flightstatus_objid);
-	}
 
+	request_object (release.flightstatus_objid);
 	return CONNECTION_STATE_CONNECTED;
 }
 

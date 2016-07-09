@@ -18,8 +18,8 @@
 #define DEFAULTS_H_
 
 #ifdef ECLIPSE_BUILD
-	#define DEBUG
 	// This settings used in Eclipse
+	//#define DEBUG
 	#define TELEMETRY_MODULES_UAVTALK
 	#define TELEMETRY_MODULES_ADC_BATTERY
 	//#define TELEMETRY_MODULES_ADC_RSSI
