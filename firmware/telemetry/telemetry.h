@@ -22,24 +22,48 @@
 #include "../lib/pgmspace.h"
 
 // FIXME: enums
-#define GPS_STATE_NO_FIX 0
-#define GPS_STATE_FIXING 1
-#define GPS_STATE_2D     2
-#define GPS_STATE_3D     3
+//#define GPS_STATE_NO_FIX 0
+//#define GPS_STATE_FIXING 1
+//#define GPS_STATE_2D     2
+//#define GPS_STATE_3D     3
 
-#define CONNECTION_STATE_DISCONNECTED 0
-#define CONNECTION_STATE_ESTABLISHING 1
-#define CONNECTION_STATE_CONNECTED    2
-
-#define HOME_STATE_NO_FIX 0
-#define HOME_STATE_FIXING 1
-#define HOME_STATE_FIXED  2
+//#define CONNECTION_STATE_DISCONNECTED 0
+//#define CONNECTION_STATE_ESTABLISHING 1
+//#define CONNECTION_STATE_CONNECTED    2
+//
+//#define HOME_STATE_NO_FIX 0
+//#define HOME_STATE_FIXING 1
+//#define HOME_STATE_FIXED  2
 
 #define INPUT_CHANNELS 10
-#define CALLSIGN_LENGTH 5
+#ifndef CALLSIGN_LENGTH
+	#define CALLSIGN_LENGTH 8
+#endif
 
 namespace telemetry
 {
+
+enum gps_state_t
+{
+	GPS_STATE_NO_FIX = 0,
+	GPS_STATE_FIXING = 1,
+	GPS_STATE_2D     = 2,
+	GPS_STATE_3D     = 3
+};
+
+enum connection_state_t
+{
+	CONNECTION_STATE_DISCONNECTED = 0,
+	CONNECTION_STATE_ESTABLISHING = 1,
+	CONNECTION_STATE_CONNECTED    = 2
+};
+
+enum home_state_t
+{
+	HOME_STATE_NO_FIX = 0,
+	HOME_STATE_FIXING = 1,
+	HOME_STATE_FIXED  = 2
+};
 
 namespace settings
 {
@@ -49,16 +73,16 @@ namespace settings
 
 }  // namespace settings
 
-extern uint32_t ticks;             // update time
+extern uint32_t update_time;             // update time
 
 namespace status
 {
-	extern char        callsign [CALLSIGN_LENGTH + 1];  // 5 chars max
-	extern uint8_t     connection;                      // CONNECTION_STATE_xxx enum
-	extern uint16_t    flight_time;                     // seconds
-	extern uint8_t     flight_mode;                     //
-	extern const char *flight_mode_name_p;              // progmem string
-	extern bool        armed;
+	extern char               callsign [CALLSIGN_LENGTH + 1];  // 5 chars max
+	extern connection_state_t connection;
+	extern uint16_t           flight_time;                     // seconds
+	extern uint8_t            flight_mode;
+	extern const char *       flight_mode_name_p;              // progmem string
+	extern bool               armed;
 }
 
 namespace attitude
@@ -84,14 +108,14 @@ namespace input
 
 namespace gps
 {
-	extern float    latitude;
-	extern float    longitude;
-	extern float    altitude;   // meters
-	extern float    speed;      // m/s
-	extern uint16_t heading;    // degrees, 0..360
-	extern int8_t   satellites;
-	extern uint8_t  state;      // GPS_STATE_xxx enum
-	extern float    climb;      // m/s
+	extern float       latitude;
+	extern float       longitude;
+	extern float       altitude;   // meters
+	extern float       speed;      // m/s
+	extern uint16_t    heading;    // degrees, 0..360
+	extern int8_t      satellites;
+	extern gps_state_t state;      // GPS_STATE_xxx enum
+	extern float       climb;      // m/s
 
 	extern float hdop;
 	extern float vdop;
@@ -114,11 +138,12 @@ namespace environment
 
 namespace stable
 {
-	enum heading_source_t {
-		hs_disabled = 0,
-		hs_gps = 1,
-		hs_internal_mag = 2,
-		hs_external_mag = 3
+	enum heading_source_t
+	{
+		HEADING_SOURCE_DISABLED = 0,
+		HEADING_SOURCE_GPS = 1,
+		HEADING_SOURCE_INTERNAL_MAG = 2,
+		HEADING_SOURCE_EXTERNAL_MAG = 3
 	};
 
 	extern float    climb;        // m/s

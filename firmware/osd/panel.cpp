@@ -199,7 +199,7 @@ namespace connection_state
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		uint8_t attr = telemetry::status::connection != CONNECTION_STATE_CONNECTED
+		uint8_t attr = telemetry::status::connection != telemetry::CONNECTION_STATE_CONNECTED
 			? MAX7456_ATTR_INVERT
 			: 0;
 
@@ -242,10 +242,10 @@ namespace gps_state
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		bool err = telemetry::gps::state == GPS_STATE_NO_FIX;
+		bool err = telemetry::gps::state == telemetry::GPS_STATE_NO_FIX;
 		max7456::puts_p (x, y, PSTR ("\x10\x11"), err ? MAX7456_ATTR_INVERT : 0);
-		max7456::put (x + 2, y, telemetry::gps::state <  GPS_STATE_3D ? _PAN_GPS_2D : _PAN_GPS_3D,
-			err ? MAX7456_ATTR_INVERT : (telemetry::gps::state < GPS_STATE_2D ? MAX7456_ATTR_BLINK : 0));
+		max7456::put (x + 2, y, telemetry::gps::state < telemetry::GPS_STATE_3D ? _PAN_GPS_2D : _PAN_GPS_3D,
+			err ? MAX7456_ATTR_INVERT : (telemetry::gps::state < telemetry::GPS_STATE_2D ? MAX7456_ATTR_BLINK : 0));
 		if (err) max7456::puts_p (x + 3, y, draw::err_str, MAX7456_ATTR_INVERT);
 		else max7456::puts (x + 3, y, buffer);
 	}
@@ -408,11 +408,12 @@ namespace home_distance
 
 	void update ()
 	{
-		attr = telemetry::home::state == HOME_STATE_NO_FIX ? MAX7456_ATTR_INVERT : 0;
-		i_attr = telemetry::home::state != HOME_STATE_FIXED ? MAX7456_ATTR_INVERT : 0;
+		attr = telemetry::home::state == telemetry::HOME_STATE_NO_FIX ? MAX7456_ATTR_INVERT : 0;
+		i_attr = telemetry::home::state != telemetry::HOME_STATE_FIXED ? MAX7456_ATTR_INVERT : 0;
 		if (i_attr)
 		{
-			snprintf_P (buffer, sizeof (buffer), PSTR ("%S"), telemetry::home::state == HOME_STATE_NO_FIX ? draw::err_str : PSTR ("\x09\x09\x09\x8d"));
+			snprintf_P (buffer, sizeof (buffer), PSTR ("%S"),
+				telemetry::home::state == telemetry::HOME_STATE_NO_FIX ? draw::err_str : PSTR ("\x09\x09\x09\x8d"));
 			return;
 		}
 		if (telemetry::home::distance >= 10000)
@@ -439,7 +440,7 @@ namespace home_direction
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		if (telemetry::home::state == HOME_STATE_FIXED)
+		if (telemetry::home::state == telemetry::HOME_STATE_FIXED)
 			osd::draw::arrow (x, y, telemetry::home::direction);
 	}
 
@@ -529,15 +530,15 @@ namespace compass
 		terminate_buffer ();
 		switch (telemetry::stable::heading_source)
 		{
-			case telemetry::stable::hs_disabled:
+			case telemetry::stable::HEADING_SOURCE_DISABLED:
 				attr = MAX7456_ATTR_INVERT;
 				arrow = 0xc6;
 				break;
-			case telemetry::stable::hs_gps:
+			case telemetry::stable::HEADING_SOURCE_GPS:
 				attr = 0;
 				arrow = 0xb6;
 				break;
-			case telemetry::stable::hs_internal_mag:
+			case telemetry::stable::HEADING_SOURCE_INTERNAL_MAG:
 				attr = 0;
 				arrow = 0xc7;
 				break;

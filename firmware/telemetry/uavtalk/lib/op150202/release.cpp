@@ -76,16 +76,13 @@ void handle_flightbatterystate ()
 
 void send_gcs_telemetry_stats (GCSTelemetryStatsStatus status)
 {
-	header_t h;
+	header_t h (_UT_TYPE_OBJ_ACK, header_len + sizeof (GCSTelemetryStats), UAVTALK_OP150202_GCSTELEMETRYSTATS_OBJID);
 	GCSTelemetryStats data;
 	data.Status = status;
-	h.msg_type = _UT_TYPE_OBJ_ACK;
-	h.length = header_len + sizeof (GCSTelemetryStats);
-	h.objid = UAVTALK_OP150202_GCSTELEMETRYSTATS_OBJID;
 	send (h, (uint8_t *) &data, sizeof (GCSTelemetryStats));
 }
 
-inline uint8_t fts_respond (uint8_t state)
+inline connection_state_t fts_respond (uint8_t state)
 {
 	if (state == FLIGHTTELEMETRYSTATS_STATUS_DISCONNECTED)
 	{
@@ -104,7 +101,7 @@ void handle_flighttelemetrystats ()
 {
 	FlightTelemetryStats *obj = (FlightTelemetryStats *) &buffer.data;
 	status::connection = fts_respond (obj->Status);
-	connection_timeout = ticks + UAVTALK_CONNECTION_TIMEOUT;
+	connection_timeout = update_time + UAVTALK_CONNECTION_TIMEOUT;
 }
 
 void handle_gpspositionsensor ()
@@ -115,14 +112,14 @@ void handle_gpspositionsensor ()
 	gps::altitude   = obj->Altitude;
 	gps::heading    = round (obj->Heading);
 	stable::groundspeed = gps::speed = obj->Groundspeed;
-	gps::state      = obj->Status;
+	gps::state      = (gps_state_t) obj->Status;
 	gps::satellites = obj->Satellites;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-	if (stable::heading_source == stable::hs_disabled
-		|| stable::heading_source == stable::hs_gps)
+	if (stable::heading_source == stable::HEADING_SOURCE_DISABLED
+		|| stable::heading_source == stable::HEADING_SOURCE_GPS)
 	{
 		stable::heading = gps::heading;
-		stable::heading_source = stable::hs_gps;
+		stable::heading_source = stable::HEADING_SOURCE_GPS;
 	}
 #endif
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
@@ -176,7 +173,7 @@ void handle_magsensor ()
 	MagSensor *obj = (MagSensor *) &buffer.data;
 	if (mag_enabled) return;
 
-	stable::heading_source = stable::hs_internal_mag;
+	stable::heading_source = stable::HEADING_SOURCE_INTERNAL_MAG;
 	stable::calc_heading (obj->x, obj->y);
 }
 
@@ -186,8 +183,8 @@ void handle_magstate ()
 	if (obj->Source == MAGSTATE_SOURCE_INVALID) return;
 
 	stable::heading_source = obj->Source == MAGSTATE_SOURCE_ONBOARD
-		? stable::hs_internal_mag
-		: stable::hs_external_mag;
+		? stable::HEADING_SOURCE_INTERNAL_MAG
+		: stable::HEADING_SOURCE_EXTERNAL_MAG;
 	stable::calc_heading (obj->x, obj->y);
 	mag_enabled = true;
 }

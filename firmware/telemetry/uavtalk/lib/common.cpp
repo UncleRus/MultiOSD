@@ -253,7 +253,7 @@ void set_release ()
 		release_idx = UAVTALK_DEFAULT_RELEASE;
 
 	memcpy_P (&release, &releases [release_idx], sizeof (release_t));
-	header_len = release.instid_required ? 10 : 8;
+	header_len = release.instid_required ? sizeof (header_t) : sizeof (header_t) - sizeof (uint16_t);
 }
 
 void update_connection ()

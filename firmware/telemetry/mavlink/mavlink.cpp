@@ -429,7 +429,7 @@ bool update ()
 
 				flight_modes::update ();
 
-				connection_timeout = telemetry::ticks + MAVLINK_CONNECTION_TIMEOUT;
+				connection_timeout = telemetry::update_time + MAVLINK_CONNECTION_TIMEOUT;
 				if (status::connection != CONNECTION_STATE_CONNECTED)
 				{
 					status::connection = CONNECTION_STATE_CONNECTED;
@@ -443,7 +443,7 @@ bool update ()
 #ifndef TELEMETRY_MODULES_ADC_BATTERY
 			case MAVLINK_MSG_ID_SYS_STATUS:
 			{
-				uint16_t interval = telemetry::ticks - _last_battery_update;
+				uint16_t interval = telemetry::update_time - _last_battery_update;
 				_last_battery_update += interval;
 
 				battery::battery1.voltage = mavlink_msg_sys_status_get_voltage_battery (msg) / 1000.0;
@@ -469,7 +469,7 @@ bool update ()
 				attitude::yaw   = rad_to_deg (mavlink_msg_attitude_get_yaw (msg));
 				break;
 			case MAVLINK_MSG_ID_GPS_RAW_INT:
-				gps::state      = mavlink_msg_gps_raw_int_get_fix_type (msg);
+				gps::state      = (gps_state_t) mavlink_msg_gps_raw_int_get_fix_type (msg);
 				gps::satellites = mavlink_msg_gps_raw_int_get_satellites_visible (msg);
 				gps::latitude   = mavlink_msg_gps_raw_int_get_lat (msg) / 10000000.0;
 				gps::longitude  = mavlink_msg_gps_raw_int_get_lon (msg) / 10000000.0;
@@ -485,7 +485,8 @@ bool update ()
 				stable::climb       = mavlink_msg_vfr_hud_get_climb (msg);
 				input::throttle     = mavlink_msg_vfr_hud_get_throttle (msg);
 				stable::heading     = mavlink_msg_vfr_hud_get_heading (msg);
-				stable::heading_source = stable::hs_external_mag;
+				// FIXME: correct heading source, e.g. for Cleanflight MAVLink
+				stable::heading_source = stable::HEADING_SOURCE_EXTERNAL_MAG;
 				break;
 			case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
 				input::roll  = filter_int16 (mavlink_msg_rc_channels_scaled_get_chan1_scaled (msg)) / 100;
@@ -537,7 +538,7 @@ bool update ()
 		updated |= changed;
 	}
 
-	if (telemetry::ticks >= connection_timeout && status::connection != CONNECTION_STATE_DISCONNECTED)
+	if (telemetry::update_time >= connection_timeout && status::connection != CONNECTION_STATE_DISCONNECTED)
 	{
 		status::connection = CONNECTION_STATE_DISCONNECTED;
 		updated = true;

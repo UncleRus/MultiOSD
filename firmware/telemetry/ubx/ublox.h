@@ -34,12 +34,12 @@ namespace ubx
 
 enum fix_type_t
 {
-	f_no_fix = 0,
-	f_dead_reckoing,
-	f_2d,
-	f_3d,
-	gf_gps_dead_reckoing,
-	gf_gps_time
+	F_NO_FIX = 0,
+	F_DEAD_RECKOING,
+	F_2D,
+	F_3D,
+	GF_GPS_DEAD_RECKOING,
+	GF_GPS_TIME
 };
 
 #define UBX_STATUS_FLAGS_GPSFIX_OK _BV(0)

@@ -99,7 +99,7 @@ bool update ()
 		}
 	}
 
-	if (ticks >= connection_timeout && status::connection == CONNECTION_STATE_CONNECTED)
+	if (update_time >= connection_timeout && status::connection == CONNECTION_STATE_CONNECTED)
 	{
 		status::connection = CONNECTION_STATE_DISCONNECTED;
 		updated = true;

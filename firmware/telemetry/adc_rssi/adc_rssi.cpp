@@ -90,11 +90,11 @@ void init ()
 
 bool update ()
 {
-	uint16_t interval = telemetry::ticks - last_update;
+	uint16_t interval = telemetry::update_time - last_update;
 
 	if (interval < update_interval) return false;
 
-	last_update = telemetry::ticks;
+	last_update = telemetry::update_time;
 
 	int16_t value = round (adc::value (channel, multiplier));
 	if (value < 0) value = 0;

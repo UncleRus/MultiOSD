@@ -37,16 +37,16 @@ namespace settings
 
 #define EEPROM_ADDR_BAUDRATE  _eeprom_byte (UBX_EEPROM_OFFSET)
 #define EEPROM_ADDR_TIMEOUT   _eeprom_word (UBX_EEPROM_OFFSET + 1)
-#define EEPROM_ADDR_AUTOCONF  _eeprom_byte (UBX_EEPROM_OFFSET + 3)
+//#define EEPROM_ADDR_AUTOCONF  _eeprom_byte (UBX_EEPROM_OFFSET + 3)
 
 const char __opt_ubxbr [] PROGMEM = "UBXBR";
 const char __opt_ubxto [] PROGMEM = "UBXTO";
-const char __opt_ubxac [] PROGMEM = "UBXAC";
+//const char __opt_ubxac [] PROGMEM = "UBXAC";
 
 const ::settings::option_t __settings [] PROGMEM = {
 	declare_uint8_option (__opt_ubxbr, EEPROM_ADDR_BAUDRATE),
 	declare_uint16_option (__opt_ubxto, EEPROM_ADDR_TIMEOUT),
-	declare_bool_option (__opt_ubxac, EEPROM_ADDR_AUTOCONF),
+//	declare_bool_option (__opt_ubxac, EEPROM_ADDR_AUTOCONF),
 };
 
 void init ()
@@ -58,7 +58,7 @@ void reset ()
 {
 	eeprom_update_byte (EEPROM_ADDR_BAUDRATE, UBX_DEFAULT_BAUDRATE);
 	eeprom_update_word (EEPROM_ADDR_TIMEOUT, UBX_DEFAULT_TIMEOUT);
-	eeprom_update_byte (EEPROM_ADDR_AUTOCONF, UBX_DEFAULT_AUTOCONF);
+//	eeprom_update_byte (EEPROM_ADDR_AUTOCONF, UBX_DEFAULT_AUTOCONF);
 }
 
 }  // namespace settings
@@ -67,18 +67,18 @@ void reset ()
 
 enum parser_state_t
 {
-	ps_sync1 = 0,
-	ps_sync2,
-	ps_class,
-	ps_id,
-	ps_len1,
-	ps_len2,
-	ps_payload,
-	ps_crc_a,
-	ps_crc_b
+	PS_SYNC1 = 0,
+	PS_SYNC2,
+	PS_CLASS,
+	PS_ID,
+	PS_LEN1,
+	PS_LEN2,
+	PS_PAYLOAD,
+	PS_CRC_A,
+	PS_CRC_B
 };
 
-parser_state_t state = ps_sync1;
+parser_state_t state = PS_SYNC1;
 packet_t buf;
 uint16_t payload_count = 0;
 
@@ -112,55 +112,55 @@ bool parse (uint8_t b)
 {
 	switch (state)
 	{
-		case ps_sync1:
+		case PS_SYNC1:
 			if (b != UBX_SYNC1) return false;
-			state = ps_sync2;
+			state = PS_SYNC2;
 			break;
-		case ps_sync2:
-			state = b == UBX_SYNC2 ? ps_class : ps_sync1;
+		case PS_SYNC2:
+			state = b == UBX_SYNC2 ? PS_CLASS : PS_SYNC1;
 			break;
-		case ps_class:
+		case PS_CLASS:
 			buf.header.cls = b;
 			buf.crc.reset ();
 			buf.crc.update (b);
-			state = ps_id;
+			state = PS_ID;
 			break;
-		case ps_id:
+		case PS_ID:
 			buf.header.id = b;
 			buf.crc.update (b);
-			state = ps_len1;
+			state = PS_LEN1;
 			break;
-		case ps_len1:
+		case PS_LEN1:
 			buf.header.len = b;
 			buf.crc.update (b);
-			state = ps_len2;
+			state = PS_LEN2;
 			break;
-		case ps_len2:
+		case PS_LEN2:
 			buf.header.len |= b << 8;
 			if (buf.header.len > sizeof (buf.payload))
 			{
 				// overflow
-				state = ps_sync1;
+				state = PS_SYNC1;
 				break;
 			}
 			payload_count = 0;
 			buf.crc.update (b);
-			state = ps_payload;
+			state = PS_PAYLOAD;
 			break;
-		case ps_payload:
+		case PS_PAYLOAD:
 			if (payload_count < buf.header.len)
 			{
 				buf.payload.data [++ payload_count] = b;
 				buf.crc.update (b);
 			}
 			if (payload_count == buf.header.len)
-				state = ps_crc_a;
+				state = PS_CRC_A;
 			break;
-		case ps_crc_a:
-			state = buf.crc.a == b ? ps_crc_b : ps_sync1;
+		case PS_CRC_A:
+			state = buf.crc.a == b ? PS_CRC_B : PS_SYNC1;
 			break;
-		case ps_crc_b:
-			state = ps_sync1;
+		case PS_CRC_B:
+			state = PS_SYNC1;
 			return buf.crc.b == b;
 	}
 	return false;
@@ -181,13 +181,13 @@ bool receive ()
 
 uint16_t timeout;
 uint32_t connection_timeout;
-bool autoconf;
+//bool autoconf;
 
 void init ()
 {
 	TELEMETRY_UART::init (uart_utils::get_baudrate (eeprom_read_byte (EEPROM_ADDR_BAUDRATE), UBX_DEFAULT_BAUDRATE));
 	timeout = eeprom_read_word (EEPROM_ADDR_TIMEOUT);
-	autoconf = eeprom_read_byte (EEPROM_ADDR_AUTOCONF);
+	//autoconf = eeprom_read_byte (EEPROM_ADDR_AUTOCONF);
 }
 
 bool update ()
@@ -196,8 +196,8 @@ bool update ()
 
 	while (receive ())
 	{
-		connection_timeout = telemetry::ticks + timeout;
-		if (!autoconf) status::connection = CONNECTION_STATE_CONNECTED;
+		connection_timeout = telemetry::update_time + timeout;
+		status::connection = CONNECTION_STATE_CONNECTED;
 		// TODO: autoconf
 		//if (status::connection != CONNECTION_STATE_CONNECTED)
 		//	status::connection = CONNECTION_STATE_ESTABLISHING;
@@ -226,14 +226,14 @@ bool update ()
 				{
 					switch (buf.payload.nav_sol.fix_type)
 					{
-						case f_no_fix:
+						case F_NO_FIX:
 							gps::state = GPS_STATE_NO_FIX;
 							break;
-						case f_2d:
+						case F_2D:
 							gps::state = GPS_STATE_2D;
 							status::armed = true;
 							break;
-						case f_3d:
+						case F_3D:
 							gps::state = GPS_STATE_3D;
 							if (home::state == HOME_STATE_NO_FIX)
 								home::fix ();
@@ -255,7 +255,7 @@ bool update ()
 				gps::heading = buf.payload.nav_velned.heading * 1.0e-5f;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
 				stable::heading = gps::heading;
-				stable::heading_source = stable::hs_gps;
+				stable::heading_source = stable::HEADING_SOURCE_GPS;
 #endif
 				updated = true;
 				break;
@@ -272,7 +272,7 @@ bool update ()
 		}
 	}
 
-	if (telemetry::ticks >= connection_timeout)
+	if (telemetry::update_time >= connection_timeout)
 	{
 		// disconnect, but don't reset the home pos
 		status::connection = CONNECTION_STATE_DISCONNECTED;

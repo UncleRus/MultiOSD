@@ -46,7 +46,7 @@ const ::settings::option_t __settings [] PROGMEM = {
 	declare_float_option (__opt_nomcv, EEPROM_ADDR_NOM_CELL_VOLTAGE),
 	declare_float_option (__opt_maxcv, EEPROM_ADDR_MAX_CELL_VOLTAGE),
 	declare_float_option (__opt_lowcv, EEPROM_ADDR_LOW_VOLTAGE),
-	declare_str_option   (__opt_csign, EEPROM_ADDR_CALLSIGN, 5),
+	declare_str_option   (__opt_csign, EEPROM_ADDR_CALLSIGN, CALLSIGN_LENGTH),
 };
 
 void init ()
@@ -79,13 +79,13 @@ void reset ()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-uint32_t ticks = 0;
+uint32_t update_time = 0;
 
 namespace status
 {
 
 	char callsign [CALLSIGN_LENGTH + 1];
-	uint8_t connection = CONNECTION_STATE_DISCONNECTED;
+	connection_state_t connection = CONNECTION_STATE_DISCONNECTED;
 	uint16_t flight_time = 0;
 	uint8_t flight_mode = 0;
 	const char *flight_mode_name_p = NULL;
@@ -127,7 +127,7 @@ namespace gps
 	float speed = 0.0;
 	uint16_t heading = 0;
 	int8_t satellites = 0;
-	uint8_t state = GPS_STATE_NO_FIX;
+	gps_state_t state = GPS_STATE_NO_FIX;
 	float climb = 0.0;
 
 	float hdop = 99.99;
@@ -161,15 +161,15 @@ namespace stable
 	float groundspeed = 0.0;
 	float airspeed = 0.0;
 	uint16_t heading = 0;
-	heading_source_t heading_source = hs_disabled;
+	heading_source_t heading_source = HEADING_SOURCE_DISABLED;
 
 	uint32_t _alt_update_time = 0;
 
 	void update_alt_climb (float _alt)
 	{
-		climb = (_alt - altitude) / (ticks - _alt_update_time) * 1000;
+		climb = (_alt - altitude) / (update_time - _alt_update_time) * 1000;
 		altitude = _alt;
-		_alt_update_time = ticks;
+		_alt_update_time = update_time;
 	}
 
 	void calc_heading (float x, float y)
@@ -401,8 +401,8 @@ namespace modules
 
 void init ()
 {
-	eeprom_read_block (status::callsign, EEPROM_ADDR_CALLSIGN, sizeof (status::callsign) - 1);
-	status::callsign [sizeof (status::callsign) - 1] = 0;
+	eeprom_read_block (status::callsign, EEPROM_ADDR_CALLSIGN, CALLSIGN_LENGTH);
+	status::callsign [CALLSIGN_LENGTH] = 0;
 
 	battery::init ();
 	for (uint8_t i = 0; i < modules::count; i ++)
@@ -411,7 +411,7 @@ void init ()
 
 bool update ()
 {
-	ticks = timer::ticks ();
+	update_time = timer::ticks ();
 
 	bool res = false;
 	for (uint8_t i = 0; i < modules::count; i ++)
