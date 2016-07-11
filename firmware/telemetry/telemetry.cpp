@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "telemetry.h"
-#include "../config.h"
 #include <avr/eeprom.h>
 #include <math.h>
 #include <string.h>
@@ -46,7 +45,7 @@ const ::settings::option_t __settings [] PROGMEM = {
 	declare_float_option (__opt_nomcv, EEPROM_ADDR_NOM_CELL_VOLTAGE),
 	declare_float_option (__opt_maxcv, EEPROM_ADDR_MAX_CELL_VOLTAGE),
 	declare_float_option (__opt_lowcv, EEPROM_ADDR_LOW_VOLTAGE),
-	declare_str_option   (__opt_csign, EEPROM_ADDR_CALLSIGN, CALLSIGN_LENGTH),
+	declare_str_option   (__opt_csign, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH),
 };
 
 void init ()
@@ -65,11 +64,11 @@ void reset ()
 	eeprom_update_float (EEPROM_ADDR_NOM_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE);
 	eeprom_update_float (EEPROM_ADDR_MAX_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE);
 	eeprom_update_float (EEPROM_ADDR_LOW_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE);
-	for (uint8_t i = 0; i < CALLSIGN_LENGTH; i ++)
+	for (uint8_t i = 0; i < TELEMETRY_CALLSIGN_LENGTH; i ++)
 		eeprom_update_byte ((uint8_t *) EEPROM_ADDR_CALLSIGN + i, pgm_read_byte (&default_callsign [i]));
-	eeprom_update_byte ((uint8_t *) EEPROM_ADDR_CALLSIGN + CALLSIGN_LENGTH, 0);
+	eeprom_update_byte ((uint8_t *) EEPROM_ADDR_CALLSIGN + TELEMETRY_CALLSIGN_LENGTH, 0);
 
-	eeprom_update_block (TELEMETRY_DEFAULT_CALLSIGN, EEPROM_ADDR_CALLSIGN, CALLSIGN_LENGTH);
+	eeprom_update_block (TELEMETRY_DEFAULT_CALLSIGN, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH);
 
 	for (uint8_t i = 0; i < modules::count; i ++)
 		modules::reset_settings (i);
@@ -84,7 +83,7 @@ uint32_t update_time = 0;
 namespace status
 {
 
-	char callsign [CALLSIGN_LENGTH + 1];
+	char callsign [TELEMETRY_CALLSIGN_LENGTH + 1];
 	connection_state_t connection = CONNECTION_STATE_DISCONNECTED;
 	uint16_t flight_time = 0;
 	uint8_t flight_mode = 0;
@@ -401,8 +400,8 @@ namespace modules
 
 void init ()
 {
-	eeprom_read_block (status::callsign, EEPROM_ADDR_CALLSIGN, CALLSIGN_LENGTH);
-	status::callsign [CALLSIGN_LENGTH] = 0;
+	eeprom_read_block (status::callsign, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH);
+	status::callsign [TELEMETRY_CALLSIGN_LENGTH] = 0;
 
 	battery::init ();
 	for (uint8_t i = 0; i < modules::count; i ++)

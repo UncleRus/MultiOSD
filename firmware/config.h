@@ -25,6 +25,7 @@
  * Telemetry config
  */
 #define TELEMETRY_UART uart0
+#define TELEMETRY_CALLSIGN_LENGTH 8                       // Max. callsign chars
 #define TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE 4.2    // Maximal cell voltage, 4.2 for LiPo
 #define TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE 3.7    // Nominal cell voltage, 3.7 for LiPo
 #define TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE 3.2    // Minimal cell voltage (dead battery), 3.2 for LiPo

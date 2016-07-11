@@ -20,25 +20,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "../lib/pgmspace.h"
-
-// FIXME: enums
-//#define GPS_STATE_NO_FIX 0
-//#define GPS_STATE_FIXING 1
-//#define GPS_STATE_2D     2
-//#define GPS_STATE_3D     3
-
-//#define CONNECTION_STATE_DISCONNECTED 0
-//#define CONNECTION_STATE_ESTABLISHING 1
-//#define CONNECTION_STATE_CONNECTED    2
-//
-//#define HOME_STATE_NO_FIX 0
-//#define HOME_STATE_FIXING 1
-//#define HOME_STATE_FIXED  2
+#include "../config.h"
 
 #define INPUT_CHANNELS 10
-#ifndef CALLSIGN_LENGTH
-	#define CALLSIGN_LENGTH 8
-#endif
 
 namespace telemetry
 {
@@ -77,7 +61,7 @@ extern uint32_t update_time;             // update time
 
 namespace status
 {
-	extern char               callsign [CALLSIGN_LENGTH + 1];  // 5 chars max
+	extern char               callsign [TELEMETRY_CALLSIGN_LENGTH + 1];  // 5 chars max
 	extern connection_state_t connection;
 	extern uint16_t           flight_time;                     // seconds
 	extern uint8_t            flight_mode;
