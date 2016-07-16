@@ -201,19 +201,6 @@ bool parse (uint8_t b)
 	return false;
 }
 
-bool receive ()
-{
-	uint16_t err = 0;
-	do
-	{
-		uint16_t raw = TELEMETRY_UART::receive ();
-		err = raw & 0xff00;
-		if (!err && parse (raw)) return true;
-	}
-	while (!err);
-	return false;
-}
-
 ///////////////////////////////////////////////////////////////////////////
 
 const release_t releases [] PROGMEM = {

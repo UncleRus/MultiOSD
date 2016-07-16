@@ -164,7 +164,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="firmware|uavtalk.cpp|i2c_master" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="uavtalk.cpp|firmware|i2c_master" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="telemetry/uavtalk/lib/tl20151123/flight|telemetry/ubx/trash|lib/i2c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="firmware"/>
 					</sourceEntries>
 				</configuration>

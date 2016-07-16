@@ -92,8 +92,8 @@ namespace input
 
 namespace gps
 {
-	extern float       latitude;
-	extern float       longitude;
+	extern float       latitude;   // degrees
+	extern float       longitude;  // degrees
 	extern float       altitude;   // meters
 	extern float       speed;      // m/s
 	extern uint16_t    heading;    // degrees, 0..360
@@ -200,6 +200,9 @@ namespace waypoint
 
 void init ();
 bool update ();
+
+typedef bool (* parser_t) (uint8_t b);
+bool receive (parser_t parser);
 
 namespace modules
 {

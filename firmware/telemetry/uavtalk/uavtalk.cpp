@@ -82,7 +82,7 @@ bool update ()
 	bool updated = false;
 
 	// handle all received messages
-	while (uavtalk::receive ())
+	while (receive (parse))
 	{
 		uint32_t _ticks = timer::ticks ();
 		updated |= handle ();

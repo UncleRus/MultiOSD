@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "telemetry.h"
+#include "../lib/uart/uart.h"
 #include <avr/eeprom.h>
 #include <math.h>
 #include <string.h>
@@ -416,6 +417,19 @@ bool update ()
 	for (uint8_t i = 0; i < modules::count; i ++)
 		res |= modules::update (i);
 	return res;
+}
+
+bool receive (parser_t parser)
+{
+	uint16_t err = 0;
+	do
+	{
+		uint16_t raw = TELEMETRY_UART::receive ();
+		err = raw & 0xff00;
+		if (!err && parser (raw)) return true;
+	}
+	while (!err);
+	return false;
 }
 
 }  // namespace telemetry

@@ -65,6 +65,14 @@
 #define UBX_DEFAULT_AUTOCONF 0                            // automatically configure GPS-module after connect
 
 /*
+ * MSP config
+ */
+#define MSP_DEFAULT_INTERNAL_HOME_CALC 0                  // Home distance/direction calculation: 0 - flight controller, 1 - MultiOSD by GPS
+#define MSP_DEFAULT_AMPERAGE_DIVIDER 10                   // MSP_ANALOG amperage factor (100 or 1000)
+#define MSP_DEFAULT_GPS_ALTITUDE 0                        // Use GPS altitude instead of computed by FC
+#define MSP_DEFAULT_BAUD_RATE UART_BR_57600
+
+/*
  * OSD config
  */
 #define OSD_SCREEN_PANELS 24                              // (OSD_SCREEN_PANELS * 3) bytes in SRAM

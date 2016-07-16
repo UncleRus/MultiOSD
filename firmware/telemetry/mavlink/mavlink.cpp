@@ -395,24 +395,16 @@ namespace rates
 
 }  // namespace rates
 
-bool receive ()
+bool parse (uint8_t b)
 {
-	uint16_t err = 0;
-	do
-	{
-		uint16_t raw = TELEMETRY_UART::receive ();
-		err = raw & 0xff00;
-		if (!err && mavlink_parse_char (MAVLINK_COMM_0, raw, msg, &status)) return true;
-	}
-	while (!err);
-	return false;
+	return mavlink_parse_char (MAVLINK_COMM_0, b, msg, &status);
 }
 
 bool update ()
 {
 	bool updated = false;
 
-	while (receive ())
+	while (receive (parse))
 	{
 		bool changed = true;
 		bool was_armed;

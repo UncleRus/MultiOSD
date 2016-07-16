@@ -102,6 +102,7 @@ extern uint32_t connection_timeout;
 extern uint8_t rssi_low_threshold;
 
 extern message_t buffer;
+bool parse (uint8_t b);
 
 uint8_t __attribute__ ((noinline)) get_crc (uint8_t b);
 void send (const header_t &head, uint8_t *data = NULL, uint8_t size = 0);
@@ -115,8 +116,6 @@ bool handle ();
 void update_connection ();
 // init
 void set_release ();
-// receive and process byte
-bool receive ();
 
 
 UT_NAMESPACE_CLOSE

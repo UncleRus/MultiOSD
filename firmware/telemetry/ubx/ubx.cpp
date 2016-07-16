@@ -166,19 +166,6 @@ bool parse (uint8_t b)
 	return false;
 }
 
-bool receive ()
-{
-	uint16_t err = 0;
-	do
-	{
-		uint16_t raw = TELEMETRY_UART::receive ();
-		err = raw & 0xff00;
-		if (!err && parse (raw)) return true;
-	}
-	while (!err);
-	return false;
-}
-
 uint16_t timeout;
 uint32_t connection_timeout;
 //bool autoconf;
@@ -194,7 +181,7 @@ bool update ()
 {
 	bool updated = false;
 
-	while (receive ())
+	while (receive (parse))
 	{
 		connection_timeout = telemetry::update_time + timeout;
 		status::connection = CONNECTION_STATE_CONNECTED;

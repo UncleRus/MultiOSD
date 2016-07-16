@@ -31,6 +31,7 @@
 #define UAVTALK_EEPROM_OFFSET        0x28
 #define MAVLINK_EEPROM_OFFSET        0x28
 #define UBX_EEPROM_OFFSET            0x28
+#define MSP_EEPROM_OFFSET            0x28
 #define TELEMETRY_EEPROM_OFFSET      0x40
 #define OSD_EEPROM_OFFSET            0x70
 #define OSD_SCREENS_EEPROM_OFFSET    (OSD_EEPROM_OFFSET + 0x10)
