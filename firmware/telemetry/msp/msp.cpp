@@ -19,6 +19,7 @@
 #include "../../eeprom.h"
 #include "../../lib/uart/uart.h"
 #include <string.h>
+#include <math.h>
 
 namespace telemetry
 {
@@ -92,6 +93,7 @@ struct message_t
 		multiwii::attitude_t attitude;
 		multiwii::analog_t analog;
 		multiwii::altitude_t altitude;
+		multiwii::raw_imu_t raw_imu;
 	};
 
 	uint8_t pos;
@@ -170,7 +172,7 @@ struct period_t
 {
 	uint8_t cmd;
 	uint16_t period; // ms
-	int8_t sensors_bit;
+	uint16_t sensors_mask;
 };
 
 struct request_t
@@ -203,13 +205,14 @@ struct request_t
 
 // request rates
 const period_t periods [] PROGMEM = {
-	{multiwii::MSP_STATUS,   100, -1},                        // 10 Hz
-	{multiwii::MSP_RC,       250, -1},                        // 4 Hz
-	{multiwii::MSP_RAW_GPS,  200, multiwii::SENSOR_BIT_GPS},  // 5 Hz
-	{multiwii::MSP_COMP_GPS, 200, multiwii::SENSOR_BIT_GPS},  // 5 Hz
-	{multiwii::MSP_ATTITUDE, 50,  -1},                        // 20 Hz
-	{multiwii::MSP_ANALOG,   250, -1},                        // 4 Hz
-	{multiwii::MSP_ALTITUDE, 100, multiwii::SENSOR_BIT_BARO}, // 10 Hz
+	{multiwii::MSP_STATUS,   100, 0},                               // 10 Hz
+	{multiwii::MSP_RC,       250, 0},                               // 4 Hz
+	{multiwii::MSP_RAW_GPS,  200, _BV (multiwii::SENSOR_BIT_GPS)},  // 5 Hz
+	{multiwii::MSP_COMP_GPS, 200, _BV (multiwii::SENSOR_BIT_GPS)},  // 5 Hz
+	{multiwii::MSP_ATTITUDE, 50,  0},                               // 20 Hz
+	{multiwii::MSP_ANALOG,   250, 0},                               // 4 Hz
+	{multiwii::MSP_ALTITUDE, 100, _BV (multiwii::SENSOR_BIT_BARO)}, // 10 Hz
+	{multiwii::MSP_RAW_IMU,  250, _BV (multiwii::SENSOR_BIT_MAG)},  // 4 Hz, mag data only
 };
 const uint8_t requests_len = sizeof (periods) / sizeof (period_t);
 
@@ -221,11 +224,13 @@ void init ()
 		requests [i].init (periods [i]);
 }
 
-void update (uint16_t msp_sensosrs)
+void update (uint16_t msp_sensors)
 {
 	for (uint8_t i = 0; i < requests_len; i ++)
-		if (periods [i].sensors_bit >= 0)
-			requests [i].period = msp_sensosrs & _BV (periods [i].sensors_bit) ? periods [i].period : 0;
+		if (periods [i].sensors_mask)
+			requests [i].period = (msp_sensors & periods [i].sensors_mask) == periods [i].sensors_mask
+				? periods [i].period
+				: 0;
 }
 
 void run ()
@@ -243,6 +248,7 @@ void run ()
 bool internal_home_calc;
 uint16_t amperage_divider;
 bool gps_altitude;
+bool mag_enabled = false;
 
 void init ()
 {
@@ -277,6 +283,7 @@ bool update ()
 					home::fix ();
 				status::connection = CONNECTION_STATE_CONNECTED;
 				requests::update (buffer.payload.status.sensors);
+				mag_enabled = buffer.payload.status.sensors & _BV (multiwii::SENSOR_BIT_MAG);
 				break;
 			case multiwii::MSP_RC:
 				memcpy (input::channels, buffer.payload.rc.channels, sizeof (buffer.payload.rc.channels));
@@ -291,10 +298,15 @@ bool update ()
 				gps::longitude = buffer.payload.raw_gps.longitude / 10000000.0;
 				gps::altitude  = buffer.payload.raw_gps.altitude / 10.0;
 				gps::speed     = buffer.payload.raw_gps.speed / 10.0;
-				gps::heading   = buffer.payload.raw_gps.ground_course / 10.0;
+				gps::heading   = round (buffer.payload.raw_gps.ground_course / 10.0);
 				stable::groundspeed = gps::speed;
 				if (gps_altitude) stable::update_alt_climb (gps::altitude);
 				if (internal_home_calc) home::update ();
+				if (!mag_enabled)
+				{
+					stable::heading = gps::heading;
+					stable::heading_source = stable::HEADING_SOURCE_GPS;
+				}
 				break;
 			case multiwii::MSP_COMP_GPS:
 				if (!internal_home_calc)
@@ -324,6 +336,13 @@ bool update ()
 				{
 					stable::altitude = buffer.payload.altitude.altitude / 100.0;
 					stable::climb = buffer.payload.altitude.vario / 100.0;
+				}
+				break;
+			case multiwii::MSP_RAW_IMU:
+				if (mag_enabled)
+				{
+					stable::calc_heading (buffer.payload.raw_imu.mag_x, buffer.payload.raw_imu.mag_y);
+					stable::heading_source = stable::HEADING_SOURCE_INTERNAL_MAG;
 				}
 				break;
 			default:

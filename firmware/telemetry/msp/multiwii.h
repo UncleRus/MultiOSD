@@ -309,8 +309,8 @@ struct rc_t
 struct attitude_t
 {
 	int16_t roll;   // degrees * 10 (-1800..1800)
-    int16_t pitch;  // degrees * 10 (-1800..1800)
-    int16_t yaw;    // degrees (-180..180)
+	int16_t pitch;  // degrees * 10 (-1800..1800)
+	int16_t yaw;    // degrees (-180..180)
 };
 
 struct altitude_t
