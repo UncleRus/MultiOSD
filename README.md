@@ -65,7 +65,7 @@ Yet another MinimOSD firmware with configurable screens layout.
 * Compass
 * Airspeed
 
-More to come.
+See [full future matrix](doc/features.md).
 
 ## Build and install
 
