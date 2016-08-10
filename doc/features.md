@@ -30,9 +30,9 @@
  Airspeed            |              | +            |         |
  
  
-[1] - Fully supported ArduPilot/ArduCopter/Paparazzi, others partially
-[2] - Partially supported dRonin and CleanFlight, others not supported
-[3] - Partially supported
-[4] - Battery 2 Voltage supported by ADCBattery module only
-[5] - RSSI value emulated based on connection state between receiver and flight controller 
-[6] - RSSI value emulated based on input values
+- [1] - Fully supported ArduPilot/ArduCopter/Paparazzi, others partially
+- [2] - Partially supported dRonin and CleanFlight, others not supported
+- [3] - Partially supported
+- [4] - Battery 2 Voltage supported by ADCBattery module only
+- [5] - RSSI value emulated based on connection state between receiver and flight controller 
+- [6] - RSSI value emulated based on input values
