@@ -99,7 +99,6 @@ extern release_t release;
 extern uint8_t header_len;
 extern uint32_t telemetry_request_timeout;
 extern uint32_t connection_timeout;
-extern uint8_t rssi_low_threshold;
 
 extern message_t buffer;
 bool parse (uint8_t b);

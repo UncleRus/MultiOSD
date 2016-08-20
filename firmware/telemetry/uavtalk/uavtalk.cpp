@@ -38,24 +38,15 @@ namespace settings
 #define EEPROM_ADDR_RELEASE            _eeprom_byte (UAVTALK_EEPROM_OFFSET)
 #define EEPROM_ADDR_BAUDRATE           _eeprom_byte (UAVTALK_EEPROM_OFFSET + 1)
 #define EEPROM_ADDR_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 2)
-#if !defined (TELEMETRY_MODULES_ADC_RSSI)
-#define EEPROM_ADDR_RSSI_THRESHOLD     _eeprom_byte (UAVTALK_EEPROM_OFFSET + 3)
-#endif
 
 const char __opt_utrel [] PROGMEM = "UTREL";
 const char __opt_utbr  [] PROGMEM = "UTBR";
 const char __opt_utihc [] PROGMEM = "UTIHC";
-#if !defined (TELEMETRY_MODULES_ADC_RSSI)
-const char __opt_utrlt [] PROGMEM = "UTRLT";
-#endif
 
 const ::settings::option_t __settings [] PROGMEM = {
 	declare_uint8_option (__opt_utrel, EEPROM_ADDR_RELEASE),
 	declare_uint8_option (__opt_utbr,  EEPROM_ADDR_BAUDRATE),
 	declare_uint8_option (__opt_utihc, EEPROM_ADDR_INTERNAL_HOME_CALC),
-#if !defined (TELEMETRY_MODULES_ADC_RSSI)
-	declare_uint8_option (__opt_utrlt, EEPROM_ADDR_RSSI_THRESHOLD),
-#endif
 };
 
 void init ()
@@ -66,11 +57,8 @@ void init ()
 void reset ()
 {
 	eeprom_update_byte (EEPROM_ADDR_RELEASE, UAVTALK_DEFAULT_RELEASE);
-	eeprom_update_byte (EEPROM_ADDR_BAUDRATE, UAVTALK_DEFAULT_BAUDRATE);
+	eeprom_update_byte (EEPROM_ADDR_BAUDRATE, UAVTALK_DEFAULT_BITRATE);
 	eeprom_update_byte (EEPROM_ADDR_INTERNAL_HOME_CALC, UAVTALK_DEFAULT_INTERNAL_HOME_CALC);
-#if !defined (TELEMETRY_MODULES_ADC_RSSI)
-	eeprom_update_byte (EEPROM_ADDR_RSSI_THRESHOLD, UAVTALK_DEFAULT_RSSI_THRESHOLD);
-#endif
 }
 
 }  // namespace settings
@@ -86,12 +74,12 @@ bool update ()
 	{
 		uint32_t _ticks = timer::ticks ();
 		updated |= handle ();
-		if (status::connection == CONNECTION_STATE_DISCONNECTED)
+		if (status::connection == status::DISCONNECTED)
 		{
-			status::connection = CONNECTION_STATE_ESTABLISHING;
+			status::connection = status::ESTABLISHING;
 			connection_timeout = _ticks + UAVTALK_CONNECTION_TIMEOUT;
 		}
-		if (_ticks >= telemetry_request_timeout && status::connection == CONNECTION_STATE_CONNECTED)
+		if (_ticks >= telemetry_request_timeout && status::connection == status::CONNECTED)
 		{
 			// time to send GCSTelemetryStats to FC
 			update_connection ();
@@ -99,9 +87,9 @@ bool update ()
 		}
 	}
 
-	if (update_time >= connection_timeout && status::connection == CONNECTION_STATE_CONNECTED)
+	if (update_time >= connection_timeout && status::connection == status::CONNECTED)
 	{
-		status::connection = CONNECTION_STATE_DISCONNECTED;
+		status::connection = status::DISCONNECTED;
 		updated = true;
 	}
 
@@ -112,11 +100,8 @@ void init ()
 {
 	release_idx = eeprom_read_byte (EEPROM_ADDR_RELEASE);
 	internal_home_calc = eeprom_read_byte (EEPROM_ADDR_INTERNAL_HOME_CALC);
-#if !defined (TELEMETRY_MODULES_ADC_RSSI)
-	rssi_low_threshold = eeprom_read_byte (EEPROM_ADDR_RSSI_THRESHOLD);
-#endif
 	set_release ();
-	TELEMETRY_UART::init (uart_utils::get_baudrate (eeprom_read_byte (EEPROM_ADDR_BAUDRATE), UAVTALK_DEFAULT_BAUDRATE));
+	TELEMETRY_UART::init (uart_utils::get_bitrate (eeprom_read_byte (EEPROM_ADDR_BAUDRATE), UAVTALK_DEFAULT_BITRATE));
 }
 
 }  // namespace uavtalk

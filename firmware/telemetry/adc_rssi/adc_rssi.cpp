@@ -37,19 +37,30 @@ namespace settings
 
 #define EEPROM_ADDR_CHANNEL         _eeprom_byte (ADC_RSSI_EEPROM_OFFSET)
 #define EEPROM_ADDR_UPDATE_INTERVAL _eeprom_word (ADC_RSSI_EEPROM_OFFSET + 1)
-#define EEPROM_ADDR_LOW_THRESHOLD   _eeprom_byte (ADC_RSSI_EEPROM_OFFSET + 3)
-#define EEPROM_ADDR_MULTIPLIER      _eeprom_float (ADC_RSSI_EEPROM_OFFSET + 4)
+#define EEPROM_ADDR_FACTOR          _eeprom_float (ADC_RSSI_EEPROM_OFFSET + 3)
 
-const char __opt_arch [] PROGMEM = "ARCH";
-const char __opt_arui [] PROGMEM = "ARUI";
-const char __opt_arlt [] PROGMEM = "ARLT";
-const char __opt_armul [] PROGMEM = "ARMUL";
+const char __opt_arch  [] PROGMEM = "ARCH";
+const char __opt_arint [] PROGMEM = "ARINT";
+const char __opt_arf   [] PROGMEM = "ARF";
 
 const ::settings::option_t __settings [] PROGMEM = {
 	declare_uint8_option  (__opt_arch, EEPROM_ADDR_CHANNEL),
-	declare_uint16_option (__opt_arui, EEPROM_ADDR_UPDATE_INTERVAL),
-	declare_uint8_option  (__opt_arlt, EEPROM_ADDR_LOW_THRESHOLD),
-	declare_float_option  (__opt_armul, EEPROM_ADDR_MULTIPLIER),
+	declare_uint16_option (__opt_arint, EEPROM_ADDR_UPDATE_INTERVAL),
+	declare_float_option  (__opt_arf, EEPROM_ADDR_FACTOR),
+};
+
+struct settings_t
+{
+	uint8_t channel;
+	uint16_t update_interval;
+	float factor;
+
+	settings_t ()
+	{
+		channel = eeprom_read_byte (EEPROM_ADDR_CHANNEL);
+		update_interval = eeprom_read_word (EEPROM_ADDR_UPDATE_INTERVAL);
+		factor = eeprom_read_float (EEPROM_ADDR_FACTOR);
+	}
 };
 
 void init ()
@@ -62,8 +73,7 @@ void reset ()
 {
 	eeprom_update_byte  (EEPROM_ADDR_CHANNEL, ADC_RSSI_DEFAULT_CHANNEL);
 	eeprom_update_word  (EEPROM_ADDR_UPDATE_INTERVAL, ADC_RSSI_DEFAULT_UPDATE_INTERVAL);
-	eeprom_update_byte  (EEPROM_ADDR_LOW_THRESHOLD, ADC_RSSI_DEFAULT_LOW_THRESHOLD);
-	eeprom_update_float (EEPROM_ADDR_MULTIPLIER, ADC_RSSI_DEFAULT_MULTIPLIER);
+	eeprom_update_float (EEPROM_ADDR_FACTOR, ADC_RSSI_DEFAULT_MULTIPLIER);
 
 	adc::settings::reset ();
 }
@@ -72,36 +82,28 @@ void reset ()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-uint8_t channel;
-uint16_t update_interval;
-uint8_t low_threshold;
 uint32_t last_update;
-float multiplier;
+settings::settings_t s;
 
 void init ()
 {
 	adc::init ();
-
-	channel = eeprom_read_byte (EEPROM_ADDR_CHANNEL);
-	update_interval = eeprom_read_word (EEPROM_ADDR_UPDATE_INTERVAL);
-	low_threshold = eeprom_read_byte (EEPROM_ADDR_LOW_THRESHOLD);
-	multiplier = eeprom_read_float (EEPROM_ADDR_MULTIPLIER);
 }
 
 bool update ()
 {
 	uint16_t interval = telemetry::update_time - last_update;
 
-	if (interval < update_interval) return false;
+	if (interval < s.update_interval) return false;
 
 	last_update = telemetry::update_time;
 
-	int16_t value = round (adc::value (channel, multiplier));
+	int16_t value = round (adc::value (s.channel, s.factor));
+
 	if (value < 0) value = 0;
 	else if (value > 100) value = 100;
-	input::rssi = value;
 
-	input::rssi_low = input::rssi < low_threshold;
+	input::set_rssi (value);
 
 	return true;
 }

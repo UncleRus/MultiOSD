@@ -167,7 +167,10 @@ namespace flight_mode
 	void draw (uint8_t x, uint8_t y)
 	{
 		osd::draw::rect (x, y, 6, 3);
-		max7456::puts_p (x + 1, y + 1, telemetry::status::flight_mode_name_p ? telemetry::status::flight_mode_name_p : PSTR ("\x09\x09\x09\x09"));
+		if (telemetry::status::flight_mode_name)
+			max7456::puts (x + 1, y + 1, telemetry::status::flight_mode_name); // use RAM name
+		else
+			max7456::puts_p (x + 1, y + 1, telemetry::status::flight_mode_name_p ? telemetry::status::flight_mode_name_p : PSTR ("\x09\x09\x09\x09"));
 //		max7456::open (x + 1, y + 1);
 //		fprintf_P (&max7456::stream, PSTR ("%u"), telemetry::status::flight_mode);
 	}
@@ -199,7 +202,8 @@ namespace connection_state
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		uint8_t attr = telemetry::status::connection != telemetry::CONNECTION_STATE_CONNECTED
+		// TODO blink MAX7456_ATTR_INVERT -> MAX7456_ATTR_NONE when CONNECTION_STATE_ESTABLISHING
+		uint8_t attr = telemetry::status::connection != telemetry::status::CONNECTED
 			? MAX7456_ATTR_INVERT
 			: 0;
 
@@ -308,7 +312,7 @@ namespace horizon
 			// center X point at middle of each column
 			float middle = col * _PAN_HORZ_INT_WIDTH - (_PAN_HORZ_INT_WIDTH * _PAN_HORZ_INT_WIDTH / 2) - _PAN_HORZ_INT_WIDTH / 2;
 			// calculating hit point on Y plus offset to eliminate negative values
-			int8_t hit = roll * middle + pitch_line + _PAN_HORZ_LINES;
+			int16_t hit = roll * middle + pitch_line + _PAN_HORZ_LINES;
 			if (hit > 0 && hit < _PAN_HORZ_TOTAL_LINES)
 			{
 				int8_t row = PANEL_HORIZON_HEIGHT - ((hit - 1) / _PAN_HORZ_CHAR_LINES);
@@ -370,17 +374,31 @@ namespace battery2_voltage
 
 }  // namespace battery_voltage
 
-namespace battery_current
+namespace battery1_current
 {
 
-	STD_PANEL ("Bat1Current", 8, "\xfa%.2f\x8f", telemetry::battery::current);
+	STD_PANEL ("Bat1Current", 8, "\xfa%.2f\x8f", telemetry::battery::battery1.amperage);
 
 }  // namespace battery_current
 
-namespace battery_consumed
+namespace battery2_current
 {
 
-	STD_PANEL ("Bat1Consumed", 8, "\xfb%u\x82", (uint16_t) telemetry::battery::consumed);
+	STD_PANEL ("Bat2Current", 8, "\xfa%.2f\xec", telemetry::battery::battery2.amperage);
+
+}  // namespace battery_current
+
+namespace battery1_consumed
+{
+
+	STD_PANEL ("Bat1Consumed", 8, "\xfb%u\x82", (uint16_t) telemetry::battery::battery1.consumed);
+
+}  // namespace battery_consumed
+
+namespace battery2_consumed
+{
+
+	STD_PANEL ("Bat2Consumed", 8, "\xfb%u\xed", (uint16_t) telemetry::battery::battery2.consumed);
 
 }  // namespace battery_consumed
 
@@ -408,12 +426,12 @@ namespace home_distance
 
 	void update ()
 	{
-		attr = telemetry::home::state == telemetry::HOME_STATE_NO_FIX ? MAX7456_ATTR_INVERT : 0;
-		i_attr = telemetry::home::state != telemetry::HOME_STATE_FIXED ? MAX7456_ATTR_INVERT : 0;
+		attr = telemetry::home::state == telemetry::home::NO_FIX ? MAX7456_ATTR_INVERT : 0;
+		i_attr = telemetry::home::state != telemetry::home::FIXED ? MAX7456_ATTR_INVERT : 0;
 		if (i_attr)
 		{
 			snprintf_P (buffer, sizeof (buffer), PSTR ("%S"),
-				telemetry::home::state == telemetry::HOME_STATE_NO_FIX ? draw::err_str : PSTR ("\x09\x09\x09\x8d"));
+				telemetry::home::state == telemetry::home::NO_FIX ? draw::err_str : PSTR ("\x09\x09\x09\x8d"));
 			return;
 		}
 		if (telemetry::home::distance >= 10000)
@@ -440,7 +458,7 @@ namespace home_direction
 
 	void draw (uint8_t x, uint8_t y)
 	{
-		if (telemetry::home::state == telemetry::HOME_STATE_FIXED)
+		if (telemetry::home::state == telemetry::home::FIXED)
 			osd::draw::arrow (x, y, telemetry::home::direction);
 	}
 
@@ -449,7 +467,7 @@ namespace home_direction
 namespace callsign
 {
 
-	PANEL_NAME ("CallSign");
+	PANEL_NAME ("Callsign");
 
 	void update () {}
 
@@ -530,15 +548,15 @@ namespace compass
 		terminate_buffer ();
 		switch (telemetry::stable::heading_source)
 		{
-			case telemetry::stable::HEADING_SOURCE_DISABLED:
+			case telemetry::stable::DISABLED:
 				attr = MAX7456_ATTR_INVERT;
 				arrow = 0xc6;
 				break;
-			case telemetry::stable::HEADING_SOURCE_GPS:
+			case telemetry::stable::GPS:
 				attr = 0;
 				arrow = 0xb6;
 				break;
-			case telemetry::stable::HEADING_SOURCE_INTERNAL_MAG:
+			case telemetry::stable::INTERNAL_MAG:
 				attr = 0;
 				arrow = 0xc7;
 				break;
@@ -587,8 +605,10 @@ const panel_t panels [] PROGMEM = {
 	declare_panel (groundspeed),
 	declare_panel (battery1_voltage),
 	declare_panel (battery2_voltage),
-	declare_panel (battery_current),
-	declare_panel (battery_consumed),
+	declare_panel (battery1_current),
+	declare_panel (battery2_current),
+	declare_panel (battery1_consumed),
+	declare_panel (battery2_consumed),
 	declare_panel (rssi_flag),
 	declare_panel (home_distance),
 	declare_panel (home_direction),

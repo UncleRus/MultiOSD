@@ -29,16 +29,18 @@ namespace telemetry
 namespace settings
 {
 
-#define EEPROM_ADDR_MIN_CELL_VOLTAGE _eeprom_float (TELEMETRY_EEPROM_OFFSET)
-#define EEPROM_ADDR_NOM_CELL_VOLTAGE _eeprom_float (TELEMETRY_EEPROM_OFFSET + 4)
-#define EEPROM_ADDR_MAX_CELL_VOLTAGE _eeprom_float (TELEMETRY_EEPROM_OFFSET + 8)
-#define EEPROM_ADDR_LOW_VOLTAGE      _eeprom_float (TELEMETRY_EEPROM_OFFSET + 12)
-#define EEPROM_ADDR_CALLSIGN         _eeprom_str   (TELEMETRY_EEPROM_OFFSET + 16)
+#define EEPROM_ADDR_MIN_CELL_VOLTAGE   _eeprom_float (TELEMETRY_EEPROM_OFFSET)
+#define EEPROM_ADDR_NOM_CELL_VOLTAGE   _eeprom_float (TELEMETRY_EEPROM_OFFSET + 4)
+#define EEPROM_ADDR_MAX_CELL_VOLTAGE   _eeprom_float (TELEMETRY_EEPROM_OFFSET + 8)
+#define EEPROM_ADDR_LOW_VOLTAGE        _eeprom_float (TELEMETRY_EEPROM_OFFSET + 12)
+#define EEPROM_ADDR_RSSI_LOW_THRESHOLD _eeprom_byte  (TELEMETRY_EEPROM_OFFSET + 16)
+#define EEPROM_ADDR_CALLSIGN           _eeprom_str   (TELEMETRY_EEPROM_OFFSET + 17)
 
 const char __opt_mincv [] PROGMEM = "MINCV";
 const char __opt_nomcv [] PROGMEM = "NOMCV";
 const char __opt_maxcv [] PROGMEM = "MAXCV";
 const char __opt_lowcv [] PROGMEM = "LOWCV";
+const char __opt_rlt   [] PROGMEM = "RLT";
 const char __opt_csign [] PROGMEM = "CSIGN";
 
 const ::settings::option_t __settings [] PROGMEM = {
@@ -46,7 +48,29 @@ const ::settings::option_t __settings [] PROGMEM = {
 	declare_float_option (__opt_nomcv, EEPROM_ADDR_NOM_CELL_VOLTAGE),
 	declare_float_option (__opt_maxcv, EEPROM_ADDR_MAX_CELL_VOLTAGE),
 	declare_float_option (__opt_lowcv, EEPROM_ADDR_LOW_VOLTAGE),
+	declare_uint8_option (__opt_rlt,   EEPROM_ADDR_RSSI_LOW_THRESHOLD),
 	declare_str_option   (__opt_csign, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH),
+};
+
+struct settings_t
+{
+	float min_cell_voltage;
+	float nom_cell_voltage;
+	float max_cell_voltage;
+	float low_cell_voltage;
+	uint8_t rssi_low_thresh;
+	char callsign [TELEMETRY_CALLSIGN_LENGTH + 1];
+
+	settings_t ()
+	{
+		min_cell_voltage = eeprom_read_float (EEPROM_ADDR_MIN_CELL_VOLTAGE);
+		nom_cell_voltage = eeprom_read_float (EEPROM_ADDR_NOM_CELL_VOLTAGE);
+		max_cell_voltage = eeprom_read_float (EEPROM_ADDR_MAX_CELL_VOLTAGE);
+		low_cell_voltage = eeprom_read_float (EEPROM_ADDR_LOW_VOLTAGE);
+		rssi_low_thresh = eeprom_read_byte (EEPROM_ADDR_RSSI_LOW_THRESHOLD);
+		eeprom_read_block (callsign, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH);
+		callsign [TELEMETRY_CALLSIGN_LENGTH] = 0;
+	}
 };
 
 void init ()
@@ -80,15 +104,17 @@ void reset ()
 ///////////////////////////////////////////////////////////////////////////////
 
 uint32_t update_time = 0;
+settings::settings_t s;
 
 namespace status
 {
 
-	char callsign [TELEMETRY_CALLSIGN_LENGTH + 1];
-	connection_state_t connection = CONNECTION_STATE_DISCONNECTED;
+	const char *callsign;
+	connection_state_t connection = DISCONNECTED;
 	uint16_t flight_time = 0;
 	uint8_t flight_mode = 0;
 	const char *flight_mode_name_p = NULL;
+	const char *flight_mode_name = NULL;
 	bool armed = false;
 
 }  // namespace status
@@ -112,9 +138,13 @@ namespace input
 	int8_t roll = 0;
 	int8_t pitch = 0;
 	int8_t yaw = 0;
-	int8_t collective = 0;
-	int8_t thrust = 0;
 	uint16_t channels [INPUT_CHANNELS] = {0};
+
+	void set_rssi (uint8_t value)
+	{
+		rssi = value;
+		rssi_low = value < s.rssi_low_thresh;
+	}
 
 }  // namespace input
 
@@ -161,7 +191,7 @@ namespace stable
 	float groundspeed = 0.0;
 	float airspeed = 0.0;
 	uint16_t heading = 0;
-	heading_source_t heading_source = HEADING_SOURCE_DISABLED;
+	heading_source_t heading_source = DISABLED;
 
 	uint32_t _alt_update_time = 0;
 
@@ -188,22 +218,16 @@ namespace stable
 namespace battery
 {
 
-	float min_cell_voltage = TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE;
-	float nom_cell_voltage = TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE;
-	float max_cell_voltage = TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE;
-	float low_cell_voltage = TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE;
-
-	float current = 0;
-	float consumed = 0;
-
 	float _cell_range;
 
 	battery_t battery1;
 	battery_t battery2;
 
-	void battery_t::update (bool calc_cells)
+	void battery_t::set_voltage (float value, bool calc_cells)
 	{
-		if (calc_cells) cells = round (voltage / nom_cell_voltage);
+		voltage = value;
+
+		if (calc_cells) cells = round (voltage / s.nom_cell_voltage);
 		if (!cells)
 		{
 			cell_voltage = 0;
@@ -212,27 +236,22 @@ namespace battery
 			return;
 		}
 		cell_voltage = voltage / cells;
-		low = cell_voltage <= low_cell_voltage;
-		level = cell_voltage > min_cell_voltage
-			? (cell_voltage - min_cell_voltage) / _cell_range * 100
+		low = cell_voltage <= s.low_cell_voltage;
+		level = cell_voltage > s.min_cell_voltage
+			? (cell_voltage - s.min_cell_voltage) / _cell_range * 100
 			: 0;
 		if (level > 100) level = 100;
 	}
 
-	void init ()
+	void battery_t::set_amperage (float value, uint16_t interval)
 	{
-		min_cell_voltage = eeprom_read_float (EEPROM_ADDR_MIN_CELL_VOLTAGE);
-		nom_cell_voltage = eeprom_read_float (EEPROM_ADDR_NOM_CELL_VOLTAGE);
-		max_cell_voltage = eeprom_read_float (EEPROM_ADDR_MAX_CELL_VOLTAGE);
-		low_cell_voltage = eeprom_read_float (EEPROM_ADDR_LOW_VOLTAGE);
-		_cell_range = max_cell_voltage - min_cell_voltage;
-		battery1.update (true);
-		battery2.update (true);
+		amperage = value;
+		consumed += amperage * interval / 3600.0;
 	}
 
-	void update_consumed (uint16_t interval)
+	void init ()
 	{
-		consumed += current * interval / 3600.0;
+		_cell_range = s.max_cell_voltage - s.min_cell_voltage;
 	}
 
 }  // namespace battery
@@ -240,7 +259,7 @@ namespace battery
 namespace home
 {
 
-	uint8_t state = HOME_STATE_NO_FIX;
+	home_state_t state = NO_FIX;
 
 	float distance = 0;
 	uint16_t direction = 0;
@@ -249,35 +268,32 @@ namespace home
 	float latitude;
 	float altitude = 0;
 
-//	uint16_t _fix_timeout = 3000;
-//	uint32_t _fix_timestop = 0;
-
 	void fix ()
 	{
-		state = HOME_STATE_FIXING;
+		state = FIXING;
 	}
 
 	void update ()
 	{
-		if (state == HOME_STATE_NO_FIX) return;
-		if (state == HOME_STATE_FIXING)
+		if (state == NO_FIX) return;
+		if (state == FIXING)
 			switch (gps::state)
 			{
 				case GPS_STATE_NO_FIX:
-					state = HOME_STATE_NO_FIX;
+					state = NO_FIX;
 					break;
 				case GPS_STATE_FIXING:
 				case GPS_STATE_2D:
-					if (state == HOME_STATE_NO_FIX) state = HOME_STATE_FIXING;
+					if (state == NO_FIX) state = FIXING;
 					break;
 				case GPS_STATE_3D:
-					state = HOME_STATE_FIXED;
+					state = FIXED;
 					longitude = gps::longitude;
 					latitude = gps::latitude;
 					altitude = stable::altitude;
 					break;
 			}
-		if (state != HOME_STATE_FIXED) return;
+		if (state != FIXED) return;
 
 		float rads = fabs (latitude) * 0.0174532925;
 		double scale_down = cos (rads);
@@ -401,9 +417,7 @@ namespace modules
 
 void init ()
 {
-	eeprom_read_block (status::callsign, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH);
-	status::callsign [TELEMETRY_CALLSIGN_LENGTH] = 0;
-
+	status::callsign = s.callsign;
 	battery::init ();
 	for (uint8_t i = 0; i < modules::count; i ++)
 		modules::init (i);

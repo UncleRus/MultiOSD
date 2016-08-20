@@ -72,8 +72,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace uart_utils
 {
 
-extern const uint16_t baudrates [];
-extern const uint16_t get_baudrate (uint8_t br_type, uint8_t def = 0);
+extern const uint16_t bitrates [];
+extern const uint16_t get_bitrate (uint8_t br_type, uint8_t def = 0);
 
 }  // namespace uart_utils
 

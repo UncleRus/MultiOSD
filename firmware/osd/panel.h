@@ -21,7 +21,7 @@
 #include "../lib/pgmspace.h"
 
 #define OSD_PANEL_ALT                 0
-#define OSD_PANEL_CLIMB               1
+#define OSD_PANEL_VARIO               1
 #define OSD_PANEL_FLIGHT_MODE         2
 #define OSD_PANEL_ARMING_STATE        3
 #define OSD_PANEL_CONNECTION_STATE    4
@@ -36,16 +36,18 @@
 #define OSD_PANEL_GROUND_SPEED        13
 #define OSD_PANEL_BATTERY1_VOLTAGE    14
 #define OSD_PANEL_BATTERY2_VOLTAGE    15
-#define OSD_PANEL_BATTERY_CURRENT     16
-#define OSD_PANEL_BATTERY_CONSUMED    17
-#define OSD_PANEL_RSSI_FLAG           18
-#define OSD_PANEL_HOME_DISTANCE       19
-#define OSD_PANEL_HOME_DIRECTION      20
-#define OSD_PANEL_CALLSIGN            21
-#define OSD_PANEL_TEMPERATURE         22
-#define OSD_PANEL_RSSI                23
-#define OSD_PANEL_COMPASS             24
-#define OSD_PANEL_AIRSPEED            25
+#define OSD_PANEL_BATTERY1_CURRENT    16
+#define OSD_PANEL_BATTERY1_CONSUMED   17
+#define OSD_PANEL_BATTERY2_CURRENT    18
+#define OSD_PANEL_BATTERY2_CONSUMED   19
+#define OSD_PANEL_RSSI_FLAG           20
+#define OSD_PANEL_HOME_DISTANCE       21
+#define OSD_PANEL_HOME_DIRECTION      22
+#define OSD_PANEL_CALLSIGN            23
+#define OSD_PANEL_TEMPERATURE         24
+#define OSD_PANEL_RSSI                25
+#define OSD_PANEL_COMPASS             26
+#define OSD_PANEL_AIRSPEED            27
 
 namespace osd
 {

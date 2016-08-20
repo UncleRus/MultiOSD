@@ -20,7 +20,7 @@
 namespace uart_utils
 {
 
-const uint16_t baudrates [] PROGMEM = {
+const uint16_t bitrates [] PROGMEM = {
 	UART_BAUD_SELECT (9600),
 	UART_BAUD_SELECT (19200),
 	UART_BAUD_SELECT (38400),
@@ -28,12 +28,12 @@ const uint16_t baudrates [] PROGMEM = {
 	UART_BAUD_SELECT (115200),
 };
 
-const uint8_t max_br_type = sizeof (baudrates) / sizeof (uint16_t);
+const uint8_t max_br_type = sizeof (bitrates) / sizeof (uint16_t);
 
-const uint16_t get_baudrate (uint8_t br_type, uint8_t def)
+const uint16_t get_bitrate (uint8_t br_type, uint8_t def)
 {
-	if (br_type >= max_br_type) return get_baudrate (def, 0);
-	return pgm_read_word (&baudrates [br_type]);
+	if (br_type >= max_br_type) return get_bitrate (def, 0);
+	return pgm_read_word (&bitrates [br_type]);
 }
 
 }  // namespace uart_utils

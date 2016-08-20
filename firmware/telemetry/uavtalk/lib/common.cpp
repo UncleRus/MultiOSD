@@ -23,10 +23,6 @@
 #include "lpnext/release.h"
 #include "dr201604092/release.h"
 
-#ifdef DEBUG
-	#include "../../../lib/dbgconsole.h"
-#endif
-
 UT_NAMESPACE_OPEN
 
 bool internal_home_calc;

@@ -50,4 +50,6 @@ void send_string_p (const char *progmem_s);
 
 }  // namespace dbgconsole
 
+#define dbg_printf_p(...) fprintf_P (&dbgconsole::stream, __VA_ARGS__)
+
 #endif /* DBGCONSOLE_H_ */

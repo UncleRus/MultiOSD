@@ -303,7 +303,7 @@ struct motor_t
 
 struct rc_t
 {
-	int16_t channels [8]; // 1000..2000, 18??? channels max
+	int16_t channels [18]; // 1000..2000, 18 channels max
 };
 
 struct attitude_t

@@ -35,7 +35,7 @@
 /*
  * UAVTalk config
  */
-#define UAVTALK_DEFAULT_BAUDRATE UART_BR_57600
+#define UAVTALK_DEFAULT_BITRATE UART_BR_57600
 #define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_LP150900
 #define UAVTALK_CONNECTION_TIMEOUT 6000                   // ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500     // ms
@@ -45,7 +45,7 @@
 /*
  * MAVLink config
  */
-#define MAVLINK_DEFAULT_BAUDRATE UART_BR_57600
+#define MAVLINK_DEFAULT_BITRATE UART_BR_57600
 #define MAVLINK_DEFAULT_FC_TYPE 0                         // 0 - Auto, 3 - APM, 9 - PPZ, 12 - PX4
 #define MAVLINK_SYSID 'R'                                 // MAVLink system ID
 #define MAVLINK_COMPID 1                                  // MAVLink component ID
@@ -60,17 +60,18 @@
 /*
  * UBX config
  */
-#define UBX_DEFAULT_BAUDRATE UART_BR_19200                // values higher than 57600 is not recommended
+#define UBX_DEFAULT_BITRATE UART_BR_19200                 // values higher than 57600 is not recommended
 #define UBX_DEFAULT_TIMEOUT 1000                          // ms
 #define UBX_DEFAULT_AUTOCONF 0                            // automatically configure GPS-module after connect
 
 /*
  * MSP config
  */
+#define MSP_DEFAULT_BITRATE UART_BR_115200
+#define MSP_CONNECTION_TIMEOUT 2000                       // ms
 #define MSP_DEFAULT_INTERNAL_HOME_CALC 0                  // Home distance/direction calculation: 0 - flight controller, 1 - MultiOSD by GPS
 #define MSP_DEFAULT_AMPERAGE_DIVIDER 10                   // MSP_ANALOG amperage factor (100 or 1000)
 #define MSP_DEFAULT_GPS_ALTITUDE 0                        // Use GPS altitude instead of computed by FC
-#define MSP_DEFAULT_BAUD_RATE UART_BR_57600
 
 /*
  * OSD config
@@ -89,7 +90,7 @@
  * UART config
  */
 #define UART_STDIO                                        // we need fprintf
-#define UART_RX_BUFFER_SIZE 128                           // I like big buffers
+#define UART_RX_BUFFER_SIZE 256                           // I like big buffers
 #define UART_TX_BUFFER_SIZE 64
 
 /*
@@ -99,7 +100,7 @@
 #define CONSOLE_MAX_CMD_LENGTH 32
 #define CONSOLE_EOL "\r\n"
 #define CONSOLE_PROMPT "osd# "
-#define CONSOLE_BAUDRATE UART_BR_57600
+#define CONSOLE_BITRATE UART_BR_57600
 
 /*
  * Boot config
@@ -119,18 +120,18 @@
 #define ADC_BATTERY_DEFAULT_UPDATE_INTERVAL 200           // ms
 #define ADC_BATTERY_DEFAULT_VOLTAGE1_CHANNEL 2            // ADC2 25 pin
 #define ADC_BATTERY_DEFAULT_VOLTAGE2_CHANNEL 0            // ADC0 23 pin
-#define ADC_BATTERY_DEFAULT_CURRENT_CHANNEL 1             // ADC1 24 pin
-#define ADC_BATTERY_DEFAULT_CURRENT_SENSOR 1              // ADC current sensor enabled
-#define ADC_BATTERY_DEFAULT_VOLTAGE1_MULTIPLIER 1.0
-#define ADC_BATTERY_DEFAULT_VOLTAGE2_MULTIPLIER 1.0
-#define ADC_BATTERY_DEFAULT_CURRENT_MULTIPLIER 1.0
+#define ADC_BATTERY_DEFAULT_AMPERAGE1_CHANNEL 1           // ADC1 24 pin
+#define ADC_BATTERY_DEFAULT_AMPERAGE2_CHANNEL 15          // 0V
+#define ADC_BATTERY_DEFAULT_VOLTAGE1_FACTOR 1.0
+#define ADC_BATTERY_DEFAULT_VOLTAGE2_FACTOR 1.0
+#define ADC_BATTERY_DEFAULT_AMPERAGE1_FACTOR 1.0
+#define ADC_BATTERY_DEFAULT_AMPERAGE2_FACTOR 1.0
 
 /*
  * ADC RSSI
  */
 #define ADC_RSSI_DEFAULT_CHANNEL 3                        // ADC3 26 pin
 #define ADC_RSSI_DEFAULT_UPDATE_INTERVAL 200              // ms
-#define ADC_RSSI_DEFAULT_LOW_THRESHOLD 10                 // RSSI low threshold, %
 #define ADC_RSSI_DEFAULT_MULTIPLIER 1.0
 
 

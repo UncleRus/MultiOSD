@@ -56,7 +56,7 @@ void init ()
 
 void reset ()
 {
-	eeprom_update_byte (EEPROM_ADDR_BAUDRATE, UBX_DEFAULT_BAUDRATE);
+	eeprom_update_byte (EEPROM_ADDR_BAUDRATE, UBX_DEFAULT_BITRATE);
 	eeprom_update_word (EEPROM_ADDR_TIMEOUT, UBX_DEFAULT_TIMEOUT);
 //	eeprom_update_byte (EEPROM_ADDR_AUTOCONF, UBX_DEFAULT_AUTOCONF);
 }
@@ -172,7 +172,7 @@ uint32_t connection_timeout;
 
 void init ()
 {
-	TELEMETRY_UART::init (uart_utils::get_baudrate (eeprom_read_byte (EEPROM_ADDR_BAUDRATE), UBX_DEFAULT_BAUDRATE));
+	TELEMETRY_UART::init (uart_utils::get_bitrate (eeprom_read_byte (EEPROM_ADDR_BAUDRATE), UBX_DEFAULT_BITRATE));
 	timeout = eeprom_read_word (EEPROM_ADDR_TIMEOUT);
 	//autoconf = eeprom_read_byte (EEPROM_ADDR_AUTOCONF);
 }
@@ -184,7 +184,7 @@ bool update ()
 	while (receive (parse))
 	{
 		connection_timeout = telemetry::update_time + timeout;
-		status::connection = CONNECTION_STATE_CONNECTED;
+		status::connection = status::CONNECTED;
 		// TODO: autoconf
 		//if (status::connection != CONNECTION_STATE_CONNECTED)
 		//	status::connection = CONNECTION_STATE_ESTABLISHING;
@@ -222,7 +222,7 @@ bool update ()
 							break;
 						case F_3D:
 							gps::state = GPS_STATE_3D;
-							if (home::state == HOME_STATE_NO_FIX)
+							if (home::state == home::NO_FIX)
 								home::fix ();
 							status::armed = true;
 							break;
@@ -242,7 +242,7 @@ bool update ()
 				gps::heading = buf.payload.nav_velned.heading * 1.0e-5f;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
 				stable::heading = gps::heading;
-				stable::heading_source = stable::HEADING_SOURCE_GPS;
+				stable::heading_source = stable::GPS;
 #endif
 				updated = true;
 				break;
@@ -262,7 +262,7 @@ bool update ()
 	if (telemetry::update_time >= connection_timeout)
 	{
 		// disconnect, but don't reset the home pos
-		status::connection = CONNECTION_STATE_DISCONNECTED;
+		status::connection = status::DISCONNECTED;
 		gps::state = GPS_STATE_NO_FIX;
 		updated = true;
 	}

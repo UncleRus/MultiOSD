@@ -22,10 +22,6 @@
 #include <math.h>
 #include "../../../telemetry.h"
 
-#ifdef DEBUG
-	#include "../../../../lib/dbgconsole.h"
-#endif
-
 UT_NAMESPACE_OPEN
 
 namespace lp150900
@@ -38,8 +34,6 @@ void handle_manualcontrolcommand ()
 	input::roll       = (int8_t) (obj->Roll * 100);
 	input::pitch      = (int8_t) (obj->Pitch * 100);
 	input::yaw        = (int8_t) (obj->Yaw * 100);
-	input::collective = (int8_t) (obj->Collective * 100);
-	input::thrust     = (int8_t) (obj->Thrust * 100);
 	memcpy (input::channels, obj->Channel, sizeof (obj->Channel));
 	input::connected = obj->Connected;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)

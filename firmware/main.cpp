@@ -42,7 +42,7 @@ inline void init ()
 	settings::init ();
 	timer::init ();
 	_delay_ms (500);
-	CONSOLE_UART::init (uart_utils::get_baudrate (CONSOLE_BAUDRATE));
+	CONSOLE_UART::init (uart_utils::get_bitrate (CONSOLE_BITRATE));
 	spi::init ();
 	max7456::init ();
 	if (boot::show ())

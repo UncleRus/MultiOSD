@@ -21,10 +21,6 @@
 #include <math.h>
 #include "../../../telemetry.h"
 
-#ifdef DEBUG
-	#include "../../../../lib/dbgconsole.h"
-#endif
-
 UT_NAMESPACE_OPEN
 
 namespace tl20151123
@@ -46,10 +42,9 @@ void handle_flightstatus ()
 void handle_flightbatterystate ()
 {
 	FlightBatteryState *obj = (FlightBatteryState *) &buffer.data;
-	battery::battery1.voltage = obj->Voltage;
-	battery::battery1.update (true);
-	battery::current = obj->Current;
-	battery::consumed = obj->ConsumedEnergy;
+	battery::battery1.set_voltage (obj->Voltage, true);
+	battery::battery1.amperage = obj->Current;
+	battery::battery1.consumed = obj->ConsumedEnergy;
 }
 #endif
 
@@ -61,19 +56,19 @@ void send_gcs_telemetry_stats (GCSTelemetryStatsStatus status)
 	send (h, (uint8_t *) &data, sizeof (GCSTelemetryStats));
 }
 
-inline connection_state_t fts_respond (uint8_t state)
+inline status::connection_state_t fts_respond (uint8_t state)
 {
 	if (state == FLIGHTTELEMETRYSTATS_STATUS_DISCONNECTED)
 	{
 		send_gcs_telemetry_stats (GCSTELEMETRYSTATS_STATUS_HANDSHAKEREQ);
-		return CONNECTION_STATE_ESTABLISHING;
+		return status::ESTABLISHING;
 	}
 
 	if (state == FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEACK)
 		send_gcs_telemetry_stats (GCSTELEMETRYSTATS_STATUS_CONNECTED);
 
 	request_object (release.flightstatus_objid);
-	return CONNECTION_STATE_CONNECTED;
+	return status::CONNECTED;
 }
 
 void handle_flighttelemetrystats ()
@@ -99,7 +94,7 @@ void handle_gpsvelocity ()
 void handle_magnetometer ()
 {
 	Magnetometer *obj = (Magnetometer *) &buffer.data;
-	stable::heading_source = stable::HEADING_SOURCE_EXTERNAL_MAG;
+	stable::heading_source = stable::EXTERNAL_MAG;
 	stable::calc_heading (obj->x, obj->y);
 	mag_enabled = true;
 }
@@ -112,12 +107,10 @@ void handle_manualcontrolcommand ()
 	input::roll       = (int8_t) (obj->Roll * 100);
 	input::pitch      = (int8_t) (obj->Pitch * 100);
 	input::yaw        = (int8_t) (obj->Yaw * 100);
-	input::collective = (int8_t) (obj->Collective * 100);
 	memcpy (input::channels, obj->Channel, sizeof (obj->Channel));
 	input::connected = obj->Connected;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
-	input::rssi = obj->Rssi;
-	input::rssi_low = input::rssi < rssi_low_threshold;
+	input::set_rssi (obj->Rssi);
 #endif
 }
 
