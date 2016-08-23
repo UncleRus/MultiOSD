@@ -31,6 +31,7 @@
 #define TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE 3.2    // Minimal cell voltage (dead battery), 3.2 for LiPo
 #define TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE 3.5    // Warning threshold
 #define TELEMETRY_DEFAULT_CALLSIGN "DRONE"                // Default callsign
+#define TELEMETRY_DEFAULT_RSSI_LOW_THRESHOLD 10           // RSSI low threshold, %
 
 /*
  * UAVTalk config
@@ -40,7 +41,6 @@
 #define UAVTALK_CONNECTION_TIMEOUT 6000                   // ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500     // ms
 #define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 1              // Home distance/direction calculation: 0 - flight controller (REVO only), 1 - MultiOSD by GPS
-#define UAVTALK_DEFAULT_RSSI_THRESHOLD 10                 // RSSI low threshold (TauLabs only), %
 
 /*
  * MAVLink config

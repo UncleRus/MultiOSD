@@ -384,7 +384,7 @@ namespace battery1_current
 namespace battery2_current
 {
 
-	STD_PANEL ("Bat2Current", 8, "\xfa%.2f\xec", telemetry::battery::battery2.amperage);
+	STD_PANEL ("Bat2Current", 8, "\xec%.2f\x8f", telemetry::battery::battery2.amperage);
 
 }  // namespace battery_current
 
@@ -398,7 +398,7 @@ namespace battery1_consumed
 namespace battery2_consumed
 {
 
-	STD_PANEL ("Bat2Consumed", 8, "\xfb%u\xed", (uint16_t) telemetry::battery::battery2.consumed);
+	STD_PANEL ("Bat2Consumed", 8, "\xed%u\x82", (uint16_t) telemetry::battery::battery2.consumed);
 
 }  // namespace battery_consumed
 

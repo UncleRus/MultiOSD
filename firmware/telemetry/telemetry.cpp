@@ -89,6 +89,7 @@ void reset ()
 	eeprom_update_float (EEPROM_ADDR_NOM_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE);
 	eeprom_update_float (EEPROM_ADDR_MAX_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE);
 	eeprom_update_float (EEPROM_ADDR_LOW_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE);
+	eeprom_update_byte (EEPROM_ADDR_RSSI_LOW_THRESHOLD, TELEMETRY_DEFAULT_RSSI_LOW_THRESHOLD);
 	for (uint8_t i = 0; i < TELEMETRY_CALLSIGN_LENGTH; i ++)
 		eeprom_update_byte ((uint8_t *) EEPROM_ADDR_CALLSIGN + i, pgm_read_byte (&default_callsign [i]));
 	eeprom_update_byte ((uint8_t *) EEPROM_ADDR_CALLSIGN + TELEMETRY_CALLSIGN_LENGTH, 0);
