@@ -164,54 +164,34 @@ Type     | Size
 -------- | --------
 float    | 4 bytes
 
-### CSIGN
+### RLT
 
-Callsign text, 5 chars max.
+RSSI low threshold, %
 
 Type     | Size
 -------- | --------
-str      | 6 bytes
+uint8    | 1 byte 
+
+### CSIGN
+
+Callsign text, 8 chars max.
+
+Type     | Size
+-------- | --------
+str      | 9 bytes
 
 
 ## ADCBattery module settings
 
-### ABCS
+### ABINT
 
-Set this option to 1 to enable current sensor.
-
-Type     | Size
--------- | --------
-bool     | 1 byte
-
-### ABV1MUL
-
-Voltage multiplier = Umax / `ADCUREF` for flight battery.
-
-For example, Umax = 16.8V, `ADCUREF` = 5.1V, `ABV1MUL` = 16.8 / 5.1 = 3.294
+Update interval, ms.
 
 Type     | Size
 -------- | --------
-float    | 4 bytes
+uint16   | 2 bytes
 
-### ABV2MUL
-
-Voltage multiplier = Umax / `ADCUREF` for secondary battery.
-
-Type     | Size
--------- | --------
-float    | 4 bytes
-
-### ABCMUL
-
-Current multiplier = Imax / `ADCUREF`
-
-For example, Imax = 90A, `ADCUREF` = 5.1V, `ABCMUL` = 90 / 5.1 = 17.647
-
-Type     | Size
--------- | --------
-float    | 4 bytes
-
-### ABV1CH
+### ABU1CH
 
 ATmega328p ADC channel for voltage sensor of the flight battery.
 
@@ -230,8 +210,7 @@ Value | ADC Channel | ATMega pin
  6    | 6           | 19
  7    | 7           | 22
 
-
-### ABV2CH
+### ABU2CH
 
 ATmega328p ADC channel for voltage sensor of the secondary battery.
 
@@ -250,9 +229,9 @@ Value | ADC Channel | ATMega pin
  6    | 6           | 19
  7    | 7           | 22
 
-### ABCCH
+### ABI1CH
 
-ATmega328p ADC channel for current sensor.
+ATmega328p ADC channel for current sensor of the flight battery.
 
 Type     | Size
 -------- | --------
@@ -269,18 +248,63 @@ Value | ADC Channel | ATMega pin
  6    | 6           | 19
  7    | 7           | 22
 
+### ABI2CH
 
-## ADCRSSI module settings
+ATmega328p ADC channel for current sensor of the secondary battery.
 
-### ARMUL
+Type     | Size
+-------- | --------
+enum     | 1 byte 
 
-RSSI multiplier = 100 / Umax, where Umax <= `ADCUREF`.
+Value | ADC Channel | ATMega pin
+----- | ----------- | ----------
+ 0    | 0           | 23
+ 1    | 1           | 24
+ 2    | 2           | 25
+ 3    | 3           | 26
+ 4    | 4           | 27
+ 5    | 5           | 28
+ 6    | 6           | 19
+ 7    | 7           | 22
 
-For example, Umax = 5V, `ADCUREF` = 5.1, `ARMUL` = 100 / 5.0 = 20.0
+### ABU1F
+
+Voltage factor = Umax / `ADCUREF` for flight battery.
+
+For example, Umax = 16.8V, `ADCUREF` = 5.1V, `ABU1F` = 16.8 / 5.1 = 3.294
 
 Type     | Size
 -------- | --------
 float    | 4 bytes
+
+### ABU2F
+
+Voltage factor = Umax / `ADCUREF` for secondary battery.
+
+Type     | Size
+-------- | --------
+float    | 4 bytes
+
+### ABI1F
+
+Current factor = Imax / `ADCUREF` for flight batetry.
+
+For example, Imax = 90A, `ADCUREF` = 5.1V, `ABI1F` = 90 / 5.1 = 17.647
+
+Type     | Size
+-------- | --------
+float    | 4 bytes
+
+### ABI2F
+
+Current factor = Imax / `ADCUREF` for secondary batetry.
+
+Type     | Size
+-------- | --------
+float    | 4 bytes
+
+
+## ADCRSSI module settings
 
 ### ARCH
 
@@ -301,7 +325,7 @@ Value | ADC Channel | ATMega pin
  6    | 6           | 19
  7    | 7           | 22
 
-### ARUI
+### ARINT
 
 Interval between RSSI updates, ms. 200 is good enough.
 
@@ -309,26 +333,27 @@ Type     | Size
 -------- | --------
 uint16   | 2 bytes
 
-### ARLT
+### ARF
 
-RSSI warning threshold, percents.
+RSSI multiplier = 100 / Umax, where Umax <= `ADCUREF`.
+
+For example, Umax = 5V, `ADCUREF` = 5.1, `ARF` = 100 / 5.0 = 20.0
 
 Type     | Size
 -------- | --------
-uint8    | 1 byte
-
+float    | 4 bytes
 
 ## UAVTalk module settings
 
 ### UTBR
 
-UART baudrate to communicate with FC. Typically is **3** (57600).
+UART bitrate to communicate with FC. Typically is **3** (57600).
 
 Type     | Size
 -------- | --------
 enum     | 1 byte 
 
-Value | Baudrate
+Value | Bitrate
 ----- | ---------
  0    | 9600
  1    | 19200
@@ -352,7 +377,7 @@ Value | Firmware   | Version
  1    | OpenPilot  | 15.05.02
  2    | LibrePilot | 15.09
  3    | TauLabs    | 20151123
- 4    | LibrePilot | Next
+ 4    | LibrePilot | 16.09-RC1
  5    | dRonin     | 2016-04-09.2
 
 ### UTIHC
@@ -369,13 +394,13 @@ bool     | 1 byte
 
 ### MLBR
 
-UART baudrate to communicate with FC. Typically is **57600**.
+UART bitrate to communicate with FC. Typically is **57600**.
 
 Type     | Size
 -------- | --------
 enum     | 1 byte 
 
-Value | Baudrate
+Value | Bitrate
 ----- | ---------
  0    | 9600
  1    | 19200
@@ -411,15 +436,6 @@ bool     | 1 byte
 ### MLBLT
 
 Battery level warning threshold, percents. Used when `MLIBL` is 0.
-
-Type     | Size
--------- | --------
-uint8    | 1 byte
-
-
-### MLRLT
-
-RSSI warning threshold, percents. Used when `MLER` is 0.
 
 Type     | Size
 -------- | --------
@@ -469,13 +485,13 @@ uint16   | 2 bytes
 
 ### UBXBR
 
-UART baudrate to communicate with U-BLOX GPS module.
+UART bitrate to communicate with U-BLOX GPS module.
 
 Type     | Size
 -------- | --------
 enum     | 1 byte 
 
-Value | Baudrate
+Value | Bitrate
 ----- | ---------
  0    | 9600
  1    | 19200
