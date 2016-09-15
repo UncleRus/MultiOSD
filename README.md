@@ -18,7 +18,7 @@ Yet another MinimOSD firmware with configurable screens layout.
   * OpenPilot 15.02.02 (latest CC/CC3D release)
   * OpenPilot 15.05.02 (latest Revolution release)
   * LibrePilot 15.09 (http://librepilot.org)
-  * LibrePilot Next release
+  * LibrePilot 16.09-RC1
 * All TauLabs 20151123 (http://taulabs.org) boards
 * All dRonin 2016-04-09.2 (http://dronin.org) boards
 
@@ -76,11 +76,14 @@ See [full future matrix](doc/features.md).
 You can use [the serial console](doc/configure.md)
 to change [options](doc/settings.md) and screens layout.
 
-## Todo
+## TODO
 
 * UBX autoconfig
-* MultiWii Serial Protocol
 * Configuration GUI
+
+## WIP
+
+* MultiWii Serial Protocol
 
 
 
