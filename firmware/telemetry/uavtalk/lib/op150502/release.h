@@ -42,7 +42,7 @@ namespace fm
 
 	const char * const names [] PROGMEM = {
 		UAVTALK_OP150202::fm::manu, UAVTALK_OP150202::fm::stb1, UAVTALK_OP150202::fm::stb2, UAVTALK_OP150202::fm::stb3,
-		UAVTALK_OP150202::fm::stb4, UAVTALK_OP150202::fm::stb5, UAVTALK_OP150202::fm::stb6, UAVTALK_OP150202::fm::posh,
+		UAVTALK_OP150202::fm::stb4, UAVTALK_OP150202::fm::stb5, UAVTALK_OP150202::fm::stb6, UAVTALK_OP150202::fm::phld,
 		UAVTALK_OP150202::fm::clck, UAVTALK_OP150202::fm::roam, UAVTALK_OP150202::fm::hlea, UAVTALK_OP150202::fm::absp,
 		UAVTALK_OP150202::fm::rtb,  UAVTALK_OP150202::fm::land, UAVTALK_OP150202::fm::plan, UAVTALK_OP150202::fm::poi,
 		UAVTALK_OP150202::fm::acru, atof

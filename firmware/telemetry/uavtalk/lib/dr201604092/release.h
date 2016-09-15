@@ -37,15 +37,15 @@ const uint32_t flightstatus_objid = UAVTALK_DR201604092_FLIGHTSTATUS_OBJID;
 
 namespace fm
 {
-	const char fsaf [] PROGMEM = "FSAF";
+	const char fail [] PROGMEM = "FAIL";
 
 	const char * const names [] PROGMEM = {
-		UAVTALK_OP150202::fm::manu, UAVTALK_TL20151123::fm::acro, UAVTALK_TL20151123::fm::levl,
-		UAVTALK_TL20151123::fm::mwrt, UAVTALK_TL20151123::fm::horz, UAVTALK_TL20151123::fm::axlk,
-		UAVTALK_TL20151123::fm::virt, UAVTALK_OP150202::fm::stb1, UAVTALK_OP150202::fm::stb2,
-		UAVTALK_OP150202::fm::stb3, UAVTALK_TL20151123::fm::atun, UAVTALK_TL20151123::fm::alth,
-		UAVTALK_OP150202::fm::posh, UAVTALK_TL20151123::fm::rth, UAVTALK_OP150202::fm::plan,
-		UAVTALK_TL20151123::fm::tblt, UAVTALK_TL20151123::fm::acrp, fsaf
+		UAVTALK_OP150202::fm::manu,   UAVTALK_TL20151123::fm::acro, UAVTALK_TL20151123::fm::lvl,
+		UAVTALK_TL20151123::fm::mwrt, UAVTALK_TL20151123::fm::hrzn, UAVTALK_TL20151123::fm::alck,
+		UAVTALK_TL20151123::fm::vbar, UAVTALK_OP150202::fm::stb1,   UAVTALK_OP150202::fm::stb2,
+		UAVTALK_OP150202::fm::stb3,   UAVTALK_TL20151123::fm::tune, UAVTALK_TL20151123::fm::ahld,
+		UAVTALK_OP150202::fm::phld,   UAVTALK_TL20151123::fm::rth,  UAVTALK_OP150202::fm::plan,
+		UAVTALK_TL20151123::fm::tab,  UAVTALK_TL20151123::fm::acrp, fail
 	};
 
 	const uint8_t size = sizeof (names) / sizeof (char *);

@@ -38,7 +38,7 @@ void init ()
 	sei ();
 }
 
-SIGNAL (TIMER0_COMPA_vect)
+ISR (TIMER0_COMPA_vect)
 {
 	_ticks ++;
 }

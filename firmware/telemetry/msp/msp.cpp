@@ -301,7 +301,9 @@ bool update ()
 		bool changed = true;
 		bool was_armed;
 
+#ifdef DEBUG
 		dbg_printf_p (PSTR ("G %u\n"), buffer.cmd);
+#endif
 
 		switch (buffer.cmd)
 		{

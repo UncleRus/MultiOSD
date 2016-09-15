@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_LPNEXT_SYSTEMSTATS_H
-#define UAVTALK_LPNEXT_SYSTEMSTATS_H
+#ifndef UAVTALK_LP1609RC1_SYSTEMSTATS_H
+#define UAVTALK_LP1609RC1_SYSTEMSTATS_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace lpnext
+namespace lp1609rc1
 {
 
-#define UAVTALK_LPNEXT_SYSTEMSTATS_OBJID 0xF1EC270E
+#define UAVTALK_LP1609RC1_SYSTEMSTATS_OBJID 0xF1EC270E
 
 struct SystemStats
 {
@@ -50,4 +50,4 @@ struct SystemStats
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_LPNEXT_SYSTEMSTATS_H
+#endif // UAVTALK_LP1609RC1_SYSTEMSTATS_H

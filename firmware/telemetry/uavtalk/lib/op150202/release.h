@@ -75,7 +75,7 @@ namespace fm
 	const char stb4 [] PROGMEM = "STB4";  // Stabilized 4
 	const char stb5 [] PROGMEM = "STB5";  // Stabilized 5
 	const char stb6 [] PROGMEM = "STB6";  // Stabilized 6
-	const char posh [] PROGMEM = "POSH";  // Position Hold
+	const char phld [] PROGMEM = "PHLD";  // Position Hold
 	const char clck [] PROGMEM = "CLCK";  // Course lock
 	const char roam [] PROGMEM = "ROAM";  // Position Roam
 	const char hlea [] PROGMEM = "HLEA";  // Home Leash
@@ -88,7 +88,7 @@ namespace fm
 
 	const char * const names [] PROGMEM = {
 		manu, stb1, stb2, stb3, stb4,
-		stb5, posh, clck, roam, hlea,
+		stb5, phld, clck, roam, hlea,
 		absp, rtb,  land, plan, poi,
 		acru
 	};

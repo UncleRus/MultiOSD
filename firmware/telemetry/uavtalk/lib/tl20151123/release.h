@@ -51,22 +51,22 @@ const uint32_t flightstatus_objid = UAVTALK_TL20151123_FLIGHTSTATUS_OBJID;
 namespace fm
 {
 	const char acro [] PROGMEM = "ACRO";
-	const char levl [] PROGMEM = "LEVL";
+	const char lvl  [] PROGMEM = "LVL ";
 	const char mwrt [] PROGMEM = "MWRT";
-	const char horz [] PROGMEM = "HORZ";
-	const char axlk [] PROGMEM = "AXLK";
-	const char virt [] PROGMEM = "VIRT";
-	const char atun [] PROGMEM = "ATUN";
-	const char alth [] PROGMEM = "ALTH";
+	const char hrzn [] PROGMEM = "HRZN";
+	const char alck [] PROGMEM = "ALCK";
+	const char vbar [] PROGMEM = "VBAR";
+	const char tune [] PROGMEM = "TUNE";
+	const char ahld [] PROGMEM = "AHLD";
 	const char rth  [] PROGMEM = "RTH ";
-	const char tblt [] PROGMEM = "TBLT";
+	const char tab  [] PROGMEM = "TAB ";
 	const char acrp [] PROGMEM = "ACR+";
 
 	const char * const names [] PROGMEM = {
-		UAVTALK_OP150202::fm::manu, acro, levl, mwrt, horz,
-		axlk, virt, UAVTALK_OP150202::fm::stb1, UAVTALK_OP150202::fm::stb2, UAVTALK_OP150202::fm::stb3,
-		atun, alth, UAVTALK_OP150202::fm::posh, rth, UAVTALK_OP150202::fm::plan,
-		tblt, acrp
+		UAVTALK_OP150202::fm::manu, acro, lvl, mwrt, hrzn,
+		alck, vbar, UAVTALK_OP150202::fm::stb1, UAVTALK_OP150202::fm::stb2, UAVTALK_OP150202::fm::stb3,
+		tune, ahld, UAVTALK_OP150202::fm::phld, rth, UAVTALK_OP150202::fm::plan,
+		tab, acrp
 	};
 
 	const uint8_t size = sizeof (names) / sizeof (char *);

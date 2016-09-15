@@ -40,7 +40,7 @@
 #define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_LP150900
 #define UAVTALK_CONNECTION_TIMEOUT 6000                   // ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500     // ms
-#define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 1              // Home distance/direction calculation: 0 - flight controller (REVO only), 1 - MultiOSD by GPS
+#define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 1              // Home distance/direction calculation: 0 - by flight controller, 1 - by MultiOSD (GPS-based)
 
 /*
  * MAVLink config

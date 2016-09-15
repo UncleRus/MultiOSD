@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_LPNEXT_FLIGHTSTATUS_H
-#define UAVTALK_LPNEXT_FLIGHTSTATUS_H
+#ifndef UAVTALK_LP1609RC1_FLIGHTSTATUS_H
+#define UAVTALK_LP1609RC1_FLIGHTSTATUS_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace lpnext
+namespace lp1609rc1
 {
 
-#define UAVTALK_LPNEXT_FLIGHTSTATUS_OBJID 0x6E3BDB60
+#define UAVTALK_LP1609RC1_FLIGHTSTATUS_OBJID 0x24D25E28
 
 enum FlightStatusArmed
 {
@@ -52,7 +52,8 @@ enum FlightStatusFlightMode
     FLIGHTSTATUS_FLIGHTMODE_PATHPLANNER      = 14,
     FLIGHTSTATUS_FLIGHTMODE_POI              = 15,
     FLIGHTSTATUS_FLIGHTMODE_AUTOCRUISE       = 16,
-    FLIGHTSTATUS_FLIGHTMODE_AUTOTAKEOFF      = 17
+    FLIGHTSTATUS_FLIGHTMODE_AUTOTAKEOFF      = 17,
+    FLIGHTSTATUS_FLIGHTMODE_AUTOTUNE         = 18
 };
 
 enum FlightStatusFlightModeAssist
@@ -94,8 +95,8 @@ struct FlightStatus
     FlightStatusControlChain ControlChain;
 };
 
-}  // namespace lpnext
+}  // namespace lp1609rc1
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_LPNEXT_FLIGHTSTATUS_H
+#endif // UAVTALK_LP1609RC1_FLIGHTSTATUS_H
