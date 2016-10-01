@@ -144,6 +144,9 @@
 #define SPI_MOSI_BIT PB3
 #define SPI_MISO_BIT PB4
 #define SPI_SCK_BIT PB5
+#define SPI_CPOL 0
+#define SPI_CPHA 0
+#define SPI_FREQ 8000000L
 
 /*
  * MAX7456 config

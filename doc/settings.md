@@ -86,7 +86,7 @@ Screen switch mode.
 
 - **Selector** - Range of the input channel (`SELMAX` - `SELMIN`) divided by screens count `SCREENS`.
   Current screen selected by input channel value.
-- **Toggle** - Cycle through the screens when the input channel value crossing threshold `TGTRESH`.
+- **Toggle** - Cycle through the screens when the input channel value is crossing threshold `TGTRESH`.
 
 Type     | Size
 -------- | --------
@@ -446,7 +446,7 @@ uint8    | 1 byte
 Emulate RSSI level by receiver input channel value. Useful when receiver
 has no RSSI level output.
 RSSI low level warning will be set if value of the input channel defined
-by `MLERC` lower than `MLERT`.
+by `MLERC` becomes lower than `MLERT`.
 
 Type     | Size
 -------- | --------

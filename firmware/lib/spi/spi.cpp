@@ -19,9 +19,34 @@
 #include "../common.h"
 #include "../../config.h"
 
-#define SPI_CPOL 0   // Clock polarity: low when idle
-#define SPI_CPHA 0   // Clock phase: leading edge
-#define SPI_CLOCK 0  // Fosc / 4
+#if (SPI_FREQ == F_CPU / 4)
+	#define SPI_CLOCK (0)
+	#define SPI_2X (0)
+#elif (SPI_FREQ == F_CPU / 16)
+	#define SPI_CLOCK (_BV (SPR0))
+	#define SPI_2X (0)
+#elif (SPI_FREQ == F_CPU / 64)
+	#define SPI_CLOCK (_BV (SPR1))
+	#define SPI_2X (0)
+#elif (SPI_FREQ == F_CPU / 128)
+	#define SPI_CLOCK (_BV (SPR0) | _BV (SPR1))
+	#define SPI_2X (0)
+#elif (SPI_FREQ == F_CPU / 2)
+	#define SPI_CLOCK (0)
+	#define SPI_2X (1)
+#elif (SPI_FREQ == F_CPU / 8)
+	#define SPI_CLOCK (_BV (SPR0))
+	#define SPI_2X (1)
+#elif (SPI_FREQ == F_CPU / 32)
+	#define SPI_CLOCK (_BV (SPR1))
+	#define SPI_2X (1)
+#elif (SPI_FREQ == F_CPU / 64)
+	#define SPI_CLOCK (_BV (SPR0) | _BV (SPR1))
+	#define SPI_2X (1)
+#else
+	#error Invalid SPI frequency
+#endif
+
 
 namespace spi
 {
@@ -33,6 +58,9 @@ void init ()
 
 	// SPI master
 	SPCR = SPI_CPOL | SPI_CPHA | SPI_CLOCK | _BV (SPE) | _BV (MSTR);
+#if (SPI_2X != 0)
+	SPSR |= _BV (SPI2X);
+#endif
 }
 
 uint8_t transfer (uint8_t value)

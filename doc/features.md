@@ -38,3 +38,4 @@
 - [4] - Fully supported TauLabs, dRonin. For others RSSI value emulated
   based on connection state between receiver and flight controller 
 - [5] - RSSI value can be emulated based on input values
+
