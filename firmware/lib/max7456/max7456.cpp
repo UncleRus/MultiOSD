@@ -219,8 +219,10 @@ void upload_char (uint8_t char_index, uint8_t data [])
 {
 	_chip_select ();
 	_disable_osd ();
+    _delay_us (20);
+    _chip_unselect ();
 
-	_delay_us (10);
+    _chip_select ();
 
 	// Write CMAH[7:0] = xxH to select the character (0–255) to be written
 	write_register (MAX7456_REG_CMAH, char_index);
@@ -248,10 +250,12 @@ void upload_char (uint8_t char_index, uint8_t data [])
 
 void download_char (uint8_t char_index, uint8_t data [])
 {
-	_chip_select ();
-	_disable_osd ();
+    _chip_select ();
+    _disable_osd ();
+    _delay_us (20);
+    _chip_unselect ();
 
-	_delay_us (10);
+    _chip_select ();
 
 	// Write CMAH[7:0] = xxH to select the character (0–255) to be read
 	write_register (MAX7456_REG_CMAH, char_index);

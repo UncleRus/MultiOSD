@@ -51,6 +51,7 @@ def upload_font (args):
     port.write ('font u\r')
     for line in iter (f.readline, ''):
         port.write (line)
+        #time.sleep(0.01)
     port.write ('\r\rreboot\r')
     port.close ()
 

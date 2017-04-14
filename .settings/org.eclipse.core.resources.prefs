@@ -1,14 +1,5 @@
 eclipse.preferences.version=1
 encoding//res/__test__.py=utf-8
-encoding//tools/configurator/flasher.py=utf-8
-encoding//tools/configurator/knownpaths.py=utf-8
-encoding//tools/configurator/main.py=utf-8
-encoding//tools/configurator/multiconf.py=utf-8
-encoding//tools/configurator/settings.py=utf-8
-encoding//tools/configurator/storage.py=utf-8
-encoding//tools/configurator/ui.py=utf-8
-encoding//tools/configurator/utils.py=utf-8
 encoding//tools/console.py=utf-8
-encoding//tools/dump.py=utf-8
 encoding//tools/flasher.py=utf-8
 encoding//tools/font_uploader.py=utf-8
