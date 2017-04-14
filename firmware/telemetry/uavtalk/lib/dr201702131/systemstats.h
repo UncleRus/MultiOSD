@@ -14,31 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef UAVTALK_DR201604092_ATTITUDEACTUAL_H
-#define UAVTALK_DR201604092_ATTITUDEACTUAL_H
+#ifndef UAVTALK_DR201702131_SYSTEMSTATS_H
+#define UAVTALK_DR201702131_SYSTEMSTATS_H
 
 #include "../common.h"
 
 UT_NAMESPACE_OPEN
 
-namespace dr201604092
+namespace dr201702131
 {
 
-#define UAVTALK_DR201604092_ATTITUDEACTUAL_OBJID 0x33DAD5E6
+#define UAVTALK_DR201702131_SYSTEMSTATS_OBJID 0xB8EB0AF4
 
-struct AttitudeActual
+struct SystemStats
 {
-	float q1;
-	float q2;
-	float q3;
-	float q4;
-	float Roll;
-	float Pitch;
-	float Yaw;
+	uint32_t FlightTime;
+	uint32_t HeapRemaining;
+	uint32_t FastHeapRemaining;
+	uint32_t EventSystemWarningID;
+	uint32_t ObjectManagerCallbackID;
+	uint32_t ObjectManagerQueueID;
+	uint16_t IRQStackRemaining;
+	uint8_t CPULoad;
+	int8_t CPUTemp;
 };
 
-}  // namespace dr201604092
+}  // namespace dr201702131
 
 UT_NAMESPACE_CLOSE
 
-#endif // UAVTALK_DR201604092_ATTITUDEACTUAL_H
+#endif // UAVTALK_DR201702131_SYSTEMSTATS_H
