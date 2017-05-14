@@ -109,20 +109,10 @@ void handle_gpspositionsensor ()
 	stable::groundspeed = gps::speed = obj->Groundspeed;
 	gps::state      = (gps_state_t) obj->Status;
 	gps::satellites = obj->Satellites;
-#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-	if (stable::heading_source == stable::DISABLED
-		|| stable::heading_source == stable::GPS)
-	{
-		stable::heading = gps::heading;
-		stable::heading_source = stable::GPS;
-	}
-#endif
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
-	// update stable altitude if we can't get the baro altitude
-	if (!baro_enabled) stable::update_alt_climb (gps::altitude);
-#endif
-	// calc home distance/direction based on gps
-	if (internal_home_calc) home::update ();
+    gps::pdop       = obj->PDOP;
+    gps::hdop       = obj->HDOP;
+    gps::vdop       = obj->VDOP;
+    gps::update (internal_home_calc, !baro_enabled);
 }
 
 void handle_gpsvelocitysensor ()

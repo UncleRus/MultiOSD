@@ -38,15 +38,22 @@ namespace settings
 #define EEPROM_ADDR_RELEASE            _eeprom_byte (UAVTALK_EEPROM_OFFSET)
 #define EEPROM_ADDR_BAUDRATE           _eeprom_byte (UAVTALK_EEPROM_OFFSET + 1)
 #define EEPROM_ADDR_INTERNAL_HOME_CALC _eeprom_byte (UAVTALK_EEPROM_OFFSET + 2)
+#define EEPROM_ADDR_EMULATE_RSSI       _eeprom_byte (UAVTALK_EEPROM_OFFSET + 3)
 
 const char __opt_utrel [] PROGMEM = "UTREL";
 const char __opt_utbr  [] PROGMEM = "UTBR";
 const char __opt_utihc [] PROGMEM = "UTIHC";
+#if !defined (TELEMETRY_MODULES_ADC_RSSI)
+const char __opt_uter  [] PROGMEM = "UTER";
+#endif
 
 const ::settings::option_t __settings [] PROGMEM = {
 	declare_uint8_option (__opt_utrel, EEPROM_ADDR_RELEASE),
 	declare_uint8_option (__opt_utbr,  EEPROM_ADDR_BAUDRATE),
 	declare_uint8_option (__opt_utihc, EEPROM_ADDR_INTERNAL_HOME_CALC),
+#if !defined (TELEMETRY_MODULES_ADC_RSSI)
+    declare_bool_option  (__opt_uter,  EEPROM_ADDR_EMULATE_RSSI),
+#endif
 };
 
 void init ()
@@ -59,6 +66,9 @@ void reset ()
 	eeprom_update_byte (EEPROM_ADDR_RELEASE, UAVTALK_DEFAULT_RELEASE);
 	eeprom_update_byte (EEPROM_ADDR_BAUDRATE, UAVTALK_DEFAULT_BITRATE);
 	eeprom_update_byte (EEPROM_ADDR_INTERNAL_HOME_CALC, UAVTALK_DEFAULT_INTERNAL_HOME_CALC);
+#if !defined (TELEMETRY_MODULES_ADC_RSSI)
+    eeprom_update_byte (EEPROM_ADDR_EMULATE_RSSI, UAVTALK_DEFAULT_EMULATE_RSSI);
+#endif
 }
 
 }  // namespace settings
@@ -100,6 +110,9 @@ void init ()
 {
 	release_idx = eeprom_read_byte (EEPROM_ADDR_RELEASE);
 	internal_home_calc = eeprom_read_byte (EEPROM_ADDR_INTERNAL_HOME_CALC);
+#if !defined (TELEMETRY_MODULES_ADC_RSSI)
+    emulate_rssi = eeprom_read_byte (EEPROM_ADDR_EMULATE_RSSI);
+#endif
 	set_release ();
 	TELEMETRY_UART::init (uart_utils::get_bitrate (eeprom_read_byte (EEPROM_ADDR_BAUDRATE), UAVTALK_DEFAULT_BITRATE));
 }

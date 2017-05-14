@@ -94,6 +94,9 @@ extern bool baro_enabled;
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
 extern bool mag_enabled;
 #endif
+#if !defined (TELEMETRY_MODULES_ADC_RSSI)
+extern bool emulate_rssi;
+#endif
 extern uint8_t release_idx;
 extern release_t release;
 extern uint8_t header_len;

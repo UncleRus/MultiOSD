@@ -236,14 +236,8 @@ bool update ()
 			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_VELNED):
 				stable::groundspeed = gps::speed = buf.payload.nav_velned.speed / 100.0;
 				gps::climb = -(buf.payload.nav_velned.vel_down / 100.0);
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
-				stable::climb = gps::climb;
-#endif
 				gps::heading = buf.payload.nav_velned.heading * 1.0e-5f;
-#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-				stable::heading = gps::heading;
-				stable::heading_source = stable::GPS;
-#endif
+				gps::update (true, true);
 				updated = true;
 				break;
 			case _WORD (UBX_CLASS_NAV, UBX_ID_NAV_DOP):

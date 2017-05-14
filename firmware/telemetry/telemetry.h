@@ -98,6 +98,8 @@ namespace gps
 	extern float hdop;
 	extern float vdop;
 	extern float pdop;
+
+	void update (bool update_home, bool update_alt_climb);
 }
 
 namespace barometer

@@ -37,10 +37,11 @@
  * UAVTalk config
  */
 #define UAVTALK_DEFAULT_BITRATE UART_BR_57600
-#define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_LP150900
+#define UAVTALK_DEFAULT_RELEASE UAVTALK_RELEASE_DR201702131
 #define UAVTALK_CONNECTION_TIMEOUT 6000                   // ms
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500     // ms
 #define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 1              // Home distance/direction calculation: 0 - by flight controller, 1 - by MultiOSD (GPS-based)
+#define UAVTALK_DEFAULT_EMULATE_RSSI 0                    // Emulate RSSI value based on input connection state. It's always on with OpenPilot/LibrePilot
 
 /*
  * MAVLink config

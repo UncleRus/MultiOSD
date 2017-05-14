@@ -34,6 +34,9 @@ bool mag_enabled = false;
 #endif
 uint8_t release_idx = 0;
 release_t release;
+#if !defined (TELEMETRY_MODULES_ADC_RSSI)
+bool emulate_rssi = false;
+#endif
 uint8_t header_len;
 uint8_t rssi_low_threshold = 0;
 uint32_t telemetry_request_timeout = 0;

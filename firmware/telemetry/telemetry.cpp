@@ -164,6 +164,25 @@ namespace gps
 	float hdop = 99.99;
 	float vdop = 99.99;
 	float pdop = 99.99;
+
+    void update (bool update_home, bool update_alt_climb)
+    {
+#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+        if (stable::heading_source == stable::DISABLED
+            || stable::heading_source == stable::GPS)
+        {
+            stable::heading = gps::heading;
+            stable::heading_source = stable::GPS;
+        }
+#endif
+#if !defined (TELEMETRY_MODULES_I2C_BARO)
+        // update stable altitude if we can't get the baro altitude
+        if (update_alt_climb) stable::update_alt_climb (gps::altitude);
+#endif
+        // calc home distance/direction based on gps
+        if (update_home) home::update ();
+    }
+
 }  // namespace gps
 
 namespace barometer

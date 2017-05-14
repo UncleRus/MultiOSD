@@ -478,7 +478,7 @@ bool update ()
 				gps::altitude   = mavlink_msg_gps_raw_int_get_alt (msg) / 1000.0;
 				gps::speed      = filter_uint16 (mavlink_msg_gps_raw_int_get_vel (msg)) / 100.0;
 				// FIXME: FC home
-				home::update ();
+				gps::update (true, false);
 				break;
 			case MAVLINK_MSG_ID_VFR_HUD:
 				stable::groundspeed = mavlink_msg_vfr_hud_get_groundspeed (msg);

@@ -73,15 +73,37 @@ inline status::connection_state_t fts_respond (uint8_t state)
 
 void handle_flighttelemetrystats ()
 {
-	FlightTelemetryStats *obj = (FlightTelemetryStats *) &buffer.data;
-	status::connection = fts_respond (obj->Status);
-	connection_timeout = update_time + UAVTALK_CONNECTION_TIMEOUT;
+    FlightTelemetryStats *obj = (FlightTelemetryStats *) &buffer.data;
+    status::connection = fts_respond (obj->Status);
+    connection_timeout = update_time + UAVTALK_CONNECTION_TIMEOUT;
 }
 
 void handle_gpsposition ()
 {
-	UAVTALK_OP150202::handle_gpspositionsensor ();
-	if ((uint8_t) gps::state > 0) gps::state = (gps_state_t) ((uint8_t) gps::state - 1);
+    GPSPosition *obj = (GPSPosition *) &buffer.data;
+    gps::latitude   = obj->Latitude / 10000000.0;
+    gps::longitude  = obj->Longitude / 10000000.0;
+    gps::altitude   = obj->Altitude;
+    gps::heading    = round (obj->Heading);
+    stable::groundspeed = gps::speed = obj->Groundspeed;
+    gps::satellites = obj->Satellites;
+    gps::pdop       = obj->PDOP;
+    gps::hdop       = obj->HDOP;
+    gps::vdop       = obj->VDOP;
+    switch (obj->Status)
+    {
+        case GPSPOSITION_STATUS_FIX2D:
+            gps::state = GPS_STATE_2D;
+            break;
+        case GPSPOSITION_STATUS_FIX3D:
+        case GPSPOSITION_STATUS_DIFF3D:
+            gps::state = GPS_STATE_3D;
+            break;
+        default:
+            gps::state = GPS_STATE_NO_FIX;
+            break;
+    }
+    gps::update (internal_home_calc, !baro_enabled);
 }
 
 void handle_gpsvelocity ()
@@ -110,7 +132,7 @@ void handle_manualcontrolcommand ()
 	memcpy (input::channels, obj->Channel, sizeof (obj->Channel));
 	input::connected = obj->Connected;
 #if !defined (TELEMETRY_MODULES_ADC_RSSI)
-	input::set_rssi (obj->Rssi);
+	input::set_rssi (!emulate_rssi ? obj->Rssi : (input::connected ? 100 : 0));
 #endif
 }
 
