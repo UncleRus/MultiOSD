@@ -119,6 +119,8 @@ void handle_magnetometer ()
 	stable::heading_source = stable::EXTERNAL_MAG;
 	stable::calc_heading (obj->x, obj->y);
 	mag_enabled = true;
+	if (internal_home_calc)
+	    home::update();
 }
 #endif
 

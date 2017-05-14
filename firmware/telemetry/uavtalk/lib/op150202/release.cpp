@@ -157,6 +157,8 @@ void handle_magsensor ()
 
 	stable::heading_source = stable::INTERNAL_MAG;
 	stable::calc_heading (obj->x, obj->y);
+	if (internal_home_calc)
+	    home::update ();
 }
 
 void handle_magstate ()
@@ -169,6 +171,8 @@ void handle_magstate ()
 		: stable::EXTERNAL_MAG;
 	stable::calc_heading (obj->x, obj->y);
 	mag_enabled = true;
+    if (internal_home_calc)
+        home::update ();
 }
 #endif
 

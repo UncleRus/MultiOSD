@@ -489,6 +489,7 @@ bool update ()
 				stable::heading     = mavlink_msg_vfr_hud_get_heading (msg);
 				// FIXME: correct heading source, e.g. for Cleanflight MAVLink
 				stable::heading_source = stable::EXTERNAL_MAG;
+				home::update ();
 				break;
 			case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
 				input::roll  = filter_int16 (mavlink_msg_rc_channels_scaled_get_chan1_scaled (msg)) / 100;

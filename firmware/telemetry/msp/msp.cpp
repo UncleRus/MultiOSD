@@ -333,12 +333,12 @@ bool update ()
 				gps::heading   = round (buffer.payload.raw_gps.ground_course / 10.0);
 				stable::groundspeed = gps::speed;
 				if (gps_altitude) stable::update_alt_climb (gps::altitude);
-				if (internal_home_calc) home::update ();
 				if (!mag_enabled)
 				{
 					stable::heading = gps::heading;
 					stable::heading_source = stable::GPS;
 				}
+                if (internal_home_calc) home::update ();
 				break;
 			case multiwii::MSP_COMP_GPS:
 				if (!internal_home_calc)
@@ -374,6 +374,7 @@ bool update ()
 				{
 					stable::calc_heading (buffer.payload.raw_imu.mag_x, buffer.payload.raw_imu.mag_y);
 					stable::heading_source = stable::INTERNAL_MAG;
+	                if (internal_home_calc) home::update ();
 				}
 				break;
 			default:
