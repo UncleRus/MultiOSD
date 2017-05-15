@@ -102,7 +102,7 @@ bool update()
         }
     }
 
-    if (update_time - connection_timeout >= UAVTALK_CONNECTION_TIMEOUT
+    if ((uint32_t)(update_time - connection_timeout) >= UAVTALK_CONNECTION_TIMEOUT
             && status::connection == status::CONNECTED)
     {
         status::connection = status::DISCONNECTED;

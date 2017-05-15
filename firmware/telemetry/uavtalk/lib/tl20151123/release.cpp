@@ -75,7 +75,7 @@ void handle_flighttelemetrystats()
 {
     FlightTelemetryStats *obj = (FlightTelemetryStats *)&buffer.data;
     status::connection = fts_respond(obj->Status);
-    connection_timeout = update_time + UAVTALK_CONNECTION_TIMEOUT;
+    connection_timeout = update_time;
 }
 
 void handle_gpsposition()

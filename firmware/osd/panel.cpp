@@ -214,7 +214,10 @@ namespace connection_state
     void draw(uint8_t x, uint8_t y)
     {
         // TODO blink MAX7456_ATTR_INVERT -> MAX7456_ATTR_NONE when CONNECTION_STATE_ESTABLISHING
-        uint8_t attr = telemetry::status::connection != telemetry::status::CONNECTED ? MAX7456_ATTR_INVERT : 0;
+        uint8_t attr = telemetry::status::connection != telemetry::status::CONNECTED
+                ? (telemetry::status::connection == telemetry::status::ESTABLISHING
+                        ? MAX7456_ATTR_BLINK : MAX7456_ATTR_INVERT)
+                : 0;
 
         osd::draw::rect(x, y, 3, 3, true, attr);
         max7456::put(x + 1, y + 1, OSD_CHAR_CONNECTION_INV, attr);

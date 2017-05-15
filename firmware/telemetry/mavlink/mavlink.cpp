@@ -430,7 +430,7 @@ bool update()
 
                 flight_modes::update();
 
-                connection_timeout = telemetry::update_time + MAVLINK_CONNECTION_TIMEOUT;
+                connection_timeout = telemetry::update_time;
                 if (status::connection != status::CONNECTED)
                 {
                     status::connection = status::CONNECTED;
@@ -532,7 +532,8 @@ bool update()
         updated |= changed;
     }
 
-    if (telemetry::update_time >= connection_timeout && status::connection != status::DISCONNECTED)
+    if ((uint32_t)(telemetry::update_time - connection_timeout) >= MAVLINK_CONNECTION_TIMEOUT
+            && status::connection != status::DISCONNECTED)
     {
         status::connection = status::DISCONNECTED;
         updated = true;
