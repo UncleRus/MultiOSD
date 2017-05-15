@@ -1,4 +1,4 @@
-																																										/*
+                                                                                                                                                                        /*
  * This file is part of MultiOSD <https://github.com/UncleRus/MultiOSD>
  *
  * MultiOSD is free software: you can redistribute it and/or modify

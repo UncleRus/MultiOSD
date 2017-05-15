@@ -20,22 +20,22 @@
 
 
 #if !defined(DEBUG_CONSOLE_TX_DDR)
-	#define DEBUG_CONSOLE_TX_DDR DDRD
+    #define DEBUG_CONSOLE_TX_DDR DDRD
 #endif
 #if !defined(DEBUG_CONSOLE_TX_PORT)
-	#define DEBUG_CONSOLE_TX_PORT PORTD
+    #define DEBUG_CONSOLE_TX_PORT PORTD
 #endif
 #if !defined(DEBUG_CONSOLE_TX_BIT)
-	#define DEBUG_CONSOLE_TX_BIT 5
+    #define DEBUG_CONSOLE_TX_BIT 5
 #endif
 #if !defined(DEBUG_CONSOLE_BAUDRATE)
-	#define DEBUG_CONSOLE_BAUDRATE 9600
+    #define DEBUG_CONSOLE_BAUDRATE 9600
 #endif
 #if !defined(DEBUG_CONSOLE_PRESCALER)
-	#define DEBUG_CONSOLE_PRESCALER 64
+    #define DEBUG_CONSOLE_PRESCALER 64
 #endif
 #if !defined(DEBUG_CONSOLE_TX_BUF_SIZE)
-	#define DEBUG_CONSOLE_TX_BUF_SIZE 128
+    #define DEBUG_CONSOLE_TX_BUF_SIZE 128
 #endif
 
 namespace dbgconsole

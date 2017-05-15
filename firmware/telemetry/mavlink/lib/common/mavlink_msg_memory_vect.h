@@ -19,9 +19,9 @@ typedef struct __mavlink_memory_vect_t
 #define MAVLINK_MSG_MEMORY_VECT_FIELD_VALUE_LEN 32
 
 #define MAVLINK_MESSAGE_INFO_MEMORY_VECT { \
-	"MEMORY_VECT", \
-	4, \
-	{  { "address", NULL, MAVLINK_TYPE_UINT16_T, 0, 0, offsetof(mavlink_memory_vect_t, address) }, \
+    "MEMORY_VECT", \
+    4, \
+    {  { "address", NULL, MAVLINK_TYPE_UINT16_T, 0, 0, offsetof(mavlink_memory_vect_t, address) }, \
          { "ver", NULL, MAVLINK_TYPE_UINT8_T, 0, 2, offsetof(mavlink_memory_vect_t, ver) }, \
          { "type", NULL, MAVLINK_TYPE_UINT8_T, 0, 3, offsetof(mavlink_memory_vect_t, type) }, \
          { "value", NULL, MAVLINK_TYPE_INT8_T, 32, 4, offsetof(mavlink_memory_vect_t, value) }, \
@@ -42,25 +42,25 @@ typedef struct __mavlink_memory_vect_t
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_memory_vect_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-						       uint16_t address, uint8_t ver, uint8_t type, const int8_t *value)
+                               uint16_t address, uint8_t ver, uint8_t type, const int8_t *value)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_MEMORY_VECT_LEN];
-	_mav_put_uint16_t(buf, 0, address);
-	_mav_put_uint8_t(buf, 2, ver);
-	_mav_put_uint8_t(buf, 3, type);
-	_mav_put_int8_t_array(buf, 4, value, 32);
+    char buf[MAVLINK_MSG_ID_MEMORY_VECT_LEN];
+    _mav_put_uint16_t(buf, 0, address);
+    _mav_put_uint8_t(buf, 2, ver);
+    _mav_put_uint8_t(buf, 3, type);
+    _mav_put_int8_t_array(buf, 4, value, 32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_MEMORY_VECT_LEN);
 #else
-	mavlink_memory_vect_t packet;
-	packet.address = address;
-	packet.ver = ver;
-	packet.type = type;
-	mav_array_memcpy(packet.value, value, sizeof(int8_t)*32);
+    mavlink_memory_vect_t packet;
+    packet.address = address;
+    packet.ver = ver;
+    packet.type = type;
+    mav_array_memcpy(packet.value, value, sizeof(int8_t)*32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_MEMORY_VECT_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_MEMORY_VECT;
+    msg->msgid = MAVLINK_MSG_ID_MEMORY_VECT;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_MEMORY_VECT_LEN, MAVLINK_MSG_ID_MEMORY_VECT_CRC);
 #else
@@ -81,26 +81,26 @@ static inline uint16_t mavlink_msg_memory_vect_pack(uint8_t system_id, uint8_t c
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_memory_vect_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-							   mavlink_message_t* msg,
-						           uint16_t address,uint8_t ver,uint8_t type,const int8_t *value)
+                               mavlink_message_t* msg,
+                                   uint16_t address,uint8_t ver,uint8_t type,const int8_t *value)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_MEMORY_VECT_LEN];
-	_mav_put_uint16_t(buf, 0, address);
-	_mav_put_uint8_t(buf, 2, ver);
-	_mav_put_uint8_t(buf, 3, type);
-	_mav_put_int8_t_array(buf, 4, value, 32);
+    char buf[MAVLINK_MSG_ID_MEMORY_VECT_LEN];
+    _mav_put_uint16_t(buf, 0, address);
+    _mav_put_uint8_t(buf, 2, ver);
+    _mav_put_uint8_t(buf, 3, type);
+    _mav_put_int8_t_array(buf, 4, value, 32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_MEMORY_VECT_LEN);
 #else
-	mavlink_memory_vect_t packet;
-	packet.address = address;
-	packet.ver = ver;
-	packet.type = type;
-	mav_array_memcpy(packet.value, value, sizeof(int8_t)*32);
+    mavlink_memory_vect_t packet;
+    packet.address = address;
+    packet.ver = ver;
+    packet.type = type;
+    mav_array_memcpy(packet.value, value, sizeof(int8_t)*32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_MEMORY_VECT_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_MEMORY_VECT;
+    msg->msgid = MAVLINK_MSG_ID_MEMORY_VECT;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_MEMORY_VECT_LEN, MAVLINK_MSG_ID_MEMORY_VECT_CRC);
 #else
@@ -118,7 +118,7 @@ static inline uint16_t mavlink_msg_memory_vect_pack_chan(uint8_t system_id, uint
  */
 static inline uint16_t mavlink_msg_memory_vect_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_memory_vect_t* memory_vect)
 {
-	return mavlink_msg_memory_vect_pack(system_id, component_id, msg, memory_vect->address, memory_vect->ver, memory_vect->type, memory_vect->value);
+    return mavlink_msg_memory_vect_pack(system_id, component_id, msg, memory_vect->address, memory_vect->ver, memory_vect->type, memory_vect->value);
 }
 
 /**
@@ -132,7 +132,7 @@ static inline uint16_t mavlink_msg_memory_vect_encode(uint8_t system_id, uint8_t
  */
 static inline uint16_t mavlink_msg_memory_vect_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_memory_vect_t* memory_vect)
 {
-	return mavlink_msg_memory_vect_pack_chan(system_id, component_id, chan, msg, memory_vect->address, memory_vect->ver, memory_vect->type, memory_vect->value);
+    return mavlink_msg_memory_vect_pack_chan(system_id, component_id, chan, msg, memory_vect->address, memory_vect->ver, memory_vect->type, memory_vect->value);
 }
 
 /**
@@ -149,22 +149,22 @@ static inline uint16_t mavlink_msg_memory_vect_encode_chan(uint8_t system_id, ui
 static inline void mavlink_msg_memory_vect_send(mavlink_channel_t chan, uint16_t address, uint8_t ver, uint8_t type, const int8_t *value)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_MEMORY_VECT_LEN];
-	_mav_put_uint16_t(buf, 0, address);
-	_mav_put_uint8_t(buf, 2, ver);
-	_mav_put_uint8_t(buf, 3, type);
-	_mav_put_int8_t_array(buf, 4, value, 32);
+    char buf[MAVLINK_MSG_ID_MEMORY_VECT_LEN];
+    _mav_put_uint16_t(buf, 0, address);
+    _mav_put_uint8_t(buf, 2, ver);
+    _mav_put_uint8_t(buf, 3, type);
+    _mav_put_int8_t_array(buf, 4, value, 32);
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_MEMORY_VECT, buf, MAVLINK_MSG_ID_MEMORY_VECT_LEN, MAVLINK_MSG_ID_MEMORY_VECT_CRC);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_MEMORY_VECT, buf, MAVLINK_MSG_ID_MEMORY_VECT_LEN);
 #endif
 #else
-	mavlink_memory_vect_t packet;
-	packet.address = address;
-	packet.ver = ver;
-	packet.type = type;
-	mav_array_memcpy(packet.value, value, sizeof(int8_t)*32);
+    mavlink_memory_vect_t packet;
+    packet.address = address;
+    packet.ver = ver;
+    packet.type = type;
+    mav_array_memcpy(packet.value, value, sizeof(int8_t)*32);
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_MEMORY_VECT, (const char *)&packet, MAVLINK_MSG_ID_MEMORY_VECT_LEN, MAVLINK_MSG_ID_MEMORY_VECT_CRC);
 #else
@@ -184,22 +184,22 @@ static inline void mavlink_msg_memory_vect_send(mavlink_channel_t chan, uint16_t
 static inline void mavlink_msg_memory_vect_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint16_t address, uint8_t ver, uint8_t type, const int8_t *value)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char *buf = (char *)msgbuf;
-	_mav_put_uint16_t(buf, 0, address);
-	_mav_put_uint8_t(buf, 2, ver);
-	_mav_put_uint8_t(buf, 3, type);
-	_mav_put_int8_t_array(buf, 4, value, 32);
+    char *buf = (char *)msgbuf;
+    _mav_put_uint16_t(buf, 0, address);
+    _mav_put_uint8_t(buf, 2, ver);
+    _mav_put_uint8_t(buf, 3, type);
+    _mav_put_int8_t_array(buf, 4, value, 32);
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_MEMORY_VECT, buf, MAVLINK_MSG_ID_MEMORY_VECT_LEN, MAVLINK_MSG_ID_MEMORY_VECT_CRC);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_MEMORY_VECT, buf, MAVLINK_MSG_ID_MEMORY_VECT_LEN);
 #endif
 #else
-	mavlink_memory_vect_t *packet = (mavlink_memory_vect_t *)msgbuf;
-	packet->address = address;
-	packet->ver = ver;
-	packet->type = type;
-	mav_array_memcpy(packet->value, value, sizeof(int8_t)*32);
+    mavlink_memory_vect_t *packet = (mavlink_memory_vect_t *)msgbuf;
+    packet->address = address;
+    packet->ver = ver;
+    packet->type = type;
+    mav_array_memcpy(packet->value, value, sizeof(int8_t)*32);
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_MEMORY_VECT, (const char *)packet, MAVLINK_MSG_ID_MEMORY_VECT_LEN, MAVLINK_MSG_ID_MEMORY_VECT_CRC);
 #else
@@ -221,7 +221,7 @@ static inline void mavlink_msg_memory_vect_send_buf(mavlink_message_t *msgbuf, m
  */
 static inline uint16_t mavlink_msg_memory_vect_get_address(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint16_t(msg,  0);
+    return _MAV_RETURN_uint16_t(msg,  0);
 }
 
 /**
@@ -231,7 +231,7 @@ static inline uint16_t mavlink_msg_memory_vect_get_address(const mavlink_message
  */
 static inline uint8_t mavlink_msg_memory_vect_get_ver(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  2);
+    return _MAV_RETURN_uint8_t(msg,  2);
 }
 
 /**
@@ -241,7 +241,7 @@ static inline uint8_t mavlink_msg_memory_vect_get_ver(const mavlink_message_t* m
  */
 static inline uint8_t mavlink_msg_memory_vect_get_type(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  3);
+    return _MAV_RETURN_uint8_t(msg,  3);
 }
 
 /**
@@ -251,7 +251,7 @@ static inline uint8_t mavlink_msg_memory_vect_get_type(const mavlink_message_t* 
  */
 static inline uint16_t mavlink_msg_memory_vect_get_value(const mavlink_message_t* msg, int8_t *value)
 {
-	return _MAV_RETURN_int8_t_array(msg, value, 32,  4);
+    return _MAV_RETURN_int8_t_array(msg, value, 32,  4);
 }
 
 /**
@@ -263,11 +263,11 @@ static inline uint16_t mavlink_msg_memory_vect_get_value(const mavlink_message_t
 static inline void mavlink_msg_memory_vect_decode(const mavlink_message_t* msg, mavlink_memory_vect_t* memory_vect)
 {
 #if MAVLINK_NEED_BYTE_SWAP
-	memory_vect->address = mavlink_msg_memory_vect_get_address(msg);
-	memory_vect->ver = mavlink_msg_memory_vect_get_ver(msg);
-	memory_vect->type = mavlink_msg_memory_vect_get_type(msg);
-	mavlink_msg_memory_vect_get_value(msg, memory_vect->value);
+    memory_vect->address = mavlink_msg_memory_vect_get_address(msg);
+    memory_vect->ver = mavlink_msg_memory_vect_get_ver(msg);
+    memory_vect->type = mavlink_msg_memory_vect_get_type(msg);
+    mavlink_msg_memory_vect_get_value(msg, memory_vect->value);
 #else
-	memcpy(memory_vect, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_MEMORY_VECT_LEN);
+    memcpy(memory_vect, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_MEMORY_VECT_LEN);
 #endif
 }

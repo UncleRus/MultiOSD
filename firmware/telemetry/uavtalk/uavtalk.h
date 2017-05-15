@@ -18,7 +18,7 @@
 #define TELEMETRY_UAVTALK_UAVTALK_H_
 
 #ifdef MAIN_MODULE
-	#error Conflicting modules
+    #error Conflicting modules
 #endif
 #define MAIN_MODULE
 
@@ -30,8 +30,8 @@ const char __name[] PROGMEM = "UAVTalk";
 
 namespace settings
 {
-	void init();
-	void reset();
+    void init();
+    void reset();
 }
 
 // load settings

@@ -28,13 +28,13 @@ namespace tl20151123
 
 struct FlightBatteryState
 {
-	float Voltage;
-	float Current;
-	float BoardSupplyVoltage;
-	float PeakCurrent;
-	float AvgCurrent;
-	float ConsumedEnergy;
-	float EstimatedFlightTime;
+    float Voltage;
+    float Current;
+    float BoardSupplyVoltage;
+    float PeakCurrent;
+    float AvgCurrent;
+    float ConsumedEnergy;
+    float EstimatedFlightTime;
 };
 
 }  // namespace tl20151123

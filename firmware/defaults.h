@@ -18,25 +18,25 @@
 #define DEFAULTS_H_
 
 #ifdef ECLIPSE_BUILD
-	// This settings used in Eclipse
-	//#define DEBUG
-	#define TELEMETRY_MODULES_UAVTALK
-	//#define TELEMETRY_MODULES_MSP
-//	#define TELEMETRY_MODULES_ADC_BATTERY
-//	#define TELEMETRY_MODULES_ADC_RSSI
-	//#define TELEMETRY_MODULES_MAVLINK
-	//#define TELEMETRY_MODULES_UBX
+    // This settings used in Eclipse
+    //#define DEBUG
+    #define TELEMETRY_MODULES_UAVTALK
+    //#define TELEMETRY_MODULES_MSP
+//  #define TELEMETRY_MODULES_ADC_BATTERY
+//  #define TELEMETRY_MODULES_ADC_RSSI
+    //#define TELEMETRY_MODULES_MAVLINK
+    //#define TELEMETRY_MODULES_UBX
 #else
-	#if !defined (TELEMETRY_MODULES_UAVTALK) \
-			&& !defined (TELEMETRY_MODULES_MAVLINK) \
-			&& !defined (TELEMETRY_MODULES_UBX) \
-			&& !defined (TELEMETRY_MODULES_MSP)
-		#define TELEMETRY_MODULES_MAVLINK                // ArduPilot/ArduCopter telemetry module by default
-	#endif
+    #if !defined (TELEMETRY_MODULES_UAVTALK) \
+            && !defined (TELEMETRY_MODULES_MAVLINK) \
+            && !defined (TELEMETRY_MODULES_UBX) \
+            && !defined (TELEMETRY_MODULES_MSP)
+        #define TELEMETRY_MODULES_MAVLINK                // ArduPilot/ArduCopter telemetry module by default
+    #endif
 #endif
 
 #if defined (TELEMETRY_MODULES_ADC_BATTERY) || defined (TELEMETRY_MODULES_ADC_BATTERY)
-	#define ADC_MODULE
+    #define ADC_MODULE
 #endif
 
 #define _VER(h,l) (((h) << 8) | l)

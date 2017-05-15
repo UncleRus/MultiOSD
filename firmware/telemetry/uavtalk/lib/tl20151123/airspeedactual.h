@@ -28,10 +28,10 @@ namespace tl20151123
 
 struct AirspeedActual
 {
-	float TrueAirspeed;
-	float CalibratedAirspeed;
-	float alpha;
-	float beta;
+    float TrueAirspeed;
+    float CalibratedAirspeed;
+    float alpha;
+    float beta;
 };
 
 }  // namespace tl20151123

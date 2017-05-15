@@ -28,13 +28,13 @@ namespace tl20151123
 
 struct AttitudeActual
 {
-	float q1;
-	float q2;
-	float q3;
-	float q4;
-	float Roll;
-	float Pitch;
-	float Yaw;
+    float q1;
+    float q2;
+    float q3;
+    float q4;
+    float Roll;
+    float Pitch;
+    float Yaw;
 };
 
 }  // namespace tl20151123

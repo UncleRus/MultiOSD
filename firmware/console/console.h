@@ -38,7 +38,7 @@ extern bool running;
 void run (callback_t h);
 inline void stop ()
 {
-	running = false;
+    running = false;
 }
 
 }

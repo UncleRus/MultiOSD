@@ -5,17 +5,17 @@ Author: Peter Fleury <pfleury@gmx.ch> http://jump.to/fleury,
 File: $Id: uart.c,v 1.6.2.1 2007/07/01 11:14:38 peter Exp $
 
 DESCRIPTION:
-	An interrupt is generated when the UART has finished transmitting or
-	receiving a byte. The interrupt handling routines use circular buffers
-	for buffering received and transmitted data.
+    An interrupt is generated when the UART has finished transmitting or
+    receiving a byte. The interrupt handling routines use circular buffers
+    for buffering received and transmitted data.
 
-	The UART_RX_BUFFER_SIZE and UART_TX_BUFFER_SIZE macros define
-	the buffer size in bytes. Note that these values must be a
-	power of 2.
+    The UART_RX_BUFFER_SIZE and UART_TX_BUFFER_SIZE macros define
+    the buffer size in bytes. Note that these values must be a
+    power of 2.
 
 NOTES:
-	Based on original library by Peter Fluery, Tim Sharpe, Nicholas Zambetti.
-	Based on Atmel Application Note AVR306
+    Based on original library by Peter Fluery, Tim Sharpe, Nicholas Zambetti.
+    Based on Atmel Application Note AVR306
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,15 +37,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../../config.h"
 
 #ifdef UART_STDIO
-#	include <stdio.h>
+#   include <stdio.h>
 #endif
 
 #ifndef UART_RX_BUFFER_SIZE
-#	define UART_RX_BUFFER_SIZE 64
+#   define UART_RX_BUFFER_SIZE 64
 #endif
 
 #ifndef UART_TX_BUFFER_SIZE
-#	define UART_TX_BUFFER_SIZE 64
+#   define UART_TX_BUFFER_SIZE 64
 #endif
 
 #define UART_BAUD_SELECT(baud_rate)  (((F_CPU) + 8UL * (baud_rate)) / (16UL * (baud_rate)) - 1UL)
@@ -58,7 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define UART_BR_115200 4
 
 #if ((UART_RX_BUFFER_SIZE + UART_TX_BUFFER_SIZE) >= (RAMEND - 0x60))
-#	error "size of UART_RX_BUFFER_SIZE + UART_TX_BUFFER_SIZE larger than size of SRAM"
+#   error "size of UART_RX_BUFFER_SIZE + UART_TX_BUFFER_SIZE larger than size of SRAM"
 #endif
 
 #define UART_FRAME_ERROR      0x1000              /* Framing Error by UART       */

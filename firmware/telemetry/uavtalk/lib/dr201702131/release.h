@@ -39,18 +39,18 @@ const uint32_t flightstatus_objid = UAVTALK_DR201702131_FLIGHTSTATUS_OBJID;
 namespace fm
 {
     const char acrd[] PROGMEM = "ACRD";
-	const char fail[] PROGMEM = "FAIL";
+    const char fail[] PROGMEM = "FAIL";
 
-	const char * const names[] PROGMEM = {
-		UAVTALK_OP150202::fm::manu,   UAVTALK_TL20151123::fm::acro, UAVTALK_TL20151123::fm::lvl,
-		UAVTALK_TL20151123::fm::hrzn, UAVTALK_TL20151123::fm::alck, UAVTALK_TL20151123::fm::vbar,
-		UAVTALK_OP150202::fm::stb1,   UAVTALK_OP150202::fm::stb2,   UAVTALK_OP150202::fm::stb3,
-		UAVTALK_TL20151123::fm::tune, UAVTALK_TL20151123::fm::ahld, UAVTALK_OP150202::fm::phld,
-		UAVTALK_TL20151123::fm::rth,  UAVTALK_OP150202::fm::plan,   UAVTALK_TL20151123::fm::tab,
-		UAVTALK_TL20151123::fm::acrp, acrd, fail
-	};
+    const char * const names[] PROGMEM = {
+        UAVTALK_OP150202::fm::manu,   UAVTALK_TL20151123::fm::acro, UAVTALK_TL20151123::fm::lvl,
+        UAVTALK_TL20151123::fm::hrzn, UAVTALK_TL20151123::fm::alck, UAVTALK_TL20151123::fm::vbar,
+        UAVTALK_OP150202::fm::stb1,   UAVTALK_OP150202::fm::stb2,   UAVTALK_OP150202::fm::stb3,
+        UAVTALK_TL20151123::fm::tune, UAVTALK_TL20151123::fm::ahld, UAVTALK_OP150202::fm::phld,
+        UAVTALK_TL20151123::fm::rth,  UAVTALK_OP150202::fm::plan,   UAVTALK_TL20151123::fm::tab,
+        UAVTALK_TL20151123::fm::acrp, acrd, fail
+    };
 
-	const uint8_t size = sizeof(names) / sizeof(char *);
+    const uint8_t size = sizeof(names) / sizeof(char *);
 }
 
 #if !defined(TELEMETRY_MODULES_ADC_BATTERY)
@@ -58,25 +58,25 @@ void handle_flightbatterystate();
 #endif
 
 const obj_handler_t handlers[] PROGMEM = {
-	{UAVTALK_DR201702131_FLIGHTSTATUS_OBJID,        UAVTALK_TL20151123::handle_flightstatus},
-	{UAVTALK_DR201702131_ATTITUDEACTUAL_OBJID,      UAVTALK_OP150202::handle_attitudestate},
+    {UAVTALK_DR201702131_FLIGHTSTATUS_OBJID,        UAVTALK_TL20151123::handle_flightstatus},
+    {UAVTALK_DR201702131_ATTITUDEACTUAL_OBJID,      UAVTALK_OP150202::handle_attitudestate},
 #if !defined(TELEMETRY_MODULES_I2C_BARO)
-	{UAVTALK_TL20151123_BAROALTITUDE_OBJID,         UAVTALK_OP150202::handle_barosensor},
+    {UAVTALK_TL20151123_BAROALTITUDE_OBJID,         UAVTALK_OP150202::handle_barosensor},
 #endif
 #if !defined(TELEMETRY_MODULES_ADC_BATTERY)
-	{UAVTALK_DR201702131_FLIGHTBATTERYSTATE_OBJID,  UAVTALK_DR201702131::handle_flightbatterystate},
+    {UAVTALK_DR201702131_FLIGHTBATTERYSTATE_OBJID,  UAVTALK_DR201702131::handle_flightbatterystate},
 #endif
-	{UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_OBJID, UAVTALK_TL20151123::handle_flighttelemetrystats},
-	{UAVTALK_TL20151123_GPSPOSITION_OBJID,          UAVTALK_TL20151123::handle_gpsposition},
-	{UAVTALK_TL20151123_GPSVELOCITY_OBJID,          UAVTALK_OP150202::handle_gpsvelocitysensor},
+    {UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_OBJID, UAVTALK_TL20151123::handle_flighttelemetrystats},
+    {UAVTALK_TL20151123_GPSPOSITION_OBJID,          UAVTALK_TL20151123::handle_gpsposition},
+    {UAVTALK_TL20151123_GPSVELOCITY_OBJID,          UAVTALK_OP150202::handle_gpsvelocitysensor},
 #if !defined(TELEMETRY_MODULES_I2C_COMPASS)
-	{UAVTALK_TL20151123_MAGNETOMETER_OBJID,         UAVTALK_TL20151123::handle_magnetometer},
+    {UAVTALK_TL20151123_MAGNETOMETER_OBJID,         UAVTALK_TL20151123::handle_magnetometer},
 #endif
-	{UAVTALK_TL20151123_MANUALCONTROLCOMMAND_OBJID, UAVTALK_TL20151123::handle_manualcontrolcommand},
-	{UAVTALK_TL20151123_NEDPOSITION_OBJID,          UAVTALK_OP150202::handle_positionstate},
-	{UAVTALK_DR201702131_SYSTEMSTATS_OBJID,         UAVTALK_OP150202::handle_systemstats},
-	{UAVTALK_TL20151123_AIRSPEEDACTUAL_OBJID,       UAVTALK_TL20151123::handle_airspeedactual},
-	{_UT_TIMEOUT_OBJID,                             UAVTALK_TL20151123::update_connection}
+    {UAVTALK_TL20151123_MANUALCONTROLCOMMAND_OBJID, UAVTALK_TL20151123::handle_manualcontrolcommand},
+    {UAVTALK_TL20151123_NEDPOSITION_OBJID,          UAVTALK_OP150202::handle_positionstate},
+    {UAVTALK_DR201702131_SYSTEMSTATS_OBJID,         UAVTALK_OP150202::handle_systemstats},
+    {UAVTALK_TL20151123_AIRSPEEDACTUAL_OBJID,       UAVTALK_TL20151123::handle_airspeedactual},
+    {_UT_TIMEOUT_OBJID,                             UAVTALK_TL20151123::update_connection}
 };
 
 }  // namespace dr201702131

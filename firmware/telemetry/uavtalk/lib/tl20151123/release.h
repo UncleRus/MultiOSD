@@ -30,7 +30,7 @@
 #include "gpsposition.h"
 #include "gpsvelocity.h"
 #if !defined(TELEMETRY_MODULES_I2C_COMPASS)
-	#include "magnetometer.h"
+    #include "magnetometer.h"
 #endif
 #include "manualcontrolcommand.h"
 #include "nedposition.h"
@@ -50,26 +50,26 @@ const uint32_t flightstatus_objid = UAVTALK_TL20151123_FLIGHTSTATUS_OBJID;
 
 namespace fm
 {
-	const char acro[] PROGMEM = "ACRO";
-	const char lvl [] PROGMEM = "LVL ";
-	const char mwrt[] PROGMEM = "MWRT";
-	const char hrzn[] PROGMEM = "HRZN";
-	const char alck[] PROGMEM = "ALCK";
-	const char vbar[] PROGMEM = "VBAR";
-	const char tune[] PROGMEM = "TUNE";
-	const char ahld[] PROGMEM = "AHLD";
-	const char rth [] PROGMEM = "RTH ";
-	const char tab [] PROGMEM = "TAB ";
-	const char acrp[] PROGMEM = "ACR+";
+    const char acro[] PROGMEM = "ACRO";
+    const char lvl [] PROGMEM = "LVL ";
+    const char mwrt[] PROGMEM = "MWRT";
+    const char hrzn[] PROGMEM = "HRZN";
+    const char alck[] PROGMEM = "ALCK";
+    const char vbar[] PROGMEM = "VBAR";
+    const char tune[] PROGMEM = "TUNE";
+    const char ahld[] PROGMEM = "AHLD";
+    const char rth [] PROGMEM = "RTH ";
+    const char tab [] PROGMEM = "TAB ";
+    const char acrp[] PROGMEM = "ACR+";
 
-	const char * const names[] PROGMEM = {
-		UAVTALK_OP150202::fm::manu, acro, lvl, mwrt, hrzn,
-		alck, vbar, UAVTALK_OP150202::fm::stb1, UAVTALK_OP150202::fm::stb2, UAVTALK_OP150202::fm::stb3,
-		tune, ahld, UAVTALK_OP150202::fm::phld, rth, UAVTALK_OP150202::fm::plan,
-		tab, acrp
-	};
+    const char * const names[] PROGMEM = {
+        UAVTALK_OP150202::fm::manu, acro, lvl, mwrt, hrzn,
+        alck, vbar, UAVTALK_OP150202::fm::stb1, UAVTALK_OP150202::fm::stb2, UAVTALK_OP150202::fm::stb3,
+        tune, ahld, UAVTALK_OP150202::fm::phld, rth, UAVTALK_OP150202::fm::plan,
+        tab, acrp
+    };
 
-	const uint8_t size = sizeof(names) / sizeof(char *);
+    const uint8_t size = sizeof(names) / sizeof(char *);
 }
 
 void update_connection();
@@ -87,25 +87,25 @@ void handle_manualcontrolcommand();
 void handle_airspeedactual();
 
 const obj_handler_t handlers[] PROGMEM = {
-	{UAVTALK_TL20151123_FLIGHTSTATUS_OBJID,         handle_flightstatus},
-	{UAVTALK_TL20151123_ATTITUDEACTUAL_OBJID,       UAVTALK_OP150202::handle_attitudestate},
+    {UAVTALK_TL20151123_FLIGHTSTATUS_OBJID,         handle_flightstatus},
+    {UAVTALK_TL20151123_ATTITUDEACTUAL_OBJID,       UAVTALK_OP150202::handle_attitudestate},
 #if !defined(TELEMETRY_MODULES_I2C_BARO)
-	{UAVTALK_TL20151123_BAROALTITUDE_OBJID,         UAVTALK_OP150202::handle_barosensor},
+    {UAVTALK_TL20151123_BAROALTITUDE_OBJID,         UAVTALK_OP150202::handle_barosensor},
 #endif
 #if !defined(TELEMETRY_MODULES_ADC_BATTERY)
-	{UAVTALK_TL20151123_FLIGHTBATTERYSTATE_OBJID,   handle_flightbatterystate},
+    {UAVTALK_TL20151123_FLIGHTBATTERYSTATE_OBJID,   handle_flightbatterystate},
 #endif
-	{UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
-	{UAVTALK_TL20151123_GPSPOSITION_OBJID,          handle_gpsposition},
-	{UAVTALK_TL20151123_GPSVELOCITY_OBJID,          UAVTALK_OP150202::handle_gpsvelocitysensor},
+    {UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
+    {UAVTALK_TL20151123_GPSPOSITION_OBJID,          handle_gpsposition},
+    {UAVTALK_TL20151123_GPSVELOCITY_OBJID,          UAVTALK_OP150202::handle_gpsvelocitysensor},
 #if !defined(TELEMETRY_MODULES_I2C_COMPASS)
-	{UAVTALK_TL20151123_MAGNETOMETER_OBJID,         handle_magnetometer},
+    {UAVTALK_TL20151123_MAGNETOMETER_OBJID,         handle_magnetometer},
 #endif
-	{UAVTALK_TL20151123_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
-	{UAVTALK_TL20151123_NEDPOSITION_OBJID,          UAVTALK_OP150202::handle_positionstate},
-	{UAVTALK_TL20151123_SYSTEMSTATS_OBJID,          UAVTALK_OP150202::handle_systemstats},
-	{UAVTALK_TL20151123_AIRSPEEDACTUAL_OBJID,       handle_airspeedactual},
-	{_UT_TIMEOUT_OBJID,                             update_connection}
+    {UAVTALK_TL20151123_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
+    {UAVTALK_TL20151123_NEDPOSITION_OBJID,          UAVTALK_OP150202::handle_positionstate},
+    {UAVTALK_TL20151123_SYSTEMSTATS_OBJID,          UAVTALK_OP150202::handle_systemstats},
+    {UAVTALK_TL20151123_AIRSPEEDACTUAL_OBJID,       handle_airspeedactual},
+    {_UT_TIMEOUT_OBJID,                             update_connection}
 };
 
 }  // namespace tl20151123

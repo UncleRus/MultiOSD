@@ -28,21 +28,21 @@ namespace lp1609rc1
 
 struct SystemStats
 {
-	uint32_t FlightTime;
-	uint32_t HeapRemaining;
-	uint32_t CPUIdleTicks;
-	uint32_t CPUZeroLoadTicks;
-	uint32_t EventSystemWarningID;
-	uint32_t ObjectManagerCallbackID;
-	uint32_t ObjectManagerQueueID;
-	uint16_t IRQStackRemaining;
-	uint16_t SystemModStackRemaining;
-	uint16_t SysSlotsFree;
-	uint16_t SysSlotsActive;
-	uint16_t UsrSlotsFree;
-	uint16_t UsrSlotsActive;
-	uint8_t CPULoad;
-	int8_t CPUTemp;
+    uint32_t FlightTime;
+    uint32_t HeapRemaining;
+    uint32_t CPUIdleTicks;
+    uint32_t CPUZeroLoadTicks;
+    uint32_t EventSystemWarningID;
+    uint32_t ObjectManagerCallbackID;
+    uint32_t ObjectManagerQueueID;
+    uint16_t IRQStackRemaining;
+    uint16_t SystemModStackRemaining;
+    uint16_t SysSlotsFree;
+    uint16_t SysSlotsActive;
+    uint16_t UsrSlotsFree;
+    uint16_t UsrSlotsActive;
+    uint8_t CPULoad;
+    int8_t CPUTemp;
 
 };
 

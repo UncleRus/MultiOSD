@@ -17,9 +17,9 @@ typedef struct __mavlink_gimbal_set_home_offsets_t
 
 
 #define MAVLINK_MESSAGE_INFO_GIMBAL_SET_HOME_OFFSETS { \
-	"GIMBAL_SET_HOME_OFFSETS", \
-	2, \
-	{  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_gimbal_set_home_offsets_t, target_system) }, \
+    "GIMBAL_SET_HOME_OFFSETS", \
+    2, \
+    {  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_gimbal_set_home_offsets_t, target_system) }, \
          { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 1, offsetof(mavlink_gimbal_set_home_offsets_t, target_component) }, \
          } \
 }
@@ -36,23 +36,23 @@ typedef struct __mavlink_gimbal_set_home_offsets_t
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gimbal_set_home_offsets_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-						       uint8_t target_system, uint8_t target_component)
+                               uint8_t target_system, uint8_t target_component)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN];
-	_mav_put_uint8_t(buf, 0, target_system);
-	_mav_put_uint8_t(buf, 1, target_component);
+    char buf[MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN];
+    _mav_put_uint8_t(buf, 0, target_system);
+    _mav_put_uint8_t(buf, 1, target_component);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN);
 #else
-	mavlink_gimbal_set_home_offsets_t packet;
-	packet.target_system = target_system;
-	packet.target_component = target_component;
+    mavlink_gimbal_set_home_offsets_t packet;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS;
+    msg->msgid = MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_CRC);
 #else
@@ -71,24 +71,24 @@ static inline uint16_t mavlink_msg_gimbal_set_home_offsets_pack(uint8_t system_i
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gimbal_set_home_offsets_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-							   mavlink_message_t* msg,
-						           uint8_t target_system,uint8_t target_component)
+                               mavlink_message_t* msg,
+                                   uint8_t target_system,uint8_t target_component)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN];
-	_mav_put_uint8_t(buf, 0, target_system);
-	_mav_put_uint8_t(buf, 1, target_component);
+    char buf[MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN];
+    _mav_put_uint8_t(buf, 0, target_system);
+    _mav_put_uint8_t(buf, 1, target_component);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN);
 #else
-	mavlink_gimbal_set_home_offsets_t packet;
-	packet.target_system = target_system;
-	packet.target_component = target_component;
+    mavlink_gimbal_set_home_offsets_t packet;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS;
+    msg->msgid = MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_CRC);
 #else
@@ -106,7 +106,7 @@ static inline uint16_t mavlink_msg_gimbal_set_home_offsets_pack_chan(uint8_t sys
  */
 static inline uint16_t mavlink_msg_gimbal_set_home_offsets_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_gimbal_set_home_offsets_t* gimbal_set_home_offsets)
 {
-	return mavlink_msg_gimbal_set_home_offsets_pack(system_id, component_id, msg, gimbal_set_home_offsets->target_system, gimbal_set_home_offsets->target_component);
+    return mavlink_msg_gimbal_set_home_offsets_pack(system_id, component_id, msg, gimbal_set_home_offsets->target_system, gimbal_set_home_offsets->target_component);
 }
 
 /**
@@ -120,7 +120,7 @@ static inline uint16_t mavlink_msg_gimbal_set_home_offsets_encode(uint8_t system
  */
 static inline uint16_t mavlink_msg_gimbal_set_home_offsets_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_gimbal_set_home_offsets_t* gimbal_set_home_offsets)
 {
-	return mavlink_msg_gimbal_set_home_offsets_pack_chan(system_id, component_id, chan, msg, gimbal_set_home_offsets->target_system, gimbal_set_home_offsets->target_component);
+    return mavlink_msg_gimbal_set_home_offsets_pack_chan(system_id, component_id, chan, msg, gimbal_set_home_offsets->target_system, gimbal_set_home_offsets->target_component);
 }
 
 /**
@@ -135,9 +135,9 @@ static inline uint16_t mavlink_msg_gimbal_set_home_offsets_encode_chan(uint8_t s
 static inline void mavlink_msg_gimbal_set_home_offsets_send(mavlink_channel_t chan, uint8_t target_system, uint8_t target_component)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN];
-	_mav_put_uint8_t(buf, 0, target_system);
-	_mav_put_uint8_t(buf, 1, target_component);
+    char buf[MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN];
+    _mav_put_uint8_t(buf, 0, target_system);
+    _mav_put_uint8_t(buf, 1, target_component);
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS, buf, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_CRC);
@@ -145,9 +145,9 @@ static inline void mavlink_msg_gimbal_set_home_offsets_send(mavlink_channel_t ch
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS, buf, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN);
 #endif
 #else
-	mavlink_gimbal_set_home_offsets_t packet;
-	packet.target_system = target_system;
-	packet.target_component = target_component;
+    mavlink_gimbal_set_home_offsets_t packet;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS, (const char *)&packet, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_CRC);
@@ -168,9 +168,9 @@ static inline void mavlink_msg_gimbal_set_home_offsets_send(mavlink_channel_t ch
 static inline void mavlink_msg_gimbal_set_home_offsets_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t target_system, uint8_t target_component)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char *buf = (char *)msgbuf;
-	_mav_put_uint8_t(buf, 0, target_system);
-	_mav_put_uint8_t(buf, 1, target_component);
+    char *buf = (char *)msgbuf;
+    _mav_put_uint8_t(buf, 0, target_system);
+    _mav_put_uint8_t(buf, 1, target_component);
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS, buf, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_CRC);
@@ -178,9 +178,9 @@ static inline void mavlink_msg_gimbal_set_home_offsets_send_buf(mavlink_message_
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS, buf, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN);
 #endif
 #else
-	mavlink_gimbal_set_home_offsets_t *packet = (mavlink_gimbal_set_home_offsets_t *)msgbuf;
-	packet->target_system = target_system;
-	packet->target_component = target_component;
+    mavlink_gimbal_set_home_offsets_t *packet = (mavlink_gimbal_set_home_offsets_t *)msgbuf;
+    packet->target_system = target_system;
+    packet->target_component = target_component;
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS, (const char *)packet, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_CRC);
@@ -203,7 +203,7 @@ static inline void mavlink_msg_gimbal_set_home_offsets_send_buf(mavlink_message_
  */
 static inline uint8_t mavlink_msg_gimbal_set_home_offsets_get_target_system(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  0);
+    return _MAV_RETURN_uint8_t(msg,  0);
 }
 
 /**
@@ -213,7 +213,7 @@ static inline uint8_t mavlink_msg_gimbal_set_home_offsets_get_target_system(cons
  */
 static inline uint8_t mavlink_msg_gimbal_set_home_offsets_get_target_component(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  1);
+    return _MAV_RETURN_uint8_t(msg,  1);
 }
 
 /**
@@ -225,9 +225,9 @@ static inline uint8_t mavlink_msg_gimbal_set_home_offsets_get_target_component(c
 static inline void mavlink_msg_gimbal_set_home_offsets_decode(const mavlink_message_t* msg, mavlink_gimbal_set_home_offsets_t* gimbal_set_home_offsets)
 {
 #if MAVLINK_NEED_BYTE_SWAP
-	gimbal_set_home_offsets->target_system = mavlink_msg_gimbal_set_home_offsets_get_target_system(msg);
-	gimbal_set_home_offsets->target_component = mavlink_msg_gimbal_set_home_offsets_get_target_component(msg);
+    gimbal_set_home_offsets->target_system = mavlink_msg_gimbal_set_home_offsets_get_target_system(msg);
+    gimbal_set_home_offsets->target_component = mavlink_msg_gimbal_set_home_offsets_get_target_component(msg);
 #else
-	memcpy(gimbal_set_home_offsets, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN);
+    memcpy(gimbal_set_home_offsets, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_GIMBAL_SET_HOME_OFFSETS_LEN);
 #endif
 }

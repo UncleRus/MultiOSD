@@ -86,8 +86,8 @@ struct FlightStatusControlChain
 
 struct FlightStatus
 {
-	FlightStatusArmed Armed;
-	FlightStatusFlightMode FlightMode;
+    FlightStatusArmed Armed;
+    FlightStatusFlightMode FlightMode;
     bool AlwaysStabilizeWhenArmed;
     FlightStatusFlightModeAssist FlightModeAssist;
     FlightStatusAssistedControlState AssistedControlState;

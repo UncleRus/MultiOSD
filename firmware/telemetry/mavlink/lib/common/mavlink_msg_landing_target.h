@@ -20,9 +20,9 @@ typedef struct __mavlink_landing_target_t
 
 
 #define MAVLINK_MESSAGE_INFO_LANDING_TARGET { \
-	"LANDING_TARGET", \
-	5, \
-	{  { "angle_x", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_landing_target_t, angle_x) }, \
+    "LANDING_TARGET", \
+    5, \
+    {  { "angle_x", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_landing_target_t, angle_x) }, \
          { "angle_y", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_landing_target_t, angle_y) }, \
          { "distance", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_landing_target_t, distance) }, \
          { "target_num", NULL, MAVLINK_TYPE_UINT8_T, 0, 12, offsetof(mavlink_landing_target_t, target_num) }, \
@@ -45,29 +45,29 @@ typedef struct __mavlink_landing_target_t
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_landing_target_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-						       uint8_t target_num, uint8_t frame, float angle_x, float angle_y, float distance)
+                               uint8_t target_num, uint8_t frame, float angle_x, float angle_y, float distance)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_LANDING_TARGET_LEN];
-	_mav_put_float(buf, 0, angle_x);
-	_mav_put_float(buf, 4, angle_y);
-	_mav_put_float(buf, 8, distance);
-	_mav_put_uint8_t(buf, 12, target_num);
-	_mav_put_uint8_t(buf, 13, frame);
+    char buf[MAVLINK_MSG_ID_LANDING_TARGET_LEN];
+    _mav_put_float(buf, 0, angle_x);
+    _mav_put_float(buf, 4, angle_y);
+    _mav_put_float(buf, 8, distance);
+    _mav_put_uint8_t(buf, 12, target_num);
+    _mav_put_uint8_t(buf, 13, frame);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_LANDING_TARGET_LEN);
 #else
-	mavlink_landing_target_t packet;
-	packet.angle_x = angle_x;
-	packet.angle_y = angle_y;
-	packet.distance = distance;
-	packet.target_num = target_num;
-	packet.frame = frame;
+    mavlink_landing_target_t packet;
+    packet.angle_x = angle_x;
+    packet.angle_y = angle_y;
+    packet.distance = distance;
+    packet.target_num = target_num;
+    packet.frame = frame;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_LANDING_TARGET_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_LANDING_TARGET;
+    msg->msgid = MAVLINK_MSG_ID_LANDING_TARGET;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_LANDING_TARGET_LEN, MAVLINK_MSG_ID_LANDING_TARGET_CRC);
 #else
@@ -89,30 +89,30 @@ static inline uint16_t mavlink_msg_landing_target_pack(uint8_t system_id, uint8_
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_landing_target_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-							   mavlink_message_t* msg,
-						           uint8_t target_num,uint8_t frame,float angle_x,float angle_y,float distance)
+                               mavlink_message_t* msg,
+                                   uint8_t target_num,uint8_t frame,float angle_x,float angle_y,float distance)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_LANDING_TARGET_LEN];
-	_mav_put_float(buf, 0, angle_x);
-	_mav_put_float(buf, 4, angle_y);
-	_mav_put_float(buf, 8, distance);
-	_mav_put_uint8_t(buf, 12, target_num);
-	_mav_put_uint8_t(buf, 13, frame);
+    char buf[MAVLINK_MSG_ID_LANDING_TARGET_LEN];
+    _mav_put_float(buf, 0, angle_x);
+    _mav_put_float(buf, 4, angle_y);
+    _mav_put_float(buf, 8, distance);
+    _mav_put_uint8_t(buf, 12, target_num);
+    _mav_put_uint8_t(buf, 13, frame);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_LANDING_TARGET_LEN);
 #else
-	mavlink_landing_target_t packet;
-	packet.angle_x = angle_x;
-	packet.angle_y = angle_y;
-	packet.distance = distance;
-	packet.target_num = target_num;
-	packet.frame = frame;
+    mavlink_landing_target_t packet;
+    packet.angle_x = angle_x;
+    packet.angle_y = angle_y;
+    packet.distance = distance;
+    packet.target_num = target_num;
+    packet.frame = frame;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_LANDING_TARGET_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_LANDING_TARGET;
+    msg->msgid = MAVLINK_MSG_ID_LANDING_TARGET;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_LANDING_TARGET_LEN, MAVLINK_MSG_ID_LANDING_TARGET_CRC);
 #else
@@ -130,7 +130,7 @@ static inline uint16_t mavlink_msg_landing_target_pack_chan(uint8_t system_id, u
  */
 static inline uint16_t mavlink_msg_landing_target_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_landing_target_t* landing_target)
 {
-	return mavlink_msg_landing_target_pack(system_id, component_id, msg, landing_target->target_num, landing_target->frame, landing_target->angle_x, landing_target->angle_y, landing_target->distance);
+    return mavlink_msg_landing_target_pack(system_id, component_id, msg, landing_target->target_num, landing_target->frame, landing_target->angle_x, landing_target->angle_y, landing_target->distance);
 }
 
 /**
@@ -144,7 +144,7 @@ static inline uint16_t mavlink_msg_landing_target_encode(uint8_t system_id, uint
  */
 static inline uint16_t mavlink_msg_landing_target_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_landing_target_t* landing_target)
 {
-	return mavlink_msg_landing_target_pack_chan(system_id, component_id, chan, msg, landing_target->target_num, landing_target->frame, landing_target->angle_x, landing_target->angle_y, landing_target->distance);
+    return mavlink_msg_landing_target_pack_chan(system_id, component_id, chan, msg, landing_target->target_num, landing_target->frame, landing_target->angle_x, landing_target->angle_y, landing_target->distance);
 }
 
 /**
@@ -162,12 +162,12 @@ static inline uint16_t mavlink_msg_landing_target_encode_chan(uint8_t system_id,
 static inline void mavlink_msg_landing_target_send(mavlink_channel_t chan, uint8_t target_num, uint8_t frame, float angle_x, float angle_y, float distance)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_LANDING_TARGET_LEN];
-	_mav_put_float(buf, 0, angle_x);
-	_mav_put_float(buf, 4, angle_y);
-	_mav_put_float(buf, 8, distance);
-	_mav_put_uint8_t(buf, 12, target_num);
-	_mav_put_uint8_t(buf, 13, frame);
+    char buf[MAVLINK_MSG_ID_LANDING_TARGET_LEN];
+    _mav_put_float(buf, 0, angle_x);
+    _mav_put_float(buf, 4, angle_y);
+    _mav_put_float(buf, 8, distance);
+    _mav_put_uint8_t(buf, 12, target_num);
+    _mav_put_uint8_t(buf, 13, frame);
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LANDING_TARGET, buf, MAVLINK_MSG_ID_LANDING_TARGET_LEN, MAVLINK_MSG_ID_LANDING_TARGET_CRC);
@@ -175,12 +175,12 @@ static inline void mavlink_msg_landing_target_send(mavlink_channel_t chan, uint8
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LANDING_TARGET, buf, MAVLINK_MSG_ID_LANDING_TARGET_LEN);
 #endif
 #else
-	mavlink_landing_target_t packet;
-	packet.angle_x = angle_x;
-	packet.angle_y = angle_y;
-	packet.distance = distance;
-	packet.target_num = target_num;
-	packet.frame = frame;
+    mavlink_landing_target_t packet;
+    packet.angle_x = angle_x;
+    packet.angle_y = angle_y;
+    packet.distance = distance;
+    packet.target_num = target_num;
+    packet.frame = frame;
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LANDING_TARGET, (const char *)&packet, MAVLINK_MSG_ID_LANDING_TARGET_LEN, MAVLINK_MSG_ID_LANDING_TARGET_CRC);
@@ -201,12 +201,12 @@ static inline void mavlink_msg_landing_target_send(mavlink_channel_t chan, uint8
 static inline void mavlink_msg_landing_target_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t target_num, uint8_t frame, float angle_x, float angle_y, float distance)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char *buf = (char *)msgbuf;
-	_mav_put_float(buf, 0, angle_x);
-	_mav_put_float(buf, 4, angle_y);
-	_mav_put_float(buf, 8, distance);
-	_mav_put_uint8_t(buf, 12, target_num);
-	_mav_put_uint8_t(buf, 13, frame);
+    char *buf = (char *)msgbuf;
+    _mav_put_float(buf, 0, angle_x);
+    _mav_put_float(buf, 4, angle_y);
+    _mav_put_float(buf, 8, distance);
+    _mav_put_uint8_t(buf, 12, target_num);
+    _mav_put_uint8_t(buf, 13, frame);
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LANDING_TARGET, buf, MAVLINK_MSG_ID_LANDING_TARGET_LEN, MAVLINK_MSG_ID_LANDING_TARGET_CRC);
@@ -214,12 +214,12 @@ static inline void mavlink_msg_landing_target_send_buf(mavlink_message_t *msgbuf
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LANDING_TARGET, buf, MAVLINK_MSG_ID_LANDING_TARGET_LEN);
 #endif
 #else
-	mavlink_landing_target_t *packet = (mavlink_landing_target_t *)msgbuf;
-	packet->angle_x = angle_x;
-	packet->angle_y = angle_y;
-	packet->distance = distance;
-	packet->target_num = target_num;
-	packet->frame = frame;
+    mavlink_landing_target_t *packet = (mavlink_landing_target_t *)msgbuf;
+    packet->angle_x = angle_x;
+    packet->angle_y = angle_y;
+    packet->distance = distance;
+    packet->target_num = target_num;
+    packet->frame = frame;
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LANDING_TARGET, (const char *)packet, MAVLINK_MSG_ID_LANDING_TARGET_LEN, MAVLINK_MSG_ID_LANDING_TARGET_CRC);
@@ -242,7 +242,7 @@ static inline void mavlink_msg_landing_target_send_buf(mavlink_message_t *msgbuf
  */
 static inline uint8_t mavlink_msg_landing_target_get_target_num(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  12);
+    return _MAV_RETURN_uint8_t(msg,  12);
 }
 
 /**
@@ -252,7 +252,7 @@ static inline uint8_t mavlink_msg_landing_target_get_target_num(const mavlink_me
  */
 static inline uint8_t mavlink_msg_landing_target_get_frame(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  13);
+    return _MAV_RETURN_uint8_t(msg,  13);
 }
 
 /**
@@ -262,7 +262,7 @@ static inline uint8_t mavlink_msg_landing_target_get_frame(const mavlink_message
  */
 static inline float mavlink_msg_landing_target_get_angle_x(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_float(msg,  0);
+    return _MAV_RETURN_float(msg,  0);
 }
 
 /**
@@ -272,7 +272,7 @@ static inline float mavlink_msg_landing_target_get_angle_x(const mavlink_message
  */
 static inline float mavlink_msg_landing_target_get_angle_y(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_float(msg,  4);
+    return _MAV_RETURN_float(msg,  4);
 }
 
 /**
@@ -282,7 +282,7 @@ static inline float mavlink_msg_landing_target_get_angle_y(const mavlink_message
  */
 static inline float mavlink_msg_landing_target_get_distance(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_float(msg,  8);
+    return _MAV_RETURN_float(msg,  8);
 }
 
 /**
@@ -294,12 +294,12 @@ static inline float mavlink_msg_landing_target_get_distance(const mavlink_messag
 static inline void mavlink_msg_landing_target_decode(const mavlink_message_t* msg, mavlink_landing_target_t* landing_target)
 {
 #if MAVLINK_NEED_BYTE_SWAP
-	landing_target->angle_x = mavlink_msg_landing_target_get_angle_x(msg);
-	landing_target->angle_y = mavlink_msg_landing_target_get_angle_y(msg);
-	landing_target->distance = mavlink_msg_landing_target_get_distance(msg);
-	landing_target->target_num = mavlink_msg_landing_target_get_target_num(msg);
-	landing_target->frame = mavlink_msg_landing_target_get_frame(msg);
+    landing_target->angle_x = mavlink_msg_landing_target_get_angle_x(msg);
+    landing_target->angle_y = mavlink_msg_landing_target_get_angle_y(msg);
+    landing_target->distance = mavlink_msg_landing_target_get_distance(msg);
+    landing_target->target_num = mavlink_msg_landing_target_get_target_num(msg);
+    landing_target->frame = mavlink_msg_landing_target_get_frame(msg);
 #else
-	memcpy(landing_target, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_LANDING_TARGET_LEN);
+    memcpy(landing_target, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_LANDING_TARGET_LEN);
 #endif
 }

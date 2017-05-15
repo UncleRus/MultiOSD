@@ -29,17 +29,17 @@ namespace telemetry
 
 enum gps_state_t
 {
-	GPS_STATE_NO_FIX = 0,
-	GPS_STATE_FIXING = 1,
-	GPS_STATE_2D     = 2,
-	GPS_STATE_3D     = 3
+    GPS_STATE_NO_FIX = 0,
+    GPS_STATE_FIXING = 1,
+    GPS_STATE_2D     = 2,
+    GPS_STATE_3D     = 3
 };
 
 namespace settings
 {
 
-	void init();
-	void reset();
+    void init();
+    void reset();
 
 }  // namespace settings
 
@@ -47,156 +47,156 @@ extern uint32_t update_time;             // update time
 
 namespace status
 {
-	enum connection_state_t
-	{
-		DISCONNECTED = 0,
-		ESTABLISHING = 1,
-		CONNECTED    = 2
-	};
+    enum connection_state_t
+    {
+        DISCONNECTED = 0,
+        ESTABLISHING = 1,
+        CONNECTED    = 2
+    };
 
-	extern const char *       callsign;                        // 8 chars max
-	extern connection_state_t connection;
-	extern uint16_t           flight_time;                     // seconds
-	extern uint8_t            flight_mode;
-	extern const char *       flight_mode_name_p;              // progmem string
-	extern const char *       flight_mode_name;                // SRAM string
-	extern bool               armed;
+    extern const char *       callsign;                        // 8 chars max
+    extern connection_state_t connection;
+    extern uint16_t           flight_time;                     // seconds
+    extern uint8_t            flight_mode;
+    extern const char *       flight_mode_name_p;              // progmem string
+    extern const char *       flight_mode_name;                // SRAM string
+    extern bool               armed;
 }
 
 namespace attitude
 {
-	extern float roll;   // degrees
-	extern float pitch;  // degrees
-	extern float yaw;    // degrees
+    extern float roll;   // degrees
+    extern float pitch;  // degrees
+    extern float yaw;    // degrees
 }
 
 namespace input
 {
-	extern bool     connected;                 // input values are valid
-	extern uint8_t  rssi;                      // percents
-	extern bool     rssi_low;
-	extern int8_t   throttle;                  // percents
-	extern int8_t   roll;                      // percents
-	extern int8_t   pitch;                     // percents
-	extern int8_t   yaw;                       // percents
-	extern uint16_t channels [INPUT_CHANNELS]; // raw values
+    extern bool     connected;                 // input values are valid
+    extern uint8_t  rssi;                      // percents
+    extern bool     rssi_low;
+    extern int8_t   throttle;                  // percents
+    extern int8_t   roll;                      // percents
+    extern int8_t   pitch;                     // percents
+    extern int8_t   yaw;                       // percents
+    extern uint16_t channels [INPUT_CHANNELS]; // raw values
 
-	void set_rssi(uint8_t value);
+    void set_rssi(uint8_t value);
 }
 
 namespace gps
 {
-	extern float       latitude;   // degrees
-	extern float       longitude;  // degrees
-	extern float       altitude;   // meters
-	extern float       speed;      // m/s
-	extern uint16_t    heading;    // degrees, 0..360
-	extern int8_t      satellites;
-	extern gps_state_t state;      // GPS_STATE_xxx enum
-	extern float       climb;      // m/s
+    extern float       latitude;   // degrees
+    extern float       longitude;  // degrees
+    extern float       altitude;   // meters
+    extern float       speed;      // m/s
+    extern uint16_t    heading;    // degrees, 0..360
+    extern int8_t      satellites;
+    extern gps_state_t state;      // GPS_STATE_xxx enum
+    extern float       climb;      // m/s
 
-	extern float hdop;
-	extern float vdop;
-	extern float pdop;
+    extern float hdop;
+    extern float vdop;
+    extern float pdop;
 
-	void update(bool update_home, bool update_alt_climb);
+    void update(bool update_home, bool update_alt_climb);
 }
 
 namespace barometer
 {
-	extern float    altitude;    // meters
-	extern float    temperature; // Celsius
-	extern uint32_t pressure;    // Pa
+    extern float    altitude;    // meters
+    extern float    temperature; // Celsius
+    extern uint32_t pressure;    // Pa
 }
 
 namespace environment
 {
-	extern uint16_t wind_direction; // degress
-	extern float    wind_speed;     // m/s in ground plane
-	extern float    temperature;    // Celsius
+    extern uint16_t wind_direction; // degress
+    extern float    wind_speed;     // m/s in ground plane
+    extern float    temperature;    // Celsius
 }
 
 namespace stable
 {
-	enum heading_source_t
-	{
-		DISABLED = 0,
-		GPS = 1,
-		INTERNAL_MAG = 2,
-		EXTERNAL_MAG = 3,
-		FLIGHT_CONTROLLER = 4
-	};
+    enum heading_source_t
+    {
+        DISABLED = 0,
+        GPS = 1,
+        INTERNAL_MAG = 2,
+        EXTERNAL_MAG = 3,
+        FLIGHT_CONTROLLER = 4
+    };
 
-	extern float    climb;        // m/s
-	extern float    altitude;     // meters
-	extern float    groundspeed;  // m/s
-	extern float    airspeed;     // m/s
-	extern uint16_t heading;      // degrees, 0..360
-	extern heading_source_t heading_source;
+    extern float    climb;        // m/s
+    extern float    altitude;     // meters
+    extern float    groundspeed;  // m/s
+    extern float    airspeed;     // m/s
+    extern uint16_t heading;      // degrees, 0..360
+    extern heading_source_t heading_source;
 
-	void update_alt_climb(float altitude);
-	void calc_heading(float x, float y);
+    void update_alt_climb(float altitude);
+    void calc_heading(float x, float y);
 }
 
 namespace battery
 {
-	struct battery_t
-	{
-		float   voltage;      // Volts
-		uint8_t cells;
-		float   cell_voltage; // Volts
-		uint8_t level;        // percents
-		bool    low;
-		float   amperage;      // Amperes
-		float   consumed;      // mAh
+    struct battery_t
+    {
+        float   voltage;      // Volts
+        uint8_t cells;
+        float   cell_voltage; // Volts
+        uint8_t level;        // percents
+        bool    low;
+        float   amperage;      // Amperes
+        float   consumed;      // mAh
 
-		battery_t()
-			: voltage(0), cells(0), cell_voltage(0), level(0), low(true), amperage(0), consumed(0)
-		{}
+        battery_t()
+            : voltage(0), cells(0), cell_voltage(0), level(0), low(true), amperage(0), consumed(0)
+        {}
 
-		void set_voltage(float value, bool calc_cells);
-		void set_amperage(float value, uint16_t interval);
-	};
+        void set_voltage(float value, bool calc_cells);
+        void set_amperage(float value, uint16_t interval);
+    };
 
-	extern battery_t battery1;
-	extern battery_t battery2;
+    extern battery_t battery1;
+    extern battery_t battery2;
 }
 
 namespace home
 {
-	enum home_state_t
-	{
-		NO_FIX = 0,
-		FIXING = 1,
-		FIXED  = 2
-	};
+    enum home_state_t
+    {
+        NO_FIX = 0,
+        FIXING = 1,
+        FIXED  = 2
+    };
 
-	extern home_state_t state;
-	extern float        distance;  // meters
-	extern uint16_t     direction; // degrees, 0..360
+    extern home_state_t state;
+    extern float        distance;  // meters
+    extern uint16_t     direction; // degrees, 0..360
 
-	extern float        longitude; // degrees
-	extern float        latitude;  // degrees
-	extern float        altitude;  // meters
+    extern float        longitude; // degrees
+    extern float        latitude;  // degrees
+    extern float        altitude;  // meters
 
-	// try to fix home position
-	void fix();
+    // try to fix home position
+    void fix();
 
-	// read gps and recalc
-	void update();
+    // read gps and recalc
+    void update();
 }
 
 namespace waypoint
 {
 
-	extern uint8_t  current;  // current waypoint number
-	extern uint8_t  prev;     // previous waypoint
-	extern uint16_t distance; // meters, distance to active waypoint
-	extern uint16_t bearing;  // degrees, 0..360
+    extern uint8_t  current;  // current waypoint number
+    extern uint8_t  prev;     // previous waypoint
+    extern uint16_t distance; // meters, distance to active waypoint
+    extern uint16_t bearing;  // degrees, 0..360
 
-	void set_bearing(int16_t value);
-	// set current waypoint
-	void set(uint8_t value);
+    void set_bearing(int16_t value);
+    // set current waypoint
+    void set(uint8_t value);
 }
 
 void init();
@@ -208,46 +208,46 @@ bool receive(parser_t parser);
 namespace modules
 {
 
-	struct module_t
-	{
-		typedef void(* proc_t)();
-		typedef bool(* update_t)();
+    struct module_t
+    {
+        typedef void(* proc_t)();
+        typedef bool(* update_t)();
 
-		const char *name_p;
-		proc_t init_settings;
-		proc_t reset_settings;
-		proc_t init;
-		update_t update;
-	};
+        const char *name_p;
+        proc_t init_settings;
+        proc_t reset_settings;
+        proc_t init;
+        update_t update;
+    };
 
-	// telemetry modules collection
-	extern const module_t modules [] PROGMEM;
-	extern const uint8_t count;
+    // telemetry modules collection
+    extern const module_t modules [] PROGMEM;
+    extern const uint8_t count;
 
-	inline const char *name_p(uint8_t module)
-	{
-		return (const char *) pgm_read_ptr(&modules [module].name_p);
-	}
+    inline const char *name_p(uint8_t module)
+    {
+        return (const char *) pgm_read_ptr(&modules [module].name_p);
+    }
 
-	inline void init_settings(uint8_t module)
-	{
-		((module_t::proc_t) pgm_read_ptr(&modules [module].init_settings))();
-	}
+    inline void init_settings(uint8_t module)
+    {
+        ((module_t::proc_t) pgm_read_ptr(&modules [module].init_settings))();
+    }
 
-	inline void reset_settings(uint8_t module)
-	{
-		((module_t::proc_t) pgm_read_ptr(&modules [module].reset_settings))();
-	}
+    inline void reset_settings(uint8_t module)
+    {
+        ((module_t::proc_t) pgm_read_ptr(&modules [module].reset_settings))();
+    }
 
-	inline void init(uint8_t module)
-	{
-		((module_t::proc_t) pgm_read_ptr(&modules [module].init))();
-	}
+    inline void init(uint8_t module)
+    {
+        ((module_t::proc_t) pgm_read_ptr(&modules [module].init))();
+    }
 
-	inline bool update(uint8_t module)
-	{
-		return ((module_t::update_t) pgm_read_ptr(&modules [module].update))();
-	}
+    inline bool update(uint8_t module)
+    {
+        return ((module_t::update_t) pgm_read_ptr(&modules [module].update))();
+    }
 
 }
 

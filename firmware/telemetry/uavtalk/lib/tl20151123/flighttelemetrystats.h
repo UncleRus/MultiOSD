@@ -28,20 +28,20 @@ namespace tl20151123
 
 enum FlightTelemetryStatsStatus
 {
-	FLIGHTTELEMETRYSTATS_STATUS_DISCONNECTED = 0,
-	FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEREQ = 1,
-	FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEACK = 2,
-	FLIGHTTELEMETRYSTATS_STATUS_CONNECTED    = 3
+    FLIGHTTELEMETRYSTATS_STATUS_DISCONNECTED = 0,
+    FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEREQ = 1,
+    FLIGHTTELEMETRYSTATS_STATUS_HANDSHAKEACK = 2,
+    FLIGHTTELEMETRYSTATS_STATUS_CONNECTED    = 3
 };
 
 struct FlightTelemetryStats
 {
-	float TxDataRate;
-	float RxDataRate;
-	uint32_t TxFailures;
-	uint32_t RxFailures;
-	uint32_t TxRetries;
-	FlightTelemetryStatsStatus Status;
+    float TxDataRate;
+    float RxDataRate;
+    uint32_t TxFailures;
+    uint32_t RxFailures;
+    uint32_t TxRetries;
+    FlightTelemetryStatsStatus Status;
 };
 
 }  // namespace tl20151123

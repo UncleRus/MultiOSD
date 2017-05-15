@@ -28,9 +28,9 @@ namespace tl20151123
 
 struct BaroAltitude
 {
-	float Altitude;
-	float Temperature;
-	float Pressure;
+    float Altitude;
+    float Temperature;
+    float Pressure;
 };
 
 }  // namespace tl20151123

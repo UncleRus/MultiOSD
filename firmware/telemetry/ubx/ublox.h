@@ -34,12 +34,12 @@ namespace ubx
 
 enum fix_type_t
 {
-	F_NO_FIX = 0,
-	F_DEAD_RECKOING,
-	F_2D,
-	F_3D,
-	GF_GPS_DEAD_RECKOING,
-	GF_GPS_TIME
+    F_NO_FIX = 0,
+    F_DEAD_RECKOING,
+    F_2D,
+    F_3D,
+    GF_GPS_DEAD_RECKOING,
+    GF_GPS_TIME
 };
 
 #define UBX_STATUS_FLAGS_GPSFIX_OK _BV(0)
@@ -128,13 +128,13 @@ struct header_t
 // Status
 struct nav_status_t
 {
-	uint32_t itow;              // GPS Millisecond Time of Week (ms)
-	uint8_t  fix_type;          // GPS fix type
-	uint8_t  fix_flags;         // Navigation Status Flags
-	uint8_t  fix_status;        // Fix Status Information
-	uint8_t  flags;             // Additional navigation output information
-	uint32_t time_to_first_fix; // Time to first fix (ms)
-	uint32_t uptime;            // Milliseconds since startup/reset (ms)
+    uint32_t itow;              // GPS Millisecond Time of Week (ms)
+    uint8_t  fix_type;          // GPS fix type
+    uint8_t  fix_flags;         // Navigation Status Flags
+    uint8_t  fix_status;        // Fix Status Information
+    uint8_t  flags;             // Additional navigation output information
+    uint32_t time_to_first_fix; // Time to first fix (ms)
+    uint32_t uptime;            // Milliseconds since startup/reset (ms)
 };
 
 // Geodetic Position Solution
@@ -200,8 +200,8 @@ struct nav_velned_t
 
 struct ack_nack_t
 {
-	uint8_t cls; // Message class
-	uint8_t id;  // Message ID
+    uint8_t cls; // Message class
+    uint8_t id;  // Message ID
 };
 
 union payload_t

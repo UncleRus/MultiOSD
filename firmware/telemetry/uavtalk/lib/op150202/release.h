@@ -28,8 +28,8 @@
 #include "gpspositionsensor.h"
 #include "gpsvelocitysensor.h"
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-	#include "magsensor.h"
-	#include "magstate.h"
+    #include "magsensor.h"
+    #include "magstate.h"
 #endif
 #include "manualcontrolcommand.h"
 #include "positionstate.h"
@@ -68,56 +68,56 @@ void handle_systemstats();
 namespace fm
 {
 
-	const char manu[] PROGMEM = "MANU";  // Manual
-	const char stb1[] PROGMEM = "STB1";  // Stabilized 1
-	const char stb2[] PROGMEM = "STB2";  // Stabilized 2
-	const char stb3[] PROGMEM = "STB3";  // Stabilized 3
-	const char stb4[] PROGMEM = "STB4";  // Stabilized 4
-	const char stb5[] PROGMEM = "STB5";  // Stabilized 5
-	const char stb6[] PROGMEM = "STB6";  // Stabilized 6
-	const char phld[] PROGMEM = "PHLD";  // Position Hold
-	const char clck[] PROGMEM = "CLCK";  // Course lock
-	const char roam[] PROGMEM = "ROAM";  // Position Roam
-	const char hlea[] PROGMEM = "HLEA";  // Home Leash
-	const char absp[] PROGMEM = "ABSP";  // Absolute Position
-	const char rtb [] PROGMEM = "RTB ";  // Return to Base
-	const char land[] PROGMEM = "LAND";  // Land
-	const char plan[] PROGMEM = "PLAN";  // Path Planner
-	const char poi [] PROGMEM = "POI ";  // Point of Interest
-	const char acru[] PROGMEM = "ACRU";  // Aurocruise
+    const char manu[] PROGMEM = "MANU";  // Manual
+    const char stb1[] PROGMEM = "STB1";  // Stabilized 1
+    const char stb2[] PROGMEM = "STB2";  // Stabilized 2
+    const char stb3[] PROGMEM = "STB3";  // Stabilized 3
+    const char stb4[] PROGMEM = "STB4";  // Stabilized 4
+    const char stb5[] PROGMEM = "STB5";  // Stabilized 5
+    const char stb6[] PROGMEM = "STB6";  // Stabilized 6
+    const char phld[] PROGMEM = "PHLD";  // Position Hold
+    const char clck[] PROGMEM = "CLCK";  // Course lock
+    const char roam[] PROGMEM = "ROAM";  // Position Roam
+    const char hlea[] PROGMEM = "HLEA";  // Home Leash
+    const char absp[] PROGMEM = "ABSP";  // Absolute Position
+    const char rtb [] PROGMEM = "RTB ";  // Return to Base
+    const char land[] PROGMEM = "LAND";  // Land
+    const char plan[] PROGMEM = "PLAN";  // Path Planner
+    const char poi [] PROGMEM = "POI ";  // Point of Interest
+    const char acru[] PROGMEM = "ACRU";  // Aurocruise
 
-	const char * const names[] PROGMEM = {
-		manu, stb1, stb2, stb3, stb4,
-		stb5, phld, clck, roam, hlea,
-		absp, rtb,  land, plan, poi,
-		acru
-	};
+    const char * const names[] PROGMEM = {
+        manu, stb1, stb2, stb3, stb4,
+        stb5, phld, clck, roam, hlea,
+        absp, rtb,  land, plan, poi,
+        acru
+    };
 
-	const uint8_t size = sizeof(names) / sizeof(char *);
+    const uint8_t size = sizeof(names) / sizeof(char *);
 
 }  // namespace fm
 
 const obj_handler_t handlers[] PROGMEM = {
-	{UAVTALK_OP150202_FLIGHTSTATUS_OBJID,         handle_flightstatus},
-	{UAVTALK_OP150202_ATTITUDESTATE_OBJID,        handle_attitudestate},
+    {UAVTALK_OP150202_FLIGHTSTATUS_OBJID,         handle_flightstatus},
+    {UAVTALK_OP150202_ATTITUDESTATE_OBJID,        handle_attitudestate},
 #if !defined (TELEMETRY_MODULES_I2C_BARO)
-	{UAVTALK_OP150202_BAROSENSOR_OBJID,           handle_barosensor},
+    {UAVTALK_OP150202_BAROSENSOR_OBJID,           handle_barosensor},
 #endif
 #if !defined (TELEMETRY_MODULES_ADC_BATTERY)
-	{UAVTALK_OP150202_FLIGHTBATTERYSTATE_OBJID,   handle_flightbatterystate},
+    {UAVTALK_OP150202_FLIGHTBATTERYSTATE_OBJID,   handle_flightbatterystate},
 #endif
-	{UAVTALK_OP150202_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
-	{UAVTALK_OP150202_GPSPOSITIONSENSOR_OBJID,    handle_gpspositionsensor},
-	{UAVTALK_OP150202_GPSVELOCITYSENSOR_OBJID,    handle_gpsvelocitysensor},
-	{UAVTALK_OP150202_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
+    {UAVTALK_OP150202_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
+    {UAVTALK_OP150202_GPSPOSITIONSENSOR_OBJID,    handle_gpspositionsensor},
+    {UAVTALK_OP150202_GPSVELOCITYSENSOR_OBJID,    handle_gpsvelocitysensor},
+    {UAVTALK_OP150202_MANUALCONTROLCOMMAND_OBJID, handle_manualcontrolcommand},
 #if !defined (TELEMETRY_MODULES_I2C_COMPASS)
-	{UAVTALK_OP150202_MAGSENSOR_OBJID,            handle_magsensor},
-	{UAVTALK_OP150202_MAGSTATE_OBJID,             handle_magstate},
+    {UAVTALK_OP150202_MAGSENSOR_OBJID,            handle_magsensor},
+    {UAVTALK_OP150202_MAGSTATE_OBJID,             handle_magstate},
 #endif
-	{UAVTALK_OP150202_POSITIONSTATE_OBJID,        handle_positionstate},
-	{UAVTALK_OP150202_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
-	{UAVTALK_OP150202_SYSTEMSTATS_OBJID,          handle_systemstats},
-	{_UT_TIMEOUT_OBJID,                           update_connection}
+    {UAVTALK_OP150202_POSITIONSTATE_OBJID,        handle_positionstate},
+    {UAVTALK_OP150202_FLIGHTTELEMETRYSTATS_OBJID, handle_flighttelemetrystats},
+    {UAVTALK_OP150202_SYSTEMSTATS_OBJID,          handle_systemstats},
+    {_UT_TIMEOUT_OBJID,                           update_connection}
 };
 
 }  // namespace op150202

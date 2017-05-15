@@ -28,27 +28,27 @@ namespace tl20151123
 
 enum GPSPositionStatus
 {
-	GPSPOSITION_STATUS_NOGPS  = 0,
-	GPSPOSITION_STATUS_NOFIX  = 1,
-	GPSPOSITION_STATUS_FIX2D  = 2,
-	GPSPOSITION_STATUS_FIX3D  = 3,
-	GPSPOSITION_STATUS_DIFF3D = 4
+    GPSPOSITION_STATUS_NOGPS  = 0,
+    GPSPOSITION_STATUS_NOFIX  = 1,
+    GPSPOSITION_STATUS_FIX2D  = 2,
+    GPSPOSITION_STATUS_FIX3D  = 3,
+    GPSPOSITION_STATUS_DIFF3D = 4
 };
 
 struct GPSPosition
 {
-	int32_t Latitude;
-	int32_t Longitude;
-	float Altitude;
-	float GeoidSeparation;
-	float Heading;
-	float Groundspeed;
-	float Accuracy;
-	float PDOP;
-	float HDOP;
-	float VDOP;
-	GPSPositionStatus Status;
-	uint8_t Satellites;
+    int32_t Latitude;
+    int32_t Longitude;
+    float Altitude;
+    float GeoidSeparation;
+    float Heading;
+    float Groundspeed;
+    float Accuracy;
+    float PDOP;
+    float HDOP;
+    float VDOP;
+    GPSPositionStatus Status;
+    uint8_t Satellites;
 };
 
 }  // namespace tl20151123

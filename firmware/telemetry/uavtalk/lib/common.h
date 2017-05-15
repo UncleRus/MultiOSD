@@ -33,11 +33,11 @@
 #define UAVTALK_VERSION 0x20
 #define UAVTALK_SYNC 0x3c
 
-#define _UT_TYPE_OBJ		(UAVTALK_VERSION | 0x00)
-#define _UT_TYPE_OBJ_REQ	(UAVTALK_VERSION | 0x01)
-#define _UT_TYPE_OBJ_ACK	(UAVTALK_VERSION | 0x02)
-#define _UT_TYPE_ACK		(UAVTALK_VERSION | 0x03)
-#define _UT_TYPE_NACK		(UAVTALK_VERSION | 0x04)
+#define _UT_TYPE_OBJ        (UAVTALK_VERSION | 0x00)
+#define _UT_TYPE_OBJ_REQ    (UAVTALK_VERSION | 0x01)
+#define _UT_TYPE_OBJ_ACK    (UAVTALK_VERSION | 0x02)
+#define _UT_TYPE_ACK        (UAVTALK_VERSION | 0x03)
+#define _UT_TYPE_NACK       (UAVTALK_VERSION | 0x04)
 
 #define _UT_TIMEOUT_OBJID 0
 
@@ -48,43 +48,43 @@ UT_NAMESPACE_OPEN
 
 struct header_t
 {
-	uint8_t sync;
-	uint8_t msg_type;
-	uint16_t length;
-	uint32_t objid;
-	uint16_t instid;
+    uint8_t sync;
+    uint8_t msg_type;
+    uint16_t length;
+    uint32_t objid;
+    uint16_t instid;
 
-	header_t() :
-		sync(UAVTALK_SYNC), msg_type(0), length(0), objid(0), instid(0)
-	{}
+    header_t() :
+        sync(UAVTALK_SYNC), msg_type(0), length(0), objid(0), instid(0)
+    {}
 
-	header_t(uint8_t msg_type_, uint16_t length_, uint32_t objid_) :
-		sync(UAVTALK_SYNC), msg_type(msg_type_), length(length_), objid(objid_), instid(0)
-	{}
+    header_t(uint8_t msg_type_, uint16_t length_, uint32_t objid_) :
+        sync(UAVTALK_SYNC), msg_type(msg_type_), length(length_), objid(objid_), instid(0)
+    {}
 };
 
 struct message_t
 {
-	header_t head;
-	uint8_t data[255];
-	uint8_t crc;
+    header_t head;
+    uint8_t data[255];
+    uint8_t crc;
 };
 
 struct obj_handler_t
 {
-	typedef void (* callable_t)();
+    typedef void (* callable_t)();
 
-	uint32_t objid;
-	callable_t handler;
+    uint32_t objid;
+    callable_t handler;
 };
 
 struct release_t
 {
-	bool instid_required;
-	uint32_t flightstatus_objid;
-	const obj_handler_t *handlers;
-	const char * const *fm_names;
-	uint8_t fm_count;
+    bool instid_required;
+    uint32_t flightstatus_objid;
+    const obj_handler_t *handlers;
+    const char * const *fm_names;
+    uint8_t fm_count;
 };
 
 extern bool internal_home_calc;

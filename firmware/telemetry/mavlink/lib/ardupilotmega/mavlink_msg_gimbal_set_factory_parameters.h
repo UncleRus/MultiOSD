@@ -29,9 +29,9 @@ typedef struct __mavlink_gimbal_set_factory_parameters_t
 
 
 #define MAVLINK_MESSAGE_INFO_GIMBAL_SET_FACTORY_PARAMETERS { \
-	"GIMBAL_SET_FACTORY_PARAMETERS", \
-	14, \
-	{  { "magic_1", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_gimbal_set_factory_parameters_t, magic_1) }, \
+    "GIMBAL_SET_FACTORY_PARAMETERS", \
+    14, \
+    {  { "magic_1", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_gimbal_set_factory_parameters_t, magic_1) }, \
          { "magic_2", NULL, MAVLINK_TYPE_UINT32_T, 0, 4, offsetof(mavlink_gimbal_set_factory_parameters_t, magic_2) }, \
          { "magic_3", NULL, MAVLINK_TYPE_UINT32_T, 0, 8, offsetof(mavlink_gimbal_set_factory_parameters_t, magic_3) }, \
          { "serial_number_pt_1", NULL, MAVLINK_TYPE_UINT32_T, 0, 12, offsetof(mavlink_gimbal_set_factory_parameters_t, serial_number_pt_1) }, \
@@ -72,47 +72,47 @@ typedef struct __mavlink_gimbal_set_factory_parameters_t
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gimbal_set_factory_parameters_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-						       uint8_t target_system, uint8_t target_component, uint32_t magic_1, uint32_t magic_2, uint32_t magic_3, uint16_t assembly_year, uint8_t assembly_month, uint8_t assembly_day, uint8_t assembly_hour, uint8_t assembly_minute, uint8_t assembly_second, uint32_t serial_number_pt_1, uint32_t serial_number_pt_2, uint32_t serial_number_pt_3)
+                               uint8_t target_system, uint8_t target_component, uint32_t magic_1, uint32_t magic_2, uint32_t magic_3, uint16_t assembly_year, uint8_t assembly_month, uint8_t assembly_day, uint8_t assembly_hour, uint8_t assembly_minute, uint8_t assembly_second, uint32_t serial_number_pt_1, uint32_t serial_number_pt_2, uint32_t serial_number_pt_3)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN];
-	_mav_put_uint32_t(buf, 0, magic_1);
-	_mav_put_uint32_t(buf, 4, magic_2);
-	_mav_put_uint32_t(buf, 8, magic_3);
-	_mav_put_uint32_t(buf, 12, serial_number_pt_1);
-	_mav_put_uint32_t(buf, 16, serial_number_pt_2);
-	_mav_put_uint32_t(buf, 20, serial_number_pt_3);
-	_mav_put_uint16_t(buf, 24, assembly_year);
-	_mav_put_uint8_t(buf, 26, target_system);
-	_mav_put_uint8_t(buf, 27, target_component);
-	_mav_put_uint8_t(buf, 28, assembly_month);
-	_mav_put_uint8_t(buf, 29, assembly_day);
-	_mav_put_uint8_t(buf, 30, assembly_hour);
-	_mav_put_uint8_t(buf, 31, assembly_minute);
-	_mav_put_uint8_t(buf, 32, assembly_second);
+    char buf[MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN];
+    _mav_put_uint32_t(buf, 0, magic_1);
+    _mav_put_uint32_t(buf, 4, magic_2);
+    _mav_put_uint32_t(buf, 8, magic_3);
+    _mav_put_uint32_t(buf, 12, serial_number_pt_1);
+    _mav_put_uint32_t(buf, 16, serial_number_pt_2);
+    _mav_put_uint32_t(buf, 20, serial_number_pt_3);
+    _mav_put_uint16_t(buf, 24, assembly_year);
+    _mav_put_uint8_t(buf, 26, target_system);
+    _mav_put_uint8_t(buf, 27, target_component);
+    _mav_put_uint8_t(buf, 28, assembly_month);
+    _mav_put_uint8_t(buf, 29, assembly_day);
+    _mav_put_uint8_t(buf, 30, assembly_hour);
+    _mav_put_uint8_t(buf, 31, assembly_minute);
+    _mav_put_uint8_t(buf, 32, assembly_second);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN);
 #else
-	mavlink_gimbal_set_factory_parameters_t packet;
-	packet.magic_1 = magic_1;
-	packet.magic_2 = magic_2;
-	packet.magic_3 = magic_3;
-	packet.serial_number_pt_1 = serial_number_pt_1;
-	packet.serial_number_pt_2 = serial_number_pt_2;
-	packet.serial_number_pt_3 = serial_number_pt_3;
-	packet.assembly_year = assembly_year;
-	packet.target_system = target_system;
-	packet.target_component = target_component;
-	packet.assembly_month = assembly_month;
-	packet.assembly_day = assembly_day;
-	packet.assembly_hour = assembly_hour;
-	packet.assembly_minute = assembly_minute;
-	packet.assembly_second = assembly_second;
+    mavlink_gimbal_set_factory_parameters_t packet;
+    packet.magic_1 = magic_1;
+    packet.magic_2 = magic_2;
+    packet.magic_3 = magic_3;
+    packet.serial_number_pt_1 = serial_number_pt_1;
+    packet.serial_number_pt_2 = serial_number_pt_2;
+    packet.serial_number_pt_3 = serial_number_pt_3;
+    packet.assembly_year = assembly_year;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
+    packet.assembly_month = assembly_month;
+    packet.assembly_day = assembly_day;
+    packet.assembly_hour = assembly_hour;
+    packet.assembly_minute = assembly_minute;
+    packet.assembly_second = assembly_second;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS;
+    msg->msgid = MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_CRC);
 #else
@@ -143,48 +143,48 @@ static inline uint16_t mavlink_msg_gimbal_set_factory_parameters_pack(uint8_t sy
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gimbal_set_factory_parameters_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-							   mavlink_message_t* msg,
-						           uint8_t target_system,uint8_t target_component,uint32_t magic_1,uint32_t magic_2,uint32_t magic_3,uint16_t assembly_year,uint8_t assembly_month,uint8_t assembly_day,uint8_t assembly_hour,uint8_t assembly_minute,uint8_t assembly_second,uint32_t serial_number_pt_1,uint32_t serial_number_pt_2,uint32_t serial_number_pt_3)
+                               mavlink_message_t* msg,
+                                   uint8_t target_system,uint8_t target_component,uint32_t magic_1,uint32_t magic_2,uint32_t magic_3,uint16_t assembly_year,uint8_t assembly_month,uint8_t assembly_day,uint8_t assembly_hour,uint8_t assembly_minute,uint8_t assembly_second,uint32_t serial_number_pt_1,uint32_t serial_number_pt_2,uint32_t serial_number_pt_3)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN];
-	_mav_put_uint32_t(buf, 0, magic_1);
-	_mav_put_uint32_t(buf, 4, magic_2);
-	_mav_put_uint32_t(buf, 8, magic_3);
-	_mav_put_uint32_t(buf, 12, serial_number_pt_1);
-	_mav_put_uint32_t(buf, 16, serial_number_pt_2);
-	_mav_put_uint32_t(buf, 20, serial_number_pt_3);
-	_mav_put_uint16_t(buf, 24, assembly_year);
-	_mav_put_uint8_t(buf, 26, target_system);
-	_mav_put_uint8_t(buf, 27, target_component);
-	_mav_put_uint8_t(buf, 28, assembly_month);
-	_mav_put_uint8_t(buf, 29, assembly_day);
-	_mav_put_uint8_t(buf, 30, assembly_hour);
-	_mav_put_uint8_t(buf, 31, assembly_minute);
-	_mav_put_uint8_t(buf, 32, assembly_second);
+    char buf[MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN];
+    _mav_put_uint32_t(buf, 0, magic_1);
+    _mav_put_uint32_t(buf, 4, magic_2);
+    _mav_put_uint32_t(buf, 8, magic_3);
+    _mav_put_uint32_t(buf, 12, serial_number_pt_1);
+    _mav_put_uint32_t(buf, 16, serial_number_pt_2);
+    _mav_put_uint32_t(buf, 20, serial_number_pt_3);
+    _mav_put_uint16_t(buf, 24, assembly_year);
+    _mav_put_uint8_t(buf, 26, target_system);
+    _mav_put_uint8_t(buf, 27, target_component);
+    _mav_put_uint8_t(buf, 28, assembly_month);
+    _mav_put_uint8_t(buf, 29, assembly_day);
+    _mav_put_uint8_t(buf, 30, assembly_hour);
+    _mav_put_uint8_t(buf, 31, assembly_minute);
+    _mav_put_uint8_t(buf, 32, assembly_second);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN);
 #else
-	mavlink_gimbal_set_factory_parameters_t packet;
-	packet.magic_1 = magic_1;
-	packet.magic_2 = magic_2;
-	packet.magic_3 = magic_3;
-	packet.serial_number_pt_1 = serial_number_pt_1;
-	packet.serial_number_pt_2 = serial_number_pt_2;
-	packet.serial_number_pt_3 = serial_number_pt_3;
-	packet.assembly_year = assembly_year;
-	packet.target_system = target_system;
-	packet.target_component = target_component;
-	packet.assembly_month = assembly_month;
-	packet.assembly_day = assembly_day;
-	packet.assembly_hour = assembly_hour;
-	packet.assembly_minute = assembly_minute;
-	packet.assembly_second = assembly_second;
+    mavlink_gimbal_set_factory_parameters_t packet;
+    packet.magic_1 = magic_1;
+    packet.magic_2 = magic_2;
+    packet.magic_3 = magic_3;
+    packet.serial_number_pt_1 = serial_number_pt_1;
+    packet.serial_number_pt_2 = serial_number_pt_2;
+    packet.serial_number_pt_3 = serial_number_pt_3;
+    packet.assembly_year = assembly_year;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
+    packet.assembly_month = assembly_month;
+    packet.assembly_day = assembly_day;
+    packet.assembly_hour = assembly_hour;
+    packet.assembly_minute = assembly_minute;
+    packet.assembly_second = assembly_second;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS;
+    msg->msgid = MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_CRC);
 #else
@@ -202,7 +202,7 @@ static inline uint16_t mavlink_msg_gimbal_set_factory_parameters_pack_chan(uint8
  */
 static inline uint16_t mavlink_msg_gimbal_set_factory_parameters_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_gimbal_set_factory_parameters_t* gimbal_set_factory_parameters)
 {
-	return mavlink_msg_gimbal_set_factory_parameters_pack(system_id, component_id, msg, gimbal_set_factory_parameters->target_system, gimbal_set_factory_parameters->target_component, gimbal_set_factory_parameters->magic_1, gimbal_set_factory_parameters->magic_2, gimbal_set_factory_parameters->magic_3, gimbal_set_factory_parameters->assembly_year, gimbal_set_factory_parameters->assembly_month, gimbal_set_factory_parameters->assembly_day, gimbal_set_factory_parameters->assembly_hour, gimbal_set_factory_parameters->assembly_minute, gimbal_set_factory_parameters->assembly_second, gimbal_set_factory_parameters->serial_number_pt_1, gimbal_set_factory_parameters->serial_number_pt_2, gimbal_set_factory_parameters->serial_number_pt_3);
+    return mavlink_msg_gimbal_set_factory_parameters_pack(system_id, component_id, msg, gimbal_set_factory_parameters->target_system, gimbal_set_factory_parameters->target_component, gimbal_set_factory_parameters->magic_1, gimbal_set_factory_parameters->magic_2, gimbal_set_factory_parameters->magic_3, gimbal_set_factory_parameters->assembly_year, gimbal_set_factory_parameters->assembly_month, gimbal_set_factory_parameters->assembly_day, gimbal_set_factory_parameters->assembly_hour, gimbal_set_factory_parameters->assembly_minute, gimbal_set_factory_parameters->assembly_second, gimbal_set_factory_parameters->serial_number_pt_1, gimbal_set_factory_parameters->serial_number_pt_2, gimbal_set_factory_parameters->serial_number_pt_3);
 }
 
 /**
@@ -216,7 +216,7 @@ static inline uint16_t mavlink_msg_gimbal_set_factory_parameters_encode(uint8_t 
  */
 static inline uint16_t mavlink_msg_gimbal_set_factory_parameters_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_gimbal_set_factory_parameters_t* gimbal_set_factory_parameters)
 {
-	return mavlink_msg_gimbal_set_factory_parameters_pack_chan(system_id, component_id, chan, msg, gimbal_set_factory_parameters->target_system, gimbal_set_factory_parameters->target_component, gimbal_set_factory_parameters->magic_1, gimbal_set_factory_parameters->magic_2, gimbal_set_factory_parameters->magic_3, gimbal_set_factory_parameters->assembly_year, gimbal_set_factory_parameters->assembly_month, gimbal_set_factory_parameters->assembly_day, gimbal_set_factory_parameters->assembly_hour, gimbal_set_factory_parameters->assembly_minute, gimbal_set_factory_parameters->assembly_second, gimbal_set_factory_parameters->serial_number_pt_1, gimbal_set_factory_parameters->serial_number_pt_2, gimbal_set_factory_parameters->serial_number_pt_3);
+    return mavlink_msg_gimbal_set_factory_parameters_pack_chan(system_id, component_id, chan, msg, gimbal_set_factory_parameters->target_system, gimbal_set_factory_parameters->target_component, gimbal_set_factory_parameters->magic_1, gimbal_set_factory_parameters->magic_2, gimbal_set_factory_parameters->magic_3, gimbal_set_factory_parameters->assembly_year, gimbal_set_factory_parameters->assembly_month, gimbal_set_factory_parameters->assembly_day, gimbal_set_factory_parameters->assembly_hour, gimbal_set_factory_parameters->assembly_minute, gimbal_set_factory_parameters->assembly_second, gimbal_set_factory_parameters->serial_number_pt_1, gimbal_set_factory_parameters->serial_number_pt_2, gimbal_set_factory_parameters->serial_number_pt_3);
 }
 
 /**
@@ -243,21 +243,21 @@ static inline uint16_t mavlink_msg_gimbal_set_factory_parameters_encode_chan(uin
 static inline void mavlink_msg_gimbal_set_factory_parameters_send(mavlink_channel_t chan, uint8_t target_system, uint8_t target_component, uint32_t magic_1, uint32_t magic_2, uint32_t magic_3, uint16_t assembly_year, uint8_t assembly_month, uint8_t assembly_day, uint8_t assembly_hour, uint8_t assembly_minute, uint8_t assembly_second, uint32_t serial_number_pt_1, uint32_t serial_number_pt_2, uint32_t serial_number_pt_3)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN];
-	_mav_put_uint32_t(buf, 0, magic_1);
-	_mav_put_uint32_t(buf, 4, magic_2);
-	_mav_put_uint32_t(buf, 8, magic_3);
-	_mav_put_uint32_t(buf, 12, serial_number_pt_1);
-	_mav_put_uint32_t(buf, 16, serial_number_pt_2);
-	_mav_put_uint32_t(buf, 20, serial_number_pt_3);
-	_mav_put_uint16_t(buf, 24, assembly_year);
-	_mav_put_uint8_t(buf, 26, target_system);
-	_mav_put_uint8_t(buf, 27, target_component);
-	_mav_put_uint8_t(buf, 28, assembly_month);
-	_mav_put_uint8_t(buf, 29, assembly_day);
-	_mav_put_uint8_t(buf, 30, assembly_hour);
-	_mav_put_uint8_t(buf, 31, assembly_minute);
-	_mav_put_uint8_t(buf, 32, assembly_second);
+    char buf[MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN];
+    _mav_put_uint32_t(buf, 0, magic_1);
+    _mav_put_uint32_t(buf, 4, magic_2);
+    _mav_put_uint32_t(buf, 8, magic_3);
+    _mav_put_uint32_t(buf, 12, serial_number_pt_1);
+    _mav_put_uint32_t(buf, 16, serial_number_pt_2);
+    _mav_put_uint32_t(buf, 20, serial_number_pt_3);
+    _mav_put_uint16_t(buf, 24, assembly_year);
+    _mav_put_uint8_t(buf, 26, target_system);
+    _mav_put_uint8_t(buf, 27, target_component);
+    _mav_put_uint8_t(buf, 28, assembly_month);
+    _mav_put_uint8_t(buf, 29, assembly_day);
+    _mav_put_uint8_t(buf, 30, assembly_hour);
+    _mav_put_uint8_t(buf, 31, assembly_minute);
+    _mav_put_uint8_t(buf, 32, assembly_second);
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS, buf, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_CRC);
@@ -265,21 +265,21 @@ static inline void mavlink_msg_gimbal_set_factory_parameters_send(mavlink_channe
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS, buf, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN);
 #endif
 #else
-	mavlink_gimbal_set_factory_parameters_t packet;
-	packet.magic_1 = magic_1;
-	packet.magic_2 = magic_2;
-	packet.magic_3 = magic_3;
-	packet.serial_number_pt_1 = serial_number_pt_1;
-	packet.serial_number_pt_2 = serial_number_pt_2;
-	packet.serial_number_pt_3 = serial_number_pt_3;
-	packet.assembly_year = assembly_year;
-	packet.target_system = target_system;
-	packet.target_component = target_component;
-	packet.assembly_month = assembly_month;
-	packet.assembly_day = assembly_day;
-	packet.assembly_hour = assembly_hour;
-	packet.assembly_minute = assembly_minute;
-	packet.assembly_second = assembly_second;
+    mavlink_gimbal_set_factory_parameters_t packet;
+    packet.magic_1 = magic_1;
+    packet.magic_2 = magic_2;
+    packet.magic_3 = magic_3;
+    packet.serial_number_pt_1 = serial_number_pt_1;
+    packet.serial_number_pt_2 = serial_number_pt_2;
+    packet.serial_number_pt_3 = serial_number_pt_3;
+    packet.assembly_year = assembly_year;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
+    packet.assembly_month = assembly_month;
+    packet.assembly_day = assembly_day;
+    packet.assembly_hour = assembly_hour;
+    packet.assembly_minute = assembly_minute;
+    packet.assembly_second = assembly_second;
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS, (const char *)&packet, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_CRC);
@@ -300,21 +300,21 @@ static inline void mavlink_msg_gimbal_set_factory_parameters_send(mavlink_channe
 static inline void mavlink_msg_gimbal_set_factory_parameters_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t target_system, uint8_t target_component, uint32_t magic_1, uint32_t magic_2, uint32_t magic_3, uint16_t assembly_year, uint8_t assembly_month, uint8_t assembly_day, uint8_t assembly_hour, uint8_t assembly_minute, uint8_t assembly_second, uint32_t serial_number_pt_1, uint32_t serial_number_pt_2, uint32_t serial_number_pt_3)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char *buf = (char *)msgbuf;
-	_mav_put_uint32_t(buf, 0, magic_1);
-	_mav_put_uint32_t(buf, 4, magic_2);
-	_mav_put_uint32_t(buf, 8, magic_3);
-	_mav_put_uint32_t(buf, 12, serial_number_pt_1);
-	_mav_put_uint32_t(buf, 16, serial_number_pt_2);
-	_mav_put_uint32_t(buf, 20, serial_number_pt_3);
-	_mav_put_uint16_t(buf, 24, assembly_year);
-	_mav_put_uint8_t(buf, 26, target_system);
-	_mav_put_uint8_t(buf, 27, target_component);
-	_mav_put_uint8_t(buf, 28, assembly_month);
-	_mav_put_uint8_t(buf, 29, assembly_day);
-	_mav_put_uint8_t(buf, 30, assembly_hour);
-	_mav_put_uint8_t(buf, 31, assembly_minute);
-	_mav_put_uint8_t(buf, 32, assembly_second);
+    char *buf = (char *)msgbuf;
+    _mav_put_uint32_t(buf, 0, magic_1);
+    _mav_put_uint32_t(buf, 4, magic_2);
+    _mav_put_uint32_t(buf, 8, magic_3);
+    _mav_put_uint32_t(buf, 12, serial_number_pt_1);
+    _mav_put_uint32_t(buf, 16, serial_number_pt_2);
+    _mav_put_uint32_t(buf, 20, serial_number_pt_3);
+    _mav_put_uint16_t(buf, 24, assembly_year);
+    _mav_put_uint8_t(buf, 26, target_system);
+    _mav_put_uint8_t(buf, 27, target_component);
+    _mav_put_uint8_t(buf, 28, assembly_month);
+    _mav_put_uint8_t(buf, 29, assembly_day);
+    _mav_put_uint8_t(buf, 30, assembly_hour);
+    _mav_put_uint8_t(buf, 31, assembly_minute);
+    _mav_put_uint8_t(buf, 32, assembly_second);
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS, buf, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_CRC);
@@ -322,21 +322,21 @@ static inline void mavlink_msg_gimbal_set_factory_parameters_send_buf(mavlink_me
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS, buf, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN);
 #endif
 #else
-	mavlink_gimbal_set_factory_parameters_t *packet = (mavlink_gimbal_set_factory_parameters_t *)msgbuf;
-	packet->magic_1 = magic_1;
-	packet->magic_2 = magic_2;
-	packet->magic_3 = magic_3;
-	packet->serial_number_pt_1 = serial_number_pt_1;
-	packet->serial_number_pt_2 = serial_number_pt_2;
-	packet->serial_number_pt_3 = serial_number_pt_3;
-	packet->assembly_year = assembly_year;
-	packet->target_system = target_system;
-	packet->target_component = target_component;
-	packet->assembly_month = assembly_month;
-	packet->assembly_day = assembly_day;
-	packet->assembly_hour = assembly_hour;
-	packet->assembly_minute = assembly_minute;
-	packet->assembly_second = assembly_second;
+    mavlink_gimbal_set_factory_parameters_t *packet = (mavlink_gimbal_set_factory_parameters_t *)msgbuf;
+    packet->magic_1 = magic_1;
+    packet->magic_2 = magic_2;
+    packet->magic_3 = magic_3;
+    packet->serial_number_pt_1 = serial_number_pt_1;
+    packet->serial_number_pt_2 = serial_number_pt_2;
+    packet->serial_number_pt_3 = serial_number_pt_3;
+    packet->assembly_year = assembly_year;
+    packet->target_system = target_system;
+    packet->target_component = target_component;
+    packet->assembly_month = assembly_month;
+    packet->assembly_day = assembly_day;
+    packet->assembly_hour = assembly_hour;
+    packet->assembly_minute = assembly_minute;
+    packet->assembly_second = assembly_second;
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS, (const char *)packet, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN, MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_CRC);
@@ -359,7 +359,7 @@ static inline void mavlink_msg_gimbal_set_factory_parameters_send_buf(mavlink_me
  */
 static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_target_system(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  26);
+    return _MAV_RETURN_uint8_t(msg,  26);
 }
 
 /**
@@ -369,7 +369,7 @@ static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_target_syste
  */
 static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_target_component(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  27);
+    return _MAV_RETURN_uint8_t(msg,  27);
 }
 
 /**
@@ -379,7 +379,7 @@ static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_target_compo
  */
 static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_magic_1(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint32_t(msg,  0);
+    return _MAV_RETURN_uint32_t(msg,  0);
 }
 
 /**
@@ -389,7 +389,7 @@ static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_magic_1(con
  */
 static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_magic_2(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint32_t(msg,  4);
+    return _MAV_RETURN_uint32_t(msg,  4);
 }
 
 /**
@@ -399,7 +399,7 @@ static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_magic_2(con
  */
 static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_magic_3(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint32_t(msg,  8);
+    return _MAV_RETURN_uint32_t(msg,  8);
 }
 
 /**
@@ -409,7 +409,7 @@ static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_magic_3(con
  */
 static inline uint16_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_year(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint16_t(msg,  24);
+    return _MAV_RETURN_uint16_t(msg,  24);
 }
 
 /**
@@ -419,7 +419,7 @@ static inline uint16_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_ye
  */
 static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_month(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  28);
+    return _MAV_RETURN_uint8_t(msg,  28);
 }
 
 /**
@@ -429,7 +429,7 @@ static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_mon
  */
 static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_day(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  29);
+    return _MAV_RETURN_uint8_t(msg,  29);
 }
 
 /**
@@ -439,7 +439,7 @@ static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_day
  */
 static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_hour(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  30);
+    return _MAV_RETURN_uint8_t(msg,  30);
 }
 
 /**
@@ -449,7 +449,7 @@ static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_hou
  */
 static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_minute(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  31);
+    return _MAV_RETURN_uint8_t(msg,  31);
 }
 
 /**
@@ -459,7 +459,7 @@ static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_min
  */
 static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_second(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  32);
+    return _MAV_RETURN_uint8_t(msg,  32);
 }
 
 /**
@@ -469,7 +469,7 @@ static inline uint8_t mavlink_msg_gimbal_set_factory_parameters_get_assembly_sec
  */
 static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_serial_number_pt_1(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint32_t(msg,  12);
+    return _MAV_RETURN_uint32_t(msg,  12);
 }
 
 /**
@@ -479,7 +479,7 @@ static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_serial_numb
  */
 static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_serial_number_pt_2(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint32_t(msg,  16);
+    return _MAV_RETURN_uint32_t(msg,  16);
 }
 
 /**
@@ -489,7 +489,7 @@ static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_serial_numb
  */
 static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_serial_number_pt_3(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint32_t(msg,  20);
+    return _MAV_RETURN_uint32_t(msg,  20);
 }
 
 /**
@@ -501,21 +501,21 @@ static inline uint32_t mavlink_msg_gimbal_set_factory_parameters_get_serial_numb
 static inline void mavlink_msg_gimbal_set_factory_parameters_decode(const mavlink_message_t* msg, mavlink_gimbal_set_factory_parameters_t* gimbal_set_factory_parameters)
 {
 #if MAVLINK_NEED_BYTE_SWAP
-	gimbal_set_factory_parameters->magic_1 = mavlink_msg_gimbal_set_factory_parameters_get_magic_1(msg);
-	gimbal_set_factory_parameters->magic_2 = mavlink_msg_gimbal_set_factory_parameters_get_magic_2(msg);
-	gimbal_set_factory_parameters->magic_3 = mavlink_msg_gimbal_set_factory_parameters_get_magic_3(msg);
-	gimbal_set_factory_parameters->serial_number_pt_1 = mavlink_msg_gimbal_set_factory_parameters_get_serial_number_pt_1(msg);
-	gimbal_set_factory_parameters->serial_number_pt_2 = mavlink_msg_gimbal_set_factory_parameters_get_serial_number_pt_2(msg);
-	gimbal_set_factory_parameters->serial_number_pt_3 = mavlink_msg_gimbal_set_factory_parameters_get_serial_number_pt_3(msg);
-	gimbal_set_factory_parameters->assembly_year = mavlink_msg_gimbal_set_factory_parameters_get_assembly_year(msg);
-	gimbal_set_factory_parameters->target_system = mavlink_msg_gimbal_set_factory_parameters_get_target_system(msg);
-	gimbal_set_factory_parameters->target_component = mavlink_msg_gimbal_set_factory_parameters_get_target_component(msg);
-	gimbal_set_factory_parameters->assembly_month = mavlink_msg_gimbal_set_factory_parameters_get_assembly_month(msg);
-	gimbal_set_factory_parameters->assembly_day = mavlink_msg_gimbal_set_factory_parameters_get_assembly_day(msg);
-	gimbal_set_factory_parameters->assembly_hour = mavlink_msg_gimbal_set_factory_parameters_get_assembly_hour(msg);
-	gimbal_set_factory_parameters->assembly_minute = mavlink_msg_gimbal_set_factory_parameters_get_assembly_minute(msg);
-	gimbal_set_factory_parameters->assembly_second = mavlink_msg_gimbal_set_factory_parameters_get_assembly_second(msg);
+    gimbal_set_factory_parameters->magic_1 = mavlink_msg_gimbal_set_factory_parameters_get_magic_1(msg);
+    gimbal_set_factory_parameters->magic_2 = mavlink_msg_gimbal_set_factory_parameters_get_magic_2(msg);
+    gimbal_set_factory_parameters->magic_3 = mavlink_msg_gimbal_set_factory_parameters_get_magic_3(msg);
+    gimbal_set_factory_parameters->serial_number_pt_1 = mavlink_msg_gimbal_set_factory_parameters_get_serial_number_pt_1(msg);
+    gimbal_set_factory_parameters->serial_number_pt_2 = mavlink_msg_gimbal_set_factory_parameters_get_serial_number_pt_2(msg);
+    gimbal_set_factory_parameters->serial_number_pt_3 = mavlink_msg_gimbal_set_factory_parameters_get_serial_number_pt_3(msg);
+    gimbal_set_factory_parameters->assembly_year = mavlink_msg_gimbal_set_factory_parameters_get_assembly_year(msg);
+    gimbal_set_factory_parameters->target_system = mavlink_msg_gimbal_set_factory_parameters_get_target_system(msg);
+    gimbal_set_factory_parameters->target_component = mavlink_msg_gimbal_set_factory_parameters_get_target_component(msg);
+    gimbal_set_factory_parameters->assembly_month = mavlink_msg_gimbal_set_factory_parameters_get_assembly_month(msg);
+    gimbal_set_factory_parameters->assembly_day = mavlink_msg_gimbal_set_factory_parameters_get_assembly_day(msg);
+    gimbal_set_factory_parameters->assembly_hour = mavlink_msg_gimbal_set_factory_parameters_get_assembly_hour(msg);
+    gimbal_set_factory_parameters->assembly_minute = mavlink_msg_gimbal_set_factory_parameters_get_assembly_minute(msg);
+    gimbal_set_factory_parameters->assembly_second = mavlink_msg_gimbal_set_factory_parameters_get_assembly_second(msg);
 #else
-	memcpy(gimbal_set_factory_parameters, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN);
+    memcpy(gimbal_set_factory_parameters, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_GIMBAL_SET_FACTORY_PARAMETERS_LEN);
 #endif
 }

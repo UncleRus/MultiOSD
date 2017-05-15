@@ -17,9 +17,9 @@ typedef struct __mavlink_gopro_power_on_t
 
 
 #define MAVLINK_MESSAGE_INFO_GOPRO_POWER_ON { \
-	"GOPRO_POWER_ON", \
-	2, \
-	{  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_gopro_power_on_t, target_system) }, \
+    "GOPRO_POWER_ON", \
+    2, \
+    {  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_gopro_power_on_t, target_system) }, \
          { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 1, offsetof(mavlink_gopro_power_on_t, target_component) }, \
          } \
 }
@@ -36,23 +36,23 @@ typedef struct __mavlink_gopro_power_on_t
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gopro_power_on_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-						       uint8_t target_system, uint8_t target_component)
+                               uint8_t target_system, uint8_t target_component)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN];
-	_mav_put_uint8_t(buf, 0, target_system);
-	_mav_put_uint8_t(buf, 1, target_component);
+    char buf[MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN];
+    _mav_put_uint8_t(buf, 0, target_system);
+    _mav_put_uint8_t(buf, 1, target_component);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN);
 #else
-	mavlink_gopro_power_on_t packet;
-	packet.target_system = target_system;
-	packet.target_component = target_component;
+    mavlink_gopro_power_on_t packet;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_GOPRO_POWER_ON;
+    msg->msgid = MAVLINK_MSG_ID_GOPRO_POWER_ON;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN, MAVLINK_MSG_ID_GOPRO_POWER_ON_CRC);
 #else
@@ -71,24 +71,24 @@ static inline uint16_t mavlink_msg_gopro_power_on_pack(uint8_t system_id, uint8_
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gopro_power_on_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-							   mavlink_message_t* msg,
-						           uint8_t target_system,uint8_t target_component)
+                               mavlink_message_t* msg,
+                                   uint8_t target_system,uint8_t target_component)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN];
-	_mav_put_uint8_t(buf, 0, target_system);
-	_mav_put_uint8_t(buf, 1, target_component);
+    char buf[MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN];
+    _mav_put_uint8_t(buf, 0, target_system);
+    _mav_put_uint8_t(buf, 1, target_component);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN);
 #else
-	mavlink_gopro_power_on_t packet;
-	packet.target_system = target_system;
-	packet.target_component = target_component;
+    mavlink_gopro_power_on_t packet;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_GOPRO_POWER_ON;
+    msg->msgid = MAVLINK_MSG_ID_GOPRO_POWER_ON;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN, MAVLINK_MSG_ID_GOPRO_POWER_ON_CRC);
 #else
@@ -106,7 +106,7 @@ static inline uint16_t mavlink_msg_gopro_power_on_pack_chan(uint8_t system_id, u
  */
 static inline uint16_t mavlink_msg_gopro_power_on_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_gopro_power_on_t* gopro_power_on)
 {
-	return mavlink_msg_gopro_power_on_pack(system_id, component_id, msg, gopro_power_on->target_system, gopro_power_on->target_component);
+    return mavlink_msg_gopro_power_on_pack(system_id, component_id, msg, gopro_power_on->target_system, gopro_power_on->target_component);
 }
 
 /**
@@ -120,7 +120,7 @@ static inline uint16_t mavlink_msg_gopro_power_on_encode(uint8_t system_id, uint
  */
 static inline uint16_t mavlink_msg_gopro_power_on_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_gopro_power_on_t* gopro_power_on)
 {
-	return mavlink_msg_gopro_power_on_pack_chan(system_id, component_id, chan, msg, gopro_power_on->target_system, gopro_power_on->target_component);
+    return mavlink_msg_gopro_power_on_pack_chan(system_id, component_id, chan, msg, gopro_power_on->target_system, gopro_power_on->target_component);
 }
 
 /**
@@ -135,9 +135,9 @@ static inline uint16_t mavlink_msg_gopro_power_on_encode_chan(uint8_t system_id,
 static inline void mavlink_msg_gopro_power_on_send(mavlink_channel_t chan, uint8_t target_system, uint8_t target_component)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN];
-	_mav_put_uint8_t(buf, 0, target_system);
-	_mav_put_uint8_t(buf, 1, target_component);
+    char buf[MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN];
+    _mav_put_uint8_t(buf, 0, target_system);
+    _mav_put_uint8_t(buf, 1, target_component);
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GOPRO_POWER_ON, buf, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN, MAVLINK_MSG_ID_GOPRO_POWER_ON_CRC);
@@ -145,9 +145,9 @@ static inline void mavlink_msg_gopro_power_on_send(mavlink_channel_t chan, uint8
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GOPRO_POWER_ON, buf, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN);
 #endif
 #else
-	mavlink_gopro_power_on_t packet;
-	packet.target_system = target_system;
-	packet.target_component = target_component;
+    mavlink_gopro_power_on_t packet;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GOPRO_POWER_ON, (const char *)&packet, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN, MAVLINK_MSG_ID_GOPRO_POWER_ON_CRC);
@@ -168,9 +168,9 @@ static inline void mavlink_msg_gopro_power_on_send(mavlink_channel_t chan, uint8
 static inline void mavlink_msg_gopro_power_on_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t target_system, uint8_t target_component)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char *buf = (char *)msgbuf;
-	_mav_put_uint8_t(buf, 0, target_system);
-	_mav_put_uint8_t(buf, 1, target_component);
+    char *buf = (char *)msgbuf;
+    _mav_put_uint8_t(buf, 0, target_system);
+    _mav_put_uint8_t(buf, 1, target_component);
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GOPRO_POWER_ON, buf, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN, MAVLINK_MSG_ID_GOPRO_POWER_ON_CRC);
@@ -178,9 +178,9 @@ static inline void mavlink_msg_gopro_power_on_send_buf(mavlink_message_t *msgbuf
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GOPRO_POWER_ON, buf, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN);
 #endif
 #else
-	mavlink_gopro_power_on_t *packet = (mavlink_gopro_power_on_t *)msgbuf;
-	packet->target_system = target_system;
-	packet->target_component = target_component;
+    mavlink_gopro_power_on_t *packet = (mavlink_gopro_power_on_t *)msgbuf;
+    packet->target_system = target_system;
+    packet->target_component = target_component;
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GOPRO_POWER_ON, (const char *)packet, MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN, MAVLINK_MSG_ID_GOPRO_POWER_ON_CRC);
@@ -203,7 +203,7 @@ static inline void mavlink_msg_gopro_power_on_send_buf(mavlink_message_t *msgbuf
  */
 static inline uint8_t mavlink_msg_gopro_power_on_get_target_system(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  0);
+    return _MAV_RETURN_uint8_t(msg,  0);
 }
 
 /**
@@ -213,7 +213,7 @@ static inline uint8_t mavlink_msg_gopro_power_on_get_target_system(const mavlink
  */
 static inline uint8_t mavlink_msg_gopro_power_on_get_target_component(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  1);
+    return _MAV_RETURN_uint8_t(msg,  1);
 }
 
 /**
@@ -225,9 +225,9 @@ static inline uint8_t mavlink_msg_gopro_power_on_get_target_component(const mavl
 static inline void mavlink_msg_gopro_power_on_decode(const mavlink_message_t* msg, mavlink_gopro_power_on_t* gopro_power_on)
 {
 #if MAVLINK_NEED_BYTE_SWAP
-	gopro_power_on->target_system = mavlink_msg_gopro_power_on_get_target_system(msg);
-	gopro_power_on->target_component = mavlink_msg_gopro_power_on_get_target_component(msg);
+    gopro_power_on->target_system = mavlink_msg_gopro_power_on_get_target_system(msg);
+    gopro_power_on->target_component = mavlink_msg_gopro_power_on_get_target_component(msg);
 #else
-	memcpy(gopro_power_on, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN);
+    memcpy(gopro_power_on, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_GOPRO_POWER_ON_LEN);
 #endif
 }

@@ -16,9 +16,9 @@ typedef struct __mavlink_gimbal_factory_parameters_loaded_t
 
 
 #define MAVLINK_MESSAGE_INFO_GIMBAL_FACTORY_PARAMETERS_LOADED { \
-	"GIMBAL_FACTORY_PARAMETERS_LOADED", \
-	1, \
-	{  { "dummy", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_gimbal_factory_parameters_loaded_t, dummy) }, \
+    "GIMBAL_FACTORY_PARAMETERS_LOADED", \
+    1, \
+    {  { "dummy", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_gimbal_factory_parameters_loaded_t, dummy) }, \
          } \
 }
 
@@ -33,21 +33,21 @@ typedef struct __mavlink_gimbal_factory_parameters_loaded_t
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gimbal_factory_parameters_loaded_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-						       uint8_t dummy)
+                               uint8_t dummy)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN];
-	_mav_put_uint8_t(buf, 0, dummy);
+    char buf[MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN];
+    _mav_put_uint8_t(buf, 0, dummy);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN);
 #else
-	mavlink_gimbal_factory_parameters_loaded_t packet;
-	packet.dummy = dummy;
+    mavlink_gimbal_factory_parameters_loaded_t packet;
+    packet.dummy = dummy;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED;
+    msg->msgid = MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_CRC);
 #else
@@ -65,22 +65,22 @@ static inline uint16_t mavlink_msg_gimbal_factory_parameters_loaded_pack(uint8_t
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gimbal_factory_parameters_loaded_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-							   mavlink_message_t* msg,
-						           uint8_t dummy)
+                               mavlink_message_t* msg,
+                                   uint8_t dummy)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN];
-	_mav_put_uint8_t(buf, 0, dummy);
+    char buf[MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN];
+    _mav_put_uint8_t(buf, 0, dummy);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN);
 #else
-	mavlink_gimbal_factory_parameters_loaded_t packet;
-	packet.dummy = dummy;
+    mavlink_gimbal_factory_parameters_loaded_t packet;
+    packet.dummy = dummy;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED;
+    msg->msgid = MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED;
 #if MAVLINK_CRC_EXTRA
     return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_CRC);
 #else
@@ -98,7 +98,7 @@ static inline uint16_t mavlink_msg_gimbal_factory_parameters_loaded_pack_chan(ui
  */
 static inline uint16_t mavlink_msg_gimbal_factory_parameters_loaded_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_gimbal_factory_parameters_loaded_t* gimbal_factory_parameters_loaded)
 {
-	return mavlink_msg_gimbal_factory_parameters_loaded_pack(system_id, component_id, msg, gimbal_factory_parameters_loaded->dummy);
+    return mavlink_msg_gimbal_factory_parameters_loaded_pack(system_id, component_id, msg, gimbal_factory_parameters_loaded->dummy);
 }
 
 /**
@@ -112,7 +112,7 @@ static inline uint16_t mavlink_msg_gimbal_factory_parameters_loaded_encode(uint8
  */
 static inline uint16_t mavlink_msg_gimbal_factory_parameters_loaded_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_gimbal_factory_parameters_loaded_t* gimbal_factory_parameters_loaded)
 {
-	return mavlink_msg_gimbal_factory_parameters_loaded_pack_chan(system_id, component_id, chan, msg, gimbal_factory_parameters_loaded->dummy);
+    return mavlink_msg_gimbal_factory_parameters_loaded_pack_chan(system_id, component_id, chan, msg, gimbal_factory_parameters_loaded->dummy);
 }
 
 /**
@@ -126,8 +126,8 @@ static inline uint16_t mavlink_msg_gimbal_factory_parameters_loaded_encode_chan(
 static inline void mavlink_msg_gimbal_factory_parameters_loaded_send(mavlink_channel_t chan, uint8_t dummy)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN];
-	_mav_put_uint8_t(buf, 0, dummy);
+    char buf[MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN];
+    _mav_put_uint8_t(buf, 0, dummy);
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED, buf, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_CRC);
@@ -135,8 +135,8 @@ static inline void mavlink_msg_gimbal_factory_parameters_loaded_send(mavlink_cha
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED, buf, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN);
 #endif
 #else
-	mavlink_gimbal_factory_parameters_loaded_t packet;
-	packet.dummy = dummy;
+    mavlink_gimbal_factory_parameters_loaded_t packet;
+    packet.dummy = dummy;
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED, (const char *)&packet, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_CRC);
@@ -157,8 +157,8 @@ static inline void mavlink_msg_gimbal_factory_parameters_loaded_send(mavlink_cha
 static inline void mavlink_msg_gimbal_factory_parameters_loaded_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t dummy)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char *buf = (char *)msgbuf;
-	_mav_put_uint8_t(buf, 0, dummy);
+    char *buf = (char *)msgbuf;
+    _mav_put_uint8_t(buf, 0, dummy);
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED, buf, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_CRC);
@@ -166,8 +166,8 @@ static inline void mavlink_msg_gimbal_factory_parameters_loaded_send_buf(mavlink
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED, buf, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN);
 #endif
 #else
-	mavlink_gimbal_factory_parameters_loaded_t *packet = (mavlink_gimbal_factory_parameters_loaded_t *)msgbuf;
-	packet->dummy = dummy;
+    mavlink_gimbal_factory_parameters_loaded_t *packet = (mavlink_gimbal_factory_parameters_loaded_t *)msgbuf;
+    packet->dummy = dummy;
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED, (const char *)packet, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN, MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_CRC);
@@ -190,7 +190,7 @@ static inline void mavlink_msg_gimbal_factory_parameters_loaded_send_buf(mavlink
  */
 static inline uint8_t mavlink_msg_gimbal_factory_parameters_loaded_get_dummy(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint8_t(msg,  0);
+    return _MAV_RETURN_uint8_t(msg,  0);
 }
 
 /**
@@ -202,8 +202,8 @@ static inline uint8_t mavlink_msg_gimbal_factory_parameters_loaded_get_dummy(con
 static inline void mavlink_msg_gimbal_factory_parameters_loaded_decode(const mavlink_message_t* msg, mavlink_gimbal_factory_parameters_loaded_t* gimbal_factory_parameters_loaded)
 {
 #if MAVLINK_NEED_BYTE_SWAP
-	gimbal_factory_parameters_loaded->dummy = mavlink_msg_gimbal_factory_parameters_loaded_get_dummy(msg);
+    gimbal_factory_parameters_loaded->dummy = mavlink_msg_gimbal_factory_parameters_loaded_get_dummy(msg);
 #else
-	memcpy(gimbal_factory_parameters_loaded, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN);
+    memcpy(gimbal_factory_parameters_loaded, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_GIMBAL_FACTORY_PARAMETERS_LOADED_LEN);
 #endif
 }

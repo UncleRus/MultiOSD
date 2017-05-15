@@ -22,9 +22,9 @@
 namespace adc
 {
 
-#define ADC_REF_AREF		0
-#define ADC_REF_AVCC		1
-#define ADC_REF_INTERNAL	3
+#define ADC_REF_AREF        0
+#define ADC_REF_AVCC        1
+#define ADC_REF_INTERNAL    3
 
 namespace settings
 {

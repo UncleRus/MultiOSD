@@ -84,11 +84,11 @@ struct FlightStatusControlChain
 
 struct FlightStatus
 {
-	FlightStatusArmed Armed;
-	FlightStatusFlightMode FlightMode;
-	FlightStatusFlightModeAssist FlightModeAssist;
-	FlightStatusAssistedControlState AssistedControlState;
-	FlightStatusAssistedThrottleState AssistedThrottleState;
+    FlightStatusArmed Armed;
+    FlightStatusFlightMode FlightMode;
+    FlightStatusFlightModeAssist FlightModeAssist;
+    FlightStatusAssistedControlState AssistedControlState;
+    FlightStatusAssistedThrottleState AssistedThrottleState;
     FlightStatusControlChain ControlChain;
 };
 

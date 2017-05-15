@@ -86,7 +86,7 @@
 #define OSD_DEFAULT_SWITCH_CHANNEL 6                      // switch input channel
 #define OSD_DEFAULT_SELECTOR_MIN 1000                     // us, minimal input channel value for selector mode
 #define OSD_DEFAULT_SELECTOR_MAX 2000                     // us, maximal input channel value for selector mode
-#define OSD_DEFAULT_TOGGLE_TRESHOLD	1200                  // us, input channel value threshold for toggle mode
+#define OSD_DEFAULT_TOGGLE_TRESHOLD 1200                  // us, input channel value threshold for toggle mode
 
 /*
  * UART config
@@ -113,7 +113,7 @@
 /*
  * ADC config
  */
-#define ADC_DEFAULT_REF	ADC_REF_INTERNAL                  // ADC reference voltage source: ADC_REF_AREF (0) / ADC_REF_AVCC (1) / ADC_REF_INTERNAL (2)
+#define ADC_DEFAULT_REF ADC_REF_INTERNAL                  // ADC reference voltage source: ADC_REF_AREF (0) / ADC_REF_AVCC (1) / ADC_REF_INTERNAL (2)
 #define ADC_DEFAULT_REF_VOLTAGE 1.1                       // ADC reference voltage value
 
 /*

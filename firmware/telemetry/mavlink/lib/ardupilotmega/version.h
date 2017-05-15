@@ -1,6 +1,6 @@
 /** @file
- *	@brief MAVLink comm protocol built from ardupilotmega.xml
- *	@see http://mavlink.org
+ *  @brief MAVLink comm protocol built from ardupilotmega.xml
+ *  @see http://mavlink.org
  */
 #ifndef MAVLINK_VERSION_H
 #define MAVLINK_VERSION_H

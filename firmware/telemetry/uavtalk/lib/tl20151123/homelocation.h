@@ -28,13 +28,13 @@ namespace tl20151123
 
 struct HomeLocation
 {
-	int32_t Latitude;
-	int32_t Longitude;
-	float Altitude;
-	float Be [3];
-	int16_t GroundTemperature;
-	uint16_t SeaLevelPressure;
-	bool Set;
+    int32_t Latitude;
+    int32_t Longitude;
+    float Altitude;
+    float Be [3];
+    int16_t GroundTemperature;
+    uint16_t SeaLevelPressure;
+    bool Set;
 };
 
 }  // namespace tl20151123

@@ -28,15 +28,15 @@ namespace dr201702131
 
 struct SystemStats
 {
-	uint32_t FlightTime;
-	uint32_t HeapRemaining;
-	uint32_t FastHeapRemaining;
-	uint32_t EventSystemWarningID;
-	uint32_t ObjectManagerCallbackID;
-	uint32_t ObjectManagerQueueID;
-	uint16_t IRQStackRemaining;
-	uint8_t CPULoad;
-	int8_t CPUTemp;
+    uint32_t FlightTime;
+    uint32_t HeapRemaining;
+    uint32_t FastHeapRemaining;
+    uint32_t EventSystemWarningID;
+    uint32_t ObjectManagerCallbackID;
+    uint32_t ObjectManagerQueueID;
+    uint16_t IRQStackRemaining;
+    uint8_t CPULoad;
+    int8_t CPUTemp;
 };
 
 }  // namespace dr201702131

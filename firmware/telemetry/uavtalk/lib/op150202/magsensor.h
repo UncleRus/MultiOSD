@@ -28,10 +28,10 @@ namespace op150202
 
 struct MagSensor
 {
-	float x;
-	float y;
-	float z;
-	float temperature;
+    float x;
+    float y;
+    float z;
+    float temperature;
 };
 
 }  // namespace op150202

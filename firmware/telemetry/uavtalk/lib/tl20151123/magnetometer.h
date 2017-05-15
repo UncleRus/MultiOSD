@@ -28,9 +28,9 @@ namespace tl20151123
 
 struct Magnetometer
 {
-	float x;
-	float y;
-	float z;
+    float x;
+    float y;
+    float z;
 };
 
 }  // namespace tl20151123

@@ -28,20 +28,20 @@ namespace tl20151123
 
 enum GCSTelemetryStatsStatus
 {
-	GCSTELEMETRYSTATS_STATUS_DISCONNECTED = 0,
-	GCSTELEMETRYSTATS_STATUS_HANDSHAKEREQ = 1,
-	GCSTELEMETRYSTATS_STATUS_HANDSHAKEACK = 2,
-	GCSTELEMETRYSTATS_STATUS_CONNECTED    = 3
+    GCSTELEMETRYSTATS_STATUS_DISCONNECTED = 0,
+    GCSTELEMETRYSTATS_STATUS_HANDSHAKEREQ = 1,
+    GCSTELEMETRYSTATS_STATUS_HANDSHAKEACK = 2,
+    GCSTELEMETRYSTATS_STATUS_CONNECTED    = 3
 };
 
 struct GCSTelemetryStats
 {
-	float TxDataRate;
-	float RxDataRate;
-	uint32_t TxFailures;
-	uint32_t RxFailures;
-	uint32_t TxRetries;
-	GCSTelemetryStatsStatus Status;
+    float TxDataRate;
+    float RxDataRate;
+    uint32_t TxFailures;
+    uint32_t RxFailures;
+    uint32_t TxRetries;
+    GCSTelemetryStatsStatus Status;
 };
 
 }  // namespace tl20151123

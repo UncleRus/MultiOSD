@@ -28,10 +28,10 @@ namespace tl20151123
 
 struct GPSVelocity
 {
-	float North;
-	float East;
-	float Down;
-	float Accuracy;
+    float North;
+    float East;
+    float Down;
+    float Accuracy;
 };
 
 }  // namespace tl20151123

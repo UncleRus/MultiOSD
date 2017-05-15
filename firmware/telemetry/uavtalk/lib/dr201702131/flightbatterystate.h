@@ -28,14 +28,14 @@ namespace dr201702131
 
 struct FlightBatteryState
 {
-	float Voltage;
-	float Current;
-	float BoardSupplyVoltage;
-	float PeakCurrent;
-	float AvgCurrent;
-	float ConsumedEnergy;
-	float EstimatedFlightTime;
-	uint8_t DetectedCellCount;
+    float Voltage;
+    float Current;
+    float BoardSupplyVoltage;
+    float PeakCurrent;
+    float AvgCurrent;
+    float ConsumedEnergy;
+    float EstimatedFlightTime;
+    uint8_t DetectedCellCount;
 };
 
 }  // namespace dr201702131

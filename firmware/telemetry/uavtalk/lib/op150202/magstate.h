@@ -27,17 +27,17 @@ namespace op150202
 #define UAVTALK_OP150202_MAGSTATE_OBJID 0x9FFEAA0C
 
 enum MagStateSource {
-	MAGSTATE_SOURCE_INVALID = 0,
-	MAGSTATE_SOURCE_ONBOARD = 1,
-	MAGSTATE_SOURCE_AUX     = 2
+    MAGSTATE_SOURCE_INVALID = 0,
+    MAGSTATE_SOURCE_ONBOARD = 1,
+    MAGSTATE_SOURCE_AUX     = 2
 };
 
 struct MagState
 {
-	float x;
-	float y;
-	float z;
-	MagStateSource Source;
+    float x;
+    float y;
+    float z;
+    MagStateSource Source;
 };
 
 }  // namespace op150202

@@ -16,7 +16,7 @@
 #define TELEMETRY_MSP_MSP_H_
 
 #ifdef MAIN_MODULE
-	#error Conflicting modules
+    #error Conflicting modules
 #endif
 #define MAIN_MODULE
 
@@ -35,8 +35,8 @@ const char __name [] PROGMEM = "MSP";
 
 namespace settings
 {
-	void init ();
-	void reset ();
+    void init ();
+    void reset ();
 }
 
 void init ();

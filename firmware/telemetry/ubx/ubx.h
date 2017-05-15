@@ -18,7 +18,7 @@
 #define TELEMETRY_UBX_UBX_H_
 
 #ifdef MAIN_MODULE
-	#error Conflicting modules
+    #error Conflicting modules
 #endif
 #define MAIN_MODULE
 
@@ -37,8 +37,8 @@ const char __name[] PROGMEM = "UBX";
 
 namespace settings
 {
-	void init ();
-	void reset ();
+    void init ();
+    void reset ();
 }
 
 void init ();
