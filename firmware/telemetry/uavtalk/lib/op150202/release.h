@@ -46,58 +46,58 @@ const bool instid_required = true;
 
 const uint32_t flightstatus_objid = UAVTALK_OP150202_FLIGHTSTATUS_OBJID;
 
-void update_connection ();
+void update_connection();
 
-void handle_attitudestate ();
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
-void handle_barosensor ();
+void handle_attitudestate();
+#if !defined(TELEMETRY_MODULES_I2C_BARO)
+void handle_barosensor();
 #endif
-#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
-void handle_flightbatterystate ();
+#if !defined(TELEMETRY_MODULES_ADC_BATTERY)
+void handle_flightbatterystate();
 #endif
-void handle_flightstatus ();
-void handle_flighttelemetrystats ();
-void handle_gpspositionsensor ();
-void handle_gpsvelocitysensor ();
-void handle_manualcontrolcommand ();
-void handle_positionstate ();
-void handle_magsensor ();
-void handle_magstate ();
-void handle_systemstats ();
+void handle_flightstatus();
+void handle_flighttelemetrystats();
+void handle_gpspositionsensor();
+void handle_gpsvelocitysensor();
+void handle_manualcontrolcommand();
+void handle_positionstate();
+void handle_magsensor();
+void handle_magstate();
+void handle_systemstats();
 
 namespace fm
 {
 
-	const char manu [] PROGMEM = "MANU";  // Manual
-	const char stb1 [] PROGMEM = "STB1";  // Stabilized 1
-	const char stb2 [] PROGMEM = "STB2";  // Stabilized 2
-	const char stb3 [] PROGMEM = "STB3";  // Stabilized 3
-	const char stb4 [] PROGMEM = "STB4";  // Stabilized 4
-	const char stb5 [] PROGMEM = "STB5";  // Stabilized 5
-	const char stb6 [] PROGMEM = "STB6";  // Stabilized 6
-	const char phld [] PROGMEM = "PHLD";  // Position Hold
-	const char clck [] PROGMEM = "CLCK";  // Course lock
-	const char roam [] PROGMEM = "ROAM";  // Position Roam
-	const char hlea [] PROGMEM = "HLEA";  // Home Leash
-	const char absp [] PROGMEM = "ABSP";  // Absolute Position
-	const char rtb  [] PROGMEM = "RTB ";  // Return to Base
-	const char land [] PROGMEM = "LAND";  // Land
-	const char plan [] PROGMEM = "PLAN";  // Path Planner
-	const char poi  [] PROGMEM = "POI ";  // Point of Interest
-	const char acru [] PROGMEM = "ACRU";  // Aurocruise
+	const char manu[] PROGMEM = "MANU";  // Manual
+	const char stb1[] PROGMEM = "STB1";  // Stabilized 1
+	const char stb2[] PROGMEM = "STB2";  // Stabilized 2
+	const char stb3[] PROGMEM = "STB3";  // Stabilized 3
+	const char stb4[] PROGMEM = "STB4";  // Stabilized 4
+	const char stb5[] PROGMEM = "STB5";  // Stabilized 5
+	const char stb6[] PROGMEM = "STB6";  // Stabilized 6
+	const char phld[] PROGMEM = "PHLD";  // Position Hold
+	const char clck[] PROGMEM = "CLCK";  // Course lock
+	const char roam[] PROGMEM = "ROAM";  // Position Roam
+	const char hlea[] PROGMEM = "HLEA";  // Home Leash
+	const char absp[] PROGMEM = "ABSP";  // Absolute Position
+	const char rtb [] PROGMEM = "RTB ";  // Return to Base
+	const char land[] PROGMEM = "LAND";  // Land
+	const char plan[] PROGMEM = "PLAN";  // Path Planner
+	const char poi [] PROGMEM = "POI ";  // Point of Interest
+	const char acru[] PROGMEM = "ACRU";  // Aurocruise
 
-	const char * const names [] PROGMEM = {
+	const char * const names[] PROGMEM = {
 		manu, stb1, stb2, stb3, stb4,
 		stb5, phld, clck, roam, hlea,
 		absp, rtb,  land, plan, poi,
 		acru
 	};
 
-	const uint8_t size = sizeof (names);
+	const uint8_t size = sizeof(names) / sizeof(char *);
 
 }  // namespace fm
 
-const obj_handler_t handlers [] PROGMEM = {
+const obj_handler_t handlers[] PROGMEM = {
 	{UAVTALK_OP150202_FLIGHTSTATUS_OBJID,         handle_flightstatus},
 	{UAVTALK_OP150202_ATTITUDESTATE_OBJID,        handle_attitudestate},
 #if !defined (TELEMETRY_MODULES_I2C_BARO)

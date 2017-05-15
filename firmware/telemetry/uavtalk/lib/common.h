@@ -54,25 +54,25 @@ struct header_t
 	uint32_t objid;
 	uint16_t instid;
 
-	header_t () :
-		sync (UAVTALK_SYNC), msg_type (0), length (0), objid (0), instid (0)
+	header_t() :
+		sync(UAVTALK_SYNC), msg_type(0), length(0), objid(0), instid(0)
 	{}
 
-	header_t (uint8_t msg_type_, uint16_t length_, uint32_t objid_) :
-		sync (UAVTALK_SYNC), msg_type (msg_type_), length (length_), objid (objid_), instid (0)
+	header_t(uint8_t msg_type_, uint16_t length_, uint32_t objid_) :
+		sync(UAVTALK_SYNC), msg_type(msg_type_), length(length_), objid(objid_), instid(0)
 	{}
 };
 
 struct message_t
 {
 	header_t head;
-	uint8_t data [255];
+	uint8_t data[255];
 	uint8_t crc;
 };
 
 struct obj_handler_t
 {
-	typedef void (* callable_t) ();
+	typedef void (* callable_t)();
 
 	uint32_t objid;
 	callable_t handler;
@@ -88,13 +88,14 @@ struct release_t
 };
 
 extern bool internal_home_calc;
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
+#if !defined(TELEMETRY_MODULES_I2C_BARO)
 extern bool baro_enabled;
 #endif
-#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+#if !defined(TELEMETRY_MODULES_I2C_COMPASS)
 extern bool mag_enabled;
+extern bool use_attituide_heading;
 #endif
-#if !defined (TELEMETRY_MODULES_ADC_RSSI)
+#if !defined(TELEMETRY_MODULES_ADC_RSSI)
 extern bool emulate_rssi;
 #endif
 extern uint8_t release_idx;
@@ -106,18 +107,18 @@ extern uint32_t connection_timeout;
 extern message_t buffer;
 bool parse (uint8_t b);
 
-uint8_t __attribute__ ((noinline)) get_crc (uint8_t b);
-void send (const header_t &head, uint8_t *data = NULL, uint8_t size = 0);
-void request_object (uint32_t obj_id);
+uint8_t __attribute__ ((noinline)) get_crc(uint8_t b);
+void send(const header_t &head, uint8_t *data = NULL, uint8_t size = 0);
+void request_object(uint32_t obj_id);
 
 // flight mode name
-const char *get_fm_name_p (uint8_t fm);
+const char *get_fm_name_p(uint8_t fm);
 // handle current UAVObject
-bool handle ();
+bool handle();
 // timeout, resend GCSTelemetryStats
-void update_connection ();
+void update_connection();
 // init
-void set_release ();
+void set_release();
 
 
 UT_NAMESPACE_CLOSE

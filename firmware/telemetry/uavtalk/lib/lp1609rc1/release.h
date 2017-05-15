@@ -40,9 +40,9 @@ const uint32_t flightstatus_objid = UAVTALK_LP1609RC1_FLIGHTSTATUS_OBJID;
 
 namespace fm
 {
-	const char tune [] PROGMEM = "TUNE";
+	const char tune[] PROGMEM = "TUNE";
 
-	const char * const names [] PROGMEM = {
+	const char * const names[] PROGMEM = {
 		UAVTALK_OP150202::fm::manu, UAVTALK_OP150202::fm::stb1, UAVTALK_OP150202::fm::stb2, UAVTALK_OP150202::fm::stb3,
 		UAVTALK_OP150202::fm::stb4, UAVTALK_OP150202::fm::stb5, UAVTALK_OP150202::fm::stb6, UAVTALK_OP150202::fm::phld,
 		UAVTALK_OP150202::fm::clck, UAVTALK_OP150202::fm::roam, UAVTALK_OP150202::fm::hlea, UAVTALK_OP150202::fm::absp,
@@ -53,7 +53,7 @@ namespace fm
 	const uint8_t size = sizeof (names) / sizeof (char *);
 }
 
-const obj_handler_t handlers [] PROGMEM = {
+const obj_handler_t handlers[] PROGMEM = {
 	{UAVTALK_LP1609RC1_FLIGHTSTATUS_OBJID,        UAVTALK_OP150202::handle_flightstatus},         // new obj_id
 	{UAVTALK_OP150202_ATTITUDESTATE_OBJID,        UAVTALK_OP150202::handle_attitudestate},
 #if !defined (TELEMETRY_MODULES_I2C_BARO)

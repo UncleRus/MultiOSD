@@ -42,6 +42,7 @@
 #define UAVTALK_GCSTELEMETRYSTATS_UPDATE_INTERVAL 500     // ms
 #define UAVTALK_DEFAULT_INTERNAL_HOME_CALC 1              // Home distance/direction calculation: 0 - by flight controller, 1 - by MultiOSD (GPS-based)
 #define UAVTALK_DEFAULT_EMULATE_RSSI 0                    // Emulate RSSI value based on input connection state. It's always on with OpenPilot/LibrePilot
+#define UAVTALK_DEFAULT_ATT_HEADING 1                     // Use attitude data for heading source
 
 /*
  * MAVLink config

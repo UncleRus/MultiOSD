@@ -43,10 +43,10 @@ namespace dbgconsole
 
 extern FILE stream;
 
-void init ();
-void send (uint8_t b);
-void send_string (const char *s);
-void send_string_p (const char *progmem_s);
+void init();
+void send(uint8_t b);
+void send_string(const char *s);
+void send_string_p(const char *progmem_s);
 
 }  // namespace dbgconsole
 

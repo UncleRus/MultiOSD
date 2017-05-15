@@ -33,7 +33,7 @@ namespace modules
 namespace ubx
 {
 
-const char __name [] PROGMEM = "UBX";
+const char __name[] PROGMEM = "UBX";
 
 namespace settings
 {

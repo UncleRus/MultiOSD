@@ -32,14 +32,21 @@
 namespace settings
 {
 
-enum option_type_t { ot_bool = 0, ot_uint8, ot_uint16, ot_uint32, ot_float, ot_str };
+enum option_type_t {
+    ot_bool = 0,
+    ot_uint8,
+    ot_uint16,
+    ot_uint32,
+    ot_float,
+    ot_str
+};
 
 struct option_t
 {
-	const char *name_p;
-	option_type_t type;
-	uint8_t size;
-	void *addr;
+    const char *name_p;
+    option_type_t type;
+    uint8_t size;
+    void *addr;
 };
 
 #define declare_bool_option(NAME, ADDR) { NAME, ::settings::ot_bool, 1, ADDR }
@@ -51,40 +58,48 @@ struct option_t
 
 struct section_t
 {
-	const option_t *options;
-	uint8_t size;
+    const option_t *options;
+    uint8_t size;
 };
 
-extern section_t sections [SETTINGS_MAX_SECTIONS];
+extern section_t sections[SETTINGS_MAX_SECTIONS];
 extern uint8_t sections_count;
 
 // Define options
-void append_section (const option_t *options, uint8_t size);
+void append_section(const option_t *options, uint8_t size);
 
 // Get option by name
-const option_t *get_option (const char *name);
+const option_t *get_option(const char *name);
 
 // Read option value by pointer
-uint8_t read_uint8_option (const option_t *option);
-inline bool read_bool_option (const option_t *option) { return (bool) read_uint8_option (option); };
-uint16_t read_uint16_option (const option_t *option);
-uint32_t read_uint32_option (const option_t *option);
-float read_float_option (const option_t *option);
-void read_str_option (const option_t *option, char *dest);
+uint8_t read_uint8_option(const option_t *option);
+inline bool read_bool_option(const option_t *option)
+{
+    return (bool) read_uint8_option(option);
+}
+
+uint16_t read_uint16_option(const option_t *option);
+uint32_t read_uint32_option(const option_t *option);
+float read_float_option(const option_t *option);
+void read_str_option(const option_t *option, char *dest);
 
 // Write option value by name
-void write_uint8_option (const char *name, uint8_t value);
-inline void write_bool_option (const char *name, bool value) { write_uint8_option (name, value); };
-void write_uint16_option (const char *name, uint16_t value);
-void write_uint32_option (const char *name, uint32_t value);
-void write_float_option (const char *name, float value);
-void write_str_option (const char *name, const char *value);
+void write_uint8_option(const char *name, uint8_t value);
+inline void write_bool_option(const char *name, bool value)
+{
+    write_uint8_option(name, value);
+}
+
+void write_uint16_option(const char *name, uint16_t value);
+void write_uint32_option(const char *name, uint32_t value);
+void write_float_option(const char *name, float value);
+void write_str_option(const char *name, const char *value);
 
 // Check EEPROM header & version and reset if needed
-void init ();
+void init();
 
 // Write default settings to EEPROM
-void reset ();
+void reset();
 
 }
 

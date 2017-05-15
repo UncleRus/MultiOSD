@@ -21,7 +21,7 @@ namespace boot
 {
 
 // Show the bootscreen and check UART input.
-bool show ();
+bool show();
 
 }
 

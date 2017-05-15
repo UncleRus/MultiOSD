@@ -29,18 +29,18 @@ namespace adc
 namespace settings
 {
 
-	extern bool initialized;
-	extern uint8_t ref_source;
-	extern float ref_voltage;
+    extern bool initialized;
+    extern uint8_t ref_source;
+    extern float ref_voltage;
 
-	void init ();
-	void reset ();
+    void init();
+    void reset();
 
 }  // namespace settings
 
-void init ();
-uint16_t read (uint8_t channel);
-float value (uint8_t channel, float multiplier);
+void init();
+uint16_t read(uint8_t channel);
+float value(uint8_t channel, float multiplier);
 
 }
 

@@ -120,8 +120,8 @@ struct header_t
     uint8_t id;
     uint16_t len;
 
-    header_t (uint8_t cls_ = 0, uint8_t id_ = 0, uint16_t len_ = 0)
-    	: cls (cls_), id (id_), len (len_)
+    header_t(uint8_t cls_ = 0, uint8_t id_ = 0, uint16_t len_ = 0) :
+            cls(cls_), id(id_), len(len_)
     {}
 };
 
@@ -206,42 +206,42 @@ struct ack_nack_t
 
 union payload_t
 {
-	uint8_t data [1];
-	nav_posllh_t nav_posllh;
-	nav_status_t nav_status;
-	nav_dop_t nav_dop;
-	nav_sol_t nav_sol;
-	nav_velned_t nav_velned;
-	ack_nack_t ack_nak;
+    uint8_t data[1];
+    nav_posllh_t nav_posllh;
+    nav_status_t nav_status;
+    nav_dop_t nav_dop;
+    nav_sol_t nav_sol;
+    nav_velned_t nav_velned;
+    ack_nack_t ack_nak;
 };
 
 struct crc_t
 {
-	uint8_t a;
-	uint8_t b;
+    uint8_t a;
+    uint8_t b;
 
-	crc_t (uint8_t a_ = 0, uint8_t b_ = 0)
-		: a (a_), b (b_)
-	{}
+    crc_t(uint8_t a_ = 0, uint8_t b_ = 0) :
+            a(a_), b(b_)
+    {}
 
-	void update (uint8_t byte)
-	{
-		a += byte;
-		b += a;
-	}
+    void update(uint8_t byte)
+    {
+        a += byte;
+        b += a;
+    }
 
-	void reset ()
-	{
-		a = 0;
-		b = 0;
-	}
+    void reset()
+    {
+        a = 0;
+        b = 0;
+    }
 };
 
 struct packet_t
 {
-	header_t header;
-	payload_t payload;
-	crc_t crc;
+    header_t header;
+    payload_t payload;
+    crc_t crc;
 };
 
 }  // namespace ubx

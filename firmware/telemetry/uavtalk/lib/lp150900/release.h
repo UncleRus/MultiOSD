@@ -4,7 +4,7 @@
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *(at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -36,22 +36,22 @@ const bool instid_required = true;
 
 const uint32_t flightstatus_objid = UAVTALK_OP150502_FLIGHTSTATUS_OBJID;
 
-void handle_manualcontrolcommand ();
+void handle_manualcontrolcommand();
 
 const obj_handler_t handlers [] PROGMEM = {
 	{UAVTALK_OP150502_FLIGHTSTATUS_OBJID,         UAVTALK_OP150202::handle_flightstatus},
 	{UAVTALK_OP150202_ATTITUDESTATE_OBJID,        UAVTALK_OP150202::handle_attitudestate},
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
+#if !defined(TELEMETRY_MODULES_I2C_BARO)
 	{UAVTALK_OP150202_BAROSENSOR_OBJID,           UAVTALK_OP150202::handle_barosensor},
 #endif
-#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
+#if !defined(TELEMETRY_MODULES_ADC_BATTERY)
 	{UAVTALK_OP150202_FLIGHTBATTERYSTATE_OBJID,   UAVTALK_OP150202::handle_flightbatterystate},
 #endif
 	{UAVTALK_OP150202_FLIGHTTELEMETRYSTATS_OBJID, UAVTALK_OP150202::handle_flighttelemetrystats},
 	{UAVTALK_LP150900_GPSPOSITIONSENSOR_OBJID,    UAVTALK_OP150202::handle_gpspositionsensor}, // new obj_id, structs are pretty the same
 	{UAVTALK_OP150202_GPSVELOCITYSENSOR_OBJID,    UAVTALK_OP150202::handle_gpsvelocitysensor},
 	{UAVTALK_LP150900_MANUALCONTROLCOMMAND_OBJID, UAVTALK_LP150900::handle_manualcontrolcommand}, // new struct
-#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+#if !defined(TELEMETRY_MODULES_I2C_COMPASS)
 	{UAVTALK_OP150202_MAGSENSOR_OBJID,            UAVTALK_OP150202::handle_magsensor},
 	{UAVTALK_OP150202_MAGSTATE_OBJID,             UAVTALK_OP150202::handle_magstate},
 #endif

@@ -4,7 +4,7 @@
  * MultiOSD is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *(at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -38,8 +38,8 @@ enum gps_state_t
 namespace settings
 {
 
-	void init ();
-	void reset ();
+	void init();
+	void reset();
 
 }  // namespace settings
 
@@ -81,7 +81,7 @@ namespace input
 	extern int8_t   yaw;                       // percents
 	extern uint16_t channels [INPUT_CHANNELS]; // raw values
 
-	void set_rssi (uint8_t value);
+	void set_rssi(uint8_t value);
 }
 
 namespace gps
@@ -99,7 +99,7 @@ namespace gps
 	extern float vdop;
 	extern float pdop;
 
-	void update (bool update_home, bool update_alt_climb);
+	void update(bool update_home, bool update_alt_climb);
 }
 
 namespace barometer
@@ -123,7 +123,8 @@ namespace stable
 		DISABLED = 0,
 		GPS = 1,
 		INTERNAL_MAG = 2,
-		EXTERNAL_MAG = 3
+		EXTERNAL_MAG = 3,
+		FLIGHT_CONTROLLER = 4
 	};
 
 	extern float    climb;        // m/s
@@ -133,8 +134,8 @@ namespace stable
 	extern uint16_t heading;      // degrees, 0..360
 	extern heading_source_t heading_source;
 
-	void update_alt_climb (float altitude);
-	void calc_heading (float x, float y);
+	void update_alt_climb(float altitude);
+	void calc_heading(float x, float y);
 }
 
 namespace battery
@@ -149,12 +150,12 @@ namespace battery
 		float   amperage;      // Amperes
 		float   consumed;      // mAh
 
-		battery_t ()
-			: voltage (0), cells (0), cell_voltage (0), level (0), low (true), amperage (0), consumed (0)
+		battery_t()
+			: voltage(0), cells(0), cell_voltage(0), level(0), low(true), amperage(0), consumed(0)
 		{}
 
-		void set_voltage (float value, bool calc_cells);
-		void set_amperage (float value, uint16_t interval);
+		void set_voltage(float value, bool calc_cells);
+		void set_amperage(float value, uint16_t interval);
 	};
 
 	extern battery_t battery1;
@@ -179,10 +180,10 @@ namespace home
 	extern float        altitude;  // meters
 
 	// try to fix home position
-	void fix ();
+	void fix();
 
 	// read gps and recalc
-	void update ();
+	void update();
 }
 
 namespace waypoint
@@ -193,24 +194,24 @@ namespace waypoint
 	extern uint16_t distance; // meters, distance to active waypoint
 	extern uint16_t bearing;  // degrees, 0..360
 
-	void set_bearing (int16_t value);
+	void set_bearing(int16_t value);
 	// set current waypoint
-	void set (uint8_t value);
+	void set(uint8_t value);
 }
 
-void init ();
-bool update ();
+void init();
+bool update();
 
-typedef bool (* parser_t) (uint8_t b);
-bool receive (parser_t parser);
+typedef bool (* parser_t)(uint8_t b);
+bool receive(parser_t parser);
 
 namespace modules
 {
 
 	struct module_t
 	{
-		typedef void (* proc_t) ();
-		typedef bool (* update_t) ();
+		typedef void(* proc_t)();
+		typedef bool(* update_t)();
 
 		const char *name_p;
 		proc_t init_settings;
@@ -223,29 +224,29 @@ namespace modules
 	extern const module_t modules [] PROGMEM;
 	extern const uint8_t count;
 
-	inline const char *name_p (uint8_t module)
+	inline const char *name_p(uint8_t module)
 	{
-		return (const char *) pgm_read_ptr (&modules [module].name_p);
+		return (const char *) pgm_read_ptr(&modules [module].name_p);
 	}
 
-	inline void init_settings (uint8_t module)
+	inline void init_settings(uint8_t module)
 	{
-		((module_t::proc_t) pgm_read_ptr (&modules [module].init_settings)) ();
+		((module_t::proc_t) pgm_read_ptr(&modules [module].init_settings))();
 	}
 
-	inline void reset_settings (uint8_t module)
+	inline void reset_settings(uint8_t module)
 	{
-		((module_t::proc_t) pgm_read_ptr (&modules [module].reset_settings)) ();
+		((module_t::proc_t) pgm_read_ptr(&modules [module].reset_settings))();
 	}
 
-	inline void init (uint8_t module)
+	inline void init(uint8_t module)
 	{
-		((module_t::proc_t) pgm_read_ptr (&modules [module].init)) ();
+		((module_t::proc_t) pgm_read_ptr(&modules [module].init))();
 	}
 
-	inline bool update (uint8_t module)
+	inline bool update(uint8_t module)
 	{
-		return ((module_t::update_t) pgm_read_ptr (&modules [module].update)) ();
+		return ((module_t::update_t) pgm_read_ptr(&modules [module].update))();
 	}
 
 }

@@ -20,7 +20,7 @@
 #include <avr/pgmspace.h>
 
 #ifndef pgm_read_ptr
-#define pgm_read_ptr(x) ((void *) pgm_read_word (x))
+#define pgm_read_ptr(x) ((void *)pgm_read_word(x))
 #endif
 
 #endif /* LIB_PGMSPACE_H_ */

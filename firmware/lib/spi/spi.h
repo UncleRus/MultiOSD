@@ -22,10 +22,9 @@
 namespace spi
 {
 
-void init ();
-uint8_t transfer (uint8_t value);
+void init();
+uint8_t transfer(uint8_t value);
 
 }
-
 
 #endif /* LIB_SPI_SPI_H_ */

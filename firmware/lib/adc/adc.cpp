@@ -27,29 +27,30 @@ namespace settings
 {
 
 #define EEPROM_ADDR_REF     _eeprom_byte (ADC_EEPROM_OFFSET)
-#define EEPROM_ADDR_VOLTAGE _eeprom_float (ADC_EEPROM_OFFSET + 1)
+#define EEPROM_ADDR_VOLTAGE _eeprom_float(ADC_EEPROM_OFFSET + 1)
 
-const char __opt_ref [] PROGMEM = "ADCREF";
-const char __opt_ref_voltage [] PROGMEM = "ADCUREF";
+const char __opt_adcref [] PROGMEM = "ADCREF";
+const char __opt_adcuref[] PROGMEM = "ADCUREF";
 
-const ::settings::option_t __settings [] PROGMEM = {
-	declare_uint8_option (__opt_ref, EEPROM_ADDR_REF),
-	declare_float_option (__opt_ref_voltage, EEPROM_ADDR_VOLTAGE),
+const ::settings::option_t __settings[] PROGMEM = {
+    declare_uint8_option (__opt_adcref, EEPROM_ADDR_REF),
+    declare_float_option (__opt_adcuref, EEPROM_ADDR_VOLTAGE),
 };
 
 bool initialized = false;
 
-void init ()
+void init()
 {
-	if (initialized) return;
-	::settings::append_section (__settings, sizeof (__settings) / sizeof (::settings::option_t));
-	initialized = true;
+    if (initialized)
+        return;
+    ::settings::append_section(__settings, sizeof(__settings) / sizeof(::settings::option_t));
+    initialized = true;
 }
 
-void reset ()
+void reset()
 {
-	eeprom_write_byte (EEPROM_ADDR_REF, ADC_DEFAULT_REF);
-	eeprom_write_float (EEPROM_ADDR_VOLTAGE, ADC_DEFAULT_REF_VOLTAGE);
+    eeprom_write_byte(EEPROM_ADDR_REF, ADC_DEFAULT_REF);
+    eeprom_write_float(EEPROM_ADDR_VOLTAGE, ADC_DEFAULT_REF_VOLTAGE);
 }
 
 uint8_t ref_source;
@@ -59,29 +60,29 @@ float ref_voltage;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void init ()
+void init()
 {
-	settings::ref_source = eeprom_read_byte (EEPROM_ADDR_REF);
-	settings::ref_voltage = eeprom_read_float (EEPROM_ADDR_VOLTAGE);
+    settings::ref_source = eeprom_read_byte(EEPROM_ADDR_REF);
+    settings::ref_voltage = eeprom_read_float(EEPROM_ADDR_VOLTAGE);
 
-	ADMUX = settings::ref_source << 6;
-	ADCSRA |= _BV (ADEN) | _BV (ADPS0) | _BV (ADPS1) | _BV (ADPS2);
+    ADMUX = settings::ref_source << 6;
+    ADCSRA |= _BV (ADEN) | _BV(ADPS0) | _BV(ADPS1) | _BV(ADPS2);
 }
 
 // TODO: Interrupt-based conversions
 
-uint16_t read (uint8_t channel)
+uint16_t read(uint8_t channel)
 {
-	ADMUX = (settings::ref_source << 6) | (channel & 0x0f);
-	ADCSRA |= _BV (ADSC);
-	loop_until_bit_is_clear (ADCSRA, ADSC);
-	ADCSRA |= _BV (ADIF);
-	return ADC;
+    ADMUX = (settings::ref_source << 6) | (channel & 0x0f);
+    ADCSRA |= _BV(ADSC);
+    loop_until_bit_is_clear(ADCSRA, ADSC);
+    ADCSRA |= _BV(ADIF);
+    return ADC;
 }
 
-float value (uint8_t channel, float multiplier)
+float value(uint8_t channel, float multiplier)
 {
-	return (read (channel) / 1024.0 * settings::ref_voltage) * multiplier;
+    return (read(channel) / 1024.0 * settings::ref_voltage) * multiplier;
 }
 
 }  // namespace adc

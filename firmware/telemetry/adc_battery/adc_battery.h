@@ -28,16 +28,16 @@ namespace modules
 namespace adc_battery
 {
 
-const char __name [] PROGMEM = "ADCBattery";
+const char __name[] PROGMEM = "ADCBattery";
 
 namespace settings
 {
-	void init ();
-	void reset ();
+    void init();
+    void reset();
 }
 
-void init ();
-bool update ();
+void init();
+bool update();
 
 }  // namespace adc_battery
 

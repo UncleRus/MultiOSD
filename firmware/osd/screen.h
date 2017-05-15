@@ -25,31 +25,30 @@ namespace osd
 namespace screen
 {
 
-	struct panel_pos_t
-	{
-		uint8_t panel;
-		uint8_t x;
-		uint8_t y;
-	};
+    struct panel_pos_t
+    {
+        uint8_t panel;
+        uint8_t x;
+        uint8_t y;
+    };
 
-	void load (uint8_t num);
-	void update ();
-	void draw ();
+    void load(uint8_t num);
+    void update();
+    void draw();
 
-	extern volatile bool updated;
+    extern volatile bool updated;
 
-	uint8_t *eeprom_offset (uint8_t num, uint8_t panel = 0)  __attribute__ ((noinline));
+    uint8_t *eeprom_offset(uint8_t num, uint8_t panel = 0) __attribute__ ((noinline));
 
-	namespace settings
-	{
+    namespace settings
+    {
 
-		void reset ();
+        void reset();
 
-	}  // namespace settings
+    }  // namespace settings
 
 }  // namespace screen
 
 }
-
 
 #endif /* OSD_SCREEN_H_ */

@@ -26,15 +26,16 @@
 UT_NAMESPACE_OPEN
 
 bool internal_home_calc;
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
+#if !defined(TELEMETRY_MODULES_I2C_BARO)
 bool baro_enabled = false;
 #endif
-#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+#if !defined(TELEMETRY_MODULES_I2C_COMPASS)
 bool mag_enabled = false;
+bool use_attituide_heading = true;
 #endif
 uint8_t release_idx = 0;
 release_t release;
-#if !defined (TELEMETRY_MODULES_ADC_RSSI)
+#if !defined(TELEMETRY_MODULES_ADC_RSSI)
 bool emulate_rssi = false;
 #endif
 uint8_t header_len;
@@ -44,7 +45,7 @@ uint32_t connection_timeout = 0;
 
 message_t buffer;
 
-const uint8_t crc_table [256] PROGMEM =
+const uint8_t crc_table[256] PROGMEM =
 {
 	0x00, 0x07, 0x0e, 0x09, 0x1c, 0x1b, 0x12, 0x15, 0x38, 0x3f, 0x36, 0x31, 0x24, 0x23, 0x2a, 0x2d,
 	0x70, 0x77, 0x7e, 0x79, 0x6c, 0x6b, 0x62, 0x65, 0x48, 0x4f, 0x46, 0x41, 0x54, 0x53, 0x5a, 0x5d,
@@ -64,33 +65,33 @@ const uint8_t crc_table [256] PROGMEM =
 	0xde, 0xd9, 0xd0, 0xd7, 0xc2, 0xc5, 0xcc, 0xcb, 0xe6, 0xe1, 0xe8, 0xef, 0xfa, 0xfd, 0xf4, 0xf3
 };
 
-uint8_t __attribute__ ((noinline)) get_crc (uint8_t b)
+uint8_t __attribute__((noinline)) get_crc(uint8_t b)
 {
-	return pgm_read_byte (&crc_table [b]);
+    return pgm_read_byte(&crc_table[b]);
 }
 
-void send (const header_t &head, uint8_t *data, uint8_t size)
+void send(const header_t &head, uint8_t *data, uint8_t size)
 {
-	uint8_t crc = 0;
-	uint8_t *offset = (uint8_t *) &head;
-	for (uint8_t i = 0; i < header_len; i ++, offset ++)
-	{
-		crc = get_crc (crc ^ *offset);
-		TELEMETRY_UART::send (*offset);
-	}
-	for (uint8_t i = 0; i < size; i ++)
-	{
-		uint8_t value = data ? *(data + i) : 0;
-		crc = get_crc (crc ^ value);
-		TELEMETRY_UART::send (value);
-	}
-	TELEMETRY_UART::send (crc);
+    uint8_t crc = 0;
+    uint8_t *offset = (uint8_t *)&head;
+    for (uint8_t i = 0; i < header_len; i ++, offset ++)
+    {
+        crc = get_crc(crc ^ *offset);
+        TELEMETRY_UART::send(*offset);
+    }
+    for (uint8_t i = 0; i < size; i ++)
+    {
+        uint8_t value = data ? *(data + i) : 0;
+        crc = get_crc(crc ^ value);
+        TELEMETRY_UART::send(value);
+    }
+    TELEMETRY_UART::send(crc);
 }
 
-void request_object (uint32_t obj_id)
+void request_object(uint32_t obj_id)
 {
-	header_t h (_UT_TYPE_OBJ_REQ, header_len, obj_id);
-	send (h, NULL, 0);
+    header_t h(_UT_TYPE_OBJ_REQ, header_len, obj_id);
+    send(h, NULL, 0);
 }
 
 enum parser_state_t
@@ -119,7 +120,7 @@ bool parse (uint8_t b)
 	{
 		case PS_SYNC:
 			if (b != UAVTALK_SYNC) return false;
-			parser_crc = get_crc (b);
+			parser_crc = get_crc(b);
 			buffer.head.sync = b;
 			buffer.head.length = 0;
 			buffer.head.objid = 0;
@@ -132,17 +133,17 @@ bool parse (uint8_t b)
 				parser_state = PS_SYNC;
 				return false;
 			}
-			_update_crc (b);
+			_update_crc(b);
 			buffer.head.msg_type = b;
 			parser_step = 0;
 			parser_state = PS_LENGTH;
 			break;
 		case PS_LENGTH:
-			_receive_byte (buffer.head.length, b);
-			_update_crc (b);
+			_receive_byte(buffer.head.length, b);
+			_update_crc(b);
 			if (parser_step == 2)
 			{
-				if (buffer.head.length < header_len || buffer.head.length > 0xff + (uint16_t) header_len)
+				if (buffer.head.length < header_len || buffer.head.length > 0xff + (uint16_t)header_len)
 				{
 					parser_state = PS_SYNC;
 					return false;
@@ -152,8 +153,8 @@ bool parse (uint8_t b)
 			}
 			break;
 		case PS_OBJID:
-			_receive_byte (buffer.head.objid, b);
-			_update_crc (b);
+			_receive_byte(buffer.head.objid, b);
+			_update_crc(b);
 			if (parser_step == 4)
 			{
 				if (release.instid_required) parser_state = PS_INSTID;
@@ -162,8 +163,8 @@ bool parse (uint8_t b)
 			}
 			break;
 		case PS_INSTID:
-			_receive_byte (buffer.head.instid, b);
-			_update_crc (b);
+			_receive_byte(buffer.head.instid, b);
+			_update_crc(b);
 			if (parser_step == 2)
 			{
 				parser_state = buffer.head.length == header_len ? PS_CRC : PS_DATA;
@@ -171,8 +172,8 @@ bool parse (uint8_t b)
 			}
 			break;
 		case PS_DATA:
-			_update_crc (b);
-			buffer.data [parser_step] = b;
+			_update_crc(b);
+			buffer.data[parser_step] = b;
 			parser_step ++;
 			if (parser_step >= buffer.head.length - header_len) parser_state = PS_CRC;
 			break;
@@ -192,7 +193,7 @@ bool parse (uint8_t b)
 			header_t head;
 			head.objid = buffer.head.objid;
 			head.msg_type = _UT_TYPE_ACK;
-			send (head);
+			send(head);
 		}
 		return res;
 	}
@@ -211,41 +212,43 @@ const release_t releases [] PROGMEM = {
 	{ dr201702131::instid_required, dr201702131::flightstatus_objid, dr201702131::handlers, dr201702131::fm::names, dr201702131::fm::size },
 };
 
-const char *get_fm_name_p (uint8_t fm)
+const char *get_fm_name_p(uint8_t fm)
 {
-	return fm < release.fm_count ? (const char *) pgm_read_ptr (&release.fm_names [fm]) : NULL;
+	return fm < release.fm_count ? (const char *)pgm_read_ptr(&release.fm_names[fm]) : NULL;
 }
 
-bool handle ()
+bool handle()
 {
-	const obj_handler_t *handler = release.handlers;
-	while (true)
-	{
-		uint32_t objid = pgm_read_dword (&handler->objid);
-		if (objid == buffer.head.objid)
-		{
-			((obj_handler_t::callable_t) pgm_read_ptr (&handler->handler)) ();
-			return true;
-		}
-		if (!objid) break;
-		handler ++;
-	}
-	return false;
+    const obj_handler_t *handler = release.handlers;
+    while (true)
+    {
+        uint32_t objid = pgm_read_dword(&handler->objid);
+        if (objid == buffer.head.objid)
+        {
+            ((obj_handler_t::callable_t)pgm_read_ptr(&handler->handler))();
+            return true;
+        }
+        if (!objid) break;
+        handler ++;
+    }
+    return false;
 }
 
-void set_release ()
+void set_release()
 {
-	if (release_idx >= sizeof (releases) / sizeof (release_t))
+	if (release_idx >= sizeof(releases) / sizeof(release_t))
 		release_idx = UAVTALK_DEFAULT_RELEASE;
 
-	memcpy_P (&release, &releases [release_idx], sizeof (release_t));
-	header_len = release.instid_required ? sizeof (header_t) : sizeof (header_t) - sizeof (uint16_t);
+	memcpy_P(&release, &releases[release_idx], sizeof(release_t));
+	header_len = release.instid_required
+        ? sizeof(header_t)
+        : sizeof(header_t) - sizeof(uint16_t);
 }
 
-void update_connection ()
+void update_connection()
 {
 	buffer.head.objid = 0;
-	handle ();
+	handle();
 }
 
 UT_NAMESPACE_CLOSE

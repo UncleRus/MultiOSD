@@ -29,27 +29,27 @@ namespace telemetry
 namespace settings
 {
 
-#define EEPROM_ADDR_MIN_CELL_VOLTAGE   _eeprom_float (TELEMETRY_EEPROM_OFFSET)
-#define EEPROM_ADDR_NOM_CELL_VOLTAGE   _eeprom_float (TELEMETRY_EEPROM_OFFSET + 4)
-#define EEPROM_ADDR_MAX_CELL_VOLTAGE   _eeprom_float (TELEMETRY_EEPROM_OFFSET + 8)
-#define EEPROM_ADDR_LOW_VOLTAGE        _eeprom_float (TELEMETRY_EEPROM_OFFSET + 12)
-#define EEPROM_ADDR_RSSI_LOW_THRESHOLD _eeprom_byte  (TELEMETRY_EEPROM_OFFSET + 16)
-#define EEPROM_ADDR_CALLSIGN           _eeprom_str   (TELEMETRY_EEPROM_OFFSET + 17)
+#define EEPROM_ADDR_MIN_CELL_VOLTAGE   _eeprom_float(TELEMETRY_EEPROM_OFFSET)
+#define EEPROM_ADDR_NOM_CELL_VOLTAGE   _eeprom_float(TELEMETRY_EEPROM_OFFSET + 4)
+#define EEPROM_ADDR_MAX_CELL_VOLTAGE   _eeprom_float(TELEMETRY_EEPROM_OFFSET + 8)
+#define EEPROM_ADDR_LOW_VOLTAGE        _eeprom_float(TELEMETRY_EEPROM_OFFSET + 12)
+#define EEPROM_ADDR_RSSI_LOW_THRESHOLD _eeprom_byte (TELEMETRY_EEPROM_OFFSET + 16)
+#define EEPROM_ADDR_CALLSIGN           _eeprom_str  (TELEMETRY_EEPROM_OFFSET + 17)
 
-const char __opt_mincv [] PROGMEM = "MINCV";
-const char __opt_nomcv [] PROGMEM = "NOMCV";
-const char __opt_maxcv [] PROGMEM = "MAXCV";
-const char __opt_lowcv [] PROGMEM = "LOWCV";
-const char __opt_rlt   [] PROGMEM = "RLT";
-const char __opt_csign [] PROGMEM = "CSIGN";
+const char __opt_mincv[] PROGMEM = "MINCV";
+const char __opt_nomcv[] PROGMEM = "NOMCV";
+const char __opt_maxcv[] PROGMEM = "MAXCV";
+const char __opt_lowcv[] PROGMEM = "LOWCV";
+const char __opt_rlt  [] PROGMEM = "RLT";
+const char __opt_csign[] PROGMEM = "CSIGN";
 
-const ::settings::option_t __settings [] PROGMEM = {
-	declare_float_option (__opt_mincv, EEPROM_ADDR_MIN_CELL_VOLTAGE),
-	declare_float_option (__opt_nomcv, EEPROM_ADDR_NOM_CELL_VOLTAGE),
-	declare_float_option (__opt_maxcv, EEPROM_ADDR_MAX_CELL_VOLTAGE),
-	declare_float_option (__opt_lowcv, EEPROM_ADDR_LOW_VOLTAGE),
-	declare_uint8_option (__opt_rlt,   EEPROM_ADDR_RSSI_LOW_THRESHOLD),
-	declare_str_option   (__opt_csign, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH),
+const ::settings::option_t __settings[] PROGMEM = {
+	declare_float_option(__opt_mincv, EEPROM_ADDR_MIN_CELL_VOLTAGE),
+	declare_float_option(__opt_nomcv, EEPROM_ADDR_NOM_CELL_VOLTAGE),
+	declare_float_option(__opt_maxcv, EEPROM_ADDR_MAX_CELL_VOLTAGE),
+	declare_float_option(__opt_lowcv, EEPROM_ADDR_LOW_VOLTAGE),
+	declare_uint8_option(__opt_rlt,   EEPROM_ADDR_RSSI_LOW_THRESHOLD),
+	declare_str_option  (__opt_csign, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH),
 };
 
 struct settings_t
@@ -59,42 +59,42 @@ struct settings_t
 	float max_cell_voltage;
 	float low_cell_voltage;
 	uint8_t rssi_low_thresh;
-	char callsign [TELEMETRY_CALLSIGN_LENGTH + 1];
+	char callsign[TELEMETRY_CALLSIGN_LENGTH + 1];
 
-	settings_t ()
+	settings_t()
 	{
-		min_cell_voltage = eeprom_read_float (EEPROM_ADDR_MIN_CELL_VOLTAGE);
-		nom_cell_voltage = eeprom_read_float (EEPROM_ADDR_NOM_CELL_VOLTAGE);
-		max_cell_voltage = eeprom_read_float (EEPROM_ADDR_MAX_CELL_VOLTAGE);
-		low_cell_voltage = eeprom_read_float (EEPROM_ADDR_LOW_VOLTAGE);
-		rssi_low_thresh = eeprom_read_byte (EEPROM_ADDR_RSSI_LOW_THRESHOLD);
-		eeprom_read_block (callsign, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH);
-		callsign [TELEMETRY_CALLSIGN_LENGTH] = 0;
+		min_cell_voltage = eeprom_read_float(EEPROM_ADDR_MIN_CELL_VOLTAGE);
+		nom_cell_voltage = eeprom_read_float(EEPROM_ADDR_NOM_CELL_VOLTAGE);
+		max_cell_voltage = eeprom_read_float(EEPROM_ADDR_MAX_CELL_VOLTAGE);
+		low_cell_voltage = eeprom_read_float(EEPROM_ADDR_LOW_VOLTAGE);
+		rssi_low_thresh = eeprom_read_byte(EEPROM_ADDR_RSSI_LOW_THRESHOLD);
+		eeprom_read_block(callsign, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH);
+		callsign[TELEMETRY_CALLSIGN_LENGTH] = 0;
 	}
 };
 
-void init ()
+void init()
 {
-	::settings::append_section (__settings, sizeof (__settings) / sizeof (::settings::option_t));
+	::settings::append_section(__settings, sizeof(__settings) / sizeof(::settings::option_t));
 
-	for (uint8_t i = 0; i < modules::count; i ++)
-		modules::init_settings (i);
+	for(uint8_t i = 0; i < modules::count; i ++)
+		modules::init_settings(i);
 }
 
-const char default_callsign [] PROGMEM = TELEMETRY_DEFAULT_CALLSIGN;
+const char default_callsign[] PROGMEM = TELEMETRY_DEFAULT_CALLSIGN;
 
 void reset ()
 {
-	eeprom_update_float (EEPROM_ADDR_MIN_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE);
-	eeprom_update_float (EEPROM_ADDR_NOM_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE);
-	eeprom_update_float (EEPROM_ADDR_MAX_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE);
-	eeprom_update_float (EEPROM_ADDR_LOW_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE);
-	eeprom_update_byte (EEPROM_ADDR_RSSI_LOW_THRESHOLD, TELEMETRY_DEFAULT_RSSI_LOW_THRESHOLD);
+	eeprom_update_float(EEPROM_ADDR_MIN_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MIN_CELL_VOLTAGE);
+	eeprom_update_float(EEPROM_ADDR_NOM_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_NOM_CELL_VOLTAGE);
+	eeprom_update_float(EEPROM_ADDR_MAX_CELL_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_MAX_CELL_VOLTAGE);
+	eeprom_update_float(EEPROM_ADDR_LOW_VOLTAGE, TELEMETRY_DEFAULT_BATTERY_LOW_CELL_VOLTAGE);
+	eeprom_update_byte(EEPROM_ADDR_RSSI_LOW_THRESHOLD, TELEMETRY_DEFAULT_RSSI_LOW_THRESHOLD);
 	for (uint8_t i = 0; i < TELEMETRY_CALLSIGN_LENGTH; i ++)
-		eeprom_update_byte ((uint8_t *) EEPROM_ADDR_CALLSIGN + i, pgm_read_byte (&default_callsign [i]));
-	eeprom_update_byte ((uint8_t *) EEPROM_ADDR_CALLSIGN + TELEMETRY_CALLSIGN_LENGTH, 0);
+		eeprom_update_byte((uint8_t *)EEPROM_ADDR_CALLSIGN + i, pgm_read_byte(&default_callsign[i]));
+	eeprom_update_byte((uint8_t *)EEPROM_ADDR_CALLSIGN + TELEMETRY_CALLSIGN_LENGTH, 0);
 
-	eeprom_update_block (TELEMETRY_DEFAULT_CALLSIGN, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH);
+	eeprom_update_block(TELEMETRY_DEFAULT_CALLSIGN, EEPROM_ADDR_CALLSIGN, TELEMETRY_CALLSIGN_LENGTH);
 
 	for (uint8_t i = 0; i < modules::count; i ++)
 		modules::reset_settings (i);
@@ -139,9 +139,9 @@ namespace input
 	int8_t roll = 0;
 	int8_t pitch = 0;
 	int8_t yaw = 0;
-	uint16_t channels [INPUT_CHANNELS] = {0};
+	uint16_t channels[INPUT_CHANNELS] = {0};
 
-	void set_rssi (uint8_t value)
+	void set_rssi(uint8_t value)
 	{
 		rssi = value;
 		rssi_low = value < s.rssi_low_thresh;
@@ -165,9 +165,9 @@ namespace gps
 	float vdop = 99.99;
 	float pdop = 99.99;
 
-    void update (bool update_home, bool update_alt_climb)
+    void update(bool update_home, bool update_alt_climb)
     {
-#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+#if !defined(TELEMETRY_MODULES_I2C_COMPASS)
         if (stable::heading_source == stable::DISABLED
             || stable::heading_source == stable::GPS)
         {
@@ -175,12 +175,12 @@ namespace gps
             stable::heading_source = stable::GPS;
         }
 #endif
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
+#if !defined(TELEMETRY_MODULES_I2C_BARO)
         // update stable altitude if we can't get the baro altitude
-        if (update_alt_climb) stable::update_alt_climb (gps::altitude);
+        if (update_alt_climb) stable::update_alt_climb(gps::altitude);
 #endif
         // calc home distance/direction based on gps
-        if (update_home) home::update ();
+        if (update_home) home::update();
     }
 
 }  // namespace gps
@@ -215,22 +215,19 @@ namespace stable
 
 	uint32_t _alt_update_time = 0;
 
-	void update_alt_climb (float _alt)
+	void update_alt_climb(float _alt)
 	{
 		climb = (_alt - altitude) / (update_time - _alt_update_time) * 1000;
 		altitude = _alt;
 		_alt_update_time = update_time;
 	}
 
-	void calc_heading (float x, float y)
+	void calc_heading(float x, float y)
 	{
-		int16_t bearing = 90 + atan2 (x, y) * 57.295775;
+		int16_t bearing = 90 + atan2(x, y) * 57.295775;
 
 		// TODO: declination
-
-		if (bearing < 0) bearing += 360;    // normalization
-		if (bearing > 360) bearing -= 360;  // normalization
-		heading = bearing;
+		heading = (bearing + 360) % 360;
 	}
 
 }  // namespace stable
@@ -243,11 +240,11 @@ namespace battery
 	battery_t battery1;
 	battery_t battery2;
 
-	void battery_t::set_voltage (float value, bool calc_cells)
+	void battery_t::set_voltage(float value, bool calc_cells)
 	{
 		voltage = value;
 
-		if (calc_cells) cells = round (voltage / s.nom_cell_voltage);
+		if (calc_cells) cells = round(voltage / s.nom_cell_voltage);
 		if (!cells)
 		{
 			cell_voltage = 0;
@@ -263,13 +260,13 @@ namespace battery
 		if (level > 100) level = 100;
 	}
 
-	void battery_t::set_amperage (float value, uint16_t interval)
+	void battery_t::set_amperage(float value, uint16_t interval)
 	{
 		amperage = value;
 		consumed += amperage * interval / 3600.0;
 	}
 
-	void init ()
+	void init()
 	{
 		_cell_range = s.max_cell_voltage - s.min_cell_voltage;
 	}
@@ -288,12 +285,14 @@ namespace home
 	float latitude;
 	float altitude = 0;
 
-	void fix ()
+	uint16_t start_heading;
+
+	void fix()
 	{
 		state = FIXING;
 	}
 
-	void update ()
+	void update()
 	{
 		if (state == NO_FIX) return;
 		if (state == FIXING)
@@ -311,29 +310,26 @@ namespace home
 					longitude = gps::longitude;
 					latitude = gps::latitude;
 					altitude = stable::altitude;
+					start_heading = stable::heading;
 					break;
 			}
 		if (state != FIXED) return;
 
-		float rads = fabs (latitude) * 0.0174532925;
-		double scale_down = cos (rads);
-		double scale_up = 1.0 / cos (rads);
+		float rads = fabs(latitude) * 0.0174532925;
+		double scale_down = cos(rads);
+		double scale_up = 1.0 / cos(rads);
 
 		// distance
-		float dstlon = fabs (longitude - gps::longitude) * 111319.5 * scale_down;
-		float dstlat = fabs (latitude - gps::latitude) * 111319.5;
-		distance = sqrt (square (dstlon) + square (dstlat));
+		float dstlon = fabs(longitude - gps::longitude) * 111319.5 * scale_down;
+		float dstlat = fabs(latitude - gps::latitude) * 111319.5;
+		distance = sqrt(square(dstlon) + square(dstlat));
 
 		// DIR to Home
 		dstlon = longitude - gps::longitude; 				// x offset
 		dstlat = (latitude - gps::latitude) * scale_up; 	// y offset
-		int16_t bearing = 90 + atan2 (dstlat, -dstlon) * 57.295775; // absolute home direction
-		if (bearing < 0) bearing += 360;	// normalization
-		bearing -= 180;						// absolute return direction
-		if (bearing < 0) bearing += 360;	// normalization
-		bearing -= stable::heading;			// relative home direction
-		if (bearing < 0) bearing += 360;	// normalization
-		direction = bearing;
+		int16_t bearing = 90 - atan2(dstlat, -dstlon) * 57.295775; // absolute home direction
+		bearing -= stable::heading - start_heading;			// relative home direction
+		direction = (bearing + 720) % 360;
 	}
 
 }  // namespace home
@@ -346,10 +342,9 @@ namespace waypoint
 	uint16_t distance = 0;
 	uint16_t bearing = 0;
 
-	void set_bearing (int16_t value)
+	void set_bearing(int16_t value)
 	{
-		bearing = value < 0 ? value + 360 : value;
-		if (bearing >= 360) bearing -= 360;
+		bearing = (value + 360) % 360;
 	}
 
 	void set (uint8_t value)
@@ -400,67 +395,67 @@ namespace telemetry
 namespace modules
 {
 
-	const module_t modules [] PROGMEM = {
+	const module_t modules[] PROGMEM = {
 #ifdef TELEMETRY_MODULES_ADC_BATTERY
-		declare_module (adc_battery),
+		declare_module(adc_battery),
 #endif
 #ifdef TELEMETRY_MODULES_ADC_RSSI
-		declare_module (adc_rssi),
+		declare_module(adc_rssi),
 #endif
 #ifdef TELEMETRY_MODULES_I2C_BARO
-		declare_module (i2c_baro),
+		declare_module(i2c_baro),
 #endif
 #ifdef TELEMETRY_MODULES_I2C_COMPASS
-		declare_module (i2c_compass),
+		declare_module(i2c_compass),
 #endif
 #ifdef TELEMETRY_MODULES_UAVTALK
-		declare_module (uavtalk),
+		declare_module(uavtalk),
 #endif
 #ifdef TELEMETRY_MODULES_MAVLINK
-		declare_module (mavlink),
+		declare_module(mavlink),
 #endif
 #ifdef TELEMETRY_MODULES_UBX
-		declare_module (ubx),
+		declare_module(ubx),
 #endif
 #ifdef TELEMETRY_MODULES_NMEA
-		declare_module (nmea),
+		declare_module(nmea),
 #endif
 #ifdef TELEMETRY_MODULES_MSP
-		declare_module (msp),
+		declare_module(msp),
 #endif
 	};
 
-	const uint8_t count = sizeof (modules) / sizeof (module_t);
+	const uint8_t count = sizeof(modules) / sizeof(module_t);
 
 }  // namespace modules
 
 
-void init ()
+void init()
 {
 	status::callsign = s.callsign;
-	battery::init ();
-	for (uint8_t i = 0; i < modules::count; i ++)
-		modules::init (i);
+	battery::init();
+	for (uint8_t i = 0; i < modules::count; i++)
+		modules::init(i);
 }
 
-bool update ()
+bool update()
 {
-	update_time = timer::ticks ();
+	update_time = timer::ticks();
 
 	bool res = false;
-	for (uint8_t i = 0; i < modules::count; i ++)
-		res |= modules::update (i);
+	for (uint8_t i = 0; i < modules::count; i++)
+		res |= modules::update(i);
 	return res;
 }
 
-bool receive (parser_t parser)
+bool receive(parser_t parser)
 {
 	uint16_t err = 0;
 	do
 	{
-		uint16_t raw = TELEMETRY_UART::receive ();
+		uint16_t raw = TELEMETRY_UART::receive();
 		err = raw & 0xff00;
-		if (!err && parser (raw)) return true;
+		if (!err && parser(raw)) return true;
 	}
 	while (!err);
 	return false;

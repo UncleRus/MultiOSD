@@ -22,10 +22,10 @@
  */
 
 // set bit
-#define sbi(var, bit) { var |= _BV (bit); }
+#define sbi(var, bit) { var |= _BV(bit); }
 // clear bit
-#define cbi(var, bit) { var &= ~_BV (bit); }
+#define cbi(var, bit) { var &= ~_BV(bit); }
 // bit is set
-#define bis(var, bit) (var & _BV (bit))
+#define bis(var, bit) (var & _BV(bit))
 
 #endif /* LIB_COMMON_H_ */

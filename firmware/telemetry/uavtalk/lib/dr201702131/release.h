@@ -4,7 +4,7 @@
  * MultiOSD is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *(at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -38,10 +38,10 @@ const uint32_t flightstatus_objid = UAVTALK_DR201702131_FLIGHTSTATUS_OBJID;
 
 namespace fm
 {
-    const char acrd [] PROGMEM = "ACRD";
-	const char fail [] PROGMEM = "FAIL";
+    const char acrd[] PROGMEM = "ACRD";
+	const char fail[] PROGMEM = "FAIL";
 
-	const char * const names [] PROGMEM = {
+	const char * const names[] PROGMEM = {
 		UAVTALK_OP150202::fm::manu,   UAVTALK_TL20151123::fm::acro, UAVTALK_TL20151123::fm::lvl,
 		UAVTALK_TL20151123::fm::hrzn, UAVTALK_TL20151123::fm::alck, UAVTALK_TL20151123::fm::vbar,
 		UAVTALK_OP150202::fm::stb1,   UAVTALK_OP150202::fm::stb2,   UAVTALK_OP150202::fm::stb3,
@@ -50,26 +50,26 @@ namespace fm
 		UAVTALK_TL20151123::fm::acrp, acrd, fail
 	};
 
-	const uint8_t size = sizeof (names) / sizeof (char *);
+	const uint8_t size = sizeof(names) / sizeof(char *);
 }
 
-#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
-void handle_flightbatterystate ();
+#if !defined(TELEMETRY_MODULES_ADC_BATTERY)
+void handle_flightbatterystate();
 #endif
 
-const obj_handler_t handlers [] PROGMEM = {
+const obj_handler_t handlers[] PROGMEM = {
 	{UAVTALK_DR201702131_FLIGHTSTATUS_OBJID,        UAVTALK_TL20151123::handle_flightstatus},
 	{UAVTALK_DR201702131_ATTITUDEACTUAL_OBJID,      UAVTALK_OP150202::handle_attitudestate},
-#if !defined (TELEMETRY_MODULES_I2C_BARO)
+#if !defined(TELEMETRY_MODULES_I2C_BARO)
 	{UAVTALK_TL20151123_BAROALTITUDE_OBJID,         UAVTALK_OP150202::handle_barosensor},
 #endif
-#if !defined (TELEMETRY_MODULES_ADC_BATTERY)
+#if !defined(TELEMETRY_MODULES_ADC_BATTERY)
 	{UAVTALK_DR201702131_FLIGHTBATTERYSTATE_OBJID,  UAVTALK_DR201702131::handle_flightbatterystate},
 #endif
 	{UAVTALK_TL20151123_FLIGHTTELEMETRYSTATS_OBJID, UAVTALK_TL20151123::handle_flighttelemetrystats},
 	{UAVTALK_TL20151123_GPSPOSITION_OBJID,          UAVTALK_TL20151123::handle_gpsposition},
 	{UAVTALK_TL20151123_GPSVELOCITY_OBJID,          UAVTALK_OP150202::handle_gpsvelocitysensor},
-#if !defined (TELEMETRY_MODULES_I2C_COMPASS)
+#if !defined(TELEMETRY_MODULES_I2C_COMPASS)
 	{UAVTALK_TL20151123_MAGNETOMETER_OBJID,         UAVTALK_TL20151123::handle_magnetometer},
 #endif
 	{UAVTALK_TL20151123_MANUALCONTROLCOMMAND_OBJID, UAVTALK_TL20151123::handle_manualcontrolcommand},

@@ -31,40 +31,40 @@
 #include "osd/osd.h"
 
 #ifdef DEBUG
-	#include "lib/dbgconsole.h"
+    #include "lib/dbgconsole.h"
 #endif
 
-inline void init ()
+inline void init()
 {
 #ifdef DEBUG
-	dbgconsole::init ();
+    dbgconsole::init();
 #endif
-	settings::init ();
-	timer::init ();
-	_delay_ms (500);
-	CONSOLE_UART::init (uart_utils::get_bitrate (CONSOLE_BITRATE));
-	spi::init ();
-	max7456::init ();
-	if (boot::show ())
-	{
-		// magic word was typed so let's run console
-		max7456::clear ();
-		max7456::puts_p (max7456::hcenter - 4, max7456::vcenter, PSTR ("\xfc CONFIG"));
-		fprintf_P (&CONSOLE_UART::stream, PSTR ("MultiOSD v%u.%u\r\n"), VERSION >> 8, VERSION);
-		console::run (console::process);
-	}
-	CONSOLE_UART::send_string_p (PSTR ("BOOT\r\n"));
-	telemetry::init ();
-	osd::init ();
+    settings::init();
+    timer::init();
+    _delay_ms(500);
+    CONSOLE_UART::init(uart_utils::get_bitrate(CONSOLE_BITRATE));
+    spi::init();
+    max7456::init();
+    if (boot::show())
+    {
+        // magic word was typed so let's run console
+        max7456::clear();
+        max7456::puts_p(max7456::hcenter - 4, max7456::vcenter, PSTR("\xfc CONFIG"));
+        fprintf_P(&CONSOLE_UART::stream, PSTR("MultiOSD v%u.%u\r\n"), VERSION >> 8, VERSION);
+        console::run(console::process);
+    }
+    CONSOLE_UART::send_string_p(PSTR("BOOT\r\n"));
+    telemetry::init();
+    osd::init();
 }
 
-int main ()
+int main()
 {
-	init ();
+    init();
 
-	// main loop
-	osd::main ();
+    // main loop
+    osd::main();
 
-	return 0;
+    return 0;
 }
 

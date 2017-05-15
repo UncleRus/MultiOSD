@@ -22,8 +22,8 @@
 namespace timer
 {
 
-void init ();
-uint32_t ticks ();
+void init();
+uint32_t ticks();
 
 }
 

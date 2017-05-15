@@ -35,47 +35,47 @@ namespace adc_rssi
 namespace settings
 {
 
-#define EEPROM_ADDR_CHANNEL         _eeprom_byte (ADC_RSSI_EEPROM_OFFSET)
-#define EEPROM_ADDR_UPDATE_INTERVAL _eeprom_word (ADC_RSSI_EEPROM_OFFSET + 1)
-#define EEPROM_ADDR_FACTOR          _eeprom_float (ADC_RSSI_EEPROM_OFFSET + 3)
+#define EEPROM_ADDR_CHANNEL         _eeprom_byte(ADC_RSSI_EEPROM_OFFSET)
+#define EEPROM_ADDR_UPDATE_INTERVAL _eeprom_word(ADC_RSSI_EEPROM_OFFSET + 1)
+#define EEPROM_ADDR_FACTOR          _eeprom_float(ADC_RSSI_EEPROM_OFFSET + 3)
 
-const char __opt_arch  [] PROGMEM = "ARCH";
-const char __opt_arint [] PROGMEM = "ARINT";
-const char __opt_arf   [] PROGMEM = "ARF";
+const char __opt_arch [] PROGMEM = "ARCH";
+const char __opt_arint[] PROGMEM = "ARINT";
+const char __opt_arf  [] PROGMEM = "ARF";
 
-const ::settings::option_t __settings [] PROGMEM = {
-	declare_uint8_option  (__opt_arch, EEPROM_ADDR_CHANNEL),
-	declare_uint16_option (__opt_arint, EEPROM_ADDR_UPDATE_INTERVAL),
-	declare_float_option  (__opt_arf, EEPROM_ADDR_FACTOR),
+const ::settings::option_t __settings[] PROGMEM = {
+	declare_uint8_option (__opt_arch, EEPROM_ADDR_CHANNEL),
+	declare_uint16_option(__opt_arint, EEPROM_ADDR_UPDATE_INTERVAL),
+	declare_float_option (__opt_arf, EEPROM_ADDR_FACTOR),
 };
 
 struct settings_t
 {
-	uint8_t channel;
-	uint16_t update_interval;
-	float factor;
+    uint8_t channel;
+    uint16_t update_interval;
+    float factor;
 
-	settings_t ()
-	{
-		channel = eeprom_read_byte (EEPROM_ADDR_CHANNEL);
-		update_interval = eeprom_read_word (EEPROM_ADDR_UPDATE_INTERVAL);
-		factor = eeprom_read_float (EEPROM_ADDR_FACTOR);
-	}
+    settings_t()
+    {
+        channel = eeprom_read_byte(EEPROM_ADDR_CHANNEL);
+        update_interval = eeprom_read_word(EEPROM_ADDR_UPDATE_INTERVAL);
+        factor = eeprom_read_float(EEPROM_ADDR_FACTOR);
+    }
 };
 
-void init ()
+void init()
 {
-	adc::settings::init ();
-	::settings::append_section (__settings, sizeof (__settings) / sizeof (::settings::option_t));
+    adc::settings::init();
+    ::settings::append_section(__settings, sizeof(__settings) / sizeof(::settings::option_t));
 }
 
-void reset ()
+void reset()
 {
-	eeprom_update_byte  (EEPROM_ADDR_CHANNEL, ADC_RSSI_DEFAULT_CHANNEL);
-	eeprom_update_word  (EEPROM_ADDR_UPDATE_INTERVAL, ADC_RSSI_DEFAULT_UPDATE_INTERVAL);
-	eeprom_update_float (EEPROM_ADDR_FACTOR, ADC_RSSI_DEFAULT_MULTIPLIER);
+    eeprom_update_byte(EEPROM_ADDR_CHANNEL, ADC_RSSI_DEFAULT_CHANNEL);
+    eeprom_update_word(EEPROM_ADDR_UPDATE_INTERVAL, ADC_RSSI_DEFAULT_UPDATE_INTERVAL);
+    eeprom_update_float(EEPROM_ADDR_FACTOR, ADC_RSSI_DEFAULT_MULTIPLIER);
 
-	adc::settings::reset ();
+    adc::settings::reset();
 }
 
 }  // namespace settings
@@ -85,27 +85,30 @@ void reset ()
 uint32_t last_update;
 settings::settings_t s;
 
-void init ()
+void init()
 {
-	adc::init ();
+    adc::init();
 }
 
-bool update ()
+bool update()
 {
-	uint16_t interval = telemetry::update_time - last_update;
+    uint16_t interval = telemetry::update_time - last_update;
 
-	if (interval < s.update_interval) return false;
+    if (interval < s.update_interval)
+        return false;
 
-	last_update = telemetry::update_time;
+    last_update = telemetry::update_time;
 
-	int16_t value = round (adc::value (s.channel, s.factor));
+    int16_t value = round(adc::value(s.channel, s.factor));
 
-	if (value < 0) value = 0;
-	else if (value > 100) value = 100;
+    if (value < 0)
+        value = 0;
+    else if (value > 100)
+        value = 100;
 
-	input::set_rssi (value);
+    input::set_rssi(value);
 
-	return true;
+    return true;
 }
 
 }  // namespace adc_rssi

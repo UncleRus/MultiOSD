@@ -28,20 +28,19 @@ namespace osd
 
 namespace settings
 {
-	void init ();
-	void reset ();
+    void init();
+    void reset();
 }
 
 // enabled screens count
-uint8_t screens_enabled ();
+uint8_t screens_enabled();
 
 // load settings
-void init ();
+void init();
 
 // Main loop
-void main ();
+void main();
 
 }
-
 
 #endif /* OSD_OSD_H_ */

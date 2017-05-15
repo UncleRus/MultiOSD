@@ -18,7 +18,7 @@
 #define TELEMETRY_MAVLINK_MAVLINK_H_
 
 #ifdef MAIN_MODULE
-	#error Conflicting modules
+#error Conflicting modules
 #endif
 #define MAIN_MODULE
 
@@ -34,16 +34,16 @@ namespace modules
 namespace mavlink
 {
 
-const char __name [] PROGMEM = "MAVLink";
+const char __name[] PROGMEM = "MAVLink";
 
 namespace settings
 {
-	void init ();
-	void reset ();
+    void init();
+    void reset();
 }
 
-void init ();
-bool update ();
+void init();
+bool update();
 
 }  // namespace mavlink
 

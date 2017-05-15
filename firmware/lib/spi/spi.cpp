@@ -23,25 +23,25 @@
 	#define SPI_CLOCK (0)
 	#define SPI_2X (0)
 #elif (SPI_FREQ == F_CPU / 16)
-	#define SPI_CLOCK (_BV (SPR0))
+	#define SPI_CLOCK (_BV(SPR0))
 	#define SPI_2X (0)
 #elif (SPI_FREQ == F_CPU / 64)
-	#define SPI_CLOCK (_BV (SPR1))
+	#define SPI_CLOCK (_BV(SPR1))
 	#define SPI_2X (0)
 #elif (SPI_FREQ == F_CPU / 128)
-	#define SPI_CLOCK (_BV (SPR0) | _BV (SPR1))
+	#define SPI_CLOCK (_BV(SPR0) | _BV(SPR1))
 	#define SPI_2X (0)
 #elif (SPI_FREQ == F_CPU / 2)
 	#define SPI_CLOCK (0)
 	#define SPI_2X (1)
 #elif (SPI_FREQ == F_CPU / 8)
-	#define SPI_CLOCK (_BV (SPR0))
+	#define SPI_CLOCK (_BV(SPR0))
 	#define SPI_2X (1)
 #elif (SPI_FREQ == F_CPU / 32)
-	#define SPI_CLOCK (_BV (SPR1))
+	#define SPI_CLOCK (_BV(SPR1))
 	#define SPI_2X (1)
 #elif (SPI_FREQ == F_CPU / 64)
-	#define SPI_CLOCK (_BV (SPR0) | _BV (SPR1))
+	#define SPI_CLOCK (_BV(SPR0) | _BV(SPR1))
 	#define SPI_2X (1)
 #else
 	#error Invalid SPI frequency
@@ -51,23 +51,23 @@
 namespace spi
 {
 
-void init ()
+void init()
 {
-	// initialize the SPI pins
-	SPI_DDR = (SPI_DDR & ~_BV (SPI_MISO_BIT)) | _BV (SPI_SS_BIT) | _BV (SPI_MOSI_BIT) | _BV (SPI_SCK_BIT);
+    // initialize the SPI pins
+    SPI_DDR = (SPI_DDR & ~_BV(SPI_MISO_BIT)) | _BV(SPI_SS_BIT) | _BV(SPI_MOSI_BIT) | _BV(SPI_SCK_BIT);
 
-	// SPI master
-	SPCR = SPI_CPOL | SPI_CPHA | SPI_CLOCK | _BV (SPE) | _BV (MSTR);
+    // SPI master
+    SPCR = SPI_CPOL | SPI_CPHA | SPI_CLOCK | _BV(SPE) | _BV(MSTR);
 #if (SPI_2X != 0)
-	SPSR |= _BV (SPI2X);
+    SPSR |= _BV(SPI2X);
 #endif
 }
 
-uint8_t transfer (uint8_t value)
+uint8_t transfer(uint8_t value)
 {
-	SPDR = value;
-	loop_until_bit_is_set (SPSR, SPIF);
-	return SPDR;
+    SPDR = value;
+    loop_until_bit_is_set(SPSR, SPIF);
+    return SPDR;
 }
 
 }

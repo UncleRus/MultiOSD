@@ -26,19 +26,19 @@
 
 UT_NAMESPACE_OPEN
 
-const char __name [] PROGMEM = "UAVTalk";
+const char __name[] PROGMEM = "UAVTalk";
 
 namespace settings
 {
-	void init ();
-	void reset ();
+	void init();
+	void reset();
 }
 
 // load settings
-void init ();
+void init();
 
 // parse messages and update the telemetry
-bool update ();
+bool update();
 
 UT_NAMESPACE_CLOSE
 
