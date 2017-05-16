@@ -389,6 +389,22 @@ Type     | Size
 -------- | --------
 bool     | 1 byte
 
+### UTER
+
+Emulate RSSI value based on the receiver connection state.
+
+Type     | Size
+-------- | --------
+bool     | 1 byte
+
+### UTAH
+
+Calculate heading based on the flight controller attitude.
+Set it to 0 if you want to use mag sensors ot GNSS data.
+
+Type     | Size
+-------- | --------
+bool     | 1 byte
 
 ## MAVLink module settings
 

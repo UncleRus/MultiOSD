@@ -19,7 +19,7 @@
 
 #include "defaults.h"
 
-#define VERSION _VER(0, 17)
+#define VERSION _VER(0, 18)
 
 /*
  * Telemetry config
