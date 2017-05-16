@@ -40,86 +40,94 @@ namespace console
 
 uint8_t _command_len = 0;
 callback_t handler = NULL;
-char _command [CONSOLE_MAX_CMD_LENGTH];
+char _command[CONSOLE_MAX_CMD_LENGTH];
 
-void eol ()
+void eol()
 {
-	CONSOLE_UART::send_string_p (PSTR (CONSOLE_EOL));
+    CONSOLE_UART::send_string_p(PSTR(CONSOLE_EOL));
 }
 
-void show_prompt ()
+void show_prompt()
 {
-	CONSOLE_UART::send_string_p (PSTR (CONSOLE_EOL CONSOLE_PROMPT));
-	_command_len = 0;
+    CONSOLE_UART::send_string_p(PSTR(CONSOLE_EOL CONSOLE_PROMPT));
+    _command_len = 0;
 }
 
-const char *argument (uint8_t position, const char *def)
+const char *argument(uint8_t position, const char *def)
 {
-	uint8_t offs = 0;
-	while (_command [offs] && _command [offs] == ' ') offs++;
-	for (uint8_t i = 0; i < position; i++)
-	{
-		while (_command [offs] && _command [offs] != ' ') offs++;
-		while (_command [offs] && _command [offs] == ' ') offs++;
-	}
-	return _command [offs] ? &_command [offs] : def;
+    uint8_t offs = 0;
+    while (_command[offs] && _command[offs] == ' ')
+        offs++;
+    for (uint8_t i = 0; i < position; i++)
+    {
+        while (_command[offs] && _command[offs] != ' ')
+            offs++;
+        while (_command[offs] && _command[offs] == ' ')
+            offs++;
+    }
+    return _command[offs] ? &_command[offs] : def;
 }
 
-void read_argument (const char *start, char *dest)
+void read_argument(const char *start, char *dest)
 {
-	uint8_t c;
-	while ((c = *start))
-	{
-		if (c != ' ') *(dest++) = c;
-		else break;
-		start++;
-	}
-	*(dest++) = 0;
+    uint8_t c;
+    while ((c = *start))
+    {
+        if (c != ' ')
+            *(dest++) = c;
+        else
+            break;
+        start++;
+    }
+    *(dest++) = 0;
 }
 
-void _process_byte ()
+void _process_byte()
 {
-	uint16_t data = CONSOLE_UART::receive ();
-	if (data & 0xff00) return;
-	uint8_t byte = data & 0xff;
-	switch (byte)
-	{
-		case KEY_ENTER:
-			if (_command_len)
-			{
-				_command [_command_len] = 0;
-				eol ();
-				if (handler) handler (_command);
-			}
-			show_prompt ();
-			return;
-		case KEY_DEL:
-		case KEY_BS:
-			if (!_command_len) return;
-			_command_len--;
-			CONSOLE_UART::send_string_p (PSTR ("\x08 \x08"));
-			return;
-		default:
-			if (byte < 0x20 || _command_len == CONSOLE_MAX_CMD_LENGTH - 1)
-			{
-				CONSOLE_UART::send (0x07);
-				return;
-			}
-			_command [_command_len++] = byte;
-			CONSOLE_UART::send (byte);
-	}
-	return;
+    uint16_t data = CONSOLE_UART::receive();
+    if (data & 0xff00)
+        return;
+    uint8_t byte = data & 0xff;
+    switch (byte)
+    {
+        case KEY_ENTER:
+            if (_command_len)
+            {
+                _command[_command_len] = 0;
+                eol();
+                if (handler)
+                    handler(_command);
+            }
+            show_prompt();
+            return;
+        case KEY_DEL:
+        case KEY_BS:
+            if (!_command_len)
+                return;
+            _command_len--;
+            CONSOLE_UART::send_string_p(PSTR("\x08 \x08"));
+            return;
+        default:
+            if (byte < 0x20 || _command_len == CONSOLE_MAX_CMD_LENGTH - 1)
+            {
+                CONSOLE_UART::send(0x07);
+                return;
+            }
+            _command[_command_len++] = byte;
+            CONSOLE_UART::send(byte);
+    }
+    return;
 }
 
-bool running;
+volatile bool running;
 
-void run (callback_t h)
+void run(callback_t h)
 {
-	show_prompt ();
-	running = true;
-	handler = h;
-	while (running)
-		_process_byte ();
+    show_prompt();
+    running = true;
+    handler = h;
+    while (running)
+        _process_byte();
 }
 
 }

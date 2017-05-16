@@ -27,7 +27,7 @@ namespace commands
 
     struct command_t
     {
-        typedef void (* proc_t) ();
+        typedef void (*proc_t)();
 
         const char *cmd_p;
         const char *help_p;
@@ -35,26 +35,26 @@ namespace commands
     };
 
     // console commands collection
-    extern const command_t values [] PROGMEM;
+    extern const command_t values[] PROGMEM;
     extern const uint8_t count;
 
     // execute command
-    bool exec (const char *cmd, uint8_t size);
+    bool exec(const char *cmd, uint8_t size);
 
-    inline const char *get_cmd_p (uint8_t n)
+    inline const char *get_cmd_p(uint8_t n)
     {
-        return (const char *) pgm_read_ptr (&values [n].cmd_p);
+        return (const char *)pgm_read_ptr(&values[n].cmd_p);
     }
 
-    inline const char *get_help_p (uint8_t n)
+    inline const char *get_help_p(uint8_t n)
     {
-        return (const char *) pgm_read_ptr (&values [n].help_p);
+        return (const char *)pgm_read_ptr(&values[n].help_p);
     }
 
 }  // namespace commands
 
-void init ();
-void process (const char *cmd);
+void init();
+void process(const char *cmd);
 
 }
 

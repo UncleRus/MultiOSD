@@ -23,20 +23,20 @@
 namespace console
 {
 
-typedef void (* callback_t) (const char *command);
+typedef void (*callback_t)(const char *command);
 
 extern callback_t handler;
 extern const char *banner_p;
 
-void eol ();
-void show_prompt ();
-const char *argument (uint8_t position, const char *def = NULL);
-void read_argument (const char *start, char *dest);
+void eol();
+void show_prompt();
+const char *argument(uint8_t position, const char *def = NULL);
+void read_argument(const char *start, char *dest);
 
-extern bool running;
+extern volatile bool running;
 
-void run (callback_t h);
-inline void stop ()
+void run(callback_t h);
+inline void stop()
 {
     running = false;
 }
