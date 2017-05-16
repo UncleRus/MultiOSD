@@ -184,7 +184,7 @@ namespace opt
 		const char *name_p = (const char *) pgm_read_ptr (&option->name_p);
 		uint8_t type = pgm_read_byte (&option->type);
 
-		fprintf_P (&CONSOLE_UART::stream, PSTR ("%S\t%S\t= "), (const char *) pgm_read_ptr (&types [type]), name_p);
+		fprintf_P(&CONSOLE_UART::stream, PSTR("0x%04x: %S\t%S\t= "), pgm_read_word(&option->addr), (const char *)pgm_read_ptr(&types[type]), name_p);
 
 		char buf [16];
 

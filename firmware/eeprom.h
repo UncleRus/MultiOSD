@@ -27,13 +27,13 @@
 #define ADC_EEPROM_OFFSET            0x05
 #define MAX7456_EEPROM_OFFSET        0x0a
 #define ADC_BATTERY_EEPROM_OFFSET    0x0c
-#define ADC_RSSI_EEPROM_OFFSET       0x20
-#define UAVTALK_EEPROM_OFFSET        0x28
-#define MAVLINK_EEPROM_OFFSET        0x28
-#define UBX_EEPROM_OFFSET            0x28
-#define MSP_EEPROM_OFFSET            0x28
-#define TELEMETRY_EEPROM_OFFSET      0x40
-#define OSD_EEPROM_OFFSET            0x70
+#define ADC_RSSI_EEPROM_OFFSET       0x30
+#define UAVTALK_EEPROM_OFFSET        0x40
+#define MAVLINK_EEPROM_OFFSET        0x40
+#define UBX_EEPROM_OFFSET            0x40
+#define MSP_EEPROM_OFFSET            0x40
+#define TELEMETRY_EEPROM_OFFSET      0x60
+#define OSD_EEPROM_OFFSET            0x100
 #define OSD_SCREENS_EEPROM_OFFSET    (OSD_EEPROM_OFFSET + 0x10)
 
 #endif /* EEPROM_H_ */
