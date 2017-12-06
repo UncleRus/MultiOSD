@@ -58,13 +58,13 @@ const char __opt_mlert[] PROGMEM = "MLERT";
 const char __opt_mlblt[] PROGMEM = "MLBLT";
 
 const ::settings::option_t __settings[] PROGMEM = {
-	declare_uint8_option (__opt_mlbr,  EEPROM_ADDR_BITRATE),
-	declare_uint8_option (__opt_mlfc,  EEPROM_ADDR_FC_TYPE),
-	declare_bool_option  (__opt_mlibl, EEPROM_ADDR_INTERNAL_BATTERY_LEVEL),
-	declare_bool_option  (__opt_mler,  EEPROM_ADDR_EMULATE_RSSI),
-	declare_uint8_option (__opt_mlerc, EEPROM_ADDR_EMULATE_RSSI_CHANNEL),
-	declare_uint16_option(__opt_mlert, EEPROM_ADDR_EMULATE_RSSI_THRESHOLD),
-	declare_uint8_option (__opt_mlblt, EEPROM_ADDR_BATTERY_LOW_THRESHOD),
+    declare_uint8_option (__opt_mlbr,  EEPROM_ADDR_BITRATE),
+    declare_uint8_option (__opt_mlfc,  EEPROM_ADDR_FC_TYPE),
+    declare_bool_option  (__opt_mlibl, EEPROM_ADDR_INTERNAL_BATTERY_LEVEL),
+    declare_bool_option  (__opt_mler,  EEPROM_ADDR_EMULATE_RSSI),
+    declare_uint8_option (__opt_mlerc, EEPROM_ADDR_EMULATE_RSSI_CHANNEL),
+    declare_uint16_option(__opt_mlert, EEPROM_ADDR_EMULATE_RSSI_THRESHOLD),
+    declare_uint8_option (__opt_mlblt, EEPROM_ADDR_BATTERY_LOW_THRESHOD),
 };
 
 struct settings_t
@@ -167,8 +167,8 @@ namespace flight_modes
 
     }  // namespace generic
 
-	namespace apm
-	{
+    namespace apm
+    {
 
         const char apm_0[] PROGMEM = "MANU";
         const char apm_1[] PROGMEM = "CRCL";
@@ -184,11 +184,11 @@ namespace flight_modes
         const char apm_12[] PROGMEM = "LOIT";
         const char apm_15[] PROGMEM = "GUID";
         const char apm_16[] PROGMEM = "INIT";
-		const char * const apm_values[] PROGMEM = {
-			apm_0, apm_1, apm_2, apm_3, apm_4, apm_5, apm_6, apm_7,
-			apm_8, NULL, apm_10, apm_11, apm_12, NULL, NULL, apm_15,
-			apm_16
-		};
+        const char * const apm_values[] PROGMEM = {
+            apm_0, apm_1, apm_2, apm_3, apm_4, apm_5, apm_6, apm_7,
+            apm_8, NULL, apm_10, apm_11, apm_12, NULL, NULL, apm_15,
+            apm_16
+        };
         const uint8_t apm_size = sizeof(apm_values) / sizeof(char *);
 
         const char acm_0[] PROGMEM = "STAB";
@@ -207,11 +207,11 @@ namespace flight_modes
         const char acm_15[] PROGMEM = "ATUN";
         const char acm_16[] PROGMEM = "PHLD";
         const char acm_17[] PROGMEM = "BRK ";
-		const char * const acm_values[] PROGMEM = {
-			acm_0, acm_1, acm_2, acm_3, acm_4, acm_5, acm_6, acm_7,
-			NULL, acm_9, acm_10, acm_11, NULL, acm_13, acm_14, acm_15,
-			acm_16, acm_17
-		};
+        const char * const acm_values[] PROGMEM = {
+            acm_0, acm_1, acm_2, acm_3, acm_4, acm_5, acm_6, acm_7,
+            NULL, acm_9, acm_10, acm_11, NULL, acm_13, acm_14, acm_15,
+            acm_16, acm_17
+        };
         const uint8_t acm_size = sizeof(acm_values) / sizeof(char *);
 
         void update()
@@ -241,29 +241,29 @@ namespace flight_modes
                     : NULL;
         }
 
-	}  // namespace apm
+    }  // namespace apm
 
-	namespace ppz
-	{
+    namespace ppz
+    {
 
-		// PAPARAZZI
+        // PAPARAZZI
 
         const char fw_0[] PROGMEM = "MANU";
         const char fw_1[] PROGMEM = "AUT1";
         const char fw_2[] PROGMEM = "AUT2";
         const char fw_3[] PROGMEM = "HOME";
-		const char * const fw_values[] PROGMEM = {
-			fw_0, fw_1, fw_2, fw_3
-		};
+        const char * const fw_values[] PROGMEM = {
+            fw_0, fw_1, fw_2, fw_3
+        };
         const uint8_t fw_size = sizeof(fw_values) / sizeof(char *);
 
         const char q_0[] PROGMEM = "MANU";
         const char q_1[] PROGMEM = "STAB";
         const char q_2[] PROGMEM = "NAV ";
         const char q_3[] PROGMEM = "HOME";
-		const char * const q_values[] PROGMEM = {
-			q_0, q_1, q_2, q_3
-		};
+        const char * const q_values[] PROGMEM = {
+            q_0, q_1, q_2, q_3
+        };
         const uint8_t q_size = sizeof(q_values) / sizeof(char *);
 
         void update()
@@ -299,10 +299,10 @@ namespace flight_modes
                     : NULL;
         }
 
-	}  // namespace ppz
+    }  // namespace ppz
 
-	namespace px4
-	{
+    namespace px4
+    {
 
         const char mm_1[] PROGMEM = "MANU";
         const char mm_2[] PROGMEM = "ALTC";
@@ -311,9 +311,9 @@ namespace flight_modes
         const char mm_6[] PROGMEM = "OFFB";
         const char mm_7[] PROGMEM = "STAB";
 
-		const char * const mm[] PROGMEM = {
-			NULL, mm_1, mm_2, mm_3, NULL, mm_5, mm_6, mm_7
-		};
+        const char * const mm[] PROGMEM = {
+            NULL, mm_1, mm_2, mm_3, NULL, mm_5, mm_6, mm_7
+        };
 
         const uint8_t mm_size = sizeof(mm) / sizeof(char *);
 
@@ -325,9 +325,9 @@ namespace flight_modes
         const char sm_6[] PROGMEM = "LAND";
         const char sm_7[] PROGMEM = "RTGS";
 
-		const char * const sm[] PROGMEM = {
-			NULL, sm_1, sm_2, sm_3, sm_4, sm_5, sm_6, sm_7
-		};
+        const char * const sm[] PROGMEM = {
+            NULL, sm_1, sm_2, sm_3, sm_4, sm_5, sm_6, sm_7
+        };
 
         const uint8_t sm_size = sizeof(sm) / sizeof(char *);
 
@@ -376,31 +376,31 @@ namespace flight_modes
 namespace rates
 {
 
-	struct stream_rate_t
-	{
-		MAV_DATA_STREAM stream;
-		uint8_t rate;
-	};
+    struct stream_rate_t
+    {
+        MAV_DATA_STREAM stream;
+        uint8_t rate;
+    };
 
-	// TODO: config
-	const stream_rate_t values[] PROGMEM = {
-		{MAV_DATA_STREAM_RAW_SENSORS, 10},
-		{MAV_DATA_STREAM_EXTENDED_STATUS, 25},
-		{MAV_DATA_STREAM_RC_CHANNELS, 5},
-		{MAV_DATA_STREAM_POSITION, 5},
-		{MAV_DATA_STREAM_EXTRA1, 20},
-		{MAV_DATA_STREAM_EXTRA2, 5},
-		{MAV_DATA_STREAM_EXTRA3, 5},
-	};
+    // TODO: config
+    const stream_rate_t values[] PROGMEM = {
+        {MAV_DATA_STREAM_RAW_SENSORS, 10},
+        {MAV_DATA_STREAM_EXTENDED_STATUS, 25},
+        {MAV_DATA_STREAM_RC_CHANNELS, 5},
+        {MAV_DATA_STREAM_POSITION, 5},
+        {MAV_DATA_STREAM_EXTRA1, 20},
+        {MAV_DATA_STREAM_EXTRA2, 5},
+        {MAV_DATA_STREAM_EXTRA3, 5},
+    };
 
-	const uint8_t count = sizeof(values) / sizeof(stream_rate_t);
+    const uint8_t count = sizeof(values) / sizeof(stream_rate_t);
 
     void setup()
-	{
+    {
         for (uint8_t i = 0; i < rates::count; i++)
             mavlink_msg_request_data_stream_send(MAVLINK_COMM_0, message.sysid, message.compid,
                     pgm_read_byte(&rates::values[i].stream), pgm_read_byte(&rates::values[i].rate), 1);
-	}
+    }
 
 }  // namespace rates
 
@@ -494,7 +494,7 @@ bool update()
                 input::yaw = filter_int16(mavlink_msg_rc_channels_scaled_get_chan4_scaled(msg)) / 100;
                 break;
             case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
-                input::connected = true;		// enable switching between screens
+                input::connected = true;        // enable switching between screens
                 input::channels[0] = filter_uint16(mavlink_msg_rc_channels_raw_get_chan1_raw(msg));
                 input::channels[1] = filter_uint16(mavlink_msg_rc_channels_raw_get_chan2_raw(msg));
                 input::channels[2] = filter_uint16(mavlink_msg_rc_channels_raw_get_chan3_raw(msg));

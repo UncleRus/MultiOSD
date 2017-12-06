@@ -136,12 +136,12 @@ bool update()
 	last_update_time += interval;
 
 	float dt = interval / 1000.0;
-	float alpha = 1.0 - dt /(dt + 2.0);
+	float alpha = 1.0 - dt / (dt + 2.0);
 
-	battery::battery1.set_voltage(alpha * battery::battery1.voltage +(1 - alpha) * adc::value(s.voltage1_channel, s.voltage1_factor), true);
-	battery::battery2.set_voltage(alpha * battery::battery2.voltage +(1 - alpha) * adc::value(s.voltage2_channel, s.voltage2_factor), true);
-	battery::battery1.set_amperage(alpha * battery::battery1.amperage +(1 - alpha) * adc::value(s.amperage1_channel, s.amperage1_factor), interval);
-	battery::battery2.set_amperage(alpha * battery::battery2.amperage +(1 - alpha) * adc::value(s.amperage2_channel, s.amperage2_factor), interval);
+	battery::battery1.set_voltage(alpha * battery::battery1.voltage + (1 - alpha) * adc::value(s.voltage1_channel, s.voltage1_factor), true);
+	battery::battery2.set_voltage(alpha * battery::battery2.voltage + (1 - alpha) * adc::value(s.voltage2_channel, s.voltage2_factor), true);
+	battery::battery1.set_amperage(alpha * battery::battery1.amperage + (1 - alpha) * adc::value(s.amperage1_channel, s.amperage1_factor), interval);
+	battery::battery2.set_amperage(alpha * battery::battery2.amperage + (1 - alpha) * adc::value(s.amperage2_channel, s.amperage2_factor), interval);
 
 	return true;
 }

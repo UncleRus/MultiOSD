@@ -47,6 +47,7 @@ Yet another MinimOSD firmware with configurable screens layout.
 * Flight time (FC uptime actually)
 * Roll angle
 * Pitch angle
+* Yaw angle
 * GPS state
 * GPS Latitude
 * GPS Longitude
@@ -65,6 +66,7 @@ Yet another MinimOSD firmware with configurable screens layout.
 * RSSI level
 * Compass
 * Airspeed
+* Crosshair
 
 See [full future matrix](doc/features.md).
 

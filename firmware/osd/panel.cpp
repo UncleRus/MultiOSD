@@ -500,7 +500,7 @@ namespace rssi
             level = 1;
         if (level > 5)
             level = 5;
-        scale = (const char *) pgm_read_ptr(&levels[level]);
+        scale = (const char *)pgm_read_ptr(&levels[level]);
     }
 
     void draw(uint8_t x, uint8_t y)
@@ -576,7 +576,7 @@ namespace compass
 namespace airspeed
 {
 
-    STD_PANEL("Airspeed", 7, OSD_SYMBOL_AIRSPEED "%d" OSD_SYMBOL_KMH, (int16_t ) (telemetry::stable::airspeed * 3.6));
+    STD_PANEL("Airspeed", 7, OSD_SYMBOL_AIRSPEED "%d" OSD_SYMBOL_KMH, (int16_t)(telemetry::stable::airspeed * 3.6));
 
 }  // namespace airspeed
 
