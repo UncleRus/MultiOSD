@@ -379,6 +379,7 @@ Value | Firmware   | Version
  3    | TauLabs    | 20151123
  4    | LibrePilot | 16.09-RC1
  5    | dRonin     | 2017-02-13.1 "Artifice"
+ 6    | dRonin     | 2017-07-17 "Neat"
 
 ### UTIHC
 
