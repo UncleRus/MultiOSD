@@ -49,6 +49,7 @@
 #define OSD_PANEL_COMPASS             26
 #define OSD_PANEL_AIRSPEED            27
 #define OSD_PANEL_CROSSHAIR           28
+#define OSD_PANEL_YAW                 29
 
 namespace osd
 {
@@ -72,17 +73,19 @@ namespace panel
 
     inline const char *name_p(uint8_t panel)
     {
-        return (const char *) pgm_read_ptr(&panels[panel].name_p);
+        return (const char *)pgm_read_ptr(&panels[panel].name_p);
     }
 
     inline void update(uint8_t panel)
     {
-        ((panel_t::update_t) pgm_read_ptr(&panels[panel].update))();
+        panel_t::update_t f = (panel_t::update_t)pgm_read_ptr(&panels[panel].update);
+        if (f) f();
     }
 
     inline void draw(uint8_t panel, uint8_t x, uint8_t y)
     {
-        ((panel_t::draw_t) pgm_read_ptr(&panels[panel].draw))(x, y);
+        panel_t::draw_t f = (panel_t::draw_t)pgm_read_ptr(&panels[panel].draw);
+        if (f) f(x, y);
     }
 
 }  // namespace panel

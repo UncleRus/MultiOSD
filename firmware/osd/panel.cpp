@@ -172,8 +172,6 @@ namespace flight_mode
 
     PANEL_NAME("FlightMode");
 
-    void update() {}
-
     void draw(uint8_t x, uint8_t y)
     {
         osd::draw::rect(x, y, 6, 3);
@@ -193,8 +191,6 @@ namespace armed_flag
 
     PANEL_NAME("ArmedFlag");
 
-    void update() {}
-
     void draw(uint8_t x, uint8_t y)
     {
         uint8_t attr = telemetry::status::armed ? 0 : MAX7456_ATTR_INVERT;
@@ -208,8 +204,6 @@ namespace connection_state
 {
 
     PANEL_NAME("ConState");
-
-    void update() {}
 
     void draw(uint8_t x, uint8_t y)
     {
@@ -349,7 +343,7 @@ namespace throttle
 namespace groundspeed
 {
 
-    STD_PANEL("Groundspeed", 7, OSD_SYMBOL_GROUNDSPEED "%d" OSD_SYMBOL_KMH, (int16_t ) (telemetry::stable::groundspeed * 3.6));
+    STD_PANEL("Groundspeed", 7, OSD_SYMBOL_GROUNDSPEED "%d" OSD_SYMBOL_KMH, (int16_t)(telemetry::stable::groundspeed * 3.6));
 
 }  // namespace ground_speed
 
@@ -357,8 +351,6 @@ namespace battery1_voltage
 {
 
     PANEL_NAME("Bat1Voltage");
-
-    void update() {}
 
     void draw(uint8_t x, uint8_t y)
     {
@@ -371,8 +363,6 @@ namespace battery2_voltage
 {
 
     PANEL_NAME("Bat2Voltage");
-
-    void update() {}
 
     void draw(uint8_t x, uint8_t y)
     {
@@ -413,8 +403,6 @@ namespace rssi_flag
 {
 
     PANEL_NAME("RSSIFlag");
-
-    void update() {}
 
     void draw(uint8_t x, uint8_t y)
     {
@@ -461,8 +449,6 @@ namespace home_direction
 
     PANEL_NAME("HomeDirection");
 
-    void update() {}
-
     void draw(uint8_t x, uint8_t y)
     {
         if (telemetry::home::state == telemetry::home::FIXED)
@@ -475,8 +461,6 @@ namespace callsign
 {
 
     PANEL_NAME("Callsign");
-
-    void update() {}
 
     void draw(uint8_t x, uint8_t y)
     {
@@ -601,8 +585,6 @@ namespace crosshair
 
     PANEL_NAME("Crosshair");
 
-    void update() {}
-
     void draw(uint8_t x, uint8_t y)
     {
         max7456::puts_p(x, y, PSTR(OSD_SYMBOL_CROSSHAIR), 0);
@@ -610,19 +592,27 @@ namespace crosshair
 
 }  // namespace crosshair
 
+namespace yaw
+{
+
+    STD_PANEL("Yaw", 7, OSD_SYMBOL_YAW "%d" OSD_SYMBOL_DEGREES, (int16_t)telemetry::attitude::yaw);
+
+}  // namespace yaw
+
 }  // namespace panels
 
 namespace panel
 {
 
-#define declare_panel(NS) { osd::panels:: NS ::name, osd::panels:: NS ::update, osd::panels:: NS ::draw }
+#define declare_panel(NS)        { osd::panels:: NS ::name, osd::panels:: NS ::update, osd::panels:: NS ::draw }
+#define declare_simple_panel(NS) { osd::panels:: NS ::name, NULL,                      osd::panels:: NS ::draw }
 
 const panel_t panels[] PROGMEM = {
     declare_panel(alt),
     declare_panel(climb),
-    declare_panel(flight_mode),
-    declare_panel(armed_flag),
-    declare_panel(connection_state),
+    declare_simple_panel(flight_mode),
+    declare_simple_panel(armed_flag),
+    declare_simple_panel(connection_state),
     declare_panel(flight_time),
     declare_panel(roll),
     declare_panel(pitch),
@@ -632,21 +622,22 @@ const panel_t panels[] PROGMEM = {
     declare_panel(horizon),
     declare_panel(throttle),
     declare_panel(groundspeed),
-    declare_panel(battery1_voltage),
-    declare_panel(battery2_voltage),
+    declare_simple_panel(battery1_voltage),
+    declare_simple_panel(battery2_voltage),
     declare_panel(battery1_current),
     declare_panel(battery2_current),
     declare_panel(battery1_consumed),
     declare_panel(battery2_consumed),
-    declare_panel(rssi_flag),
+    declare_simple_panel(rssi_flag),
     declare_panel(home_distance),
-    declare_panel(home_direction),
-    declare_panel(callsign),
+    declare_simple_panel(home_direction),
+    declare_simple_panel(callsign),
     declare_panel(temperature),
     declare_panel(rssi),
     declare_panel(compass),
     declare_panel(airspeed),
-    declare_panel(crosshair)
+    declare_simple_panel(crosshair),
+    declare_panel(yaw)
 };
 
 const uint8_t count = sizeof(panels) / sizeof(panel_t);

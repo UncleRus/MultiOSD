@@ -69,8 +69,8 @@ void update()
 
 void draw()
 {
-    if (!updated)
-        return;
+    if (!updated) return;
+
     max7456::clear();
     for (uint8_t i = 0; i < count; i++)
         osd::panel::draw(records[i].panel, records[i].x, records[i].y);

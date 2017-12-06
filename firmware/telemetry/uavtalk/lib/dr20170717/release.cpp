@@ -16,25 +16,29 @@
  */
 #include "release.h"
 
-#include "stddef.h"
+#include <string.h>
 #include "../../../telemetry.h"
 
 UT_NAMESPACE_OPEN
 
-namespace dr201702131
+namespace dr20170717
 {
 
-#if !defined(TELEMETRY_MODULES_ADC_BATTERY)
-void handle_flightbatterystate()
+void handle_manualcontrolcommand()
 {
-	// FIXME: use DetectedCellsCount
-	FlightBatteryState *obj = (FlightBatteryState *)&buffer.data;
-	battery::battery1.set_voltage(obj->Voltage, true);
-	battery::battery1.amperage = obj->Current;
-	battery::battery1.consumed = obj->ConsumedEnergy;
-}
+    ManualControlCommand *obj = (ManualControlCommand *)&buffer.data;
+
+    input::throttle   = (int8_t)(obj->Throttle * 100);
+    input::roll       = (int8_t)(obj->Roll * 100);
+    input::pitch      = (int8_t)(obj->Pitch * 100);
+    input::yaw        = (int8_t)(obj->Yaw * 100);
+    memcpy(input::channels, obj->Channel, sizeof(obj->Channel));
+    input::connected = obj->Connected;
+#if !defined (TELEMETRY_MODULES_ADC_RSSI)
+    input::set_rssi(!emulate_rssi ? obj->Rssi : (input::connected ? 100 : 0));
 #endif
+}
 
-}  // namespace dr201702131
+}
 
 UT_NAMESPACE_CLOSE

@@ -36,6 +36,7 @@
 #define OSD_SYMBOL_M "\x8d"
 #define OSD_SYMBOL_V "\x8e"
 #define OSD_SYMBOL_A "\x8f"
+#define OSD_SYMBOL_YAW "\xb0"
 #define OSD_SYMBOL_PITCH "\xb1"
 #define OSD_SYMBOL_ROLL "\xb2"
 #define OSD_SYMBOL_TIME "\xb3"

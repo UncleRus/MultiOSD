@@ -16,12 +16,13 @@
  */
 #include "../lib/common.h"
 
-#include "dr201702131/release.h"
 #include "op150202/release.h"
 #include "op150502/release.h"
 #include "lp150900/release.h"
 #include "tl20151123/release.h"
 #include "lp1609rc1/release.h"
+#include "dr201702131/release.h"
+#include "dr20170717/release.h"
 
 UT_NAMESPACE_OPEN
 
@@ -210,6 +211,7 @@ const release_t releases [] PROGMEM = {
 	{ tl20151123::instid_required,  tl20151123::flightstatus_objid,  tl20151123::handlers,  tl20151123::fm::names,  tl20151123::fm::size },
 	{ lp1609rc1::instid_required,   lp1609rc1::flightstatus_objid,   lp1609rc1::handlers,   lp1609rc1::fm::names,   op150502::fm::size },
 	{ dr201702131::instid_required, dr201702131::flightstatus_objid, dr201702131::handlers, dr201702131::fm::names, dr201702131::fm::size },
+    { dr20170717::instid_required,  dr20170717::flightstatus_objid,  dr20170717::handlers,  dr20170717::fm::names,  dr20170717::fm::size },
 };
 
 const char *get_fm_name_p(uint8_t fm)
