@@ -41,11 +41,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #ifndef UART_RX_BUFFER_SIZE
-#   define UART_RX_BUFFER_SIZE 64
+    #define UART_RX_BUFFER_SIZE 64
 #endif
 
 #ifndef UART_TX_BUFFER_SIZE
-#   define UART_TX_BUFFER_SIZE 64
+    #define UART_TX_BUFFER_SIZE 64
 #endif
 
 #define UART_BAUD_SELECT(baud_rate)  (((F_CPU) + 8UL * (baud_rate)) / (16UL * (baud_rate)) - 1UL)
@@ -58,7 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define UART_BR_115200 4
 
 #if ((UART_RX_BUFFER_SIZE + UART_TX_BUFFER_SIZE) >= (RAMEND - 0x60))
-#   error "size of UART_RX_BUFFER_SIZE + UART_TX_BUFFER_SIZE larger than size of SRAM"
+    #error "size of UART_RX_BUFFER_SIZE + UART_TX_BUFFER_SIZE larger than size of SRAM"
 #endif
 
 #define UART_FRAME_ERROR      0x1000              /* Framing Error by UART       */
@@ -72,20 +72,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace uart_utils
 {
 
-extern const uint16_t bitrates [];
-extern const uint16_t get_bitrate (uint8_t br_type, uint8_t def = 0);
+extern const uint16_t bitrates[];
+extern const uint16_t get_bitrate(uint8_t br_type, uint8_t def = 0);
 
 }  // namespace uart_utils
-
 
 namespace uart0
 {
 
-void init (uint16_t baud_rate);
-uint16_t receive ();
-void send (uint8_t data);
-void send_string (const char *s);
-void send_string_p (const char *progmem_s);
+void init(uint16_t baud_rate);
+uint16_t receive();
+void send(uint8_t data);
+void send_string(const char *s);
+void send_string_p(const char *progmem_s);
 
 #ifdef UART_STDIO
 extern FILE stream;
@@ -97,11 +96,11 @@ extern FILE stream;
 namespace uart1
 {
 
-void init (unsigned int baud_rate);
-uint16_t receive ();
-void send (unsigned char data);
-void send_string (const char *s);
-void send_string_p (const char *s);
+void init(unsigned int baud_rate);
+uint16_t receive();
+void send(unsigned char data);
+void send_string(const char *s);
+void send_string_p(const char *s);
 
 #ifdef UART_STDIO
 extern FILE stream;

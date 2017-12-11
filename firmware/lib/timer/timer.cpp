@@ -28,7 +28,7 @@ void init()
     // timer0 OC02 off, CTC mode
     TCCR0A = _BV(WGM01);
     // timer0 prescaler = 64
-    TCCR0B = _BV (CS00) | _BV(CS01);
+    TCCR0B = _BV(CS00) | _BV(CS01);
     // timer0 counter = 0
     TCNT0 = 0;
     // timer0 TOP = (Fosc / prescaler) * 0.001s

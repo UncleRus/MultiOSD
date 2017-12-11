@@ -219,8 +219,8 @@ void clear()
 void upload_char(uint8_t char_index, uint8_t data[])
 {
     _chip_select();
-    _disable_osd ()
-    ;
+    _disable_osd ();
+
     _delay_us(20);
     _chip_unselect();
 
@@ -253,8 +253,8 @@ void upload_char(uint8_t char_index, uint8_t data[])
 void download_char(uint8_t char_index, uint8_t data[])
 {
     _chip_select();
-    _disable_osd ()
-    ;
+    _disable_osd ();
+
     _delay_us(20);
     _chip_unselect();
 
