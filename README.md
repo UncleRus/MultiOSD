@@ -1,5 +1,7 @@
 # MultiOSD
 
+[![Build Status](https://travis-ci.org/UncleRus/MultiOSD.svg?branch=master)](https://travis-ci.org/UncleRus/MultiOSD)
+
 Yet another MinimOSD firmware with configurable screens layout.
 
 ![Screenshot](doc/img/screenshot.png)
